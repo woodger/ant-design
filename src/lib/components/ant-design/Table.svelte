@@ -11,6 +11,8 @@
   import TableFilter from './TableFilter.svelte';
 
   let {
+    mode = 'client',
+    total,
     dataSource,
     columns,
     rowKey,
@@ -46,10 +48,10 @@
   const initialSize = untrack(() => defaultPageSize);
   const initialSelection = untrack(() => [...defaultSelectedRowKeys]);
   const initialFilters: TableFilters = untrack(() => Object.fromEntries(Object.entries(defaultFilters).map(([key, values]) => [key, [...values]])));
-  let tableData = $derived(getTableData(dataSource, columns, rowKey, sorter === undefined ? initialSorter : sorter, filters ?? initialFilters));
-  let hasFilters = $derived(columns.some((column) => column.filters?.length && column.onFilter));
-  let paging = $derived(getPaginationState(tableData.rows.length, current ?? initialCurrent, pageSize ?? initialSize));
-  let pageRows = $derived(pagination === false ? tableData.rows : tableData.rows.slice((paging.current - 1) * paging.pageSize, paging.current * paging.pageSize));
+  let tableData = $derived(getTableData(dataSource, columns, rowKey, sorter === undefined ? initialSorter : sorter, filters ?? initialFilters, mode));
+  let hasFilters = $derived(columns.some((column) => column.filters?.length && (mode === 'server' || column.onFilter)));
+  let paging = $derived(getPaginationState(mode === 'server' ? total ?? dataSource.length : tableData.rows.length, current ?? initialCurrent, pageSize ?? initialSize));
+  let pageRows = $derived(mode === 'server' || pagination === false ? tableData.rows : tableData.rows.slice((paging.current - 1) * paging.pageSize, paging.current * paging.pageSize));
   let selectionOptions = $derived(typeof rowSelection === 'object' ? rowSelection : undefined);
   let visibleRows = $derived(pageRows.map((row) => ({ ...row, checkbox: selectionOptions?.getCheckboxProps?.(row.record) ?? {} })));
   let changeableKeys = $derived(visibleRows.filter((row) => !row.checkbox.disabled).map((row) => row.key));
@@ -64,7 +66,7 @@
       action,
       pagination: { current: paging.current, pageSize: paging.pageSize, total: paging.total },
       sorter: tableData.sorter ? { ...tableData.sorter } : null,
-      ...(hasFilters ? { filters: getTableFilters(columns, tableData.filters) } : {}),
+      ...(hasFilters ? { filters: getTableFilters(columns, tableData.filters, mode) } : {}),
       currentDataSource: tableData.rows.map((row) => row.record)
     });
   }
@@ -94,7 +96,7 @@
     }
 
     const next = { ...(filters ?? initialFilters), [columnKey]: [...values] };
-    const active = getTableFilters(columns, next);
+    const active = getTableFilters(columns, next, mode);
 
     if (areTableFiltersEqual(active, tableData.filters)) {
       return;
@@ -177,16 +179,17 @@
                 </th>
               {/if}
               {#each columns as column (column.key)}
+                {@const sortable = typeof column.sorter === 'function' || (mode === 'server' && column.sorter === true)}
                 {@const order = tableData.sorter?.columnKey === column.key ? tableData.sorter.order : undefined}
-                <th scope="col" class={['ant-table-cell', column.sorter && 'ant-table-column-has-sorters', order && 'ant-table-column-sort']} style:text-align={column.align} aria-sort={order === 'ascend' ? 'ascending' : order === 'descend' ? 'descending' : undefined}>
+                <th scope="col" class={['ant-table-cell', sortable && 'ant-table-column-has-sorters', order && 'ant-table-column-sort']} style:text-align={column.align} aria-sort={order === 'ascend' ? 'ascending' : order === 'descend' ? 'descending' : undefined}>
                   <div class="column-heading">
-                    {#if column.sorter}
+                    {#if sortable}
                       <button type="button" class="sort-button ant-table-column-sorters" disabled={resolvedDisabled} title={sortDescription(column.key, tableData.sorter)} onclick={() => changeSort(column.key)}>
                         <span class="ant-table-column-title">{column.title}</span>
                         <span class="ant-table-column-sorter" aria-hidden="true"><span class="ant-table-column-sorter-inner"><span class={['sort-arrow sort-up', order === 'ascend' && 'active']}></span><span class={['sort-arrow sort-down', order === 'descend' && 'active']}></span></span></span>
                       </button>
                     {:else}<span>{column.title}</span>{/if}
-                    {#if column.filters?.length && column.onFilter}
+                    {#if column.filters?.length && (mode === 'server' || column.onFilter)}
                       <TableFilter title={column.title} options={column.filters} value={Object.hasOwn(tableData.filters, column.key) ? tableData.filters[column.key] : []} multiple={column.filterMultiple !== false} disabled={resolvedDisabled} onApply={(values) => changeFilter(column.key, values)} />
                     {/if}
                   </div>

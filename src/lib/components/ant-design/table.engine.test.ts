@@ -174,6 +174,45 @@ describe('getNextTableSorter', () => {
   });
 });
 
+describe('Table server data', () => {
+  it('preserves a supplied page and never calls local filtering or sorting callbacks', () => {
+    const configured: TableColumn<RecordRow>[] = [
+      { key: 'score', title: 'Score', sorter: () => { throw new Error('Unexpected local sort'); }, filters: [{ text: 'Ten', value: 10 }], onFilter: () => { throw new Error('Unexpected local filter'); } }
+    ];
+    const result = getTableData(records, configured, 'id', { columnKey: 'score', order: 'ascend' }, { score: [10] }, 'server');
+
+    expect(result.rows.map((row) => row.key)).toEqual([0, 1, 2, 3]);
+    expect(result.sorter).toEqual({ columnKey: 'score', order: 'ascend' });
+    expect(result.filters).toEqual({ score: [10] });
+  });
+
+  it('supports interactive-only sorting and filters without local predicates', () => {
+    const configured: TableColumn<RecordRow>[] = [
+      { key: 'score', title: 'Score', sorter: true, filters: [{ text: 'Ten', value: 10 }] }
+    ];
+    const result = getTableData(records, configured, 'id', { columnKey: 'score', order: 'descend' }, { score: [10] }, 'server');
+
+    expect(result.sorter).toEqual({ columnKey: 'score', order: 'descend' });
+    expect(result.filters).toEqual({ score: [10] });
+    expect(result.rows).toHaveLength(4);
+    expect(getTableData(records, configured, 'id', { columnKey: 'score', order: 'descend' }, { score: [10] }).sorter).toBeNull();
+    expect(getTableFilters(configured, { score: [10] })).toEqual({});
+  });
+
+  it('normalizes server filter values while retaining their primitive types', () => {
+    const configured: TableColumn<RecordRow>[] = [
+      { key: 'state', title: 'State', filterMultiple: false, filters: [{ text: 'False', value: false }, { text: 'Zero', value: 0 }] }
+    ];
+
+    expect(getTableFilters(configured, { state: ['missing', false, 0, false] }, 'server')).toEqual({ state: [false] });
+  });
+
+  it('validates row identity across a server page before rendering', () => {
+    expect(() => getTableData(records, columns, () => 'duplicate', null, {}, 'server')).toThrow('Table row key "duplicate" is not unique');
+    expect(() => getTableData(records, columns, undefined, null, {}, 'server')).toThrow('Table rowKey must resolve');
+  });
+});
+
 describe('getTableSelection', () => {
   it('disables select-all when the page has no selectable rows', () => {
     expect(getTableSelection([], [1])).toEqual({ all: false, some: false, disabled: true });

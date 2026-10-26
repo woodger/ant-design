@@ -69,7 +69,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Select | Один строковый или числовой value; options, поиск, очистка, disabled options, клавиатура и значение для FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
-| Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная пагинация, выбор строк, loading и пустые данные |
+| Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор строк, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
@@ -198,6 +198,8 @@ pageSize — единицей, все значения — сверху `Number.
 />
 ```
 
+По умолчанию используется `mode="client"`: фильтрация, сортировка и разбиение
+на страницы выполняются локально; переданный `total` в этом режиме игнорируется.
 `dataSource` и `columns` принимают readonly-массивы. Каждая колонка имеет
 уникальный строковый `key` и текстовый `title`. `dataIndex` выбирает одно поле
 `keyof Row`; null/undefined отображаются пустой строкой, остальные значения —
@@ -222,8 +224,8 @@ pageSize — единицей, все значения — сверху `Number.
 Пагинация включена по умолчанию: `current=1`, `pageSize=10`; оба props
 поддерживают привязку. `pagination={false}` показывает все записи.
 Объект `pagination` передаёт настройки `showSizeChanger`, `pageSizeOptions`,
-`hideOnSinglePage`, `showTotal` и `aria-label` существующему Pagination. Total
-равен количеству записей после фильтрации. При уменьшении набора отображаемая страница
+`hideOnSinglePage`, `showTotal` и `aria-label` существующему Pagination. В клиентском
+режиме total равен количеству записей после фильтрации. При уменьшении набора отображаемая страница
 ограничивается допустимым диапазоном; props владельца не переписываются.
 
 `rowSelection` включает Checkbox-колонку; объект
@@ -239,7 +241,7 @@ disabled-строки при расчёте checked/indeterminate и отклю�
 `onChange({ action, pagination, sorter, currentDataSource, filters })` вызывается
 при пользовательской сортировке, фильтрации или смене страницы/размера.
 `action` равен `sort`, `filter` или `paginate`, pagination содержит
-`{ current, pageSize, total }`, а currentDataSource — весь отфильтрованный и
+`{ current, pageSize, total }`, а currentDataSource в клиентском режиме — весь отфильтрованный и
 отсортированный набор до разбиения на страницы. Filters передаётся при наличии
 фильтруемых колонок.
 `onSelectionChange(keys, records, { type })` вызывается отдельно; type равен
@@ -263,7 +265,7 @@ disabled-строки при расчёте checked/indeterminate и отклю�
 
 ### Фильтры колонок
 
-В колонке задаются плоский список `filters: [{ text, value }]` и предикат
+В клиентском режиме в колонке задаются плоский список `filters: [{ text, value }]` и предикат
 `onFilter(value, record)`. Значения — string, number или boolean; числовой `0`
 и `false` сохраняют тип. Несколько выбранных значений одной колонки объединяются
 через OR, фильтры разных колонок — через AND.
@@ -310,12 +312,12 @@ disabled-строки при расчёте checked/indeterminate и отклю�
 callback и не сбрасывает страницу. Если настроены фильтруемые колонки,
 `onChange` также получает `filters` с нормализованными активными критериями;
 без таких колонок формат прежних событий сохраняется. В типе TableChange
-поле filters опционально. `currentDataSource` содержит отфильтрованный и
+поле filters опционально. В клиентском режиме `currentDataSource` содержит отфильтрованный и
 отсортированный набор до пагинации, pagination.total — его длину.
 
 Внешние изменения filters, dataSource и columns не вызывают callbacks и не
 переписывают страницу владельца. Дубликаты значений удаляются; неизвестные
-варианты, удалённые колонки и колонки без списка/предиката игнорируются при
+варианты, удалённые колонки и колонки без списка/предиката в клиентском режиме игнорируются при
 отображении. В одиночном режиме используется первое допустимое значение.
 Состояние владельца сохраняется, поэтому возвращённая колонка может снова
 применить свой фильтр. Выбранные строки сохраняют ключи при скрытии фильтром;
@@ -326,6 +328,74 @@ callback и не сбрасывает страницу. Если настрое�
 Enter на пункте подтверждает фильтр, Escape закрывает меню с возвратом к кнопке.
 Меню остаётся в границах viewport и наследует тему, RTL и `locale.table`:
 `filterTitle`, `filterApply`, `filterReset`.
+
+### Серверный режим
+
+`mode="server"` показывает переданную страницу `dataSource` целиком и в исходном
+порядке. Table не фильтрует, не сортирует и не разрезает её повторно, даже если
+переданы локальные `sorter`/`onFilter` или число строк отличается от pageSize.
+Передавайте `total` из ответа API: он определяет диапазон Pagination. Если total
+не указан, используется длина dataSource. Его нормализация совпадает с Pagination.
+`pagination={false}` скрывает навигацию и сохраняет все переданные строки.
+
+Для удалённой сортировки задавайте `column.sorter: true`; для фильтра достаточно
+`column.filters` без `onFilter`. Значение `sorter: true` используется только в
+серверном режиме; компаратор поддерживается в обоих режимах, но исполняется только
+в клиентском. Правила нормализации фильтров, одиночного выбора и цикл сортировки
+сохраняются. Сортировка сохраняет страницу, применение изменившегося фильтра
+задаёт страницу 1.
+
+`onChange` получает текущие `pagination`, `sorter`, `filters` и причину действия.
+В серверном режиме `currentDataSource` содержит только переданную страницу,
+а `pagination.total` — внешний total. Строки остаются прежними до замены
+dataSource владельцем. Внешние обновления props не вызывают callback и не
+переписывают состояние владельца, включая current при уменьшении total.
+Владелец должен запросить допустимую страницу, если текущая больше нового
+диапазона; Table сам запросов не выполняет.
+
+`selectedRowKeys` сохраняет ключи между заменами страниц. `onSelectionChange`
+передаёт все выбранные ключи, но records содержит только выбранные записи,
+присутствующие в текущем dataSource. Кэш записей других страниц отсутствует.
+Выбор всех действует на доступные строки загруженной страницы.
+
+В приложении [RemoteTableExample.svelte](../../presentation/ant-design/RemoteTableExample.svelte)
+показывает полную связку. [Модель загрузки](../../presentation/ant-design/remote-table.model.svelte.ts)
+принадлежит presentation и не входит в пакет UI. Её loader получает
+`{ current, pageSize, sorter, filters }` и `AbortSignal`, возвращает
+`Promise<{ rows, total }>`. Модель отменяет предыдущий запрос и игнорирует его
+поздний ответ, даже если источник не поддерживает отмену. Во время загрузки строки
+очищаются; ошибка доступна отдельно, retry повторяет последний запрос. При
+уменьшении total модель запрашивает исправленную страницу перед публикацией строк.
+На unmount вызывается dispose для отмены и блокировки поздних обновлений.
+
+Минимальное подключение модели в этом приложении:
+
+```svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { Button, Table, type TableColumn } from '$lib/components/ant-design';
+  import { createRemoteTable } from '$lib/presentation/ant-design/remote-table.model.svelte';
+  import { createMemberSource, type RemoteMember } from '$lib/presentation/ant-design/remote-members';
+
+  const remote = createRemoteTable(createMemberSource().load);
+  const columns: TableColumn<RemoteMember>[] = [
+    { key: 'name', title: 'Участник', dataIndex: 'name', sorter: true },
+    { key: 'tasks', title: 'Задачи', dataIndex: 'tasks', sorter: true }
+  ];
+  onMount(() => { void remote.load(); return remote.dispose; });
+</script>
+
+{#if remote.error}<p role="alert">{remote.error}</p><Button onclick={remote.retry}>Повторить</Button>{/if}
+<Table mode="server" {columns} dataSource={remote.rows} total={remote.total}
+  bind:current={remote.current} bind:pageSize={remote.pageSize}
+  bind:sorter={remote.sorter} bind:filters={remote.filters}
+  loading={remote.loading} onChange={remote.change} caption="Удалённые участники" />
+```
+
+Источник примера имитирует API в памяти с задержкой и управляемой ошибкой;
+реального endpoint в проекте нет. Для своего API замените loader, передавайте
+signal в fetch и возвращайте строки страницы вместе с общим количеством.
+В примере загрузка начинается на onMount; SSR отображает пустую таблицу без запросов.
 
 ## Темы и локализация
 
@@ -459,6 +529,8 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 Браузерные тесты проверяют внешние изменения значений, смешанное состояние и
 нативный reset Checkbox, boolean-поля Form, переходы и смену размера Pagination,
 сочетания фильтров, сортировки, страниц и выбора Table, loading и замену данных,
+серверный total, сохранение ключей между страницами, отмену запросов, поздние ответы,
+ошибки/retry и повторную загрузку допустимой страницы при уменьшении total,
 клавиатуру Select,
 очистку и числовой ноль, фокус и закрытие Modal, async validation, повторную
 отправку, ошибки и reset Form, оба layout, темы, размеры, RTL, локаль, мобильный
@@ -468,7 +540,7 @@ Console warnings/errors и необработанные ошибки брауз�
 просмотра; автоматического сравнения с эталонными изображениями пока нет.
 
 Эта версия покрывает перечисленное ядро. Checkbox.Group, simple/quick jumper
-и произвольный itemRender Pagination, древовидные/поисковые фильтры и серверный режим Table,
+и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
 раскрываемые строки, закреплённые колонки, DatePicker/RangePicker,
 Tree/TreeSelect, Upload, множественный Select, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость

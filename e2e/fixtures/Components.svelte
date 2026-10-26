@@ -4,6 +4,7 @@
   import CheckboxPagination from './CheckboxPagination.svelte';
   import TableFixtures from './TableFixtures.svelte';
   import TableFilterFixtures from './TableFilterFixtures.svelte';
+  import ServerTableFixtures from './ServerTableFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -71,6 +72,7 @@
     <CheckboxPagination />
     <TableFixtures />
     <TableFilterFixtures />
+    <ServerTableFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

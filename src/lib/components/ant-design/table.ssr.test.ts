@@ -97,4 +97,38 @@ describe('Table server rendering', () => {
     expect(body).toContain('aria-expanded="false"');
     expect(body).toContain('aria-label="Фильтр: Score"');
   });
+
+  it('renders an entire server page and an external total without repeating data processing', () => {
+    const { body } = render(Table<RecordRow>, { props: {
+      mode: 'server', total: 95, current: 4, pageSize: 10, dataSource,
+      columns: [{ key: 'name', title: 'Name', dataIndex: 'name', sorter: true, filters: [{ text: 'Other', value: 'other' }] }],
+      sorter: { columnKey: 'name', order: 'descend' }, filters: { name: ['other'] },
+      onChange: () => { throw new Error('Unexpected server callback'); }
+    } });
+
+    expect(body).toContain('Anna');
+    expect(body).toContain('Boris');
+    expect(body).toContain('Clara');
+    expect(body.indexOf('Anna')).toBeLessThan(body.indexOf('Boris'));
+    expect(body).toContain('aria-sort="descending"');
+    expect(body).toContain('aria-label="Фильтр: Name"');
+    expect(body).toMatch(/aria-label="Страница 4"[^>]*aria-current="page"/);
+    expect(body).toContain('aria-label="Страница 10"');
+  });
+
+  it('clamps a shrinking server total without replacing supplied records or notifying its owner', () => {
+    const { body } = render(Table<RecordRow>, { props: { mode: 'server', total: 15, current: 4, pageSize: 10, columns, dataSource, onChange: () => { throw new Error('Unexpected server callback'); } } });
+
+    expect(body).toContain('Anna');
+    expect(body).toMatch(/aria-label="Страница 2"[^>]*aria-current="page"/);
+  });
+
+  it('uses local processing and the local record count by default even with an external total', () => {
+    const { body } = render(Table<RecordRow>, { props: { total: 95, current: 2, pageSize: 1, columns, dataSource } });
+
+    expect(body).toContain('Boris');
+    expect(body).not.toContain('Anna');
+    expect(body).not.toContain('Clara');
+    expect(body).not.toContain('aria-label="Страница 4"');
+  });
 });

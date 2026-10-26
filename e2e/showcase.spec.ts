@@ -74,6 +74,54 @@ test('showcase keeps table selection between pages and exposes sorting, loading 
   await expect(page.locator('#table .output')).toContainText('Выбрано участников: 2.');
 });
 
+test('showcase loads remote pages and applies sorting and filtering through the presentation model', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const table = page.getByRole('table', { name: 'Удалённые участники', exact: true });
+  const names = table.locator('tbody tr > td:nth-child(2)');
+  const pagination = page.getByRole('navigation', { name: 'Страницы удалённых участников', exact: true });
+  const status = page.getByRole('status', { name: 'Результат удалённой загрузки', exact: true });
+  await expect(names).toHaveText(['Участник 01', 'Участник 02', 'Участник 03', 'Участник 04', 'Участник 05']);
+  await expect(status).toHaveText('Всего: 36. Страница: 1. Выбрано: 0.');
+  await table.getByRole('checkbox', { name: 'Выбрать удалённого участника 1', exact: true }).check();
+  await pagination.getByRole('button', { name: 'Страница 2', exact: true }).click();
+  await expect(names).toHaveText(['Участник 06', 'Участник 07', 'Участник 08', 'Участник 09', 'Участник 10']);
+  await table.getByRole('checkbox', { name: 'Выбрать удалённого участника 6', exact: true }).check();
+  await pagination.getByRole('button', { name: 'Страница 1', exact: true }).click();
+  await expect(table.getByRole('checkbox', { name: 'Выбрать удалённого участника 1', exact: true })).toBeChecked();
+  await expect(status).toHaveText('Всего: 36. Страница: 1. Выбрано: 2.');
+  await table.getByRole('button', { name: 'Фильтр: Команда', exact: true }).click();
+  const teams = page.getByRole('dialog', { name: 'Фильтр: Команда', exact: true });
+  await teams.getByRole('checkbox', { name: 'Дизайн', exact: true }).check();
+  await teams.getByRole('button', { name: 'Применить', exact: true }).click();
+
+  await expect(names).toHaveText(['Участник 02', 'Участник 05', 'Участник 08', 'Участник 11', 'Участник 14']);
+  await expect(status).toHaveText('Всего: 12. Страница: 1. Выбрано: 2.');
+  await table.getByRole('button', { name: 'Задачи', exact: true }).click();
+  await expect(names).toHaveText(['Участник 32', 'Участник 26', 'Участник 20', 'Участник 14', 'Участник 08']);
+  await table.getByRole('button', { name: 'Задачи', exact: true }).click();
+  await expect(names).toHaveText(['Участник 05', 'Участник 11', 'Участник 17', 'Участник 23', 'Участник 29']);
+  await page.locator('#server-table').screenshot({ path: testInfo.outputPath('server-table.png') });
+});
+
+test('showcase retries a failed remote page with its existing query', async ({ page }) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#server-table');
+  const table = fixture.getByRole('table', { name: 'Удалённые участники', exact: true });
+  const names = table.locator('tbody tr > td:nth-child(2)');
+  await expect(names).toHaveCount(5);
+  await fixture.getByRole('navigation', { name: 'Страницы удалённых участников', exact: true }).getByRole('button', { name: 'Страница 2', exact: true }).click();
+  await expect(names.first()).toHaveText('Участник 06');
+  await fixture.getByRole('button', { name: 'Пример ошибки загрузки', exact: true }).click();
+
+  await expect(fixture.getByRole('alert')).toContainText('Не удалось загрузить данные. Попробуйте ещё раз.');
+  await expect(table.getByRole('cell', { name: 'Нет данных', exact: true })).toBeVisible();
+  await fixture.getByRole('button', { name: 'Повторить загрузку', exact: true }).click();
+
+  await expect(names).toHaveText(['Участник 06', 'Участник 07', 'Участник 08', 'Участник 09', 'Участник 10']);
+  await expect(fixture.getByRole('alert')).toHaveCount(0);
+  await expect(fixture.getByRole('status', { name: 'Результат удалённой загрузки', exact: true })).toHaveText('Всего: 36. Страница: 2. Выбрано: 0.');
+});
+
 test('showcase applies combined filters, shows empty results and restores data after reset', async ({ page }) => {
   await page.goto('/ant-design');
   const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
@@ -184,6 +232,8 @@ test.describe('mobile showcase', () => {
     await expect(pagination.getByRole('combobox')).toBeVisible();
     const tableRegion = page.locator('#table').getByRole('region', { name: 'Участники проекта', exact: true });
     await expect.poll(() => tableRegion.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
+    const remoteRegion = page.locator('#server-table').getByRole('region', { name: 'Удалённые участники', exact: true });
+    await expect.poll(() => remoteRegion.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
     await page.screenshot({ path: testInfo.outputPath('mobile.png'), fullPage: true });
     await pagination.getByRole('combobox').click();
     await pagination.getByRole('option', { name: '20 / стр.', exact: true }).click();
@@ -220,6 +270,8 @@ test.describe('server-rendered showcase', () => {
     const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
     await expect(table.locator('tbody tr')).toHaveCount(5);
     await expect(table.locator('tbody tr > td:nth-child(2)').first()).toHaveText('Анна Иванова');
+    await expect(page.getByRole('table', { name: 'Удалённые участники', exact: true }).getByRole('cell', { name: 'Нет данных', exact: true })).toBeVisible();
+    await expect(page.getByRole('status', { name: 'Результат удалённой загрузки', exact: true })).toHaveText('Всего: 0. Страница: 1. Выбрано: 0.');
     await expect(page.locator('dialog')).not.toBeVisible();
   });
 });

@@ -5,6 +5,7 @@ import type { ComponentSize } from './types';
 export type TableKey = string | number;
 export type TableRowKey<Row extends object> = keyof Row | ((record: Row) => TableKey);
 export type TableSortOrder = 'ascend' | 'descend';
+export type TableMode = 'client' | 'server';
 export type TableFilterValue = TableKey | boolean;
 export type TableFilters = Record<string, TableFilterValue[]>;
 
@@ -23,7 +24,7 @@ export interface TableColumn<Row extends object> {
   title: string;
   dataIndex?: keyof Row;
   render?: Snippet<[record: Row, index: number]>;
-  sorter?: (left: Row, right: Row) => number;
+  sorter?: true | ((left: Row, right: Row) => number);
   filters?: readonly TableFilterOption[];
   onFilter?: (value: TableFilterValue, record: Row) => boolean;
   filterMultiple?: boolean;
@@ -46,6 +47,8 @@ export interface TableChange<Row extends object> {
 }
 
 export interface TableProps<Row extends object> {
+  mode?: TableMode;
+  total?: number;
   dataSource: readonly Row[];
   columns: readonly TableColumn<Row>[];
   rowKey?: TableRowKey<Row>;

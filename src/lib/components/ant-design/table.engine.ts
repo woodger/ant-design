@@ -1,4 +1,4 @@
-import type { TableColumn, TableFilters, TableFilterValue, TableKey, TableRowKey, TableSorter } from './table.types';
+import type { TableColumn, TableFilters, TableFilterValue, TableKey, TableMode, TableRowKey, TableSorter } from './table.types';
 
 export interface TableRow<Row extends object> {
   key: TableKey;
@@ -11,7 +11,8 @@ export function getTableData<Row extends object>(
   columns: readonly TableColumn<Row>[],
   rowKey?: TableRowKey<Row>,
   sorter?: TableSorter | null,
-  filters?: Readonly<Record<string, readonly TableFilterValue[]>>
+  filters?: Readonly<Record<string, readonly TableFilterValue[]>>,
+  mode: TableMode = 'client'
 ): { rows: TableRow<Row>[]; allRows: TableRow<Row>[]; sorter: TableSorter | null; filters: TableFilters } {
   if (!columns.length) {
     throw new Error('Table requires at least one column');
@@ -43,27 +44,35 @@ export function getTableData<Row extends object>(
 
     return { key, record, sourceIndex };
   });
-  const activeFilters = getTableFilters(columns, filters);
+  const activeFilters = getTableFilters(columns, filters, mode);
+  const column = columns.find((item) => item.key === sorter?.columnKey && (typeof item.sorter === 'function' || (mode === 'server' && item.sorter === true)));
+  const activeSorter = column && sorter && (sorter.order === 'ascend' || sorter.order === 'descend')
+    ? { columnKey: column.key, order: sorter.order }
+    : null;
+
+  if (mode === 'server') {
+    return { rows: allRows, allRows, sorter: activeSorter, filters: activeFilters };
+  }
+
   const filteredColumns = columns.filter((item) => Object.hasOwn(activeFilters, item.key));
   const rows = allRows.filter((row) => filteredColumns.every((item) => activeFilters[item.key].some((value) => item.onFilter?.(value, row.record))));
-  const column = columns.find((item) => item.key === sorter?.columnKey && item.sorter);
 
-  if (!column?.sorter || !sorter || (sorter.order !== 'ascend' && sorter.order !== 'descend')) {
+  if (typeof column?.sorter !== 'function' || !activeSorter) {
     return { rows, allRows, sorter: null, filters: activeFilters };
   }
 
   const compare = column.sorter;
-  const direction = sorter.order === 'ascend' ? 1 : -1;
+  const direction = activeSorter.order === 'ascend' ? 1 : -1;
   rows.sort((left, right) => (compare(left.record, right.record) * direction || left.sourceIndex - right.sourceIndex));
 
-  return { rows, allRows, sorter: { columnKey: column.key, order: sorter.order }, filters: activeFilters };
+  return { rows, allRows, sorter: activeSorter, filters: activeFilters };
 }
 
-export function getTableFilters<Row extends object>(columns: readonly TableColumn<Row>[], filters: Readonly<Record<string, readonly TableFilterValue[]>> = {}): TableFilters {
+export function getTableFilters<Row extends object>(columns: readonly TableColumn<Row>[], filters: Readonly<Record<string, readonly TableFilterValue[]>> = {}, mode: TableMode = 'client'): TableFilters {
   const entries: [string, TableFilterValue[]][] = [];
 
   for (const column of columns) {
-    if (!column.filters?.length || !column.onFilter) {
+    if (!column.filters?.length || (mode === 'client' && !column.onFilter)) {
       continue;
     }
 

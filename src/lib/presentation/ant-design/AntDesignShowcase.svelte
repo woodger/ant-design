@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button, Checkbox, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select, Table, type TableColumn } from '$lib/components/ant-design';
   import { createShowcase, type ShowcaseMember } from './showcase.model.svelte';
+  import RemoteTableExample from './RemoteTableExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -12,6 +13,7 @@
     ['form', 'Form'],
     ['pagination', 'Pagination'],
     ['table', 'Table'],
+    ['server-table', 'Table · API'],
     ['modal', 'Modal']
   ];
   const frameworks = [
@@ -257,6 +259,12 @@
             />
             <p class="output">Выбрано участников: <strong>{demo.tableSelection.length}</strong>. Выбор сохраняется между страницами.</p>
           </div>
+        </section>
+
+        <section id="server-table">
+          <div class="section-heading"><h3>Table · серверный режим</h3></div>
+          <p class="section-description">Загрузка страниц, серверные сортировка и фильтры. Демо имитирует API с задержкой; попробуйте обновление, ошибку и повтор запроса.</p>
+          <div class="panel"><RemoteTableExample /></div>
         </section>
 
         <section id="modal">
