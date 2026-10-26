@@ -160,6 +160,30 @@
   --ant-pagination-item-size-lg: var(--ant-control-height-lg);
 }
 
+.ant-table-css-var {
+  --ant-table-header-bg: var(--ant-color-fill-quaternary);
+  --ant-table-header-color: var(--ant-color-text);
+  --ant-table-header-sort-active-bg: var(--ant-color-fill-secondary);
+  --ant-table-header-sort-hover-bg: var(--ant-color-fill-secondary);
+  --ant-table-body-sort-bg: var(--ant-color-fill-quaternary);
+  --ant-table-row-hover-bg: var(--ant-color-fill-quaternary);
+  --ant-table-row-selected-bg: var(--ant-color-primary-bg);
+  --ant-table-row-selected-hover-bg: var(--ant-color-primary-bg-hover);
+  --ant-table-border-color: var(--ant-color-border-secondary);
+  --ant-table-header-split-color: var(--ant-color-border-secondary);
+  --ant-table-header-icon-color: var(--ant-color-text-tertiary);
+  --ant-table-header-icon-hover-color: var(--ant-color-text-secondary);
+  --ant-table-cell-font-size: var(--ant-font-size);
+  --ant-table-cell-font-size-md: var(--ant-font-size);
+  --ant-table-cell-font-size-sm: var(--ant-font-size);
+  --ant-table-cell-padding-block: var(--ant-padding);
+  --ant-table-cell-padding-inline: var(--ant-padding);
+  --ant-table-cell-padding-block-md: var(--ant-padding-sm);
+  --ant-table-cell-padding-inline-md: var(--ant-padding-xs);
+  --ant-table-cell-padding-block-sm: var(--ant-padding-xs);
+  --ant-table-cell-padding-inline-sm: var(--ant-padding-xs);
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);

@@ -36,7 +36,8 @@
       return {
         ...parent.locale,
         ...locale,
-        pagination: { ...parent.locale.pagination, ...locale?.pagination }
+        pagination: { ...parent.locale.pagination, ...locale?.pagination },
+        table: { ...parent.locale.table, ...locale?.table }
       };
     }
   };

@@ -1,4 +1,12 @@
-import { createForm, type ComponentSize, type ThemeConfig } from '$lib/components/ant-design';
+import { createForm, type ComponentSize, type TableKey, type TableSorter, type ThemeConfig } from '$lib/components/ant-design';
+
+export interface ShowcaseMember {
+  key: number;
+  name: string;
+  team: string;
+  tasks: number;
+  active: boolean;
+}
 
 export function createShowcase() {
   let mode = $state<'light' | 'dark'>('light');
@@ -13,6 +21,26 @@ export function createShowcase() {
   let permissions = $state(['read']);
   let page = $state(1);
   let pageSize = $state(10);
+  let tablePage = $state(1);
+  let tablePageSize = $state(5);
+  let tableSorter = $state<TableSorter | null>(null);
+  let tableSelection = $state<TableKey[]>([]);
+  let tableLoading = $state(false);
+  let tableEmpty = $state(false);
+  const members: ShowcaseMember[] = [
+    { key: 1, name: 'Анна Иванова', team: 'Разработка', tasks: 24, active: true },
+    { key: 2, name: 'Борис Соколов', team: 'Дизайн', tasks: 12, active: false },
+    { key: 3, name: 'Вера Петрова', team: 'Разработка', tasks: 18, active: true },
+    { key: 4, name: 'Глеб Волков', team: 'Поддержка', tasks: 31, active: true },
+    { key: 5, name: 'Дарья Орлова', team: 'Дизайн', tasks: 9, active: true },
+    { key: 6, name: 'Егор Смирнов', team: 'Разработка', tasks: 27, active: true },
+    { key: 7, name: 'Жанна Белова', team: 'Поддержка', tasks: 15, active: true },
+    { key: 8, name: 'Иван Козлов', team: 'Разработка', tasks: 18, active: true },
+    { key: 9, name: 'Кира Морозова', team: 'Дизайн', tasks: 22, active: true },
+    { key: 10, name: 'Лев Попов', team: 'Поддержка', tasks: 11, active: true },
+    { key: 11, name: 'Мария Новикова', team: 'Разработка', tasks: 35, active: true },
+    { key: 12, name: 'Никита Фёдоров', team: 'Дизайн', tasks: 16, active: true }
+  ];
   const permissionOptions = [
     { value: 'read', label: 'Просмотр' },
     { value: 'edit', label: 'Редактирование' },
@@ -60,6 +88,19 @@ export function createShowcase() {
     set page(value: number) { page = value; },
     get pageSize() { return pageSize; },
     set pageSize(value: number) { pageSize = value; },
+    get members() { return tableEmpty ? [] : members; },
+    get tablePage() { return tablePage; },
+    set tablePage(value: number) { tablePage = value; },
+    get tablePageSize() { return tablePageSize; },
+    set tablePageSize(value: number) { tablePageSize = value; },
+    get tableSorter() { return tableSorter; },
+    set tableSorter(value: TableSorter | null) { tableSorter = value; },
+    get tableSelection() { return tableSelection; },
+    set tableSelection(value: TableKey[]) { tableSelection = value; },
+    get tableLoading() { return tableLoading; },
+    set tableLoading(value: boolean) { tableLoading = value; },
+    get tableEmpty() { return tableEmpty; },
+    set tableEmpty(value: boolean) { tableEmpty = value; },
     toggleTheme() { mode = mode === 'light' ? 'dark' : 'light'; },
     setPrimary(value: 'blue' | 'purple' | 'green') { primary = value; },
     toggleCompact() { compact = !compact; },

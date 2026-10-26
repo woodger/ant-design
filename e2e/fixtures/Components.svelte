@@ -2,6 +2,7 @@
   import { Button, ConfigProvider, Form, FormItem, Input, Modal, Select, enUS } from '../../src/lib/components/ant-design';
   import { createControls } from './controls.model.svelte';
   import CheckboxPagination from './CheckboxPagination.svelte';
+  import TableFixtures from './TableFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -67,6 +68,7 @@
     </section>
 
     <CheckboxPagination />
+    <TableFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

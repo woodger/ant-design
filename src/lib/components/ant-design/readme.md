@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, Pagination,
+Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, Pagination, Table,
 Modal, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
@@ -69,6 +69,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Select | Один строковый или числовой value; options, поиск, очистка, disabled options, клавиатура и значение для FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
+| Table | Типизированные колонки и snippets, стабильная сортировка одной колонки, локальная пагинация, выбор строк, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
@@ -159,6 +160,104 @@ pageSize — единицей, все значения — сверху `Number.
 На узком экране элементы переносятся на следующую строку, а выбор размера
 остаётся доступным.
 
+## Table
+
+```svelte
+<script lang="ts">
+  import { Table, type TableColumn, type TableKey, type TableSorter } from '$lib/components/ant-design';
+
+  interface Person { id: number; name: string; score: number }
+
+  const people: Person[] = [
+    { id: 0, name: 'Анна', score: 30 },
+    { id: 1, name: 'Борис', score: 10 }
+  ];
+  const columns: TableColumn<Person>[] = [
+    { key: 'name', title: 'Имя', render: personName },
+    { key: 'score', title: 'Баллы', dataIndex: 'score', sorter: (left, right) => left.score - right.score }
+  ];
+  let current = $state(1);
+  let pageSize = $state(10);
+  let sorter = $state<TableSorter | null>(null);
+  let selectedRowKeys = $state<TableKey[]>([]);
+</script>
+
+{#snippet personName(person: Person)}<strong>{person.name}</strong>{/snippet}
+
+<Table
+  dataSource={people}
+  {columns}
+  rowKey="id"
+  caption="Участники"
+  bind:current
+  bind:pageSize
+  bind:sorter
+  bind:selectedRowKeys
+  rowSelection
+  scroll={{ x: 600 }}
+/>
+```
+
+`dataSource` и `columns` принимают readonly-массивы. Каждая колонка имеет
+уникальный строковый `key` и текстовый `title`. `dataIndex` выбирает одно поле
+`keyof Row`; null/undefined отображаются пустой строкой, остальные значения —
+через безопасное текстовое преобразование. `render(record, index)` заменяет
+содержимое ячейки типизированным snippet; index начинается с 0 на текущей
+странице. Колонка также принимает `width` и `align`.
+
+`rowKey` задаёт поле или функцию получения ключа, по умолчанию используется
+поле `key`. Ключ должен быть уникальной строкой или конечным числом; `0`
+поддерживается. Отсутствующие/повторные ключи строк, повторные ключи колонок и
+пустой список колонок вызывают явную ошибку. Позиции строк не используются как
+идентификаторы выбора.
+
+Сортировка задаётся через `sorter: { columnKey, order } | null` и поддерживает
+привязку. Компаратор принадлежит `column.sorter`. Нажатие заголовка переключает
+`ascend → descend → null`. Равные значения сохраняют порядок исходных записей
+в обоих направлениях; входной массив не изменяется. Сначала сортируется весь
+набор, затем выбирается текущая страница. Номер страницы при сортировке
+сохраняется. Если колонка удалена или не имеет компаратора, отображается исходный
+порядок без изменения состояния владельца.
+
+Пагинация включена по умолчанию: `current=1`, `pageSize=10`; оба props
+поддерживают привязку. `pagination={false}` показывает все записи.
+Объект `pagination` передаёт настройки `showSizeChanger`, `pageSizeOptions`,
+`hideOnSinglePage`, `showTotal` и `aria-label` существующему Pagination. Total
+всегда равен длине dataSource. При уменьшении набора отображаемая страница
+ограничивается допустимым диапазоном; props владельца не переписываются.
+
+`rowSelection` включает Checkbox-колонку; объект
+`{ getCheckboxProps: (record) => ({ disabled, 'aria-label': ... }) }` позволяет
+отключить отдельные строки и изменить их доступное имя. `selectedRowKeys`
+поддерживает привязку. Выбор всех строк затрагивает только доступные строки
+текущей страницы и сохраняет ключи с других страниц. Заголовок игнорирует
+disabled-строки при расчёте checked/indeterminate и отключается, если доступных
+строк нет. При выключенной пагинации выбор всех относится ко всему набору.
+Выбранные ключи сохраняются после замены или удаления записей, пока владелец
+или пользователь не изменит выбор.
+
+`onChange({ action, pagination, sorter, currentDataSource })` вызывается при
+пользовательской сортировке или смене страницы/размера. `action` равен `sort`
+или `paginate`, pagination содержит `{ current, pageSize, total }`, а
+currentDataSource — весь отсортированный набор до разбиения на страницы.
+`onSelectionChange(keys, records, { type })` вызывается отдельно; type равен
+`single` или `all`. Records идут в порядке выбранных ключей и содержат только
+записи, присутствующие в текущем dataSource; отсутствующие записи не кэшируются.
+Внешние изменения props, данных и колонок не вызывают эти callbacks.
+
+Для отдельных таблиц доступны начальные `defaultCurrent`, `defaultPageSize`,
+`defaultSorter`, `defaultSelectedRowKeys`, которые читаются один раз. При
+привязке задавайте начальные значения у владельца. Для сброса присвойте
+`sorter=null`, `selectedRowKeys=[]` и нужную страницу.
+
+`loading` выставляет aria-busy, показывает статус загрузки и блокирует
+сортировку, выбор и пагинацию. `disabled` наследуется из ConfigProvider и может
+быть явно переопределён. Интерактивное содержимое собственных snippets
+отключает владелец. `empty` заменяет текст пустого состояния snippet.
+Размер наследуется из `componentSize`; доступны `bordered`, `caption`,
+`aria-label`, `class` и `style`. `scroll.x` задаёт минимальную ширину таблицы:
+горизонтальная прокрутка остаётся внутри фокусируемого контейнера.
+
 ## Темы и локализация
 
 ConfigProvider принимает `theme={{ mode, primary, compact }}`, где `mode` равен
@@ -173,7 +272,7 @@ ConfigProvider пока не перенесены.
 
 По умолчанию используется `ruRU`; `enUS` также экспортируется. `locale` принимает
 частичное переопределение подписей кнопок и служебных сообщений. Вложенная группа
-`locale.pagination` также объединяется с настройками родителя по отдельным
+`locale.pagination` и `locale.table` также объединяются с настройками родителя по отдельным
 подписям. Тексты правил валидации задаются в `message` или возвращаются из validator.
 
 ## Формы и валидация
@@ -252,6 +351,11 @@ Tab перемещает фокус, Enter и Space выбирают стран�
 пропускаются. При исчезновении сфокусированной кнопки перехода фокус возвращается
 текущей странице. Имя навигации можно задать через `aria-label`.
 
+Table сохраняет нативные table/thead/tbody/th/td и `scope="col"`. Имя задаётся
+через caption или aria-label. Сортируемые заголовки содержат нативные кнопки;
+Enter/Space меняют порядок, `aria-sort` сообщает активное направление.
+Контейнер прокрутки доступен по Tab и прокручивается стрелками.
+
 Select предоставляет combobox/listbox. Стрелки перемещают активный пункт,
 пропуская disabled options; Home/End выбирают начало и конец открытого списка,
 Enter подтверждает, Escape закрывает, Tab продолжает обычную навигацию.
@@ -271,7 +375,7 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 ## Проверки и границы версии
 
 Тесты рядом с модулем проверяют выбор и поиск, расчёт страниц и диапазонов,
-правила валидации, конкурирующие
+порядок сортировки и выбора строк, правила валидации, конкурирующие
 проверки, повторную отправку, сброс, изоляцию состояния и SSR реальных
 компонентов. Из корня репозитория выполняются `npm run lint`,
 `npm exec -- svelte-kit sync`,
@@ -285,6 +389,7 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 
 Браузерные тесты проверяют внешние изменения значений, смешанное состояние и
 нативный reset Checkbox, boolean-поля Form, переходы и смену размера Pagination,
+сочетания сортировки, страниц и выбора Table, loading и замену данных,
 клавиатуру Select,
 очистку и числовой ноль, фокус и закрытие Modal, async validation, повторную
 отправку, ошибки и reset Form, оба layout, темы, размеры, RTL, локаль, мобильный
@@ -294,7 +399,8 @@ Console warnings/errors и необработанные ошибки брауз�
 просмотра; автоматического сравнения с эталонными изображениями пока нет.
 
 Эта версия покрывает перечисленное ядро. Checkbox.Group, simple/quick jumper
-и произвольный itemRender Pagination, Table, DatePicker/RangePicker,
+и произвольный itemRender Pagination, фильтры и серверный режим Table,
+раскрываемые строки, закреплённые колонки, DatePicker/RangePicker,
 Tree/TreeSelect, Upload, множественный Select, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.
@@ -304,7 +410,7 @@ Tree/TreeSelect, Upload, множественный Select, Form.List, влож�
 Стили взяты из `dist/antd.css` официального
 [пакета antd 6.6.8](https://registry.npmjs.org/antd/-/antd-6.6.8.tgz).
 В [vendor/antd.css](./vendor/antd.css) оставлены правила Button, Input, Select,
-Checkbox, Pagination, Modal, Form и связанные animations; глобальные токены
+Checkbox, Pagination, Table, Modal, Form и связанные animations; глобальные токены
 сохранены. Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.

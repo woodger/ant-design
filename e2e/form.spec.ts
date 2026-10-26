@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Form applies vertical and horizontal label layout to its fields', async ({ page }) => {
-  const label = page.getByText('Name', { exact: true });
+  const label = page.locator('#form-fixture').getByText('Name', { exact: true });
   const input = page.getByLabel('Name', { exact: true });
   const verticalLabel = (await label.boundingBox())!;
   const verticalInput = (await input.boundingBox())!;

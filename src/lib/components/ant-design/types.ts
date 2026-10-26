@@ -15,6 +15,18 @@ export interface Locale {
   searchText: string;
   submitErrorText: string;
   pagination?: Partial<PaginationLocale>;
+  table?: Partial<TableLocale>;
+}
+
+export interface TableLocale {
+  label: string;
+  emptyText: string;
+  loadingText: string;
+  selectAll: string;
+  selectRow: string;
+  sortAscending: string;
+  sortDescending: string;
+  cancelSort: string;
 }
 
 export interface PaginationLocale {
@@ -51,6 +63,16 @@ export const ruRU = {
     jumpNext: 'Следующие страницы',
     pageSize: 'Записей на странице',
     itemsPerPage: '/ стр.'
+  },
+  table: {
+    label: 'Таблица',
+    emptyText: 'Нет данных',
+    loadingText: 'Загрузка данных…',
+    selectAll: 'Выбрать все строки на странице',
+    selectRow: 'Выбрать строку',
+    sortAscending: 'Сортировать по возрастанию',
+    sortDescending: 'Сортировать по убыванию',
+    cancelSort: 'Сбросить сортировку'
   }
 } satisfies Locale;
 
@@ -71,5 +93,15 @@ export const enUS = {
     jumpNext: 'Next pages',
     pageSize: 'Items per page',
     itemsPerPage: '/ page'
+  },
+  table: {
+    label: 'Table',
+    emptyText: 'No data',
+    loadingText: 'Loading data…',
+    selectAll: 'Select all rows on this page',
+    selectRow: 'Select row',
+    sortAscending: 'Sort ascending',
+    sortDescending: 'Sort descending',
+    cancelSort: 'Clear sorting'
   }
 } satisfies Locale;

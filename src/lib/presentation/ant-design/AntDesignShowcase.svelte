@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button, Checkbox, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select } from '$lib/components/ant-design';
-  import { createShowcase } from './showcase.model.svelte';
+  import { Button, Checkbox, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select, Table, type TableColumn } from '$lib/components/ant-design';
+  import { createShowcase, type ShowcaseMember } from './showcase.model.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -11,6 +11,7 @@
     ['checkbox', 'Checkbox'],
     ['form', 'Form'],
     ['pagination', 'Pagination'],
+    ['table', 'Table'],
     ['modal', 'Modal']
   ];
   const frameworks = [
@@ -23,6 +24,12 @@
     { value: 'developer', label: 'Разработчик' },
     { value: 'designer', label: 'Дизайнер' },
     { value: 'manager', label: 'Менеджер' }
+  ];
+  const memberColumns: TableColumn<ShowcaseMember>[] = [
+    { key: 'name', title: 'Участник', dataIndex: 'name', width: 220, sorter: (left, right) => left.name.localeCompare(right.name, 'ru') },
+    { key: 'team', title: 'Команда', dataIndex: 'team' },
+    { key: 'tasks', title: 'Задачи', dataIndex: 'tasks', align: 'right', sorter: (left, right) => left.tasks - right.tasks },
+    { key: 'status', title: 'Статус', render: memberStatus }
   ];
   const buttonExample = `<script lang="ts">\n  import { Button, ConfigProvider } from '$lib/components/ant-design';\n${'</'}script>\n\n<ConfigProvider>\n  <Button type="primary" onclick={() => console.log('click')}>\n    Сохранить\n  </Button>\n</ConfigProvider>`;
 </script>
@@ -72,6 +79,9 @@
   .field-example { display: grid; gap: 8px; color: var(--ant-color-text-secondary); font-size: 12px; }
   .field-example > span { padding-bottom: 2px; }
   .output { margin: 16px 0 0; color: var(--ant-color-text-tertiary); font-size: 12px; }
+  .table-controls { margin-bottom: 20px; }
+  .member-status { color: var(--ant-color-text-tertiary); }
+  .member-status.active { color: var(--ant-color-success); }
   .form-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.8fr); gap: 24px; align-items: start; }
   h3 { margin: 0 0 5px; font-size: 16px; color: var(--ant-color-text-heading); font-weight: 600; }
   .form-description { margin: 0 0 24px; color: var(--ant-color-text-tertiary); font-size: 12px; }
@@ -87,6 +97,8 @@
   @media (max-width: 1050px) { .content { padding: 32px 24px; } .layout { grid-template-columns: 180px minmax(0, 1fr); } .form-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) { .topbar { height: auto; min-height: 68px; padding: 12px 18px; gap: 12px; flex-wrap: wrap; } .topbar-actions { gap: 12px; } .topbar-actions a { display: none; } .layout { display: block; } .sidebar { position: static; padding: 16px 18px 0; } .sidebar nav { display: flex; overflow-x: auto; } .sidebar a { flex: none; padding: 7px 12px; } .sidebar-note, .nav-label { display: none; } .content { padding: 28px 18px 40px; } .panel { padding: 20px; } .input-grid { grid-template-columns: 1fr; } .settings { padding: 18px; } h1 { letter-spacing: -0.8px; } }
 </style>
+
+{#snippet memberStatus(member: ShowcaseMember)}<span class={['member-status', member.active && 'active']}>{member.active ? 'Активен' : 'Приостановлен'}</span>{/snippet}
 
 <ConfigProvider theme={demo.theme} componentSize={demo.size}>
   <div class="shell ant-design-showcase">
@@ -112,7 +124,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">9 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">10 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -130,7 +142,7 @@
         </section>
 
         <section id="buttons">
-          <div class="section-heading"><h2>Button</h2><span class="section-count">01 / 07</span></div>
+          <div class="section-heading"><h2>Button</h2><span class="section-count">01 / 08</span></div>
           <p class="section-description">Действия, варианты оформления и состояния кнопок.</p>
           <div class="panel with-code">
             <p class="example-label">Варианты</p>
@@ -149,7 +161,7 @@
         </section>
 
         <section id="inputs">
-          <div class="section-heading"><h2>Input</h2><span class="section-count">02 / 07</span></div>
+          <div class="section-heading"><h2>Input</h2><span class="section-count">02 / 08</span></div>
           <p class="section-description">Нативные поля ввода с двусторонней привязкой значения.</p>
           <div class="panel">
             <div class="input-grid">
@@ -163,7 +175,7 @@
         </section>
 
         <section id="select">
-          <div class="section-heading"><h2>Select</h2><span class="section-count">03 / 07</span></div>
+          <div class="section-heading"><h2>Select</h2><span class="section-count">03 / 08</span></div>
           <p class="section-description">Выбор с поиском, очисткой и управлением с клавиатуры.</p>
           <div class="panel">
             <div class="input-grid">
@@ -175,7 +187,7 @@
         </section>
 
         <section id="checkbox">
-          <div class="section-heading"><h2>Checkbox</h2><span class="section-count">04 / 07</span></div>
+          <div class="section-heading"><h2>Checkbox</h2><span class="section-count">04 / 08</span></div>
           <p class="section-description">Выбор нескольких прав и смешанное состояние «выбрать всё».</p>
           <div class="panel">
             <Checkbox checked={demo.allPermissions} indeterminate={demo.somePermissions} onCheckedChange={demo.selectAllPermissions}>Все права</Checkbox>
@@ -191,7 +203,7 @@
         </section>
 
         <section id="form">
-          <div class="section-heading"><h2>Form</h2><span class="section-count">05 / 07</span></div>
+          <div class="section-heading"><h2>Form</h2><span class="section-count">05 / 08</span></div>
           <p class="section-description">Типизированная модель формы, валидация и зависимые поля.</p>
           <div class="form-grid">
             <div class="panel">
@@ -214,7 +226,7 @@
         </section>
 
         <section id="pagination">
-          <div class="section-heading"><h2>Pagination</h2><span class="section-count">06 / 07</span></div>
+          <div class="section-heading"><h2>Pagination</h2><span class="section-count">06 / 08</span></div>
           <p class="section-description">Переходы по страницам и выбор количества записей.</p>
           <div class="panel">
             <Pagination total={137} bind:current={demo.page} bind:pageSize={demo.pageSize} aria-label="Пример пагинации">
@@ -224,8 +236,30 @@
           </div>
         </section>
 
+        <section id="table">
+          <div class="section-heading"><h2>Table</h2><span class="section-count">07 / 08</span></div>
+          <p class="section-description">Сортировка, выбор строк и пагинация. Нажмите на заголовок колонки, чтобы изменить порядок.</p>
+          <div class="panel">
+            <div class="row table-controls"><Checkbox bind:checked={demo.tableLoading}>Загрузка таблицы</Checkbox><Checkbox bind:checked={demo.tableEmpty}>Пустые данные</Checkbox></div>
+            <Table
+              dataSource={demo.members}
+              columns={memberColumns}
+              caption="Участники проекта"
+              bind:current={demo.tablePage}
+              bind:pageSize={demo.tablePageSize}
+              bind:sorter={demo.tableSorter}
+              bind:selectedRowKeys={demo.tableSelection}
+              rowSelection={{ getCheckboxProps: (member) => ({ disabled: !member.active, 'aria-label': `Выбрать: ${member.name}` }) }}
+              pagination={{ showSizeChanger: true, pageSizeOptions: [5, 10, 20], 'aria-label': 'Страницы участников' }}
+              loading={demo.tableLoading}
+              scroll={{ x: 640 }}
+            />
+            <p class="output">Выбрано участников: <strong>{demo.tableSelection.length}</strong>. Выбор сохраняется между страницами.</p>
+          </div>
+        </section>
+
         <section id="modal">
-          <div class="section-heading"><h2>Modal</h2><span class="section-count">07 / 07</span></div>
+          <div class="section-heading"><h2>Modal</h2><span class="section-count">08 / 08</span></div>
           <p class="section-description">Модальное окно с удержанием фокуса и возвратом к кнопке открытия.</p>
           <div class="panel"><div class="row"><Button type="primary" onclick={() => { demo.modalOpen = true; }}>Открыть модальное окно</Button><span class="output">Escape или нажатие на фон закрывают окно.</span></div></div>
           <Modal bind:open={demo.modalOpen} title="Всё готово к работе" onOk={demo.confirmModal}>

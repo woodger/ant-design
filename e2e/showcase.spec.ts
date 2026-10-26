@@ -6,6 +6,7 @@ test('showcase hydrates and updates theme colors and component sizes', async ({ 
   const primary = page.getByRole('button', { name: 'Основная', exact: true });
   const checked = page.locator('#checkbox .ant-checkbox-checked');
   const activePage = page.locator('#pagination .ant-pagination-item-active');
+  const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
   await input.fill('Browser input');
 
   await expect(page.locator('#inputs .output')).toContainText('Browser input');
@@ -13,6 +14,7 @@ test('showcase hydrates and updates theme colors and component sizes', async ({ 
   await expect(input).toHaveCSS('background-color', 'rgb(255, 255, 255)');
   await expect(checked).toHaveCSS('background-color', 'rgb(22, 119, 255)');
   await expect(activePage).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('#table .ant-table')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: testInfo.outputPath('light.png'), fullPage: true });
 
@@ -24,22 +26,52 @@ test('showcase hydrates and updates theme colors and component sizes', async ({ 
 
   await expect(input).toHaveCSS('background-color', 'rgb(20, 20, 20)');
   await expect(activePage).toHaveCSS('background-color', 'rgb(20, 20, 20)');
+  await expect(page.locator('#table .ant-table')).toHaveCSS('background-color', 'rgb(20, 20, 20)');
   await page.screenshot({ path: testInfo.outputPath('dark.png'), fullPage: true });
 
   await page.getByRole('button', { name: 'L', exact: true }).click();
   await expect(input).toHaveCSS('height', '40px');
   await expect(activePage).toHaveCSS('height', '40px');
+  await expect(table.getByRole('columnheader', { name: 'Участник', exact: true })).toHaveCSS('padding-block-start', '16px');
   await page.getByRole('button', { name: 'S', exact: true }).click();
   await expect(input).toHaveCSS('height', '24px');
   await expect(activePage).toHaveCSS('height', '24px');
+  await expect(table.getByRole('columnheader', { name: 'Участник', exact: true })).toHaveCSS('padding-block-start', '8px');
   await page.getByRole('button', { name: 'M', exact: true }).click();
   await expect(input).toHaveCSS('height', '32px');
   await expect(activePage).toHaveCSS('height', '32px');
+  await expect(table.getByRole('columnheader', { name: 'Участник', exact: true })).toHaveCSS('padding-block-start', '12px');
   const normalHeight = (await input.boundingBox())!.height;
   await page.locator('#overview').getByRole('button', { name: 'Обычная', exact: true }).click();
 
   await expect.poll(async () => (await input.boundingBox())!.height).toBeLessThan(normalHeight);
   await expect(activePage).toHaveCSS('height', '28px');
+});
+
+test('showcase keeps table selection between pages and exposes sorting, loading and empty states', async ({ page }) => {
+  await page.goto('/ant-design');
+  const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
+  const pagination = page.getByRole('navigation', { name: 'Страницы участников', exact: true });
+  await table.getByRole('checkbox', { name: 'Выбрать: Анна Иванова', exact: true }).check();
+  await pagination.getByRole('button', { name: 'Страница 2', exact: true }).click();
+  await table.getByRole('checkbox', { name: 'Выбрать: Егор Смирнов', exact: true }).check();
+  await pagination.getByRole('button', { name: 'Страница 1', exact: true }).click();
+
+  await expect(table.getByRole('checkbox', { name: 'Выбрать: Анна Иванова', exact: true })).toBeChecked();
+  await expect(page.locator('#table .output')).toContainText('Выбрано участников: 2.');
+  await table.getByRole('button', { name: 'Задачи', exact: true }).click();
+  await expect(table.locator('tbody tr > td:nth-child(2)').first()).toHaveText('Дарья Орлова');
+  await page.getByRole('checkbox', { name: 'Загрузка таблицы', exact: true }).check();
+
+  await expect(table).toHaveAttribute('aria-busy', 'true');
+  await expect(table.getByRole('button', { name: 'Задачи', exact: true })).toBeDisabled();
+  await page.getByRole('checkbox', { name: 'Загрузка таблицы', exact: true }).uncheck();
+  await page.getByRole('checkbox', { name: 'Пустые данные', exact: true }).check();
+
+  await expect(table.getByRole('cell', { name: 'Нет данных', exact: true })).toBeVisible();
+  await page.getByRole('checkbox', { name: 'Пустые данные', exact: true }).uncheck();
+  await expect(table.locator('tbody tr')).toHaveCount(5);
+  await expect(page.locator('#table .output')).toContainText('Выбрано участников: 2.');
 });
 
 test('showcase updates the select-all checkbox and pagination bindings after hydration', async ({ page }) => {
@@ -123,6 +155,8 @@ test.describe('mobile showcase', () => {
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     const pagination = page.getByRole('navigation', { name: 'Пример пагинации', exact: true });
     await expect(pagination.getByRole('combobox')).toBeVisible();
+    const tableRegion = page.locator('#table').getByRole('region', { name: 'Участники проекта', exact: true });
+    await expect.poll(() => tableRegion.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
     await page.screenshot({ path: testInfo.outputPath('mobile.png'), fullPage: true });
     await pagination.getByRole('combobox').click();
     await pagination.getByRole('option', { name: '20 / стр.', exact: true }).click();
@@ -156,6 +190,9 @@ test.describe('server-rendered showcase', () => {
     await expect(page.getByRole('checkbox', { name: 'Все права', exact: true })).toHaveAttribute('aria-checked', 'mixed');
     await expect(page.getByRole('checkbox', { name: 'Просмотр', exact: true })).toBeChecked();
     await expect(page.getByRole('navigation', { name: 'Пример пагинации', exact: true }).locator('[aria-current="page"]')).toHaveText('1');
+    const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
+    await expect(table.locator('tbody tr')).toHaveCount(5);
+    await expect(table.locator('tbody tr > td:nth-child(2)').first()).toHaveText('Анна Иванова');
     await expect(page.locator('dialog')).not.toBeVisible();
   });
 });
