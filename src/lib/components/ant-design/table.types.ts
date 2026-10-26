@@ -5,6 +5,13 @@ import type { ComponentSize } from './types';
 export type TableKey = string | number;
 export type TableRowKey<Row extends object> = keyof Row | ((record: Row) => TableKey);
 export type TableSortOrder = 'ascend' | 'descend';
+export type TableFilterValue = TableKey | boolean;
+export type TableFilters = Record<string, TableFilterValue[]>;
+
+export interface TableFilterOption {
+  text: string;
+  value: TableFilterValue;
+}
 
 export interface TableSorter {
   columnKey: string;
@@ -17,6 +24,9 @@ export interface TableColumn<Row extends object> {
   dataIndex?: keyof Row;
   render?: Snippet<[record: Row, index: number]>;
   sorter?: (left: Row, right: Row) => number;
+  filters?: readonly TableFilterOption[];
+  onFilter?: (value: TableFilterValue, record: Row) => boolean;
+  filterMultiple?: boolean;
   align?: 'left' | 'center' | 'right';
   width?: number | string;
 }
@@ -28,9 +38,10 @@ export interface TableRowSelection<Row extends object> {
 export type TablePaginationConfig = Pick<PaginationProps, 'showSizeChanger' | 'pageSizeOptions' | 'hideOnSinglePage' | 'showTotal' | 'aria-label'>;
 
 export interface TableChange<Row extends object> {
-  action: 'sort' | 'paginate';
+  action: 'sort' | 'paginate' | 'filter';
   pagination: { current: number; pageSize: number; total: number };
   sorter: TableSorter | null;
+  filters?: TableFilters;
   currentDataSource: Row[];
 }
 
@@ -40,6 +51,8 @@ export interface TableProps<Row extends object> {
   rowKey?: TableRowKey<Row>;
   sorter?: TableSorter | null;
   defaultSorter?: TableSorter | null;
+  filters?: TableFilters;
+  defaultFilters?: Readonly<Record<string, readonly TableFilterValue[]>>;
   current?: number;
   defaultCurrent?: number;
   pageSize?: number;

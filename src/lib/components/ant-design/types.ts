@@ -27,6 +27,9 @@ export interface TableLocale {
   sortAscending: string;
   sortDescending: string;
   cancelSort: string;
+  filterTitle?: string;
+  filterApply?: string;
+  filterReset?: string;
 }
 
 export interface PaginationLocale {
@@ -72,7 +75,10 @@ export const ruRU = {
     selectRow: 'Выбрать строку',
     sortAscending: 'Сортировать по возрастанию',
     sortDescending: 'Сортировать по убыванию',
-    cancelSort: 'Сбросить сортировку'
+    cancelSort: 'Сбросить сортировку',
+    filterTitle: 'Фильтр',
+    filterApply: 'Применить',
+    filterReset: 'Сбросить'
   }
 } satisfies Locale;
 
@@ -102,6 +108,9 @@ export const enUS = {
     selectRow: 'Select row',
     sortAscending: 'Sort ascending',
     sortDescending: 'Sort descending',
-    cancelSort: 'Clear sorting'
+    cancelSort: 'Clear sorting',
+    filterTitle: 'Filter',
+    filterApply: 'Apply',
+    filterReset: 'Reset'
   }
 } satisfies Locale;

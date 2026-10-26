@@ -83,4 +83,18 @@ describe('Table server rendering', () => {
     expect(body).not.toContain('Нет данных');
     expect(body).toMatch(/<button[^>]*disabled/);
   });
+
+  it('filters and sorts before selecting the requested page without emitting callbacks', () => {
+    const filteredColumns = [{ ...columns[1], filters: [{ text: 'At least twenty', value: 20 }], onFilter: (value: string | number | boolean, row: RecordRow) => row.score >= Number(value) }];
+    const { body } = render(Table<RecordRow>, { props: {
+      dataSource, columns: filteredColumns, defaultFilters: { score: [20] }, defaultSorter: { columnKey: 'score', order: 'ascend' }, current: 2, pageSize: 1,
+      onChange: () => { throw new Error('Unexpected filter callback'); }
+    } });
+
+    expect(body.replace(/<!--[\s\S]*?-->/g, '')).toMatch(/<td\b[^>]*>30<\/td>/);
+    expect(body).toContain('ant-table-filter-trigger active');
+    expect(body).toContain('popover="auto"');
+    expect(body).toContain('aria-expanded="false"');
+    expect(body).toContain('aria-label="Фильтр: Score"');
+  });
 });

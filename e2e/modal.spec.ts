@@ -117,7 +117,7 @@ test('Modal releases scrolling when unmounted while open', async ({ page }) => {
 
   await dialog.getByRole('button', { name: 'Unmount modal' }).click();
 
-  await expect(page.locator('dialog')).toHaveCount(0);
+  await expect(page.locator('#modal-fixture dialog')).toHaveCount(0);
   await expect(page.locator('html')).not.toHaveCSS('overflow', 'hidden');
   await page.getByRole('button', { name: 'Open modal', exact: true }).click();
 

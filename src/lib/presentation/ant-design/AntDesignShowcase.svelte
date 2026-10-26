@@ -27,9 +27,9 @@
   ];
   const memberColumns: TableColumn<ShowcaseMember>[] = [
     { key: 'name', title: 'Участник', dataIndex: 'name', width: 220, sorter: (left, right) => left.name.localeCompare(right.name, 'ru') },
-    { key: 'team', title: 'Команда', dataIndex: 'team' },
+    { key: 'team', title: 'Команда', dataIndex: 'team', filters: ['Разработка', 'Дизайн', 'Поддержка'].map((team) => ({ text: team, value: team })), onFilter: (value, member) => member.team === value },
     { key: 'tasks', title: 'Задачи', dataIndex: 'tasks', align: 'right', sorter: (left, right) => left.tasks - right.tasks },
-    { key: 'status', title: 'Статус', render: memberStatus }
+    { key: 'status', title: 'Статус', render: memberStatus, filterMultiple: false, filters: [{ text: 'Активен', value: true }, { text: 'Приостановлен', value: false }], onFilter: (value, member) => member.active === value }
   ];
   const buttonExample = `<script lang="ts">\n  import { Button, ConfigProvider } from '$lib/components/ant-design';\n${'</'}script>\n\n<ConfigProvider>\n  <Button type="primary" onclick={() => console.log('click')}>\n    Сохранить\n  </Button>\n</ConfigProvider>`;
 </script>
@@ -238,7 +238,7 @@
 
         <section id="table">
           <div class="section-heading"><h2>Table</h2><span class="section-count">07 / 08</span></div>
-          <p class="section-description">Сортировка, выбор строк и пагинация. Нажмите на заголовок колонки, чтобы изменить порядок.</p>
+          <p class="section-description">Фильтры, сортировка, выбор строк и пагинация. Откройте фильтр команды или статуса, выберите значения и нажмите «Применить».</p>
           <div class="panel">
             <div class="row table-controls"><Checkbox bind:checked={demo.tableLoading}>Загрузка таблицы</Checkbox><Checkbox bind:checked={demo.tableEmpty}>Пустые данные</Checkbox></div>
             <Table
@@ -248,6 +248,7 @@
               bind:current={demo.tablePage}
               bind:pageSize={demo.tablePageSize}
               bind:sorter={demo.tableSorter}
+              bind:filters={demo.tableFilters}
               bind:selectedRowKeys={demo.tableSelection}
               rowSelection={{ getCheckboxProps: (member) => ({ disabled: !member.active, 'aria-label': `Выбрать: ${member.name}` }) }}
               pagination={{ showSizeChanger: true, pageSizeOptions: [5, 10, 20], 'aria-label': 'Страницы участников' }}

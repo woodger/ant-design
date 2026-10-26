@@ -173,6 +173,7 @@
   --ant-table-header-split-color: var(--ant-color-border-secondary);
   --ant-table-header-icon-color: var(--ant-color-text-tertiary);
   --ant-table-header-icon-hover-color: var(--ant-color-text-secondary);
+  --ant-table-header-filter-hover-bg: var(--ant-color-fill-tertiary);
   --ant-table-cell-font-size: var(--ant-font-size);
   --ant-table-cell-font-size-md: var(--ant-font-size);
   --ant-table-cell-font-size-sm: var(--ant-font-size);

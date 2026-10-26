@@ -1,4 +1,4 @@
-import { createForm, type ComponentSize, type TableKey, type TableSorter, type ThemeConfig } from '$lib/components/ant-design';
+import { createForm, type ComponentSize, type TableFilters, type TableKey, type TableSorter, type ThemeConfig } from '$lib/components/ant-design';
 
 export interface ShowcaseMember {
   key: number;
@@ -24,6 +24,7 @@ export function createShowcase() {
   let tablePage = $state(1);
   let tablePageSize = $state(5);
   let tableSorter = $state<TableSorter | null>(null);
+  let tableFilters = $state<TableFilters>({});
   let tableSelection = $state<TableKey[]>([]);
   let tableLoading = $state(false);
   let tableEmpty = $state(false);
@@ -95,6 +96,8 @@ export function createShowcase() {
     set tablePageSize(value: number) { tablePageSize = value; },
     get tableSorter() { return tableSorter; },
     set tableSorter(value: TableSorter | null) { tableSorter = value; },
+    get tableFilters() { return tableFilters; },
+    set tableFilters(value: TableFilters) { tableFilters = value; },
     get tableSelection() { return tableSelection; },
     set tableSelection(value: TableKey[]) { tableSelection = value; },
     get tableLoading() { return tableLoading; },

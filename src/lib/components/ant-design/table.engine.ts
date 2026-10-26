@@ -1,4 +1,4 @@
-import type { TableColumn, TableKey, TableRowKey, TableSorter } from './table.types';
+import type { TableColumn, TableFilters, TableFilterValue, TableKey, TableRowKey, TableSorter } from './table.types';
 
 export interface TableRow<Row extends object> {
   key: TableKey;
@@ -10,8 +10,9 @@ export function getTableData<Row extends object>(
   dataSource: readonly Row[],
   columns: readonly TableColumn<Row>[],
   rowKey?: TableRowKey<Row>,
-  sorter?: TableSorter | null
-): { rows: TableRow<Row>[]; sorter: TableSorter | null } {
+  sorter?: TableSorter | null,
+  filters?: Readonly<Record<string, readonly TableFilterValue[]>>
+): { rows: TableRow<Row>[]; allRows: TableRow<Row>[]; sorter: TableSorter | null; filters: TableFilters } {
   if (!columns.length) {
     throw new Error('Table requires at least one column');
   }
@@ -27,7 +28,7 @@ export function getTableData<Row extends object>(
   }
 
   const keys = new Set<TableKey>();
-  const rows = dataSource.map((record, sourceIndex) => {
+  const allRows = dataSource.map((record, sourceIndex) => {
     const key: unknown = typeof rowKey === 'function' ? rowKey(record) : Reflect.get(record, rowKey ?? 'key');
 
     if (typeof key !== 'string' && (typeof key !== 'number' || !Number.isFinite(key))) {
@@ -42,17 +43,56 @@ export function getTableData<Row extends object>(
 
     return { key, record, sourceIndex };
   });
+  const activeFilters = getTableFilters(columns, filters);
+  const filteredColumns = columns.filter((item) => Object.hasOwn(activeFilters, item.key));
+  const rows = allRows.filter((row) => filteredColumns.every((item) => activeFilters[item.key].some((value) => item.onFilter?.(value, row.record))));
   const column = columns.find((item) => item.key === sorter?.columnKey && item.sorter);
 
   if (!column?.sorter || !sorter || (sorter.order !== 'ascend' && sorter.order !== 'descend')) {
-    return { rows, sorter: null };
+    return { rows, allRows, sorter: null, filters: activeFilters };
   }
 
   const compare = column.sorter;
   const direction = sorter.order === 'ascend' ? 1 : -1;
   rows.sort((left, right) => (compare(left.record, right.record) * direction || left.sourceIndex - right.sourceIndex));
 
-  return { rows, sorter: { columnKey: column.key, order: sorter.order } };
+  return { rows, allRows, sorter: { columnKey: column.key, order: sorter.order }, filters: activeFilters };
+}
+
+export function getTableFilters<Row extends object>(columns: readonly TableColumn<Row>[], filters: Readonly<Record<string, readonly TableFilterValue[]>> = {}): TableFilters {
+  const entries: [string, TableFilterValue[]][] = [];
+
+  for (const column of columns) {
+    if (!column.filters?.length || !column.onFilter) {
+      continue;
+    }
+
+    const available = new Set(column.filters.map((option) => option.value));
+    const configured = Object.hasOwn(filters, column.key) ? filters[column.key] : [];
+    const selected = [...new Set(configured ?? [])].filter((value) => available.has(value));
+    const values = column.filterMultiple === false ? selected.slice(0, 1) : selected;
+
+    if (values.length) {
+      entries.push([column.key, values]);
+    }
+  }
+
+  return Object.fromEntries(entries);
+}
+
+export function areTableFiltersEqual(left: TableFilters, right: TableFilters): boolean {
+  const keys = Object.keys(left);
+
+  return keys.length === Object.keys(right).length && keys.every((key) => {
+    if (!Object.hasOwn(right, key)) {
+      return false;
+    }
+
+    const first = new Set(left[key]);
+    const second = new Set(right[key]);
+
+    return first.size === second.size && [...first].every((value) => second.has(value));
+  });
 }
 
 export function getNextTableSorter(columnKey: string, sorter: TableSorter | null): TableSorter | null {

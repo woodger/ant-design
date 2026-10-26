@@ -74,6 +74,33 @@ test('showcase keeps table selection between pages and exposes sorting, loading 
   await expect(page.locator('#table .output')).toContainText('Выбрано участников: 2.');
 });
 
+test('showcase applies combined filters, shows empty results and restores data after reset', async ({ page }) => {
+  await page.goto('/ant-design');
+  const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
+  await table.getByRole('button', { name: 'Фильтр: Команда', exact: true }).click();
+  const teams = page.getByRole('dialog', { name: 'Фильтр: Команда', exact: true });
+  await teams.getByRole('checkbox', { name: 'Поддержка', exact: true }).check();
+  await teams.getByRole('button', { name: 'Применить', exact: true }).click();
+
+  await expect(table.locator('tbody tr > td:nth-child(2)')).toHaveText(['Глеб Волков', 'Жанна Белова', 'Лев Попов']);
+  await table.getByRole('button', { name: 'Фильтр: Статус', exact: true }).click();
+  const status = page.getByRole('dialog', { name: 'Фильтр: Статус', exact: true });
+  await status.getByRole('radio', { name: 'Приостановлен', exact: true }).check();
+  await status.getByRole('button', { name: 'Применить', exact: true }).click();
+
+  await expect(table.getByRole('cell', { name: 'Нет данных', exact: true })).toBeVisible();
+  await expect(table.getByRole('checkbox', { name: 'Выбрать все строки на странице', exact: true })).toBeDisabled();
+  await table.getByRole('button', { name: 'Фильтр: Статус', exact: true }).click();
+  await status.getByRole('button', { name: 'Сбросить', exact: true }).click();
+  await status.getByRole('button', { name: 'Применить', exact: true }).click();
+  await expect(table.locator('tbody tr')).toHaveCount(3);
+  await table.getByRole('button', { name: 'Фильтр: Команда', exact: true }).click();
+  await teams.getByRole('button', { name: 'Сбросить', exact: true }).click();
+  await teams.getByRole('button', { name: 'Применить', exact: true }).click();
+
+  await expect(table.locator('tbody tr > td:nth-child(2)')).toHaveText(['Анна Иванова', 'Борис Соколов', 'Вера Петрова', 'Глеб Волков', 'Дарья Орлова']);
+});
+
 test('showcase updates the select-all checkbox and pagination bindings after hydration', async ({ page }) => {
   await page.goto('/ant-design');
   const all = page.getByRole('checkbox', { name: 'Все права', exact: true });

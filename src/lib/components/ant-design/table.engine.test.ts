@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { changeTableSelection, getNextTableSorter, getTableData, getTableSelection } from './table.engine';
+import { areTableFiltersEqual, changeTableSelection, getNextTableSorter, getTableData, getTableFilters, getTableSelection } from './table.engine';
 import type { TableColumn } from './table.types';
 
 interface RecordRow { id: number; name: string; score: number }
@@ -65,7 +65,7 @@ describe('getTableData', () => {
   });
 
   it('accepts an empty collection with declared columns', () => {
-    expect(getTableData([], columns, 'id')).toEqual({ rows: [], sorter: null });
+    expect(getTableData([], columns, 'id')).toEqual({ rows: [], allRows: [], sorter: null, filters: {} });
   });
 
   it('rejects missing or non-finite keys instead of assigning positional identities', () => {
@@ -83,6 +83,85 @@ describe('getTableData', () => {
   it('requires a nonempty set of uniquely keyed columns', () => {
     expect(() => getTableData(records, [], 'id')).toThrow('Table requires at least one column');
     expect(() => getTableData(records, [columns[0], columns[0]], 'id')).toThrow('Table column key "name" is not unique');
+  });
+});
+
+describe('Table filtering', () => {
+  const filterColumns: TableColumn<RecordRow>[] = [
+    { ...columns[0], filters: [{ text: 'Anna', value: 'Anna' }, { text: 'Clara', value: 'Clara' }], onFilter: (value, row) => row.name === value },
+    { ...columns[1], filters: [{ text: 'Ten', value: 10 }, { text: 'Thirty', value: 30 }], onFilter: (value, row) => row.score === value }
+  ];
+
+  it('combines values with OR within a column and columns with AND', () => {
+    const result = getTableData(records, filterColumns, 'id', null, { name: ['Anna', 'Clara'], score: [30] });
+
+    expect(result.rows.map((row) => row.key)).toEqual([0, 2]);
+    expect(result.filters).toEqual({ name: ['Anna', 'Clara'], score: [30] });
+  });
+
+  it('filters before sorting and keeps the full source available for hidden selections', () => {
+    const compared: number[] = [];
+    const configured = [{ ...filterColumns[1], sorter: (left: RecordRow, right: RecordRow) => { compared.push(left.score, right.score); return left.score - right.score; } }];
+    const result = getTableData(records, configured, 'id', { columnKey: 'score', order: 'descend' }, { score: [10, 30] });
+
+    expect(result.rows.map((row) => row.key)).toEqual([0, 2, 1]);
+    expect(result.allRows.map((row) => row.key)).toEqual([0, 1, 2, 3]);
+    expect(compared).not.toContain(20);
+    expect(records.map((row) => row.id)).toEqual([0, 1, 2, 3]);
+  });
+
+  it('returns an empty collection when no record matches all columns', () => {
+    const result = getTableData(records, filterColumns, 'id', null, { name: ['Anna'], score: [10] });
+
+    expect(result.rows).toEqual([]);
+    expect(result.allRows).toHaveLength(4);
+  });
+
+  it('ignores removed columns and unavailable values without mutating owner filters', () => {
+    const filters = Object.freeze({ name: Object.freeze(['Anna', 'missing']), removed: Object.freeze([0]) });
+
+    expect(getTableFilters(filterColumns, filters)).toEqual({ name: ['Anna'] });
+    expect(getTableFilters(filterColumns.slice(1), filters)).toEqual({});
+    expect(filters).toEqual({ name: ['Anna', 'missing'], removed: [0] });
+  });
+
+  it('deduplicates selections and keeps only the first valid value in single mode', () => {
+    expect(getTableFilters(filterColumns, { name: ['Anna', 'Anna', 'Clara'] })).toEqual({ name: ['Anna', 'Clara'] });
+    expect(getTableFilters([{ ...filterColumns[0], filterMultiple: false }], { name: ['missing', 'Clara', 'Anna'] })).toEqual({ name: ['Clara'] });
+  });
+
+  it('preserves false and numeric zero and distinguishes numeric and string options', () => {
+    const configured: TableColumn<{ key: number; value: string | number | boolean }>[] = [
+      { key: 'value', title: 'Value', filters: [{ text: 'False', value: false }, { text: 'Zero', value: 0 }, { text: 'Text zero', value: '0' }], onFilter: (value, row) => row.value === value }
+    ];
+    const values = [{ key: 1, value: false }, { key: 2, value: 0 }, { key: 3, value: '0' }];
+
+    expect(getTableData(values, configured, undefined, null, { value: [false, 0] }).rows.map((row) => row.key)).toEqual([1, 2]);
+    expect(getTableFilters(configured, { value: ['0'] })).toEqual({ value: ['0'] });
+  });
+
+  it('ignores empty selections and columns without both options and a predicate', () => {
+    expect(getTableFilters(filterColumns, { name: [], score: [] })).toEqual({});
+    expect(getTableFilters([{ ...filterColumns[0], onFilter: undefined }], { name: ['Anna'] })).toEqual({});
+    expect(getTableFilters([{ ...filterColumns[0], filters: [] }], { name: ['Anna'] })).toEqual({});
+  });
+
+  it('supports column keys matching Object prototype names', () => {
+    const configured = [{ ...filterColumns[0], key: 'constructor' }, { ...filterColumns[1], key: '__proto__' }];
+    const filters = Object.fromEntries([['constructor', ['Anna']], ['__proto__', [30]]]);
+    const result = getTableData(records, configured, 'id', null, filters);
+
+    expect(result.rows.map((row) => row.key)).toEqual([0]);
+    expect(Object.keys(result.filters)).toEqual(['constructor', '__proto__']);
+    expect(getTableData(records, configured, 'id').rows).toHaveLength(4);
+    expect(areTableFiltersEqual(result.filters, {})).toBe(false);
+  });
+
+  it('compares normalized filters without depending on option or column order', () => {
+    expect(areTableFiltersEqual({ name: ['Anna', 'Clara'], score: [30] }, { score: [30], name: ['Clara', 'Anna'] })).toBe(true);
+    expect(areTableFiltersEqual({ score: [0] }, { score: ['0'] })).toBe(false);
+    expect(areTableFiltersEqual({ score: [30] }, {})).toBe(false);
+    expect(areTableFiltersEqual({}, {})).toBe(true);
   });
 });
 
