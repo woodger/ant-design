@@ -1,0 +1,36 @@
+{
+	"name": "sveltekit-starter",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"lint": "oxlint src",
+		"test": "vitest run",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-node": "^5.5.4",
+		"@sveltejs/kit": "^2.69.1",
+		"@sveltejs/vite-plugin-svelte": "^6.2.4",
+		"@types/node": "^25.9.9",
+		"@typescript/native": "npm:typescript@^7.0.2",
+		"oxlint": "1.86.0",
+		"svelte": "^5.57.1",
+		"svelte-check": "^4.7.6",
+		"typescript": "~6.0.3",
+		"vite": "^7.3.6",
+		"vitest": "^4.1.11"
+	},
+	"overrides": {
+		"devalue": "^5.9.1",
+		"@sveltejs/kit": {
+			"cookie": "^0.7.2"
+		},
+		"vitest": {
+			"vite": "^7.3.6"
+		},
+		"postcss": "^8.5.18"
+	}
+}
