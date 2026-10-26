@@ -32,7 +32,13 @@
     get componentDisabled() { return componentDisabled ?? parent.componentDisabled; },
     get direction() { return direction ?? parent.direction; },
     get theme() { return { ...parent.theme, ...theme }; },
-    get locale() { return { ...parent.locale, ...locale }; }
+    get locale() {
+      return {
+        ...parent.locale,
+        ...locale,
+        pagination: { ...parent.locale.pagination, ...locale?.pagination }
+      };
+    }
   };
 
   provideConfig(config);

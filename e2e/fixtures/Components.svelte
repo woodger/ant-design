@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button, ConfigProvider, Form, FormItem, Input, Modal, Select, enUS } from '../../src/lib/components/ant-design';
   import { createControls } from './controls.model.svelte';
+  import CheckboxPagination from './CheckboxPagination.svelte';
 
   const controls = createControls();
   const options = [
@@ -64,6 +65,8 @@
       <output aria-label="Numeric value">{controls.numeric === undefined ? 'undefined' : `${typeof controls.numeric}:${controls.numeric}`}</output>
       <output aria-label="FormData value">{controls.nativeValue}</output>
     </section>
+
+    <CheckboxPagination />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

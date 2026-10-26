@@ -10,6 +10,14 @@ export function createShowcase() {
   let modalOpen = $state(false);
   let action = $state('Попробуйте компоненты — результат появится здесь.');
   let formResult = $state('');
+  let permissions = $state(['read']);
+  let page = $state(1);
+  let pageSize = $state(10);
+  const permissionOptions = [
+    { value: 'read', label: 'Просмотр' },
+    { value: 'edit', label: 'Редактирование' },
+    { value: 'export', label: 'Экспорт' }
+  ];
 
   const form = createForm({
     initialValues: { name: '', email: '', role: 'developer', password: '', confirmPassword: '' },
@@ -40,6 +48,18 @@ export function createShowcase() {
     set modalOpen(value: boolean) { modalOpen = value; },
     get action() { return action; },
     get formResult() { return formResult; },
+    permissionOptions,
+    get permissions() { return permissions; },
+    get allPermissions() { return permissions.length === permissionOptions.length; },
+    get somePermissions() { return permissions.length > 0 && permissions.length < permissionOptions.length; },
+    selectAllPermissions(checked: boolean) { permissions = checked ? permissionOptions.map((option) => option.value) : []; },
+    setPermission(value: string, checked: boolean) {
+      permissions = checked ? [...permissions, value] : permissions.filter((item) => item !== value);
+    },
+    get page() { return page; },
+    set page(value: number) { page = value; },
+    get pageSize() { return pageSize; },
+    set pageSize(value: number) { pageSize = value; },
     toggleTheme() { mode = mode === 'light' ? 'dark' : 'light'; },
     setPrimary(value: 'blue' | 'purple' | 'green') { primary = value; },
     toggleCompact() { compact = !compact; },

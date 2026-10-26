@@ -5,6 +5,8 @@ import AntDesignShowcase from '$lib/presentation/ant-design/AntDesignShowcase.sv
 import Input from './Input.svelte';
 import Select from './Select.svelte';
 import Modal from './Modal.svelte';
+import Checkbox from './Checkbox.svelte';
+import Pagination from './Pagination.svelte';
 
 describe('Ant Design server rendering', () => {
   it('renders the live showcase with labelled fields and a hidden modal without browser APIs', () => {
@@ -45,5 +47,37 @@ describe('Ant Design server rendering', () => {
 
     expect(body).toContain('Details');
     expect(body).not.toMatch(/<dialog[^>]*\sopen(?:[\s=>])/);
+  });
+
+  it('renders a mixed checkbox with its native form attributes before hydration', () => {
+    const { body } = render(Checkbox, { props: { checked: true, indeterminate: true, name: 'choice', value: 'yes', 'aria-label': 'Choice' } });
+
+    expect(body).toContain('type="checkbox"');
+    expect(body).toContain('aria-checked="mixed"');
+    expect(body).toMatch(/<input[^>]*\schecked(?:[\s=>])/);
+    expect(body).toContain('name="choice"');
+    expect(body).toContain('value="yes"');
+  });
+
+  it('renders an uncontrolled checked and disabled checkbox without browser APIs', () => {
+    const { body } = render(Checkbox, { props: { defaultChecked: true, disabled: true, 'aria-label': 'Disabled choice' } });
+
+    expect(body).toMatch(/<input[^>]*\schecked(?:[\s=>])/);
+    expect(body).toMatch(/<input[^>]*\sdisabled(?:[\s=>])/);
+  });
+
+  it('renders a clamped pagination page without emitting user callbacks', () => {
+    const events: number[] = [];
+    const { body } = render(Pagination, { props: { total: 15, current: 99, onChange: (page) => events.push(page) } });
+
+    expect(body).toMatch(/<button[^>]*aria-label="Страница 2"[^>]*aria-current="page"/);
+    expect(body).toContain('aria-label="Пагинация"');
+    expect(events).toEqual([]);
+  });
+
+  it('can hide pagination for an empty collection', () => {
+    const { body } = render(Pagination, { props: { total: 0, hideOnSinglePage: true } });
+
+    expect(body).not.toContain('<nav');
   });
 });

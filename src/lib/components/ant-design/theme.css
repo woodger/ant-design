@@ -146,6 +146,20 @@
   --ant-form-label-height: var(--ant-control-height);
 }
 
+.ant-pagination {
+  --ant-pagination-item-bg: var(--ant-color-bg-container);
+  --ant-pagination-item-active-bg: var(--ant-color-bg-container);
+  --ant-pagination-item-active-color: var(--ant-color-primary);
+  --ant-pagination-item-active-color-hover: var(--ant-color-primary-hover);
+  --ant-pagination-item-link-bg: var(--ant-color-bg-container);
+  --ant-pagination-item-input-bg: var(--ant-color-bg-container);
+  --ant-pagination-item-active-color-disabled: var(--ant-color-text-disabled);
+  --ant-pagination-item-active-bg-disabled: var(--ant-color-fill);
+  --ant-pagination-item-size: var(--ant-control-height);
+  --ant-pagination-item-size-sm: var(--ant-control-height-sm);
+  --ant-pagination-item-size-lg: var(--ant-control-height-lg);
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);

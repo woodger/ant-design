@@ -3,7 +3,8 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, Select, Modal, Form и FormItem.
+Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, Pagination,
+Modal, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -66,6 +67,8 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Button | Default, primary, dashed, text, link; loading, danger, block, shape; snippets для содержимого и иконки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | Select | Один строковый или числовой value; options, поиск, очистка, disabled options, клавиатура и значение для FormData |
+| Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
+| Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
@@ -80,6 +83,82 @@ Button `type` задаёт оформление, `htmlType` задаёт нат�
 умолчанию равен `button`. Вариант `link` остаётся кнопкой действия; для навигации
 используйте нативную ссылку. Кнопка loading недоступна для повторного нажатия.
 
+## Checkbox
+
+```svelte
+<script lang="ts">
+  import { Checkbox } from '$lib/components/ant-design';
+
+  let checked = $state(false);
+  let indeterminate = $state(true);
+</script>
+
+<Checkbox bind:checked bind:indeterminate name="notifications" value="enabled">
+  Получать уведомления
+</Checkbox>
+```
+
+`checked` поддерживает привязку и callback `onCheckedChange(checked)`.
+Для отдельного control можно задать `defaultChecked`; с привязкой задавайте
+начальное значение у владельца. Нативный reset формы возвращает `defaultChecked`
+и обновляет привязку. Сброс и внешние обновления props не вызывают
+`onCheckedChange`; нативный `onchange` также доступен.
+
+`indeterminate` задаёт смешанное состояние, поддерживает привязку и сбрасывается
+при пользовательском переключении. Оно не меняет `checked` и значение FormData.
+Отмеченный checkbox передаёт `name=value` (по умолчанию value равен `on`),
+неотмеченный или disabled checkbox не включается в FormData.
+
+В FormItem передавайте `checked={form.values.accepted}` и
+`onCheckedChange={(value) => form.setFieldValue('accepted', value)}`. Для модели
+с boolean задайте тип явно: `createForm<{ accepted: boolean }>(...)`.
+Чтобы требовать именно `true`, используйте
+`validator: (value) => value === true ? undefined : 'Подтвердите согласие.'`.
+Встроенное правило `required` проверяет наличие значения, и `false` считается
+заданным значением. `form.resetFields()` возвращает значение из `initialValues`.
+
+## Pagination
+
+```svelte
+<script lang="ts">
+  import { Pagination } from '$lib/components/ant-design';
+
+  let current = $state(1);
+  let pageSize = $state(10);
+</script>
+
+<Pagination total={137} bind:current bind:pageSize>
+  {#snippet showTotal(total, range)}{range[0]}–{range[1]} из {total}{/snippet}
+</Pagination>
+```
+
+`total` по умолчанию равен 0. `current` и `pageSize` поддерживают привязку;
+для отдельных controls доступны `defaultCurrent=1` и `defaultPageSize=10`.
+Начальные значения читаются один раз. При привязке задавайте их у владельца.
+
+Переход вызывает `onChange(page, pageSize)`. Повторное нажатие текущей страницы
+не вызывает событие. Смена размера сначала вызывает
+`onShowSizeChange(previousCurrent, pageSize)`, затем
+`onChange(clampedCurrent, pageSize)`, сохраняя номер страницы в допустимых пределах.
+Callback получает номера с учётом отображаемого диапазона.
+
+Отображаемая страница ограничена диапазоном `1…ceil(total / pageSize)`.
+Изменение props, включая уменьшение `total`, само не записывает исправленное
+значение владельцу и не вызывает callbacks. Для пустой коллекции отображается
+страница 1 и диапазон `[0, 0]`; `hideOnSinglePage` скрывает навигацию.
+Дробные значения округляются вниз, total ограничен снизу нулём, current и
+pageSize — единицей, все значения — сверху `Number.MAX_SAFE_INTEGER`.
+Для NaN и бесконечных значений используются defaults 0, 1 и 10.
+Список номеров и переходов содержит не более девяти элементов независимо от total.
+
+Выбор размера автоматически показывается при `total > 50`; это меняется через
+`showSizeChanger`. `pageSizeOptions` по умолчанию равен `[10, 20, 50, 100]`.
+Допустимы положительные целые безопасные числа; дубликаты удаляются, варианты
+сортируются, текущий размер добавляется в список. `showTotal` получает
+нормализованный total и диапазон записей с нумерацией от 1.
+На узком экране элементы переносятся на следующую строку, а выбор размера
+остаётся доступным.
+
 ## Темы и локализация
 
 ConfigProvider принимает `theme={{ mode, primary, compact }}`, где `mode` равен
@@ -93,8 +172,9 @@ ConfigProvider принимает `theme={{ mode, primary, compact }}`, где `
 ConfigProvider пока не перенесены.
 
 По умолчанию используется `ruRU`; `enUS` также экспортируется. `locale` принимает
-частичное переопределение подписей кнопок и служебных сообщений. Тексты правил
-валидации задаются в `message` или возвращаются из validator.
+частичное переопределение подписей кнопок и служебных сообщений. Вложенная группа
+`locale.pagination` также объединяется с настройками родителя по отдельным
+подписям. Тексты правил валидации задаются в `message` или возвращаются из validator.
 
 ## Формы и валидация
 
@@ -163,6 +243,15 @@ FormValidationError. Ошибка содержит `errors`, `values` и `outOfD
 
 ## Клавиатура и фокус
 
+Checkbox использует нативный input: нажатие подписи и Space переключают его,
+смешанное состояние доступно через `aria-checked="mixed"`. FormItem передаёт
+id, name, required, ошибки и описание самому input.
+
+Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
+Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
+пропускаются. При исчезновении сфокусированной кнопки перехода фокус возвращается
+текущей странице. Имя навигации можно задать через `aria-label`.
+
 Select предоставляет combobox/listbox. Стрелки перемещают активный пункт,
 пропуская disabled options; Home/End выбирают начало и конец открытого списка,
 Enter подтверждает, Escape закрывает, Tab продолжает обычную навигацию.
@@ -181,7 +270,8 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 
 ## Проверки и границы версии
 
-Тесты рядом с модулем проверяют выбор и поиск, правила валидации, конкурирующие
+Тесты рядом с модулем проверяют выбор и поиск, расчёт страниц и диапазонов,
+правила валидации, конкурирующие
 проверки, повторную отправку, сброс, изоляцию состояния и SSR реальных
 компонентов. Из корня репозитория выполняются `npm run lint`,
 `npm exec -- svelte-kit sync`,
@@ -193,7 +283,9 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 `npm exec -- playwright install chromium`. Типы тестов и стенда проверяются
 отдельно через `npm exec -- svelte-check --tsconfig ./e2e/tsconfig.json --tsgo`.
 
-Браузерные тесты проверяют внешние изменения значений, клавиатуру Select,
+Браузерные тесты проверяют внешние изменения значений, смешанное состояние и
+нативный reset Checkbox, boolean-поля Form, переходы и смену размера Pagination,
+клавиатуру Select,
 очистку и числовой ноль, фокус и закрытие Modal, async validation, повторную
 отправку, ошибки и reset Form, оба layout, темы, размеры, RTL, локаль, мобильный
 viewport, SSR и гидратацию. Галерея проверяется на свежей production-сборке.
@@ -201,7 +293,8 @@ Console warnings/errors и необработанные ошибки брауз�
 Снимки светлой, тёмной и мобильной страницы сохраняются для визуального
 просмотра; автоматического сравнения с эталонными изображениями пока нет.
 
-Эта версия покрывает перечисленное ядро. Table, DatePicker/RangePicker,
+Эта версия покрывает перечисленное ядро. Checkbox.Group, simple/quick jumper
+и произвольный itemRender Pagination, Table, DatePicker/RangePicker,
 Tree/TreeSelect, Upload, множественный Select, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.
@@ -211,7 +304,8 @@ Tree/TreeSelect, Upload, множественный Select, Form.List, влож�
 Стили взяты из `dist/antd.css` официального
 [пакета antd 6.6.8](https://registry.npmjs.org/antd/-/antd-6.6.8.tgz).
 В [vendor/antd.css](./vendor/antd.css) оставлены правила Button, Input, Select,
-Modal, Form и связанные animations; глобальные токены сохранены. Селекторы
+Checkbox, Pagination, Modal, Form и связанные animations; глобальные токены
+сохранены. Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.
 

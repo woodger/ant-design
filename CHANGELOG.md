@@ -9,6 +9,9 @@
 
 ### Added
 
+- Checkbox и Pagination на Svelte 5: смешанное состояние, boolean-поля Form,
+  нативный reset и FormData; переходы по страницам, выбор размера, диапазоны,
+  локаль и RTL. Официальные стили 6.6.8, примеры и unit/SSR/Chromium-проверки.
 - Отдельный Playwright Chromium contour: `npm run test:e2e`, изолированный стенд
   компонентов, проверки production-галереи, отчёт и диагностические артефакты.
 - Первый набор Ant Design 6.6.8 на Svelte 5 и TypeScript: ConfigProvider, Button,

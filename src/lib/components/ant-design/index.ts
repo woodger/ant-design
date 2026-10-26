@@ -1,6 +1,8 @@
 export { default as ConfigProvider } from './ConfigProvider.svelte';
 export { default as Button } from './Button.svelte';
 export { default as Input } from './Input.svelte';
+export { default as Checkbox } from './Checkbox.svelte';
+export { default as Pagination } from './Pagination.svelte';
 export { default as Select } from './Select.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as Form } from './Form.svelte';
@@ -9,10 +11,12 @@ export { createForm, type FormInstance, type SubmissionResult } from './form.mod
 export { FormValidationError } from './FormValidationError';
 export type { ButtonProps } from './Button.svelte';
 export type { InputProps } from './Input.svelte';
+export type { CheckboxProps } from './Checkbox.svelte';
+export type { PaginationProps } from './Pagination.svelte';
 export type { SelectProps } from './select.types';
 export type { FormProps } from './form.types';
 export type { ModalProps } from './Modal.svelte';
 export type { ConfigProviderProps } from './ConfigProvider.svelte';
 export type { FormItemProps } from './FormItem.svelte';
 export type { ValidationRule, FormRules, FieldErrors, FormValue, FormValues } from './validation.engine';
-export { ruRU, enUS, type Locale, type ComponentSize, type ThemeConfig, type SelectOption } from './types';
+export { ruRU, enUS, type Locale, type PaginationLocale, type ComponentSize, type ThemeConfig, type SelectOption } from './types';

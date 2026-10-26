@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, ConfigProvider, Form, FormItem, Input, Modal, Select } from '$lib/components/ant-design';
+  import { Button, Checkbox, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select } from '$lib/components/ant-design';
   import { createShowcase } from './showcase.model.svelte';
 
   const demo = createShowcase();
@@ -8,7 +8,9 @@
     ['buttons', 'Button'],
     ['inputs', 'Input'],
     ['select', 'Select'],
+    ['checkbox', 'Checkbox'],
     ['form', 'Form'],
+    ['pagination', 'Pagination'],
     ['modal', 'Modal']
   ];
   const frameworks = [
@@ -110,7 +112,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">7 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">9 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -128,7 +130,7 @@
         </section>
 
         <section id="buttons">
-          <div class="section-heading"><h2>Button</h2><span class="section-count">01 / 05</span></div>
+          <div class="section-heading"><h2>Button</h2><span class="section-count">01 / 07</span></div>
           <p class="section-description">Действия, варианты оформления и состояния кнопок.</p>
           <div class="panel with-code">
             <p class="example-label">Варианты</p>
@@ -147,7 +149,7 @@
         </section>
 
         <section id="inputs">
-          <div class="section-heading"><h2>Input</h2><span class="section-count">02 / 05</span></div>
+          <div class="section-heading"><h2>Input</h2><span class="section-count">02 / 07</span></div>
           <p class="section-description">Нативные поля ввода с двусторонней привязкой значения.</p>
           <div class="panel">
             <div class="input-grid">
@@ -161,7 +163,7 @@
         </section>
 
         <section id="select">
-          <div class="section-heading"><h2>Select</h2><span class="section-count">03 / 05</span></div>
+          <div class="section-heading"><h2>Select</h2><span class="section-count">03 / 07</span></div>
           <p class="section-description">Выбор с поиском, очисткой и управлением с клавиатуры.</p>
           <div class="panel">
             <div class="input-grid">
@@ -172,8 +174,24 @@
           </div>
         </section>
 
+        <section id="checkbox">
+          <div class="section-heading"><h2>Checkbox</h2><span class="section-count">04 / 07</span></div>
+          <p class="section-description">Выбор нескольких прав и смешанное состояние «выбрать всё».</p>
+          <div class="panel">
+            <Checkbox checked={demo.allPermissions} indeterminate={demo.somePermissions} onCheckedChange={demo.selectAllPermissions}>Все права</Checkbox>
+            <hr class="example-divider" />
+            <div class="row">
+              {#each demo.permissionOptions as option (option.value)}
+                <Checkbox checked={demo.permissions.includes(option.value)} onCheckedChange={(checked) => demo.setPermission(option.value, checked)}>{option.label}</Checkbox>
+              {/each}
+              <Checkbox disabled>Недоступное право</Checkbox>
+            </div>
+            <p class="output">Выбрано прав: <strong>{demo.permissions.length}</strong> из {demo.permissionOptions.length}.</p>
+          </div>
+        </section>
+
         <section id="form">
-          <div class="section-heading"><h2>Form</h2><span class="section-count">04 / 05</span></div>
+          <div class="section-heading"><h2>Form</h2><span class="section-count">05 / 07</span></div>
           <p class="section-description">Типизированная модель формы, валидация и зависимые поля.</p>
           <div class="form-grid">
             <div class="panel">
@@ -195,8 +213,19 @@
           </div>
         </section>
 
+        <section id="pagination">
+          <div class="section-heading"><h2>Pagination</h2><span class="section-count">06 / 07</span></div>
+          <p class="section-description">Переходы по страницам и выбор количества записей.</p>
+          <div class="panel">
+            <Pagination total={137} bind:current={demo.page} bind:pageSize={demo.pageSize} aria-label="Пример пагинации">
+              {#snippet showTotal(total, range)}{range[0]}–{range[1]} из {total}{/snippet}
+            </Pagination>
+            <p class="output">Страница: <strong>{demo.page}</strong>. Записей на странице: <strong>{demo.pageSize}</strong>.</p>
+          </div>
+        </section>
+
         <section id="modal">
-          <div class="section-heading"><h2>Modal</h2><span class="section-count">05 / 05</span></div>
+          <div class="section-heading"><h2>Modal</h2><span class="section-count">07 / 07</span></div>
           <p class="section-description">Модальное окно с удержанием фокуса и возвратом к кнопке открытия.</p>
           <div class="panel"><div class="row"><Button type="primary" onclick={() => { demo.modalOpen = true; }}>Открыть модальное окно</Button><span class="output">Escape или нажатие на фон закрывают окно.</span></div></div>
           <Modal bind:open={demo.modalOpen} title="Всё готово к работе" onOk={demo.confirmModal}>

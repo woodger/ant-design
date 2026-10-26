@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { name }: { name: 'down' | 'close' | 'check' | 'loading' } = $props();
+  let { name }: { name: 'down' | 'left' | 'right' | 'close' | 'check' | 'loading' } = $props();
 </script>
 
 <style>
@@ -22,6 +22,10 @@
 >
   {#if name === 'down'}
     <path d="m6 9 6 6 6-6" />
+  {:else if name === 'left'}
+    <path d="m15 6-6 6 6 6" />
+  {:else if name === 'right'}
+    <path d="m9 6 6 6-6 6" />
   {:else if name === 'close'}
     <path d="m6 6 12 12M6 18 18 6" />
   {:else if name === 'check'}
