@@ -32,7 +32,11 @@
   });
 </script>
 
-<div class={['ant-form-item', errors.length && 'ant-form-item-has-error', className]}>
+<style>
+  .ant-form-item-row { display: flex; flex-wrap: wrap; }
+</style>
+
+<div class={['ant-form-item', `ant-form-item-${form?.layout ?? 'vertical'}`, errors.length && 'ant-form-item-has-error', className]}>
   <div class="ant-form-item-row">
     <div class="ant-form-item-label">
       <label for={id} class:ant-form-item-required={isRequired} title={label}>

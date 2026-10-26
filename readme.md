@@ -1,7 +1,8 @@
 # SvelteKit Starter
 
 Минимальный каркас на SvelteKit, Svelte 5 и TypeScript. В проекте настроены
-Oxlint, проверка Svelte/TypeScript, Vitest и production-сборка через adapter-node.
+Oxlint, проверка Svelte/TypeScript, Vitest, Playwright и production-сборка через
+adapter-node.
 
 ## Быстрый старт
 
@@ -21,6 +22,7 @@ npm run dev
 - `src/routes/+page.svelte` — стартовая страница;
 - `src/routes/+layout.svelte` — общий layout;
 - `src/lib/architecture.test.ts` — проверка направления зависимостей;
+- `e2e` — браузерные проверки и отдельный стенд компонентов;
 - `static` — статические файлы;
 - `docs` — документация и правила разработки.
 
@@ -34,11 +36,41 @@ npm run dev
 npm run lint
 npm exec -- svelte-kit sync
 npm exec -- svelte-check --tsconfig ./tsconfig.json --tsgo
+npm exec -- svelte-check --tsconfig ./e2e/tsconfig.json --tsgo
 npm test
 ```
 
-Oxlint проверяет JavaScript, TypeScript и `<script>`-блоки Svelte. Диагностика
-Svelte-шаблонов выполняется отдельной командой `svelte-check`.
+Oxlint проверяет JavaScript, TypeScript и `<script>`-блоки Svelte в `src`, `e2e`
+и конфигурацию Playwright. Диагностика Svelte-шаблонов и типов выполняется
+отдельно для приложения и браузерных тестов через `svelte-check`.
+
+## Браузерные проверки
+
+После установки npm-зависимостей установите Chromium:
+
+```sh
+npm exec -- playwright install chromium
+npm run test:e2e
+```
+
+Playwright каждый раз собирает приложение из текущих исходников и запускает
+preview на `127.0.0.1:4173`. Отдельный Vite-стенд из `e2e/fixtures` на порту
+`4174` проверяет публичные props, bindings и управляемые асинхронные сценарии
+компонентов. Оба порта должны быть свободны; серверы останавливаются после
+прогона. Тестовый стенд не входит в production-сборку приложения и пакет UI.
+
+Сценарии покрывают Input, Select, Modal и Form, темы, размеры, RTL, локаль,
+узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
+приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
+отдельным контуром Node unit/SSR-проверок.
+
+HTML-отчёт сохраняется в `playwright-report`, диагностические trace и снимки —
+в `test-results`. Светлая и тёмная темы и мобильная страница также сохраняются
+для визуального просмотра. Сравнение скриншотов с эталоном не настроено.
+
+```sh
+npm exec -- playwright show-report
+```
 
 ## Сборка
 

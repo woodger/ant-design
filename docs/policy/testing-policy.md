@@ -22,9 +22,14 @@
 - assertions обязательны через `expect.requireAssertions`;
 - реальная сеть и внешняя infrastructure не используются.
 
-В проекте нет обязательного browser/component/e2e contour. Успешный `npm test`
-не подтверждает реальный DOM, focus behavior, hydration, responsive layout,
-Canvas browser integration или production deployment.
+`npm run test:e2e` запускает отдельный Playwright Chromium contour из `e2e`.
+Конфигурация принадлежит `playwright.config.ts`; тесты используют свежую
+production-сборку приложения и локальный Vite-стенд компонентов. Внешние
+сервисы не используются. Типы тестов и стенда проверяются через
+`svelte-check --tsconfig ./e2e/tsconfig.json --tsgo`.
+
+Успешный `npm test` не подтверждает реальный DOM, focus behavior, hydration,
+responsive layout, Canvas browser integration или production deployment.
 
 Добавление browser/e2e tooling является отдельным изменением dependencies и
 test pipeline. Нельзя внедрять его скрыто внутри обычной component-задачи.
@@ -83,12 +88,12 @@ Mock Canvas не подтверждает реальную browser rendering.
 ### Component/browser behavior
 
 Focus, keyboard event dispatch, popover dismissal, accessible tree, hydration и
-responsive behavior требуют browser-capable проверки. Пока такого обязательного
-контура нет, нельзя подменять её тестом, который вызывает private function и
-заявляет полную component coverage.
+responsive behavior требуют browser-capable проверки. Нельзя подменять её
+тестом, который вызывает private function и заявляет полную component coverage.
 
-При существенном UI-риске нужно либо получить согласование на test tooling,
-либо явно выполнить и описать manual/browser smoke доступными средствами.
+При существенном UI-риске выполняются релевантные browser-тесты или явно
+описывается manual/browser smoke доступными средствами. Дополнительное tooling
+за пределами существующего контура добавляется отдельным изменением.
 
 ## Observable behavior
 
@@ -160,7 +165,7 @@ public operations. Не создавайте hierarchy ради визуальн
 
 Тест не зависит от:
 
-- реальной сети и внешних сервисов;
+- внешней сети и внешних сервисов;
 - production credentials;
 - порядка test files;
 - mutable global state другого suite;

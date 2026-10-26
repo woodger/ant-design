@@ -167,6 +167,14 @@
     onblur?.(event);
   }
 
+  function handlePointerDown(event: PointerEvent & { currentTarget: EventTarget & HTMLDivElement }) {
+    if (event.target === event.currentTarget && !resolvedDisabled) {
+      event.preventDefault();
+      control.focus();
+      control.click();
+    }
+  }
+
   function handleOutside(event: PointerEvent) {
     if (event.target instanceof Node && !container.contains(event.target)) {
       setOpen(false);
@@ -204,6 +212,8 @@
 
 <div class={`container ant-select-css-var ${className}`} bind:this={container} {style}>
   <div
+    role="presentation"
+    onpointerdown={handlePointerDown}
     class={[
       'ant-select ant-select-css-var ant-select-single ant-select-outlined ant-select-show-arrow',
       expanded && 'ant-select-open ant-select-focused',

@@ -9,12 +9,18 @@
 
 - `npm run dev` — Vite development server;
 - `npm run build` — production SvelteKit build;
-- `npm run lint` — Oxlint для `src`;
+- `npm run lint` — Oxlint для `src`, `e2e` и `playwright.config.ts`;
 - `npm test` — Vitest node contour;
+- `npm run test:e2e` — Playwright Chromium contour;
 - `npm run preview` — локальная проверка build.
 
 Дополнительная type/template проверка выполняется через `svelte-kit sync` и
 `svelte-check`, как указано в корневом readme.
+
+Playwright собирает приложение перед запуском preview и поднимает отдельный
+Vite-стенд из `e2e/fixtures`. Их lifecycle и порты задаёт
+`playwright.config.ts`. Существующие серверы для тестов не переиспользуются.
+Type/template check тестового кода использует `e2e/tsconfig.json`.
 
 `npm run preview` не является production entrypoint. Adapter-node production
 запускает `node build` согласно deployment guide.

@@ -18,6 +18,7 @@ src/
     ├── +page.svelte
     └── ant-design/+page.svelte
 static/
+e2e/                               # браузерные тесты и изолированные fixtures
 docs/
 ```
 
@@ -30,6 +31,12 @@ HTML-оболочку, `static` содержит статические файл
 его public entrypoint — `index.ts`. Маршрут `/ant-design` компонует
 showcase из Presentation. [Reference модуля](../../src/lib/components/ant-design/readme.md)
 описывает поддерживаемое поведение и упаковку исходников.
+
+`e2e` содержит браузерные проверки production-страницы `/ant-design` и отдельный
+Vite-стенд, который импортирует UI через публичный entrypoint. Стенд позволяет
+изменять props и завершать асинхронные операции в заданном порядке. Он не
+создаёт production-маршрутов и не включается в пакет UI. Playwright и Vitest
+имеют отдельные конфигурации и команды запуска.
 
 ## Добавление функциональности
 
