@@ -53,6 +53,8 @@ npm run preview
 
 ## Документация
 
+- [Ant Design для Svelte 5](src/lib/components/ant-design/readme.md) — библиотека
+  компонентов и отдельный пакет исходников; живые примеры на `/ant-design`.
 - [карта документации](docs/README.md)
 - [политики разработки](docs/policy/index.md)
 - [история изменений](CHANGELOG.md)

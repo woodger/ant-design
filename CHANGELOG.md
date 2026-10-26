@@ -9,6 +9,11 @@
 
 ### Added
 
+- Первый набор Ant Design 6.6.8 на Svelte 5 и TypeScript: ConfigProvider, Button,
+  Input, Select, Modal, Form и FormItem; отдельный пакет исходников и примеры
+  на `/ant-design`.
+- Переключаемые темы, типизированная валидация форм с защитой от устаревших
+  результатов, unit- и SSR-проверки компонентов.
 - Минимальный каркас SvelteKit, Svelte 5 и TypeScript со стартовой страницей.
 - Oxlint, Svelte/TypeScript check, Vitest и проверка архитектурных зависимостей.
 - Production-сборка через adapter-node и документация по запуску через systemd.

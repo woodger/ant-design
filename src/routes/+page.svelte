@@ -5,3 +5,4 @@
 
 <h1>SvelteKit Starter</h1>
 <p>Начните разработку в src/routes/+page.svelte.</p>
+<p><a href="/ant-design">Компоненты Ant Design для Svelte 5 →</a></p>

@@ -1,0 +1,27 @@
+import { getContext, setContext } from 'svelte';
+import { ruRU, type ComponentSize, type Locale, type ThemeConfig } from './types';
+
+export interface ConfigContext {
+  readonly componentSize: ComponentSize;
+  readonly componentDisabled: boolean;
+  readonly direction: 'ltr' | 'rtl';
+  readonly theme: Required<ThemeConfig>;
+  readonly locale: Locale;
+}
+
+const configKey = Symbol('ant-design-config');
+const defaultConfig: ConfigContext = {
+  componentSize: 'middle',
+  componentDisabled: false,
+  direction: 'ltr',
+  theme: { mode: 'light', primary: 'blue', compact: false },
+  locale: ruRU
+};
+
+export function useConfig(): ConfigContext {
+  return getContext<ConfigContext | undefined>(configKey) ?? defaultConfig;
+}
+
+export function provideConfig(config: ConfigContext) {
+  setContext(configKey, config);
+}

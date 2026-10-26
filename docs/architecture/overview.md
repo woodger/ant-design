@@ -10,10 +10,13 @@ src/
 ├── app.html
 ├── app.d.ts
 ├── lib/
-│   └── architecture.test.ts
+│   ├── architecture.test.ts
+│   ├── components/ant-design/       # reusable UI и пакет исходников
+│   └── presentation/ant-design/     # модель и представление showcase
 └── routes/
     ├── +layout.svelte
-    └── +page.svelte
+    ├── +page.svelte
+    └── ant-design/+page.svelte
 static/
 docs/
 ```
@@ -21,6 +24,12 @@ docs/
 `src/routes` отвечает за URL, SSR и composition страниц. `src/app.html` задаёт
 HTML-оболочку, `static` содержит статические файлы. Production-сборка использует
 `@sveltejs/adapter-node` и создаёт каталог `build`.
+
+`src/lib/components/ant-design` содержит первый набор компонентов Ant Design
+на Svelte 5, контексты, модель формы и стили. Модуль не зависит от SvelteKit;
+его public entrypoint — `index.ts`. Маршрут `/ant-design` компонует
+showcase из Presentation. [Reference модуля](../../src/lib/components/ant-design/readme.md)
+описывает поддерживаемое поведение и упаковку исходников.
 
 ## Добавление функциональности
 
