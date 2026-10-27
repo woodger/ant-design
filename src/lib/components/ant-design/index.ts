@@ -13,6 +13,8 @@ export { default as Drawer } from './Drawer.svelte';
 export { default as Alert } from './Alert.svelte';
 export { default as MessageHolder } from './MessageHolder.svelte';
 export { createMessage } from './message.model.svelte';
+export { default as NotificationHolder } from './NotificationHolder.svelte';
+export { createNotification } from './notification.model.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';
 export { default as Radio } from './Radio.svelte';
@@ -39,6 +41,7 @@ export type { CollapseProps, CollapseItem, CollapseTrigger, CollapseActiveKey } 
 export type { DrawerProps, DrawerPlacement, DrawerSize } from './drawer.types';
 export type { AlertProps, AlertType, AlertVariant, AlertContent, AlertClosable } from './alert.types';
 export type { MessageType, MessageKey, MessageContent, MessageConfig, MessageOptions, MessageHandle, MessageInstance, MessageHolderProps } from './message.types';
+export type { NotificationType, NotificationPlacement, NotificationKey, NotificationContent, NotificationClosable, NotificationConfig, NotificationOptions, NotificationInstance, NotificationHolderProps } from './notification.types';
 export type { CheckboxProps } from './Checkbox.svelte';
 export type { CheckboxGroupProps, CheckboxGroupOption, CheckboxGroupValue } from './checkbox-group.types';
 export type { RadioProps, RadioGroupProps, RadioOption, RadioValue } from './radio.types';

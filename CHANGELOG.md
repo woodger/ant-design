@@ -9,6 +9,12 @@
 
 ### Added
 
+- Notification: createNotification и NotificationHolder, четыре статуса,
+  title/description/actions snippets, шесть положений, ключи и обновления,
+  duration/hover/focus-паузы, maxCount и закрытие. Добавлены доступная клавиатура,
+  восстановление фокуса, SSR, ConfigProvider, Modal/Drawer, темы/RTL/reduced
+  motion, пример экспорта с CSV/retry и unit/SSR/Chromium-проверки.
+  Message и Notification используют общее внутреннее ядро очереди и DOM-видимости.
 - Message: createMessage и MessageHolder, пять типов, строки/snippets,
   ключи и обновления, duration/hover-пауза/maxCount, destroy и callable/thenable
   handles. Добавлены изоляция SSR и контекст ConfigProvider, нативный popover

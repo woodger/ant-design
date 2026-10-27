@@ -1,22 +1,4 @@
-export function focusAfterAlert(root: HTMLElement, ownedFocus: boolean) {
-  if (!ownedFocus) return;
-
-  const document = root.ownerDocument;
-  const focused = document.activeElement;
-  if (focused && focused !== document.body && !root.contains(focused)) return;
-
-  const dialog = root.closest<HTMLDialogElement>('dialog[open]');
-  const scope = dialog ?? document;
-  const candidates = Array.from(scope.querySelectorAll<HTMLElement>('button, input, select, textarea, a[href], summary, iframe, [tabindex], [contenteditable="true"]')).filter((element) => {
-    if (!(element instanceof HTMLElement) || root.contains(element) || element.tabIndex < 0 || element.matches(':disabled') || element.closest('[inert]') || !element.getClientRects().length) return false;
-
-    const visibility = document.defaultView!.getComputedStyle(element).visibility;
-    return visibility !== 'hidden' && visibility !== 'collapse';
-  });
-  const next = candidates.find((element) => root.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING);
-  const previous = candidates.filter((element) => root.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_PRECEDING).at(-1);
-  (next ?? previous ?? dialog)?.focus({ preventScroll: true });
-}
+export { focusAfterNotice as focusAfterAlert } from './notice.dom';
 
 export function closeAlert(root: HTMLElement, onHidden: () => void) {
   const view = root.ownerDocument.defaultView!;

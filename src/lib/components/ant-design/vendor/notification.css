@@ -1,0 +1,52 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Notification из официального dist/antd.css; React motion, stack, progress и pure-panel исключены.
+ * .css-var-_R_0_.ant-notification-css-var заменён на .ant-notification-css-var;
+ * корень .ant-notification ограничен :where(.ant-notification-list).
+ * Источник: https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256 архива: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-notification-css-var{font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-notification-css-var::before,.ant-notification-css-var::after{box-sizing:border-box;}
+.ant-notification-css-var [class^="ant-notification"],.ant-notification-css-var [class*=" ant-notification"]{box-sizing:border-box;}
+.ant-notification-css-var [class^="ant-notification"]::before,.ant-notification-css-var [class*=" ant-notification"]::before,.ant-notification-css-var [class^="ant-notification"]::after,.ant-notification-css-var [class*=" ant-notification"]::after{box-sizing:border-box;}
+.ant-notification:where(.ant-notification-list){box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);--notification-margin-edge:var(--ant-margin-lg);position:fixed;z-index:var(--ant-notification-z-index-popup);width:calc(var(--ant-notification-width) + var(--ant-margin-lg) * 2);max-width:100vw;height:100vh;overflow:hidden;overscroll-behavior:contain;}
+.ant-notification:where(.ant-notification-list).ant-notification-list{max-height:100vh;padding:var(--notification-margin-edge);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;pointer-events:none;}
+.ant-notification:where(.ant-notification-list).ant-notification-list::-webkit-scrollbar{display:none;width:0;height:0;}
+.ant-notification:where(.ant-notification-list) .ant-notification-list-content{position:relative;display:flex;flex-shrink:0;flex-direction:column;gap:var(--ant-margin);width:100%;will-change:height,transform;transition:none;pointer-events:auto;}
+.ant-notification-rtl{direction:rtl;}
+.ant-notification-rtl .ant-notification-notice-actions{float:left;}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice{position:absolute;width:var(--ant-notification-width);max-width:calc(100vw - calc(var(--ant-margin-lg) * 2));padding:var(--ant-padding-md) var(--ant-padding-content-horizontal-lg);pointer-events:auto;--ant-notification-icon-font-size:calc(var(--ant-font-size-lg) * var(--ant-line-height-lg));--ant-notification-title-font-size:var(--ant-font-size-lg);--ant-notification-title-line-height:var(--ant-line-height-lg);box-sizing:border-box;color:var(--ant-color-text);background:var(--ant-color-bg-elevated);border-radius:var(--ant-border-radius-lg);box-shadow:var(--ant-box-shadow);font-size:var(--ant-font-size);line-height:var(--ant-line-height);word-wrap:break-word;overflow:visible;transform:scale(var(--notification-scale, 1));transition:transform var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out),inset var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out),clip-path var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out),opacity var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice::after{position:absolute;inset-inline:0;top:calc(var(--ant-margin) * -1);height:var(--ant-margin);content:"";}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-success{background:var(--ant-notification-color-success-bg, var(--ant-color-bg-elevated));}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-error{background:var(--ant-notification-color-error-bg, var(--ant-color-bg-elevated));}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-info{background:var(--ant-notification-color-info-bg, var(--ant-color-bg-elevated));}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-warning{background:var(--ant-notification-color-warning-bg, var(--ant-color-bg-elevated));}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-wrapper{display:flex;align-items:flex-start;gap:var(--ant-margin-sm);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-title{color:var(--ant-color-text-heading);font-size:var(--ant-notification-title-font-size);line-height:var(--ant-notification-title-line-height);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-icon{flex:none;font-size:var(--ant-notification-icon-font-size);line-height:1;}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-icon.ant-notification-notice-icon-success{color:var(--ant-color-success);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-icon.ant-notification-notice-icon-info,.ant-notification:where(.ant-notification-list) .ant-notification-notice-icon.ant-notification-notice-icon-loading{color:var(--ant-color-info);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-icon.ant-notification-notice-icon-warning{color:var(--ant-color-warning);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-icon.ant-notification-notice-icon-error{color:var(--ant-color-error);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-section{display:flex;flex-direction:column;flex:auto;gap:var(--ant-margin-xs);min-width:0;}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-description{color:var(--ant-color-text);font-size:var(--ant-font-size);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-closable .ant-notification-notice-title,.ant-notification:where(.ant-notification-list) .ant-notification-notice-closable .ant-notification-notice-description{padding-inline-end:var(--ant-padding-lg);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-closable .ant-notification-notice-title+.ant-notification-notice-description{padding-inline-end:0;}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-close{position:absolute;top:var(--ant-padding-md);inset-inline-end:var(--ant-padding-lg);display:flex;align-items:center;justify-content:center;width:calc(var(--ant-control-height-lg) * 0.55);height:calc(var(--ant-control-height-lg) * 0.55);color:var(--ant-color-icon);background:none;border:none;border-radius:var(--ant-border-radius-sm);outline:none;transition:color var(--ant-motion-duration-mid),background-color var(--ant-motion-duration-mid);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-close:hover{color:var(--ant-color-icon-hover);background-color:var(--ant-color-bg-text-hover);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-close:active{background-color:var(--ant-color-bg-text-active);}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-close:focus-visible{outline:var(--ant-line-width-focus) solid var(--ant-color-primary-border);outline-offset:1px;transition:outline-offset 0s,outline 0s;}
+.ant-notification:where(.ant-notification-list) .ant-notification-notice-actions{float:right;margin-top:var(--ant-margin-sm);}
+.ant-notification:where(.ant-notification-list).ant-notification-top{top:calc(var(--notification-top, var(--notification-margin-edge, 0px)) - var(--notification-margin-edge, 0px));bottom:auto;display:flex;flex-direction:column;margin-inline:0;left:50%;right:auto;transform:translateX(-50%);}
+.ant-notification:where(.ant-notification-list).ant-notification-top .ant-notification-notice{top:var(--notification-y, 0);left:50%;transform:translate3d(-50%, 0, 0) scale(var(--notification-scale, 1));transform-origin:center bottom;}
+.ant-notification:where(.ant-notification-list).ant-notification-topLeft{top:calc(var(--notification-top, var(--notification-margin-edge, 0px)) - var(--notification-margin-edge, 0px));bottom:auto;display:flex;flex-direction:column;left:0;right:auto;}
+.ant-notification:where(.ant-notification-list).ant-notification-topLeft .ant-notification-notice{top:var(--notification-y, 0);left:var(--notification-x, 0);transform-origin:center bottom;}
+.ant-notification:where(.ant-notification-list).ant-notification-topRight{top:calc(var(--notification-top, var(--notification-margin-edge, 0px)) - var(--notification-margin-edge, 0px));bottom:auto;display:flex;flex-direction:column;right:0;left:auto;}
+.ant-notification:where(.ant-notification-list).ant-notification-topRight .ant-notification-notice{top:var(--notification-y, 0);right:var(--notification-x, 0);transform-origin:center bottom;}
+.ant-notification:where(.ant-notification-list).ant-notification-bottom{bottom:calc(var(--notification-bottom, var(--notification-margin-edge, 0px)) - var(--notification-margin-edge, 0px));top:auto;display:flex;flex-direction:column-reverse;margin-inline:0;left:50%;right:auto;transform:translateX(-50%);}
+.ant-notification:where(.ant-notification-list).ant-notification-bottom .ant-notification-notice{bottom:var(--notification-y, 0);left:50%;transform:translate3d(-50%, 0, 0) scale(var(--notification-scale, 1));transform-origin:center top;}
+.ant-notification:where(.ant-notification-list).ant-notification-bottomLeft{bottom:calc(var(--notification-bottom, var(--notification-margin-edge, 0px)) - var(--notification-margin-edge, 0px));top:auto;display:flex;flex-direction:column-reverse;left:0;right:auto;}
+.ant-notification:where(.ant-notification-list).ant-notification-bottomLeft .ant-notification-notice{bottom:var(--notification-y, 0);left:var(--notification-x, 0);transform-origin:center top;}
+.ant-notification:where(.ant-notification-list).ant-notification-bottomRight{bottom:calc(var(--notification-bottom, var(--notification-margin-edge, 0px)) - var(--notification-margin-edge, 0px));top:auto;display:flex;flex-direction:column-reverse;right:0;left:auto;}
+.ant-notification:where(.ant-notification-list).ant-notification-bottomRight .ant-notification-notice{bottom:var(--notification-y, 0);right:var(--notification-x, 0);transform-origin:center top;}
+.ant-notification-css-var{--ant-notification-z-index-popup:2050;--ant-notification-width:384px;--ant-notification-progress-bg:linear-gradient(90deg, #69b1ff, #1677ff);}

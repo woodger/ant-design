@@ -17,6 +17,7 @@
   import DrawerExample from './DrawerExample.svelte';
   import AlertExample from './AlertExample.svelte';
   import MessageExample from './MessageExample.svelte';
+  import NotificationExample from './NotificationExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -44,7 +45,8 @@
     ['collapse', 'Collapse'],
     ['drawer', 'Drawer'],
     ['alert', 'Alert'],
-    ['message', 'Message']
+    ['message', 'Message'],
+    ['notification', 'Notification']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -156,7 +158,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">25 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">26 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -396,6 +398,12 @@
           <div class="section-heading"><h3>Message</h3></div>
           <p class="section-description">Короткие сообщения о результате действия: сохранение с ожиданием, повтор после ошибки и последовательная обратная связь.</p>
           <div class="panel"><MessageExample /></div>
+        </section>
+
+        <section id="notification">
+          <div class="section-heading"><h3>Notification</h3></div>
+          <p class="section-description">Подробный результат фоновой операции: подготовка отчёта, скачивание и повтор после ошибки.</p>
+          <div class="panel"><NotificationExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

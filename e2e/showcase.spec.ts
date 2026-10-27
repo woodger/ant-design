@@ -1,5 +1,44 @@
 import { test, expect } from './test';
 
+test('showcase exports a report through Notification and downloads its actual CSV content', async ({ page }, testInfo) => {
+  await page.clock.install(); await page.goto('/ant-design#notification');
+  const fixture = page.locator('#notification'); const notice = page.locator('#showcase-notifications .ant-notification-notice:not([inert])');
+  await fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true }).click();
+  await expect(notice).toHaveAccessibleName('Готовим отчёт'); await expect(fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true })).toBeDisabled();
+  await page.clock.fastForward(700); await expect(notice).toHaveAccessibleName('Отчёт готов'); await expect(notice).toHaveCount(1);
+  await expect.poll(() => notice.evaluate((node) => node.getAnimations().length)).toBe(0);
+  await page.screenshot({ path: testInfo.outputPath('notification-example.png') });
+  const downloading = page.waitForEvent('download'); await notice.getByRole('button', { name: 'Скачать отчёт', exact: true }).click();
+  const download = await downloading; expect(download.suggestedFilename()).toBe('report.csv');
+  const stream = await download.createReadStream(); let content = ''; for await (const chunk of stream) content += chunk.toString();
+  expect(content).toContain('name,framework\r\nAnna,Svelte\r\nBoris,TypeScript');
+  await expect(fixture.getByRole('status', { name: 'Результат примера Notification', exact: true })).toHaveText('Отчёт скачан.');
+  await notice.getByRole('button', { name: 'Закрыть результат экспорта', exact: true }).click(); await expect(notice).toHaveCount(0);
+  await expect(fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true })).toBeFocused();
+});
+
+test('showcase retries a failed Notification export in place and recovers focus after replacing actions', async ({ page }) => {
+  await page.clock.install(); await page.goto('/ant-design#notification');
+  const fixture = page.locator('#notification'); const notice = page.locator('#showcase-notifications .ant-notification-notice:not([inert])');
+  await fixture.getByRole('checkbox', { name: 'Ошибка следующего экспорта', exact: true }).check();
+  await fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true }).click(); await page.clock.fastForward(700);
+  await expect(notice).toHaveAccessibleName('Не удалось подготовить отчёт');
+  await notice.getByRole('button', { name: 'Повторить экспорт', exact: true }).click(); await expect(notice).toHaveAccessibleName('Готовим отчёт');
+  await expect(fixture.getByRole('checkbox', { name: 'Ошибка следующего экспорта', exact: true })).toBeFocused();
+  await page.clock.fastForward(700); await expect(notice).toHaveAccessibleName('Отчёт готов'); await expect(notice).toHaveCount(1);
+  await expect(notice.getByRole('button', { name: 'Скачать отчёт', exact: true })).toBeEnabled();
+});
+
+test('showcase cancels a pending Notification export when reset and accepts a fresh request', async ({ page }) => {
+  await page.clock.install(); await page.goto('/ant-design#notification');
+  const fixture = page.locator('#notification'); const notice = page.locator('#showcase-notifications .ant-notification-notice:not([inert])');
+  await fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true }).click();
+  await fixture.getByRole('button', { name: 'Сбросить пример Notification', exact: true }).click(); await page.clock.fastForward(5000);
+  await expect(notice).toHaveCount(0); await expect(fixture.getByRole('status', { name: 'Результат примера Notification', exact: true })).toHaveText('Пример экспорта сброшен.');
+  await fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true }).click(); await page.clock.fastForward(700);
+  await expect(notice).toHaveAccessibleName('Отчёт готов');
+});
+
 test('showcase updates a loading Message to success or error and supports retry', async ({ page }, testInfo) => {
   await page.clock.install();
   await page.goto('/ant-design#message');

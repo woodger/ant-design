@@ -78,6 +78,7 @@ Collapse, независимые панели и accordion, extra, вложен�
 Drawer, модальность, анимацию, сохранение черновиков и редактор строки Table,
 Alert, статусы, действие/retry, закрытие, callbacks и фокус,
 Message, независимые очереди, ключи, таймеры, hover, await, Modal/Drawer и loading → success/error,
+Notification, шесть положений, действия, hover/focus-паузы, клавиатуру и экспорт CSV с retry,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

@@ -29,7 +29,7 @@
 
 <style>
   .ant-message-anchor { position: absolute; width: 0; height: 0; pointer-events: none; visibility: hidden; }
-  .ant-message.ant-message-list { position: fixed; inset: auto; top: calc(var(--notification-top) + var(--ant-svelte-message-viewport-top, 0px) - var(--notification-margin-edge)); left: 0; right: auto; width: 100%; max-width: 100vw; height: auto; max-height: calc(100dvh - var(--notification-top) + var(--notification-margin-edge)); margin: 0; border: 0; background: transparent; transform: none; outline: none; }
+  .ant-message.ant-message-list { position: fixed; inset: auto; top: calc(var(--notification-top) + var(--ant-svelte-notice-viewport-top, 0px) - var(--notification-margin-edge)); left: 0; right: auto; width: 100%; max-width: 100vw; height: auto; max-height: calc(100dvh - var(--notification-top) + var(--notification-margin-edge)); margin: 0; border: 0; background: transparent; transform: none; outline: none; }
   .ant-message:not(:popover-open) { display: none; }
   .ant-message-list-content { align-items: center; }
   .ant-message::backdrop { pointer-events: none; background: transparent; }

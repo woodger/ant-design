@@ -5,7 +5,8 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert, MessageHolder, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
+MessageHolder, NotificationHolder, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -87,6 +88,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Drawer | Модальная выдвижная панель, bind:open, четыре стороны, размеры, snippets, анимация, сохранение содержимого и destroyOnHidden |
 | Alert | Четыре статуса, title/description/icon/action snippets, outlined/filled, banner, закрытие с callbacks, анимацией и доступным фокусом |
 | MessageHolder / createMessage | Изолированная очередь пяти типов сообщений, ключи и обновления, таймеры, hover-пауза, maxCount, callable/thenable handle и контекст ConfigProvider |
+| NotificationHolder / createNotification | Подробные уведомления с title/description/actions snippets, четыре статуса, шесть положений, ключи, таймеры, hover/focus-пауза и закрытие |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1005,6 +1007,107 @@ loading → success/error, повтор, последовательные соо
 В первой версии нет глобального static API/config, getContainer, collapsing
 stack, других положений, интерактивных действий и semantic classNames/styles.
 
+## Notification
+
+Создавайте экземпляр у владельца и размещайте один NotificationHolder в нужном
+контексте ConfigProvider. Очереди компонентов и SSR-запросов независимы:
+
+```svelte
+<script lang="ts">
+  import { Button, NotificationHolder, createNotification } from '$lib/components/ant-design';
+
+  const notification = createNotification({ maxCount: 3 });
+</script>
+
+{#snippet actions()}
+  <Button onclick={() => notification.destroy('report')}>Понятно</Button>
+{/snippet}
+
+<NotificationHolder {notification} />
+<Button onclick={() => notification.success({
+  key: 'report',
+  title: 'Отчёт готов',
+  description: 'Подготовлены две записи.',
+  duration: 0,
+  actions
+})}>Показать результат экспорта</Button>
+```
+
+Open/success/info/warning/error принимают объект NotificationConfig и возвращают
+void. Open без type не добавляет статусную иконку; типизированные методы задают
+свой type. Title/description принимают строку или Snippet; пустые строки не
+создают соответствующую область. Actions — интерактивный Snippet, действия не
+закрывают уведомление автоматически. Icon и closeIcon декоративные; используйте
+actions/description для кнопок, ссылок и полей ввода. Class/style относятся к
+карточке. Корень поддерживает aria-label/aria-labelledby/aria-describedby;
+по умолчанию доступное имя связано с title, описание — с description.
+
+Duration задаётся в секундах, по умолчанию 4.5. Значения 0 и false отключают
+автоудаление; отрицательные и неконечные значения используют default.
+CreateNotification фиксирует defaults duration, pauseOnHover=true, placement и
+maxCount. Конфигурация карточки переопределяет duration/pauseOnHover/placement.
+Наведение сохраняет оставшееся время; pauseOnHover=false разрешает отсчёт при
+наведении. Фокус внутри всегда приостанавливает таймер, включая переходы Tab
+между действиями и обновление ключа. Отсчёт продолжается после ухода фокуса и,
+если включена hover-пауза, указателя. Touch не включает hover-паузу.
+
+Key — string или number, включая 0 и пустую строку. Повтор активного ключа
+обновляет содержимое на прежнем месте, перезапускает duration и заменяет onClose.
+В одном placement сохраняются экземпляры неизменённых snippets и их controls.
+Изменение placement переносит карточку в другую группу и пересоздаёт snippets.
+Уходящий ключ можно открыть заново: это отдельная карточка, позднее завершение
+старой анимации её не удалит. Destroy(key) закрывает ключ, destroy() — всю
+очередь экземпляра. MaxCount ограничивает активные уведомления суммарно во всех
+положениях по FIFO; обновления ключа не меняют очередь. Положительное конечное
+значение округляется вниз, без допустимого значения ограничения нет.
+
+Closable=true по умолчанию. False убирает кнопку; объект поддерживает disabled,
+closeIcon и aria-label/aria-labelledby/aria-describedby кнопки. CloseIcon также
+можно задать на верхнем уровне; false/null скрывает кнопку. Доступное имя берётся
+из locale.closeText либо closable.aria-label. Disabled запрещает только кнопку;
+destroy и таймер продолжают действовать. ConfigProvider.disabled не отключает
+закрытие уведомления, а вложенные компоненты действий наследуют свой контекст.
+
+OnClose вызывается один раз при запросе закрытия: кнопкой, destroy, таймером или
+FIFO. Уходящая карточка получает inert/aria-hidden и остаётся в DOM до конца
+анимации. Ошибка callback не мешает обработать остальные карточки destroy(),
+после обработки она передаётся вызывающему коду. При reduced motion анимация
+пропускается; включение режима завершает уже запущенный уход.
+
+Появление не захватывает фокус. Кнопки используют нативные Enter/Space и обычный
+Tab; Escape остаётся у страницы или содержащего Modal/Drawer. При закрытии или
+удалении сфокусированного action фокус переходит к следующему доступному control
+в DOM, затем к предыдущему либо активному dialog. Фокус, выбранный onClose
+снаружи карточки, сохраняется. Role по умолчанию alert, для обычного результата
+используйте status; aria-atomic=true. Иконки не создают остановок Tab.
+
+Placement поддерживает top/topLeft/topRight/bottom/bottomLeft/bottomRight,
+по умолчанию topRight. Left/right задают физическую сторону и не меняются в RTL.
+Карточки растут к середине viewport; список прокручивается при переполнении.
+Top/bottom у holder задают отступ в px, по умолчанию 24; невалидные значения
+используют 24. Id/class/style относятся к нативной popover-поверхности holder;
+ширину карточек можно настроить CSS-переменной --ant-notification-width
+(по умолчанию 384px). Ширина ограничивается viewport, длинный текст переносится.
+Темы, compact, RTL и цвета статусов используют токены ConfigProvider.
+
+До первого монтирования можно поставить уведомления в очередь. SSR выводит
+закрытый popover без таймеров и callbacks; отсчёт начинается после показа.
+Скрытый контекст, скрытая вкладка или верхний чужой dialog приостанавливают
+очередь. Внутри Modal/Drawer размещайте holder в содержимом нужного dialog;
+фоновые holders ждут его закрытия. Удаление holder или замена notification
+очищает очередь и отменяет таймеры/анимации без onClose. Поздние вызовы такого
+экземпляра игнорируются до повторного монтирования; новый holder начинает
+пустую очередь. Общая модель очереди находится в notice-queue.model.svelte.ts,
+DOM-видимость и фокус — в notice.dom.ts; ими также пользуются Message и Alert.
+
+Галерея `/ant-design#notification` готовит CSV-отчёт, обновляет уведомление по
+ключу, скачивает настоящий файл и предлагает повтор после ошибки. Сброс и
+удаление примера отменяют ожидающий результат и освобождают download URL.
+
+Первая версия не поддерживает collapsing stack, showProgress, getContainer,
+глобальный static API/config, onClick на карточке и semantic classNames/styles.
+Устаревшие message/btn заменены title/actions.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -1844,6 +1947,9 @@ Alert предоставляет alert/status, атомарное объявле
 Message использует пассивные status/alert без остановок Tab и переноса фокуса.
 Закрытие host dialog остаётся у Modal/Drawer; скрытые контексты приостанавливают
 очередь и её таймеры.
+Notification поддерживает интерактивные действия с обычным Tab и нативной
+кнопкой закрытия. Фокус внутри приостанавливает таймер; при удалении controls
+фокус восстанавливается в доступном соседнем control текущего контекста.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1963,6 +2069,14 @@ Message проверяется на независимость экземпля�
 hover, удаление DOM после анимации, detach/замену, Modal/Drawer и вложенные
 контексты, сохранение фокуса, темы/compact/RTL/reduced motion и мобильный перенос.
 Галерея проверяет loading → success/error, повтор и отмену при сбросе.
+Notification проверяется на четыре статуса и нейтральный open, snippets/actions,
+изолированные очереди, ключи, defaults, duration=0/false, глобальный FIFO и
+hover/focus-паузы. SSR защищает закрытый popover, escaping, шесть положений,
+кнопку закрытия и доступные имена. Chromium проверяет геометрию и рост списков,
+сохранение черновика при обновлении, фокус/клавиатуру, callbacks, unmount/замену,
+анимации/reduced motion, темы/compact/RTL/локаль, Modal/Drawer и мобильный перенос.
+Пример галереи проверяет реальное содержимое скачанного CSV, ошибки/retry и
+отмену ожидающего экспорта при сбросе.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2021,15 +2135,23 @@ drawer.engine.ts — размерами, направлением ухода и 
 [vendor/alert.css](./vendor/alert.css) содержит 37 правил Alert из того же
 архива: четыре статуса, outlined/filled, banner и токены. Корневые селекторы
 ограничены :where(.ant-alert-css-var); React motion исключён. Alert.svelte
-управляет закрытием, alert.dom.ts — отменяемой анимацией и переносом фокуса.
+управляет закрытием, alert.dom.ts — отменяемой анимацией, notice.dom.ts — фокусом.
 Scoped-стили адаптируют мобильные действия и размер кнопки закрытия.
 [vendor/message.css](./vendor/message.css) содержит 21 правило Message из того
 же архива: базовую поверхность, верхнее положение, пять статусов и токены.
 Корневые селекторы ограничены :where(.ant-message-css-var); React motion,
 collapsing stack и остальные положения исключены. MessageHolder.svelte и
 MessageNotice.svelte адаптируют нативный popover и обычный поток списка;
-message.dom.ts управляет видимостью контекста и отменяемой Web Animations
-API-анимацией. Theme.css связывает фон с темой, иконки переиспользуют Icon.svelte.
+message.dom.ts предоставляет общий механизм notice.dom.ts для видимости
+контекста и отменяемой Web Animations API-анимации. Theme.css связывает фон с
+темой, иконки переиспользуют Icon.svelte.
+[vendor/notification.css](./vendor/notification.css) содержит 45 правил из того
+же архива: шесть положений, статусы, описание, actions, кнопку закрытия и токены.
+Корневые селекторы ограничены :where(.ant-notification-list); React motion,
+stack, progress и pure-panel исключены. NotificationHolder.svelte и
+NotificationNotice.svelte адаптируют нативную поверхность и обычный поток списков;
+notice.dom.ts управляет видимостью, фокусом и анимацией. Иконки переиспользуют
+существующий Icon.svelte и status-icons.ts.
 Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.
