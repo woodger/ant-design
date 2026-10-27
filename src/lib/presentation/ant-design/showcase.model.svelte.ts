@@ -18,7 +18,7 @@ export function createShowcase() {
   let modalOpen = $state(false);
   let action = $state('Попробуйте компоненты — результат появится здесь.');
   let formResult = $state('');
-  let permissions = $state(['read']);
+  let permissionResult = $state('');
   let page = $state(1);
   let pageSize = $state(10);
   let tablePage = $state(1);
@@ -47,6 +47,18 @@ export function createShowcase() {
     { value: 'edit', label: 'Редактирование' },
     { value: 'export', label: 'Экспорт' }
   ];
+  const permissionForm = createForm<{ permissions: string[] }>({
+    initialValues: { permissions: ['read'] },
+    rules: { permissions: [
+      { required: true, message: 'Выберите хотя бы одно право.' },
+      { max: 2, message: 'Выберите не более двух прав.' }
+    ] }
+  });
+
+  function setPermissions(values: string[]) {
+    permissionForm.setFieldValue('permissions', values);
+    permissionResult = '';
+  }
 
   const form = createForm({
     initialValues: { name: '', email: '', role: 'developer', password: '', confirmPassword: '' },
@@ -78,12 +90,20 @@ export function createShowcase() {
     get action() { return action; },
     get formResult() { return formResult; },
     permissionOptions,
-    get permissions() { return permissions; },
-    get allPermissions() { return permissions.length === permissionOptions.length; },
-    get somePermissions() { return permissions.length > 0 && permissions.length < permissionOptions.length; },
-    selectAllPermissions(checked: boolean) { permissions = checked ? permissionOptions.map((option) => option.value) : []; },
-    setPermission(value: string, checked: boolean) {
-      permissions = checked ? [...permissions, value] : permissions.filter((item) => item !== value);
+    permissionForm,
+    permissionGroupOptions: [...permissionOptions, { value: 'unavailable', label: 'Недоступное право', disabled: true }],
+    get permissionResult() { return permissionResult; },
+    get permissions() { return permissionForm.values.permissions; },
+    get allPermissions() { return permissionForm.values.permissions.length === permissionOptions.length; },
+    get somePermissions() { return permissionForm.values.permissions.length > 0 && permissionForm.values.permissions.length < permissionOptions.length; },
+    selectAllPermissions(checked: boolean) { setPermissions(checked ? permissionOptions.map((option) => option.value) : []); },
+    setPermissions,
+    finishPermissions(values: { permissions: string[] }) {
+      permissionResult = `Сохранены права: ${values.permissions.map((value) => permissionOptions.find((option) => option.value === value)?.label).join(', ')}.`;
+    },
+    resetPermissions() {
+      permissionForm.resetFields();
+      permissionResult = '';
     },
     get page() { return page; },
     set page(value: number) { page = value; },

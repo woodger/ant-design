@@ -224,6 +224,33 @@ test('showcase updates the select-all checkbox and pagination bindings after hyd
   await expect(pagination.locator('.ant-pagination-total-text')).toHaveText('51–100 из 137');
 });
 
+test('showcase validates and submits CheckboxGroup permissions with select-all and reset', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#checkbox');
+  const group = fixture.getByRole('group', { name: 'Права участника', exact: true });
+  const read = group.getByRole('checkbox', { name: 'Просмотр', exact: true });
+  const all = fixture.getByRole('checkbox', { name: 'Все права', exact: true });
+  await all.check();
+  await expect(group.getByRole('checkbox', { name: 'Недоступное право', exact: true })).toBeDisabled();
+  await fixture.getByRole('button', { name: 'Сохранить права', exact: true }).click();
+  await expect(read).toBeFocused();
+  await expect(group).toHaveAccessibleDescription('Выберите не более двух прав.');
+  await group.getByRole('checkbox', { name: 'Экспорт', exact: true }).uncheck();
+  await fixture.getByRole('button', { name: 'Сохранить права', exact: true }).click();
+  await expect(fixture.getByRole('status')).toHaveText('Сохранены права: Просмотр, Редактирование.');
+  expect(await fixture.locator('form').evaluate((element) => new FormData(element as HTMLFormElement).getAll('permissions'))).toEqual(['read', 'edit']);
+  await fixture.screenshot({ path: testInfo.outputPath('checkbox-group.png') });
+  await all.check();
+  await all.uncheck();
+  await fixture.getByRole('button', { name: 'Сохранить права', exact: true }).click();
+  await expect(group).toHaveAccessibleDescription('Выберите хотя бы одно право.');
+  await fixture.getByRole('button', { name: 'Сбросить права', exact: true }).click();
+  await expect(fixture.locator('.output')).toHaveText('Выбрано прав: 1 из 3.');
+  await expect(read).toBeChecked();
+  await expect(read).not.toHaveAttribute('aria-invalid');
+  await expect(all).toHaveAttribute('aria-checked', 'mixed');
+});
+
 test('showcase validates its real form and resets values after successful submission', async ({ page }) => {
   await page.goto('/ant-design');
   const name = page.getByLabel('Имя', { exact: true });
@@ -348,6 +375,7 @@ test.describe('server-rendered showcase', () => {
     await expect(page.locator('#select-multiple').getByRole('button', { name: 'Удалить Дизайн', exact: true })).toBeVisible();
     await expect(page.getByRole('checkbox', { name: 'Все права', exact: true })).toHaveAttribute('aria-checked', 'mixed');
     await expect(page.getByRole('checkbox', { name: 'Просмотр', exact: true })).toBeChecked();
+    await expect(page.getByRole('group', { name: 'Права участника', exact: true })).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Пример пагинации', exact: true }).locator('[aria-current="page"]')).toHaveText('1');
     const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
     await expect(table.locator('tbody tr')).toHaveCount(5);

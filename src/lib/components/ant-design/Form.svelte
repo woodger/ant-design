@@ -63,7 +63,7 @@
 
       if (!result.error.outOfDate) {
         await tick();
-        element.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+        element.querySelector<HTMLElement>('[data-ant-form-invalid="true"], [aria-invalid="true"]')?.focus();
       }
     } else if (result.status === 'failed') {
       onError?.(result.error);

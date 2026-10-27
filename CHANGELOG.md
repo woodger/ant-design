@@ -9,6 +9,10 @@
 
 ### Added
 
+- CheckboxGroup: типизированные строковые, числовые и boolean-массивы,
+  options, disabled, нативные checkbox и FormData, отменяемый reset и интеграция
+  с FormItem. Галерея прав использует группу с проверкой количества и выбором всех;
+  добавлены unit/SSR/Chromium-проверки, включая RTL и мобильный экран.
 - Множественный Select: mode="multiple", типизированные массивы, поиск,
   удаление элементов, клавиатура, repeated FormData, native reset, required,
   темы и RTL. Form поддерживает плоские массивы, ограничения количества и

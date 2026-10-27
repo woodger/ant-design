@@ -24,12 +24,25 @@
   provideFormField({
     get id() { return id; },
     get name() { return name; },
+    get label() { return label; },
     get disabled() { return form?.disabled; },
     get required() { return isRequired; },
     get status() { return errors.length ? 'error' : undefined; },
     get describedBy() { return descriptionId; },
     onBlur() { form?.touchField(name); }
   });
+
+  function focusGroupLabel(label: HTMLLabelElement) {
+    function handleClick(event: MouseEvent) {
+      if (!event.defaultPrevented && !label.control) {
+        label.ownerDocument.getElementById(label.htmlFor)?.focus();
+      }
+    }
+
+    label.addEventListener('click', handleClick);
+
+    return { destroy() { label.removeEventListener('click', handleClick); } };
+  }
 </script>
 
 <style>
@@ -39,7 +52,7 @@
 <div class={['ant-form-item', `ant-form-item-${form?.layout ?? 'vertical'}`, errors.length && 'ant-form-item-has-error', className]}>
   <div class="ant-form-item-row">
     <div class="ant-form-item-label">
-      <label for={id} class:ant-form-item-required={isRequired} title={label}>
+      <label for={id} class:ant-form-item-required={isRequired} title={label} use:focusGroupLabel>
         {label}
       </label>
     </div>

@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, Pagination, Table,
+Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, CheckboxGroup, Pagination, Table,
 Modal, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
@@ -68,6 +68,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
+| CheckboxGroup | Типизированный массив выбранных значений, options, disabled, нативные checkbox, FormData, reset и интеграция с FormItem |
 | Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
 | Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор и раскрытие строк, закрепление заголовка и колонок, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
@@ -181,6 +182,74 @@ disabled control не передаёт значения. Поисковый те
 `validator: (value) => value === true ? undefined : 'Подтвердите согласие.'`.
 Встроенное правило `required` проверяет наличие значения, и `false` считается
 заданным значением. `form.resetFields()` возвращает значение из `initialValues`.
+
+## CheckboxGroup
+
+CheckboxGroup переносит выбор нескольких флажков в одно поле с массивом.
+`CheckboxGroupProps<Value>` и `CheckboxGroupOption<Value>` поддерживают
+string, number и boolean. Options принимает примитивы или объекты
+`{ value, label, disabled? }`; подпись примитива получается через String.
+
+```svelte
+<script lang="ts">
+  import { CheckboxGroup } from '$lib/components/ant-design';
+
+  const options = [
+    { value: 'read', label: 'Просмотр' },
+    { value: 'edit', label: 'Редактирование' },
+    { value: 'archive', label: 'Архив', disabled: true }
+  ];
+  let permissions = $state<string[]>(['read']);
+</script>
+
+<CheckboxGroup {options} bind:value={permissions} name="permissions" aria-label="Права доступа" />
+```
+
+Каждое пользовательское переключение обновляет bind:value и вызывает
+`onValueChange(values)` с новым массивом в порядке options. Массив callback
+не разделяется с привязкой. Повторяющиеся options показываются один раз;
+первая подпись и disabled-состояние сохраняются. Числовой 0 и строковый "0",
+boolean false и строковый "false" остаются разными значениями.
+
+Внешние обновления value/options не переписывают массив владельца и не вызывают
+callback. Временно отсутствующие варианты скрываются, а возвращённые снова
+отображают выбранное состояние. При следующем пользовательском переключении
+массив содержит только текущие options, без повторов, в их текущем порядке.
+
+Группа наследует disabled из Form/FormItem и ConfigProvider; явный
+`disabled={false}` переопределяет наследование. Disabled группы блокирует все
+варианты, disabled option блокирует только соответствующий checkbox.
+Уже выбранный disabled-вариант сохраняется в массиве.
+
+Для отдельной группы defaultValue принимает readonly-массив и копируется один
+раз. С bind:value задавайте начальное значение у владельца без defaultValue.
+Нативный reset формы восстанавливает defaultValue или пустой массив, включая
+привязку, без callbacks. Массив обновляется в следующей задаче после события
+reset, чтобы учесть отмену события; отменённый reset сохраняет текущий выбор.
+Внешняя форма через атрибут form поддерживается. В Form сбросом управляет
+модель через resetFields.
+
+Группа содержит нативные checkbox: Tab перемещает фокус, Space и нажатие подписи
+переключают вариант. С name или FormItem.name отмеченные доступные варианты
+попадают в FormData под одним именем. Читайте их через
+`new FormData(form).getAll('permissions')`. Результат содержит строки в порядке
+options; disabled, отсутствующие и невыбранные варианты исключаются.
+Например, выбранные числовой 0 и boolean false передаются как `['0', 'false']`.
+
+В Form используйте `value={form.values.permissions}` и
+`onValueChange={(value) => form.setFieldValue('permissions', value)}`.
+Правила required/min/max проверяют массив целиком. Required не назначается
+каждому input, поэтому выбор всех вариантов не становится обязательным.
+Имя поля, описание и ошибки передаются из FormItem; группа использует fieldset
+и получает доступное имя из label FormItem либо aria-label/aria-labelledby.
+При ошибке или нажатии подписи FormItem фокус переходит к первому доступному
+варианту; пустая группа может получить фокус сама, без дополнительного шага Tab.
+
+Галерея `/ant-design#checkbox` показывает форму выбора прав с общим флажком
+«Все права», промежуточным состоянием, проверкой количества, отправкой и сбросом.
+Общий выбор управляется владельцем через массив, как и в примере Ant Design.
+Группа пока строится через options; вложенные Checkbox и snippets для вариантов
+не поддерживаются.
 
 ## Pagination
 
@@ -670,6 +739,8 @@ FormValidationError. Ошибка содержит `errors`, `values` и `outOfD
 Checkbox использует нативный input: нажатие подписи и Space переключают его,
 смешанное состояние доступно через `aria-checked="mixed"`. FormItem передаёт
 id, name, required, ошибки и описание самому input.
+CheckboxGroup объединяет нативные input в именованный fieldset; FormItem
+передаёт имя группы, описание и ошибки, а required проверяется правилом массива.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -717,6 +788,8 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 
 Браузерные тесты проверяют внешние изменения значений, смешанное состояние и
 нативный reset Checkbox, boolean-поля Form, переходы и смену размера Pagination,
+CheckboxGroup, типы значений, порядок options, повторяющиеся поля FormData,
+отмену reset, фокус группы и выбор всех прав,
 сочетания фильтров, сортировки, страниц и выбора Table, loading и замену данных,
 серверный total, сохранение ключей между страницами, отмену запросов, поздние ответы,
 ошибки/retry и повторную загрузку допустимой страницы при уменьшении total,
@@ -731,7 +804,7 @@ Console warnings/errors и необработанные ошибки брауз�
 Снимки светлой, тёмной и мобильной страницы сохраняются для визуального
 просмотра; автоматического сравнения с эталонными изображениями пока нет.
 
-Эта версия покрывает перечисленное ядро. Checkbox.Group, simple/quick jumper
+Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
 DatePicker/RangePicker,
 Tree/TreeSelect, Upload, Select tags, Form.List, вложенные name paths,

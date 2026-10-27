@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Checkbox, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select, Table, type TableColumn } from '$lib/components/ant-design';
+  import { Button, Checkbox, CheckboxGroup, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select, Table, type TableColumn } from '$lib/components/ant-design';
   import { createShowcase, type ShowcaseMember } from './showcase.model.svelte';
   import RemoteTableExample from './RemoteTableExample.svelte';
   import ExpandableTableExample from './ExpandableTableExample.svelte';
@@ -130,7 +130,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">10 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">11 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -200,17 +200,18 @@
 
         <section id="checkbox">
           <div class="section-heading"><h2>Checkbox</h2><span class="section-count">04 / 08</span></div>
-          <p class="section-description">Выбор нескольких прав и смешанное состояние «выбрать всё».</p>
+          <p class="section-description">CheckboxGroup объединяет права в одно поле формы. «Все права» показывает промежуточное состояние; форма проверяет количество выбранных прав.</p>
           <div class="panel">
-            <Checkbox checked={demo.allPermissions} indeterminate={demo.somePermissions} onCheckedChange={demo.selectAllPermissions}>Все права</Checkbox>
-            <hr class="example-divider" />
-            <div class="row">
-              {#each demo.permissionOptions as option (option.value)}
-                <Checkbox checked={demo.permissions.includes(option.value)} onCheckedChange={(checked) => demo.setPermission(option.value, checked)}>{option.label}</Checkbox>
-              {/each}
-              <Checkbox disabled>Недоступное право</Checkbox>
-            </div>
+            <Form form={demo.permissionForm} onFinish={demo.finishPermissions}>
+              <Checkbox checked={demo.allPermissions} indeterminate={demo.somePermissions} onCheckedChange={demo.selectAllPermissions}>Все права</Checkbox>
+              <hr class="example-divider" />
+              <FormItem name="permissions" label="Права участника" help="Выберите одно или два права.">
+                <CheckboxGroup options={demo.permissionGroupOptions} value={demo.permissions} onValueChange={demo.setPermissions} />
+              </FormItem>
+              <div class="row"><Button type="primary" htmlType="submit" loading={demo.permissionForm.isSubmitting}>Сохранить права</Button><Button onclick={demo.resetPermissions}>Сбросить права</Button></div>
+            </Form>
             <p class="output">Выбрано прав: <strong>{demo.permissions.length}</strong> из {demo.permissionOptions.length}.</p>
+            {#if demo.permissionResult}<p class="result" role="status">{demo.permissionResult}</p>{/if}
           </div>
         </section>
 
