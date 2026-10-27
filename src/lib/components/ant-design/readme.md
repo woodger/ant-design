@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Dropdown, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -81,6 +81,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Tooltip | Текст, hover/focus, bind:open, задержки, Escape, четыре положения, стрелка, автоматический переворот и aria-describedby |
 | Popover | Интерактивные snippets, click/hover/focus, bind:open, четыре положения, стрелка, автоматический переворот, клавиатура и возврат фокуса |
 | Popconfirm | Подтверждение и отмена, Promise/loading, повтор после ошибки, защита от поздних результатов, snippets, локализация и клавиатура |
+| Dropdown | Плоское меню команд, click/hover, bind:open, disabled/danger, snippets, шесть положений, стрелки/typeahead и возврат фокуса |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -494,6 +495,82 @@ aria-controls/aria-expanded. Во время ожидания выставляе
 восстановления записей. Пример освобождает ожидающие таймеры при удалении.
 Первая версия поддерживает открытие по клику и четыре положения;
 hover/contextMenu, corner placements и getPopupContainer пока отсутствуют.
+
+## Dropdown
+
+```svelte
+<script lang="ts">
+  import { Button, Dropdown } from '$lib/components/ant-design';
+
+  let open = $state(false);
+  let lastAction = $state('');
+</script>
+
+<Dropdown
+  bind:open
+  trigger={['click']}
+  menu={{
+    items: [
+      { key: 'details', label: 'Открыть карточку' },
+      { key: 'export', label: 'Экспорт', disabled: true },
+      { key: 'divider', type: 'divider' },
+      { key: 'archive', label: 'В архив', danger: true }
+    ],
+    onClick: ({ key }) => { lastAction = key; }
+  }}
+>
+  <Button>Действия</Button>
+</Dropdown>
+<output>{lastAction}</output>
+```
+
+`menu.items` принимает readonly-массив DropdownItem. Команда имеет строковый key,
+label (строку или пассивный Snippet), необязательные icon, textValue, disabled,
+danger и onClick. Разделитель имеет `{ key, type: 'divider' }`. Пустой строковый
+ключ допустим; при повторении ключа используется первое вхождение. Icon декоративный.
+Для snippet со сложным или нетекстовым содержимым задайте textValue: он служит
+доступным именем команды и текстом поиска. В label не следует вкладывать кнопки,
+ссылки и поля ввода. Пустой список показывает ConfigProvider.locale.emptyText.
+
+Open поддерживает bind:open; defaultOpen читается при создании компонента.
+`onOpenChange(boolean)` сообщает запросы видимости от trigger, hover, Escape,
+Tab и клика снаружи. Изменение open владельцем и закрытие из-за disabled
+не вызывают callback. Как в Ant Design, выбор команды закрывает меню и обновляет
+binding **без onOpenChange(false)**; для команды используйте menu.onClick.
+Сначала вызывается onClick пункта, затем menu.onClick; оба получают
+`{ key, domEvent: MouseEvent }`. PreventDefault в пункте отменяет следующий
+обработчик и закрытие, в menu.onClick — закрытие. Асинхронные операции и их ошибки
+обрабатывает владелец; Dropdown не показывает loading и не ожидает Promise.
+
+По умолчанию trigger равен `['hover']`; допустимы `'hover'`, `'click'`, их массив
+и `[]` для внешнего управления. MouseEnterDelay/MouseLeaveDelay задаются в
+секундах, по умолчанию 0.1. Hover не перемещает фокус; click, Enter, Space и
+ArrowDown фокусируют первую доступную команду, ArrowUp — последнюю. Стрелки
+обходят команды по кругу, Home/End выбирают крайние, ввод букв ищет по префиксу.
+Повтор буквы перебирает совпадения; пауза в секунду начинает новый поиск.
+Disabled-пункты и разделители пропускаются. Если доступных команд нет, фокус
+получает сам menu. Tab/ShiftTab закрывают меню и продолжают нативный порядок.
+Escape и выбор команды возвращают фокус к trigger, если он оставался в меню.
+При удалении trigger после действия новый фокус назначает владелец.
+
+В children передавайте один нативный focusable control, обычно Button.
+Dropdown связывает первый дочерний элемент с menu через aria-haspopup="menu",
+aria-controls и aria-expanded, сохраняя исходные ARIA-атрибуты владельца.
+`aria-label` именует меню; по умолчанию имя берётся от trigger. Class/style
+относятся к wrapper trigger. Disabled наследуется от Form/ConfigProvider;
+явное false переопределяет контекст. Нативный disabled trigger также не открывает меню.
+
+Placement: top, topLeft, topRight, bottom, bottomLeft, bottomRight. По умолчанию
+bottomLeft, в RTL — bottomRight. AutoAdjustOverflow по умолчанию true:
+меню переворачивается и сдвигается в границах окна; false сохраняет запрошенное
+положение. Минимальная ширина соответствует trigger, длинный список прокручивается.
+Arrow по умолчанию false. Поверхность использует native popover, сохраняет
+контекст темы и работает внутри Modal; закрытое меню остаётся смонтированным.
+
+Галерея `/ant-design#dropdown` показывает действия строки Table: открытие Modal,
+копирование и архивирование участника. Первая версия ограничена плоскими командами:
+отдельный Menu, подменю, selectable/checkable items, contextMenu, Dropdown.Button,
+href, popupRender и getPopupContainer пока отсутствуют.
 
 ## Select
 
@@ -1315,6 +1392,9 @@ Popover предоставляет именованный немодальный
 Popconfirm использует тот же dialog с именем и описанием подтверждения.
 Кнопки не отправляют окружающую форму. Во время Promise aria-busy сообщает
 ожидание, а Escape потребляется до содержащего Modal без закрытия подтверждения.
+Dropdown использует role=menu и нативные button с role=menuitem, один активный
+tabindex и разделители. Стрелки и typeahead обходят доступные команды;
+Escape закрывает меню раньше Modal, Tab сохраняет естественную навигацию.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1400,6 +1480,11 @@ Popconfirm проверяется на подтверждение/отмену �
 поздние результаты, события дочерних кнопок, Form, Modal, Tooltip, темы,
 локаль, RTL, четыре положения и touch. Модель подтверждения проверяется
 отдельно с управляемыми Promise; галерея удаляет и восстанавливает строку Table.
+Dropdown проверяется на команды и порядок callbacks, клавиатуру/typeahead,
+Tab/Escape, hover-задержки, defaults и внешнее управление, disabled, обновление
+списка и восстановление фокуса, замену trigger и ARIA-атрибуты владельца.
+Chromium проверяет шесть положений, переворот, clipping, прокрутку, Modal,
+темы/RTL/reduced motion, touch и длинные подписи; галерея выполняет команды Table.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1431,6 +1516,12 @@ InputNumber outlined находится в [vendor/input-number.css](./vendor/in
 [vendor/popconfirm.css](./vendor/popconfirm.css) содержит Popconfirm из того же
 архива. Popconfirm.svelte использует Popover для поверхности и фокуса,
 а popconfirm.model.svelte.ts связывает результат действия с текущим открытием.
+[vendor/dropdown.css](./vendor/dropdown.css) содержит базовое меню Dropdown,
+команды, разделитель, danger/disabled, стрелку и токены из того же архива.
+Dropdown.svelte добавляет нативные menu buttons и управление фокусом;
+dropdown.engine.ts — навигацию и typeahead, popup.dom.ts — поверхность и выравнивание.
+Корневые селекторы Dropdown ограничены :where(.ant-dropdown-css-var), чтобы
+не менять существующие popover-фильтры Table с классом ant-dropdown.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.

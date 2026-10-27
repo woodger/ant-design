@@ -227,6 +227,11 @@
   --ant-table-cell-padding-inline-sm: var(--ant-padding-xs);
 }
 
+.ant-dropdown-css-var {
+  --ant-control-item-bg-hover: var(--ant-color-fill-tertiary);
+  --ant-dropdown-padding-block: max(2px, calc((var(--ant-control-height) - var(--ant-font-size) * var(--ant-line-height)) / 2));
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);

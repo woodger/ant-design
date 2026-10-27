@@ -64,6 +64,16 @@ describe('Tooltip positioning', () => {
     expect(position.placement).toBe('bottom');
     expect(position.top).toBe(8);
   });
+
+  it.each([['left', 200, 40], ['right', 160, 80]] as const)('aligns a vertical menu to the %s edge', (align, left, arrowX) => {
+    expect(getTooltipPosition(anchor, popup, viewport, 'bottom', true, align)).toMatchObject({ left, top: 208, arrowX });
+  });
+
+  it('preserves edge alignment when flipping and clamps it at the viewport boundary', () => {
+    expect(getTooltipPosition({ ...anchor, y: 380 }, popup, viewport, 'bottom', true, 'right')).toMatchObject({ placement: 'top', left: 160 });
+    expect(getTooltipPosition({ ...anchor, x: 580 }, popup, viewport, 'bottom', true, 'left').left).toBe(472);
+    expect(getTooltipPosition({ ...anchor, x: 0 }, popup, viewport, 'top', false, 'right').left).toBe(-40);
+  });
 });
 
 describe('Tooltip delays', () => {

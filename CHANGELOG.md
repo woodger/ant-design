@@ -9,6 +9,10 @@
 
 ### Added
 
+- Dropdown: типизированное плоское menu.items с иконками, disabled/danger и
+  разделителями, bind:open, click/hover, клавиатура/typeahead, Tab/Escape и
+  возврат фокуса. Добавлены стили Ant Design 6.6.8, шесть положений, переворот,
+  темы/RTL, Modal, пример действий строки Table и unit/SSR/Chromium-проверки.
 - Popconfirm: title/description/icon snippets, подтверждение и отмена,
   bind:open, disabled, настройки кнопок, Promise/loading, ошибки и повтор,
   защита от повторного запуска и поздних результатов. Добавлены стили Ant Design

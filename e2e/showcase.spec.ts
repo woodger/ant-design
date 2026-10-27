@@ -1,5 +1,34 @@
 import { test, expect } from './test';
 
+test('showcase runs table row commands through Dropdown and opens a member card', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#dropdown');
+  const fixture = page.locator('#dropdown');
+  const button = fixture.getByRole('button', { name: 'Действия: Анна', exact: true });
+  const popup = page.getByRole('menu', { name: 'Действия: Анна', exact: true });
+  await button.press('ArrowDown');
+  await expect(popup.getByRole('menuitem', { name: 'Открыть карточку', exact: true })).toBeFocused();
+  await page.screenshot({ path: testInfo.outputPath('dropdown-table.png') });
+  await page.keyboard.press('Enter');
+  const dialog = page.getByRole('dialog', { name: 'Карточка: Анна', exact: true });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText('Разработчик');
+  await expect(popup).toBeHidden();
+  await page.keyboard.press('Escape');
+  await expect(button).toBeFocused();
+  await button.click();
+  await popup.getByRole('menuitem', { name: 'Создать копию', exact: true }).click();
+  await expect(fixture.getByRole('cell', { name: 'Анна (копия)', exact: true })).toBeVisible();
+  await expect(fixture.getByRole('status', { name: 'Результат действия меню', exact: true })).toHaveText('Анна: создана копия.');
+  await button.press('ArrowUp');
+  await page.keyboard.press('Enter');
+  await expect(fixture.getByRole('cell', { name: 'Анна', exact: true }).locator('..')).toContainText('В архиве');
+  await button.click();
+  await expect(popup.getByRole('menuitem', { name: 'В архив', exact: true })).toBeDisabled();
+  await page.keyboard.press('Escape');
+  await fixture.getByRole('button', { name: 'Восстановить участников', exact: true }).click();
+  await expect(fixture.getByRole('cell', { name: 'Анна (копия)', exact: true })).toHaveCount(0);
+});
+
 test('showcase cancels deletion, handles failure and retries Popconfirm before removing a table row', async ({ page }, testInfo) => {
   await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
   await page.goto('/ant-design#popconfirm');
@@ -652,6 +681,7 @@ test.describe('server-rendered showcase', () => {
     await expect(expanded.locator('.ant-table-row')).toHaveCount(3);
     await expect(expanded.locator('.ant-table-expanded-row')).toContainText('marina@example.com');
     await expect(expanded.getByRole('button', { name: 'Свернуть строку 1', exact: true })).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.locator('dialog')).not.toBeVisible();
+    await expect(page.locator('#modal dialog')).not.toBeVisible();
+    await expect(page.locator('#dropdown dialog')).not.toBeVisible();
   });
 });

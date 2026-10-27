@@ -11,6 +11,8 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
   onDismiss: (reason: 'escape' | 'outside') => void;
   preserveFocus?: boolean;
   maxWidth?: string;
+  align?: 'left' | 'right';
+  matchAnchorWidth?: boolean;
   onVisibilityChange?: (visible: boolean) => void;
 }): () => void {
   const document = anchor.ownerDocument;
@@ -48,6 +50,7 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
     }
 
     popup.style.maxWidth = `min(${options.maxWidth ?? 'var(--ant-tooltip-max-width)'}, ${Math.max(0, viewport.width - 16)}px)`;
+    if (options.matchAnchorWidth) popup.style.minWidth = `${Math.min(rect.width, Math.max(0, viewport.width - 16))}px`;
     popup.hidden = false;
 
     if (!popup.matches(':popover-open')) {
@@ -59,7 +62,7 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
     }
 
     const bounds = popup.getBoundingClientRect();
-    const position = getTooltipPosition(rect, bounds, viewport, options.placement, options.autoAdjustOverflow);
+    const position = getTooltipPosition(rect, bounds, viewport, options.placement, options.autoAdjustOverflow, options.align);
     const signature = `${position.left}:${position.top}:${position.arrowX}:${position.arrowY}:${position.placement}`;
 
     if (signature !== lastPosition) {

@@ -19,7 +19,7 @@ export function getTooltipDelay(seconds: number | undefined, fallback = 0.1): nu
   return Math.min(2_147_483_647, Math.max(0, typeof seconds === 'number' && Number.isFinite(seconds) ? seconds : fallback) * 1000);
 }
 
-export function getTooltipPosition(anchor: TooltipRect, popup: { width: number; height: number }, viewport: TooltipRect, placement: TooltipPlacement, autoAdjustOverflow = true): TooltipPosition {
+export function getTooltipPosition(anchor: TooltipRect, popup: { width: number; height: number }, viewport: TooltipRect, placement: TooltipPlacement, autoAdjustOverflow = true, align?: 'left' | 'right'): TooltipPosition {
   const gap = 8;
   const padding = 8;
   const opposite: Record<TooltipPlacement, TooltipPlacement> = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
@@ -37,6 +37,8 @@ export function getTooltipPosition(anchor: TooltipRect, popup: { width: number; 
   const centerY = anchor.y + anchor.height / 2;
   let left = placement === 'left' ? anchor.x - popup.width - gap : placement === 'right' ? anchor.x + anchor.width + gap : centerX - popup.width / 2;
   let top = placement === 'top' ? anchor.y - popup.height - gap : placement === 'bottom' ? anchor.y + anchor.height + gap : centerY - popup.height / 2;
+
+  if ((placement === 'top' || placement === 'bottom') && align) left = align === 'left' ? anchor.x : anchor.x + anchor.width - popup.width;
 
   if (autoAdjustOverflow) {
     left = Math.max(viewport.x + padding, Math.min(left, viewport.x + viewport.width - padding - popup.width));

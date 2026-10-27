@@ -1,5 +1,5 @@
-export function connectPopoverTrigger(element: Element, id: string, expanded: boolean): () => void {
-  const values = { 'aria-haspopup': 'dialog', 'aria-expanded': String(expanded) };
+export function connectPopoverTrigger(element: Element, id: string, expanded: boolean, kind: 'dialog' | 'menu' = 'dialog'): () => void {
+  const values = { 'aria-haspopup': kind, 'aria-expanded': String(expanded) };
   const previous = new Map<string, string | null>();
 
   for (const attribute of Object.keys(values)) previous.set(attribute, element.getAttribute(attribute));
