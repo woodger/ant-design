@@ -7,6 +7,7 @@
   import RadioExample from './RadioExample.svelte';
   import SwitchExample from './SwitchExample.svelte';
   import InputNumberExample from './InputNumberExample.svelte';
+  import SliderExample from './SliderExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -14,6 +15,7 @@
     ['buttons', 'Button'],
     ['inputs', 'Input'],
     ['input-number', 'InputNumber'],
+    ['slider', 'Slider'],
     ['select', 'Select'],
     ['select-multiple', 'Select · multiple'],
     ['checkbox', 'Checkbox'],
@@ -136,7 +138,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">15 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">16 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -190,6 +192,12 @@
           <div class="section-heading"><h3>InputNumber</h3></div>
           <p class="section-description">Введите количество и цену, измените их стрелками клавиатуры или кнопками поля. Форма проверяет числа и рассчитывает стоимость.</p>
           <div class="panel"><InputNumberExample /></div>
+        </section>
+
+        <section id="slider">
+          <div class="section-heading"><h3>Slider</h3></div>
+          <p class="section-description">Настройте громкость ползунком или числовым полем. Применённый уровень обновляется после завершения действия; форма проверяет диапазон.</p>
+          <div class="panel"><SliderExample /></div>
         </section>
 
         <section id="select">

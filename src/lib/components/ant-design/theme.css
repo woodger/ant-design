@@ -140,6 +140,18 @@
   --ant-input-number-padding-block-lg: max(0px, calc((var(--ant-control-height-lg) - var(--ant-font-size-lg) * var(--ant-line-height-lg) - var(--ant-line-width) * 2) / 2));
 }
 
+.ant-slider {
+  --ant-slider-rail-bg: var(--ant-color-fill-quaternary);
+  --ant-slider-rail-hover-bg: var(--ant-color-fill-tertiary);
+  --ant-slider-track-bg: var(--ant-color-primary-border);
+  --ant-slider-track-hover-bg: var(--ant-color-primary-border-hover);
+  --ant-slider-track-bg-disabled: var(--ant-color-fill-quaternary);
+  --ant-slider-handle-color: var(--ant-color-primary-border);
+  --ant-slider-handle-active-color: var(--ant-color-primary);
+  --ant-slider-handle-active-outline-color: color-mix(in srgb, var(--ant-color-primary) 20%, transparent);
+  --ant-slider-handle-color-disabled: var(--ant-color-text-disabled);
+}
+
 .ant-select-css-var {
   --ant-select-selector-bg: var(--ant-color-bg-container);
   --ant-select-clear-bg: var(--ant-color-bg-container);

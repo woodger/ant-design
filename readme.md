@@ -68,6 +68,7 @@ CheckboxGroup, выбор всех прав, отмену reset и фокус о
 Radio/RadioGroup, нативную клавиатуру, независимые группы и одиночные значения 0/false,
 Switch, loading, сохранение с откатом и поздние ответы после удаления,
 InputNumber, числовой черновик, дробный шаг, precision, null/zero, FormData и reset,
+Slider, мышь и касание, завершение и отмену действий, ориентацию, reverse и связь с InputNumber,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

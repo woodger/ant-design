@@ -9,6 +9,10 @@
 
 ### Added
 
+- Slider с одним бегунком: bind:value, min/max/step, мышь и касание,
+  клавиатура, onChangeComplete, ориентация, reverse/RTL, disabled, FormItem,
+  FormData и reset. Добавлены стили Ant Design 6.6.8, темы, отмена активных
+  действий, пример с InputNumber и unit/SSR/Chromium-проверки.
 - InputNumber: bind:value с number/null, defaultValue, числовой черновик,
   min/max, дробный step, precision, кнопки и клавиатура, disabled/readonly,
   FormItem, FormData и reset. Добавлены стили Ant Design 6.6.8, темы, RTL,

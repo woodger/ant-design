@@ -12,6 +12,7 @@
   import RadioFixtures from './RadioFixtures.svelte';
   import SwitchFixtures from './SwitchFixtures.svelte';
   import InputNumberFixtures from './InputNumberFixtures.svelte';
+  import SliderFixtures from './SliderFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -87,6 +88,7 @@
     <RadioFixtures />
     <SwitchFixtures />
     <InputNumberFixtures />
+    <SliderFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

@@ -276,6 +276,65 @@ test('showcase validates RadioGroup choices, submits zero and false and resets i
   await expect(fixture.getByRole('status')).toHaveCount(0);
 });
 
+test('showcase synchronizes Slider and InputNumber, applies a completed change and validates and resets volume', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#slider');
+  const slider = fixture.getByRole('slider', { name: 'Громкость уведомлений', exact: true });
+  const exact = fixture.getByRole('spinbutton', { name: 'Точная громкость', exact: true });
+  const applied = fixture.getByRole('status', { name: 'Применённая громкость', exact: true });
+  await expect(slider).toHaveValue('40');
+  await slider.focus();
+  await page.keyboard.down('ArrowRight');
+  await expect(exact).toHaveValue('45');
+  await expect(applied).toHaveText('Применено: 40%.');
+  await page.keyboard.up('ArrowRight');
+  await expect(applied).toHaveText('Применено: 45%.');
+  await exact.fill('70');
+  await exact.press('Tab');
+  await expect(slider).toHaveValue('70');
+  await expect(applied).toHaveText('Применено: 70%.');
+  expect(await fixture.locator('form').evaluate((element) => new FormData(element as HTMLFormElement).getAll('volume'))).toEqual(['70']);
+  await fixture.getByRole('button', { name: 'Сохранить громкость', exact: true }).click();
+  await expect(fixture.getByRole('status', { name: 'Результат настройки громкости', exact: true })).toHaveText('Громкость сохранена: 70%.');
+  await fixture.screenshot({ path: testInfo.outputPath('slider.png') });
+  await fixture.getByRole('button', { name: 'Сбросить громкость', exact: true }).click();
+  await expect(slider).toHaveValue('40');
+  await expect(exact).toHaveValue('40');
+  await expect(applied).toHaveText('Применено: 40%.');
+  await exact.fill('');
+  await exact.press('Tab');
+  await expect(exact).toHaveValue('0');
+  await expect(slider).toHaveValue('0');
+  await fixture.getByRole('button', { name: 'Сохранить громкость', exact: true }).click();
+  await expect(slider).toBeFocused();
+  await expect(slider).toHaveAttribute('aria-invalid', 'true');
+  await expect(slider).toHaveAccessibleDescription('Для сохранения выберите громкость от 10 до 90.');
+  await slider.press('ArrowRight');
+  await slider.press('ArrowRight');
+  await fixture.getByRole('button', { name: 'Сохранить громкость', exact: true }).click();
+  await expect(fixture.getByRole('status', { name: 'Результат настройки громкости', exact: true })).toHaveText('Громкость сохранена: 10%.');
+});
+
+test('showcase changes Slider orientation and reverse and disables both synchronized controls', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#slider');
+  const slider = fixture.getByRole('slider', { name: 'Громкость уведомлений', exact: true });
+  const exact = fixture.getByRole('spinbutton', { name: 'Точная громкость', exact: true });
+  await fixture.getByRole('checkbox', { name: 'Вертикальное расположение', exact: true }).check();
+  await fixture.getByRole('checkbox', { name: 'Обратное направление', exact: true }).check();
+  await expect(slider).toHaveAttribute('aria-orientation', 'vertical');
+  await slider.press('ArrowUp');
+  await expect(slider).toHaveValue('35');
+  await expect(exact).toHaveValue('35');
+  await fixture.screenshot({ path: testInfo.outputPath('slider-vertical.png') });
+  await fixture.getByRole('checkbox', { name: 'Недоступно', exact: true }).check();
+  await expect(slider).toBeDisabled();
+  await expect(exact).toBeDisabled();
+  await fixture.getByRole('checkbox', { name: 'Недоступно', exact: true }).uncheck();
+  await expect(slider).toBeEnabled();
+  await expect(slider).toHaveValue('35');
+});
+
 test('showcase calculates a numeric order, preserves zero and submits and resets its form', async ({ page }, testInfo) => {
   await page.goto('/ant-design');
   const fixture = page.locator('#input-number');
@@ -483,6 +542,8 @@ test.describe('server-rendered showcase', () => {
     await expect(page.getByRole('switch', { name: 'Еженедельный отчёт', exact: true })).toHaveAttribute('aria-checked', 'false');
     await expect(page.getByRole('spinbutton', { name: 'Количество', exact: true })).toHaveValue('2');
     await expect(page.getByRole('spinbutton', { name: 'Цена за единицу', exact: true })).toHaveValue('12.50');
+    await expect(page.getByRole('slider', { name: 'Громкость уведомлений', exact: true })).toHaveValue('40');
+    await expect(page.getByRole('spinbutton', { name: 'Точная громкость', exact: true })).toHaveValue('40');
     await expect(page.getByRole('navigation', { name: 'Пример пагинации', exact: true }).locator('[aria-current="page"]')).toHaveText('1');
     const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
     await expect(table.locator('tbody tr')).toHaveCount(5);

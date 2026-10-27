@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, InputNumber, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
@@ -68,6 +68,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Button | Default, primary, dashed, text, link; loading, danger, block, shape; snippets для содержимого и иконки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
+| Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, ориентация, reverse/RTL, FormData, reset и FormItem |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | CheckboxGroup | Типизированный массив выбранных значений, options, disabled, нативные checkbox, FormData, reset и интеграция с FormItem |
@@ -170,6 +171,95 @@ Form восстанавливает её initialValues и сбрасывает �
 Пример количества, цены и расчёта стоимости доступен на `/ant-design#input-number`.
 Реализован вариант outlined с boolean controls. `stringMode`, formatter/parser,
 другие варианты оформления, prefix/suffix и изменение колесом пока отсутствуют.
+
+## Slider
+
+Slider выбирает одно число через `bind:value` и `onValueChange(value)`.
+`defaultValue` фиксируется при создании отдельного control и по умолчанию
+равен 0. При привязке задавайте начальное число у владельца без defaultValue.
+Значение Slider всегда числовое; пустое состояние и выбор диапазона в эту
+версию не входят.
+
+```svelte
+<script lang="ts">
+  import { Slider } from '$lib/components/ant-design';
+
+  let volume = $state(40);
+</script>
+
+<label for="volume">Громкость</label>
+<Slider id="volume" name="volume" bind:value={volume} min={0} max={100} step={5} />
+```
+
+Основой служит нативный input[type=range]. Нажатие на дорожку и перетаскивание
+мышью или касанием меняют число сразу; выход указателя за границы ограничивает
+значение. `onChangeComplete(value)` вызывается один раз после отпускания
+указателя или завершения последовательности клавиш, если число изменилось.
+Удержание клавиши может вызвать несколько onValueChange, но один
+onChangeComplete при отпускании. Действие на уже достигнутой границе не
+создаёт callbacks. Нативная пара input/change без pointer/key также
+поддерживается. Для числовой модели используйте onValueChange, нативные
+события остаются доступны через HTML props.
+
+По умолчанию min=0, max=100, step=1. Число ограничивается границами и
+выравнивается по ближайшему шагу от min; равные расстояния округляются
+к большему значению. Дробные шаги вычисляются без накопления хвостов вроде
+`0.30000000000000004`. Задавайте step так, чтобы он делил max - min.
+Если деления нет, последняя достижимая ступень находится ниже max,
+как у нативного range. Некорректный step заменяется на 1, нечисловые границы —
+на defaults; max < min сворачивается в min. Равные границы дают фиксированное
+значение без изменений и callbacks.
+
+Внешние value и изменения границ не вызывают callbacks и не изменяют состояние
+владельца. Для отображения и FormData используется нормализованное число.
+NaN и Infinity отображаются как min. При пользовательском изменении владелец
+получает новое допустимое число.
+
+Стрелки меняют число на один шаг, Home/End выбирают первую/последнюю
+достижимую ступень, PageUp/PageDown — два шага. `keyboard={false}` отключает
+эти клавиши, сохраняя мышь и касание. Нативный onkeydown вызывается первым;
+preventDefault отменяет обработку. PreventDefault в onpointerdown отменяет
+начало перетаскивания. Имя задаётся label, FormItem или aria-label/aria-labelledby;
+aria-valuetext позволяет описать единицу измерения. Фокус остаётся у input,
+а видимый бегунок показывает кольцо клавиатурного фокуса.
+
+Orientation принимает horizontal/vertical. Вертикальному Slider задайте высоту,
+например `style="height: 160px"`; min по умолчанию находится снизу. Reverse
+меняет направление. В RTL горизонтальный min находится справа; reverse
+меняет это правило обратно. Вертикальное направление от RTL не меняется.
+Стрелки следуют расположению: вправо двигает бегунок вправо, вверх — вверх;
+в горизонтальном режиме вверх увеличивает число. Поддерживаются светлая/тёмная
+темы, основные цвета, компактный режим и prefers-reduced-motion.
+
+Disabled наследуется из Form/FormItem и ConfigProvider; disabled=false
+переопределяет наследование. Disabled исключает input из Tab и FormData.
+Смена владельца, диапазона или направления, отключение, потеря захвата,
+blur и удаление control отменяют активное действие без позднего
+onChangeComplete. Новое действие работает независимо от отменённого.
+Слушатели и ожидающие reset освобождаются при удалении.
+
+Для Form передавайте `value={form.values.volume}` и
+`onValueChange={(value) => form.setFieldValue('volume', value)}`.
+FormItem передаёт id, name, label, ошибку, описание и blur/touched.
+Проверкой числа управляют правила Form: required принимает 0, min/max
+сравнивают числа; нативный range всегда имеет значение. При ошибке Form
+фокусирует input. Reset модели восстанавливает initialValues и отменяет
+незавершённое действие, включая reset к прежнему числу.
+
+Нативная FormData содержит одно поле с числом в строковом виде, включая '0'.
+Атрибут form связывает control с внешней формой. Любой reset этой формы
+отменяет активное действие. Если reset не отменён через preventDefault,
+привязка получает исходный defaultValue с учётом текущих границ и шага
+в следующей задаче, без callbacks. Отменённый reset сохраняет текущее число.
+
+Галерея `/ant-design#slider` содержит Slider и InputNumber с одним владельцем
+состояния. Числовое поле использует function binding; пустой ввод означает 0
+и после blur отображается как 0. Применённая громкость обновляется после
+завершения действия. Числовое поле не имеет name, поэтому FormData содержит
+громкость один раз. Также показаны ориентация, reverse, disabled, проверка и reset.
+
+Реализован один бегунок. Range, marks/dots, tooltip, перетаскивание диапазона
+и динамическое добавление бегунков пока отсутствуют.
 
 ## Select
 
@@ -981,6 +1071,8 @@ Switch использует нативную кнопку с role=switch: Space 
 а checked-состояние передаёт aria-checked.
 InputNumber использует input с role=spinbutton: стрелки меняют число, Enter
 завершает черновик. Кнопки увеличения и уменьшения сохраняют фокус в input.
+Slider использует нативный range: стрелки, Home/End и PageUp/PageDown,
+label и видимый фокус бегунка. Tab не добавляет отдельную остановку на дорожке.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1036,6 +1128,8 @@ Switch, snippets, loading, keyboard, FormData, reset, сохранение с о
 повторную попытку, поздние ответы после удаления и reduced motion,
 InputNumber, промежуточный текст, курсор, IME, дробный шаг, precision, null/zero,
 числовую валидацию, нативный reset, reset модели и FormData,
+Slider, мышь и касание через протокол браузера, завершение и отмену действий,
+дробный шаг, reverse/RTL, ориентацию, фокус, FormData, reset и связь с InputNumber,
 сочетания фильтров, сортировки, страниц и выбора Table, loading и замену данных,
 серверный total, сохранение ключей между страницами, отмену запросов, поздние ответы,
 ошибки/retry и повторную загрузку допустимой страницы при уменьшении total,
@@ -1067,7 +1161,10 @@ Checkbox, Pagination, Table, Modal, Form и связанные animations; гл�
 RadioGroup из того же архива; [vendor/switch.css](./vendor/switch.css) содержит
 Switch вместе с правилами reduced motion.
 InputNumber outlined находится в [vendor/input-number.css](./vendor/input-number.css),
-адаптация тем и reduced motion — в theme.css и InputNumber.svelte. Селекторы
+адаптация тем и reduced motion — в theme.css и InputNumber.svelte.
+[vendor/slider.css](./vendor/slider.css) содержит Slider с одним бегунком из
+того же архива; нативный control и reduced motion адаптированы в Slider.svelte.
+Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.
 
