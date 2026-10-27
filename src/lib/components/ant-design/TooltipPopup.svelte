@@ -1,7 +1,8 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { useConfig } from './config-context';
-  import { connectTooltipDescription, connectTooltipPopup } from './tooltip.dom';
+  import { connectTooltipDescription } from './tooltip.dom';
+  import { connectPopup } from './popup.dom';
   import type { TooltipPlacement } from './tooltip.types';
 
   let { title, open, anchor, describe, trigger, placement = 'top', arrow = true, autoAdjustOverflow = true, onDismiss, onHoverChange }: {
@@ -31,7 +32,7 @@
   $effect(() => {
     if (!popup || !anchor || !open || !available) return;
 
-    return connectTooltipPopup(popup, anchor, { trigger, placement, autoAdjustOverflow, onDismiss, onPlacement: (next) => { actualPlacement = next; } });
+    return connectPopup(popup, anchor, { trigger, placement, autoAdjustOverflow, onDismiss, onPlacement: (next) => { actualPlacement = next; } });
   });
 </script>
 

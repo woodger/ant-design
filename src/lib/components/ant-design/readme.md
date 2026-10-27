@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Form и FormItem.
+Modal, Tooltip, Popover, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -79,6 +79,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор и раскрытие строк, закрепление заголовка и колонок, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
 | Tooltip | Текст, hover/focus, bind:open, задержки, Escape, четыре положения, стрелка, автоматический переворот и aria-describedby |
+| Popover | Интерактивные snippets, click/hover/focus, bind:open, четыре положения, стрелка, автоматический переворот, клавиатура и возврат фокуса |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -327,6 +328,82 @@ Placement принимает top/bottom/left/right; arrow=false скрывает
 Галерея находится на `/ant-design#tooltip`. Первая версия поддерживает обычный
 текст и четыре положения; rich snippets, click/contextMenu, именованные цвета,
 corner placements и getPopupContainer пока отсутствуют.
+
+## Popover
+
+```svelte
+<script lang="ts">
+  import { Button, Popover } from '$lib/components/ant-design';
+
+  let open = $state(false);
+</script>
+
+{#snippet content()}
+  <p>Настройки сохранены.</p>
+  <Button onclick={() => { open = false; }}>Закрыть</Button>
+{/snippet}
+
+<Popover title="Настройки" {content} trigger="click" bind:open>
+  <Button>Открыть настройки</Button>
+</Popover>
+```
+
+Title и content принимают строку, число или Svelte snippet; число 0 отображается,
+строки экранируются. Children — snippet с одним основным DOM-элементом, например
+Button или нативной кнопкой. Он служит anchor и получает aria-haspopup=dialog,
+aria-controls и aria-expanded. Для клавиатурного доступа используйте фокусируемый
+элемент. Карточка получает role=dialog и имя от title; при отсутствии заголовка
+задайте aria-label. Она сохраняет немодальное поведение.
+
+`bind:open`, defaultOpen и `onOpenChange(open)` следуют модели Svelte, как у
+Tooltip. DefaultOpen учитывается один раз; внешнее изменение open и начальное
+состояние не вызывают callback. Обработчики дочернего элемента сохраняются;
+preventDefault в его onclick отменяет открытие по клику.
+
+Trigger по умолчанию `['hover', 'focus']`. Поддерживаются click, hover, focus,
+их массив и пустой массив для программного показа. MouseEnterDelay и
+mouseLeaveDelay задаются в секундах, по умолчанию 0.1; фокус открывает карточку
+сразу. Touch не имитирует hover. Наведение на карточку и фокус внутри неё
+сохраняют видимость. При сочетании hover/focus с click первый клик закрепляет
+открытую карточку, второй закрывает её.
+
+Открытие кликом, Enter или Space переводит фокус на первый доступный control
+в содержимом; для текстовой карточки фокусируется сама поверхность. Открытие
+наведением, фокусом или внешним open сохраняет текущий фокус. Tab/Shift+Tab
+следуют DOM-порядку между trigger, содержимым и соседними controls. Выход фокуса
+за пределы карточки и trigger закрывает её, если нет активного наведения.
+Escape закрывает карточку и возвращает фокус из содержимого к trigger;
+нажатие снаружи сохраняет фокус на выбранном внешнем элементе. Закрытие через
+bind:open возвращает фокус, если он находился внутри карточки.
+
+Placement принимает top/bottom/left/right, arrow=false скрывает стрелку.
+AutoAdjustOverflow по умолчанию переворачивает и сдвигает поверхность у края
+viewport; false сохраняет запрошенное положение. Позиция обновляется при
+прокрутке, resize, перемещении anchor и изменении размеров содержимого.
+Смена положения сохраняет текущий ввод, выделение и фокус. Class и style
+относятся к wrapper. Поддерживаются темы ConfigProvider, compact, RTL и
+prefers-reduced-motion.
+
+Popover использует нативный `popover="manual"` и требует Popover API.
+Поверхность остаётся в исходном DOM-поддереве и показывается в верхнем слое:
+overflow контейнера не обрезает её, темы и работа внутри Modal сохраняются.
+Вложенный Tooltip обрабатывает Escape первым; затем закрывается Popover,
+следующим Escape — Modal. Существующий aria-describedby trigger сохраняется.
+Aria-controls объединяется с имеющимися ID; при отключении карточки её ID
+удаляется, а aria-haspopup/aria-expanded восстанавливаются с учётом изменений
+владельца. Позиционирование и связь с trigger подключаются после гидратации;
+в SSR поверхность скрыта.
+
+Пустые title и content отключают показ и ARIA-связь. Если один из них является
+snippet, компонент считает содержимое доступным; условное отсутствие текста
+внутри snippet контролирует его владелец. Закрытое содержимое остаётся
+смонтированным и сохраняет состояние. Отложенные открытия отменяются при
+удалении компонента, очистке содержимого и замене trigger.
+
+Галерея `/ant-design#popover` содержит редактор профиля и информационную
+карточку с кнопкой. Первая версия ограничена четырьмя положениями;
+contextMenu, corner placements, destroyOnHidden, getPopupContainer и
+произвольные цветовые варианты пока отсутствуют.
 
 ## Select
 
@@ -1142,6 +1219,9 @@ Slider использует нативный range: стрелки, Home/End и 
 label и видимый фокус бегунка. Tab не добавляет отдельную остановку на дорожке.
 Tooltip использует role=tooltip и aria-describedby основного дочернего control.
 Поверхность не перехватывает фокус; Escape сохраняет текущий control.
+Popover предоставляет именованный немодальный dialog с доступными кнопками и
+полями. Trigger связан через aria-controls/aria-expanded; Escape возвращает
+фокус из содержимого, Tab продолжает естественную навигацию.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1217,6 +1297,11 @@ Tooltip проверяется на задержки и отмену ожида�
 внутри Modal, сохранение описаний, четыре положения, переворот, обрезающие
 контейнеры, прокрутку, resize, темы, RTL и узкий экран. Проверяются форматирование
 подсказки Slider, слежение за бегунком и отсутствие числовых callbacks от закрытия.
+Popover проверяется на ввод и действия в snippets, способы открытия и их
+сочетания, естественный порядок Tab, возврат фокуса, изменения владельца,
+сохранение ARIA, положения и переворот, прокрутку/resize, вложенный Tooltip,
+Modal, темы/RTL, touch и узкий экран. Галерея проверяет сохранение и отмену
+редактирования профиля.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1240,7 +1325,11 @@ InputNumber outlined находится в [vendor/input-number.css](./vendor/in
 того же архива; нативный control и reduced motion адаптированы в Slider.svelte.
 [vendor/tooltip.css](./vendor/tooltip.css) содержит базовые Tooltip и стрелку
 из того же архива. Native popover, позиционирование и reduced motion реализованы
-в TooltipPopup.svelte и tooltip.dom.ts; тёмная тема адаптирована в theme.css.
+в TooltipPopup.svelte и popup.dom.ts; тёмная тема адаптирована в theme.css.
+[vendor/popover.css](./vendor/popover.css) содержит базовые Popover и стрелку
+из того же архива. Общая DOM-логика поверхностей находится в popup.dom.ts;
+расчёт положения переиспользует tooltip.engine.ts. Popover.svelte и popover.dom.ts
+добавляют интерактивное содержимое, ARIA-связь и управление фокусом.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.

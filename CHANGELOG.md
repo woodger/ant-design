@@ -9,6 +9,11 @@
 
 ### Added
 
+- Popover: строки и Svelte snippets, bind:open, defaults, click/hover/focus,
+  интерактивные поля и кнопки, естественный порядок Tab, Escape и возврат фокуса.
+  Добавлены стили Ant Design 6.6.8, четыре положения, переворот у края окна,
+  совместная работа с Tooltip и Modal, темы/RTL, редактор профиля в галерее
+  и SSR/Chromium-проверки.
 - Tooltip: текст и числовой ноль, bind:open, defaults, hover/focus, задержки,
   Escape, четыре положения, стрелка, автоматический переворот, aria-describedby
   и нативный popover внутри Modal. Добавлены подсказки Slider с форматированием,

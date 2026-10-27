@@ -1,5 +1,46 @@
 import { test, expect } from './test';
 
+test('showcase edits and saves a profile inside Popover and restores its trigger focus', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#popover');
+  const fixture = page.locator('#popover');
+  const button = fixture.getByRole('button', { name: 'Настроить профиль', exact: true });
+  await button.click();
+  const popup = fixture.getByRole('dialog', { name: 'Редактирование профиля', exact: true });
+  const input = popup.getByRole('textbox', { name: 'Имя в профиле', exact: true });
+  await expect(input).toBeFocused();
+  await input.fill('Мария');
+  await popup.getByRole('button', { name: 'Сохранить профиль', exact: true }).click();
+  await expect(popup).toBeHidden();
+  await expect(button).toBeFocused();
+  await expect(fixture.getByRole('status', { name: 'Сохранённое имя профиля', exact: true })).toHaveText('В карточке: Мария');
+  await button.click();
+  await expect(input).toHaveValue('Мария');
+  await input.fill('Черновик');
+  await popup.getByRole('button', { name: 'Отмена', exact: true }).click();
+  await button.click();
+  await expect(input).toHaveValue('Мария');
+  await page.screenshot({ path: testInfo.outputPath('popover.png') });
+});
+
+test('showcase changes Popover placement and opens its hover and focus card', async ({ page }) => {
+  await page.goto('/ant-design#popover');
+  const fixture = page.locator('#popover');
+  await fixture.getByRole('combobox', { name: 'Положение карточки', exact: true }).selectOption('bottom');
+  await fixture.getByRole('checkbox', { name: 'Стрелка карточки', exact: true }).uncheck();
+  const button = fixture.getByRole('button', { name: 'Подробности о профиле', exact: true });
+  await button.focus();
+  const popup = fixture.getByRole('dialog', { name: 'Карточка участника', exact: true });
+  await expect(popup).toBeVisible();
+  await expect(popup).toHaveClass(/ant-popover-placement-bottom/);
+  await expect(popup.locator('.ant-popover-arrow')).toHaveCount(0);
+  await button.press('Tab');
+  const close = popup.getByRole('button', { name: 'Понятно', exact: true });
+  await expect(close).toBeFocused();
+  await close.click();
+  await expect(popup).toBeHidden();
+  await expect(button).toBeFocused();
+});
+
 test('showcase opens Tooltip with keyboard and external state and changes placement and arrow', async ({ page }, testInfo) => {
   await page.goto('/ant-design#tooltip');
   const fixture = page.locator('#tooltip');

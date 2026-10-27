@@ -14,6 +14,7 @@
   import InputNumberFixtures from './InputNumberFixtures.svelte';
   import SliderFixtures from './SliderFixtures.svelte';
   import TooltipFixtures from './TooltipFixtures.svelte';
+  import PopoverFixtures from './PopoverFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -91,6 +92,7 @@
     <InputNumberFixtures />
     <SliderFixtures />
     <TooltipFixtures />
+    <PopoverFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

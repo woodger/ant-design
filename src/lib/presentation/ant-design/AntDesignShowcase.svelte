@@ -9,6 +9,7 @@
   import InputNumberExample from './InputNumberExample.svelte';
   import SliderExample from './SliderExample.svelte';
   import TooltipExample from './TooltipExample.svelte';
+  import PopoverExample from './PopoverExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -28,7 +29,8 @@
     ['server-table', 'Table · API'],
     ['expandable-table', 'Table · подробности'],
     ['modal', 'Modal'],
-    ['tooltip', 'Tooltip']
+    ['tooltip', 'Tooltip'],
+    ['popover', 'Popover']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -140,7 +142,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">17 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">18 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -332,6 +334,12 @@
           <div class="section-heading"><h3>Tooltip</h3></div>
           <p class="section-description">Текстовые подсказки для наведения и фокуса, четыре положения и управление видимостью.</p>
           <div class="panel"><TooltipExample /></div>
+        </section>
+
+        <section id="popover">
+          <div class="section-heading"><h3>Popover</h3></div>
+          <p class="section-description">Всплывающая карточка с кнопками и полями ввода. Откройте редактор по клику или карточку участника наведением и фокусом.</p>
+          <div class="panel"><PopoverExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>
