@@ -20,6 +20,13 @@ export interface Locale {
   pagination?: Partial<PaginationLocale>;
   table?: Partial<TableLocale>;
   inputNumber?: Partial<InputNumberLocale>;
+  progress?: Partial<ProgressLocale>;
+}
+
+export interface ProgressLocale {
+  label: string;
+  successText: string;
+  exceptionText: string;
 }
 
 export interface InputNumberLocale {
@@ -63,6 +70,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  progress: { label: 'Ход выполнения', successText: 'Завершено', exceptionText: 'Ошибка' },
   inputNumber: {
     increase: 'Увеличить значение',
     decrease: 'Уменьшить значение',
@@ -107,6 +115,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  progress: { label: 'Progress', successText: 'Completed', exceptionText: 'Failed' },
   inputNumber: {
     increase: 'Increase value',
     decrease: 'Decrease value',

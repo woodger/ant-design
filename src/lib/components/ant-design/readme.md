@@ -6,7 +6,7 @@
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Form и FormItem.
+MessageHolder, NotificationHolder, Progress, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -89,6 +89,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Alert | Четыре статуса, title/description/icon/action snippets, outlined/filled, banner, закрытие с callbacks, анимацией и доступным фокусом |
 | MessageHolder / createMessage | Изолированная очередь пяти типов сообщений, ключи и обновления, таймеры, hover-пауза, maxCount, callable/thenable handle и контекст ConfigProvider |
 | NotificationHolder / createNotification | Подробные уведомления с title/description/actions snippets, четыре статуса, шесть положений, ключи, таймеры, hover/focus-пауза и закрытие |
+| Progress | Line/circle, управляемый percent, статусы, размеры, цвета, форматирование, ARIA, темы/RTL/reduced motion и SSR |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1103,10 +1104,93 @@ DOM-видимость и фокус — в notice.dom.ts; ими также п�
 Галерея `/ant-design#notification` готовит CSV-отчёт, обновляет уведомление по
 ключу, скачивает настоящий файл и предлагает повтор после ошибки. Сброс и
 удаление примера отменяют ожидающий результат и освобождают download URL.
+Подготовка показывает Progress с этапами 0 → 25 → 65 → 90 → 100 и кнопкой
+отмены. Отмена сохраняет достигнутый процент; повтор начинает новую попытку с 0.
 
 Первая версия не поддерживает collapsing stack, showProgress, getContainer,
 глобальный static API/config, onClick на карточке и semantic classNames/styles.
 Устаревшие message/btn заменены title/actions.
+
+## Progress
+
+Компонент отображает переданный percent и не запускает работу самостоятельно:
+
+```svelte
+<script lang="ts">
+  import { Progress } from '$lib/components/ant-design';
+
+  let percent = $state(42.5);
+</script>
+
+<Progress {percent} aria-label="Подготовка отчёта" />
+<Progress type="circle" {percent} size={120} aria-label="Проверка файлов" />
+```
+
+Type по умолчанию line, также поддерживается circle. Percent по умолчанию 0;
+конечные значения ограничиваются 0–100 без округления. Undefined, NaN и ±Infinity
+заменяются на 0. Отображение, ширина/дуга и aria-valuenow используют одно
+нормализованное значение. Percent не bindable; владелец операции передаёт
+обновления через props. У Progress нет собственных таймеров и callbacks работы.
+
+Status поддерживает normal/success/exception и active для line. Без явного
+status значение 100 включает success, остальные значения — normal. Явный
+normal/exception/success сохраняется при любом проценте. Active добавляет
+декоративную анимацию полосы и не изменяет percent. Circle в TypeScript не
+принимает active. Success/exception показывают декоративную иконку вместо
+подписи, если не задан format. Цвета статусов используют токены темы.
+
+ShowInfo=true по умолчанию. Format(percent) возвращает строку и получает
+нормализованный процент; результат заменяет стандартные число/иконку и
+используется в aria-valuetext. HTML в строке экранируется. При showInfo=false
+подпись скрывается, доступные значения сохраняются. Длинная подпись сокращается
+многоточием; полный текст остаётся в title и aria-valuetext.
+
+Size по умолчанию medium. Для line medium/small задают высоту 8/6px; число
+задаёт ширину и высоту в px. Пара [width, height] и объект { width?, height? }
+настраивают line отдельно: ширина — число в px или CSS-строка, по умолчанию
+100%, высота — положительное конечное число. Невалидные числовые размеры
+заменяются defaults. Например, size={{ height: 4 }} сохраняет ширину 100%.
+Доступная ширина контейнера ограничивает индикатор на узких экранах.
+
+Для circle size принимает medium=120px, small=60px или положительный конечный
+диаметр в px. Невалидный диаметр заменяется на 120px. SVG сохраняет пропорции
+и помещается в контейнер. При диаметре ≤20px видимая подпись скрывается,
+ARIA-значение сохраняется. StrokeWidth относится только к circle и задаётся
+в процентах viewBox; default — не меньше 6% и 3px при заданном диаметре.
+Невалидное значение использует default, чрезмерное ограничивается 99.9%, чтобы
+радиус оставался положительным. Нулевой процент не рисует цветной дуги.
+
+StrokeColor/railColor принимают CSS-цвета и переопределяют цвет заполнения/фона,
+включая при success/exception. StrokeLinecap поддерживает round/butt/square;
+у line butt/square убирают скругления, у circle задают SVG stroke-linecap.
+Темы и compact используют существующие токены. RTL меняет начало заполнения
+line на правое и направление active-анимации; circle сохраняет обход по часовой
+стрелке. Reduced motion отключает active-анимацию и переходы значений/цвета.
+
+Корень имеет role=progressbar и aria-valuemin=0/aria-valuemax=100. Доступное имя
+по умолчанию берётся из locale.progress.label; задавайте aria-label либо
+aria-labelledby для конкретной операции. Aria-describedby связывает пояснение.
+Без format aria-valuetext содержит процент и локализованный success/exception;
+явный aria-valuetext имеет приоритет. Locale.progress поддерживает label,
+successText и exceptionText, включая частичные переопределения; отсутствующие
+поля используют ruRU. Иконки, подпись и SVG декоративные.
+
+Progress не создаёт live region, остановку Tab и обработчики клавиатуры, не
+захватывает фокус и не блокирует Escape содержащего Modal/Drawer.
+ConfigProvider.disabled не скрывает обратную связь. Id/class/style относятся
+к корню. SSR сразу выводит корректные значения и SVG-геометрию без таймеров
+и DOM-измерений; независимые экземпляры не разделяют состояние.
+
+Галерея `/ant-design#progress` связывает line/circle со Slider и InputNumber,
+показывает статусы, размеры и форматирование. `/ant-design#notification`
+использует Progress для экспорта: модель notification-export.model.svelte.ts
+владеет процентом и этапами, отменяет ожидающие callbacks при отмене/сбросе/
+unmount и защищает повтор от результата предыдущей попытки. Скачиваемый CSV
+и успешное завершение через 700ms сохранены.
+
+В первой версии нет dashboard, steps, градиентов, отдельного success-сегмента,
+percentPosition, semantic classNames/styles и автоматического Tooltip для
+маленького circle. Подпись format принимает строку; snippets не поддерживаются.
 
 ## Select
 
@@ -1950,6 +2034,8 @@ Message использует пассивные status/alert без остано
 Notification поддерживает интерактивные действия с обычным Tab и нативной
 кнопкой закрытия. Фокус внутри приостанавливает таймер; при удалении controls
 фокус восстанавливается в доступном соседнем control текущего контекста.
+Progress предоставляет именованный progressbar со значением и локализованным
+статусом. Он не меняет Tab/focus order и не создаёт собственные live-объявления.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2077,6 +2163,12 @@ hover/focus-паузы. SSR защищает закрытый popover, escaping,
 анимации/reduced motion, темы/compact/RTL/локаль, Modal/Drawer и мобильный перенос.
 Пример галереи проверяет реальное содержимое скачанного CSV, ошибки/retry и
 отмену ожидающего экспорта при сбросе.
+Progress проверяется на нормализацию, явные/автоматические статусы, размеры,
+SVG-геометрию, форматирование/escaping и SSR без таймеров. Chromium проверяет
+реальную дугу, цвета, RTL, локаль, reduced motion, фокус и независимые экземпляры,
+Modal/Drawer, мобильное переполнение и SSR до гидратации. Модель экспорта
+проверяет этапы, отмену, retry, сброс и unmount; галерея проверяет общие controls
+line/circle, промежуточные проценты, отмену без позднего результата и CSV.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2152,6 +2244,13 @@ stack, progress и pure-panel исключены. NotificationHolder.svelte и
 NotificationNotice.svelte адаптируют нативную поверхность и обычный поток списков;
 notice.dom.ts управляет видимостью, фокусом и анимацией. Иконки переиспользуют
 существующий Icon.svelte и status-icons.ts.
+[vendor/progress.css](./vendor/progress.css) содержит 26 правил line/circle и
+active keyframes из того же архива. Корневые селекторы ограничены
+:where(.ant-progress-css-var); steps, success-сегмент и percentPosition исключены.
+Progress.svelte адаптирует SVG, доступность, переполнение, RTL-анимацию и reduced
+motion; progress.engine.ts нормализует значения/размеры и рассчитывает дугу.
+Theme.css связывает цвет, фон и текст с токенами темы. Иконки переиспользуют
+существующий Icon.svelte и лицензированные status-icons.ts.
 Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

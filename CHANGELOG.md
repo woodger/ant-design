@@ -9,6 +9,11 @@
 
 ### Added
 
+- Progress: line/circle, нормализация percent, явные/автоматические статусы,
+  размеры, цвета, подпись/format, доступные значения и локаль. Добавлены стили
+  Ant Design 6.6.8, SVG-дуга, темы/RTL/reduced motion, галерея и unit/SSR/Chromium.
+  Пример экспорта Notification показывает этапы выполнения и отмену с повтором;
+  отдельная модель отменяет таймеры и защищает от поздних результатов.
 - Notification: createNotification и NotificationHolder, четыре статуса,
   title/description/actions snippets, шесть положений, ключи и обновления,
   duration/hover/focus-паузы, maxCount и закрытие. Добавлены доступная клавиатура,

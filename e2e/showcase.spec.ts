@@ -1,12 +1,43 @@
 import { test, expect } from './test';
 
+test('showcase changes line and circle Progress through shared controls', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#progress'); const fixture = page.locator('#progress');
+  const line = fixture.getByRole('progressbar', { name: 'Линейный прогресс', exact: true });
+  const circle = fixture.getByRole('progressbar', { name: 'Круговой прогресс', exact: true });
+  await expect(line).toHaveAttribute('aria-valuenow', '42.5'); await expect(circle).toHaveAttribute('aria-valuenow', '42.5');
+  await page.screenshot({ path: testInfo.outputPath('progress-example.png') });
+  const input = fixture.getByRole('spinbutton', { name: 'Процент Progress', exact: true });
+  await input.fill('25.5'); await input.press('Tab'); await expect(line).toHaveAttribute('aria-valuenow', '25.5'); await expect(circle).toHaveAttribute('aria-valuenow', '25.5');
+  const slider = fixture.getByRole('slider', { name: 'Изменить процент Progress', exact: true });
+  await slider.focus(); await slider.press('End'); await expect(line).toHaveClass(/ant-progress-status-success/); await expect(circle).toHaveClass(/ant-progress-status-success/); await expect(slider).toBeFocused();
+  await fixture.getByRole('combobox', { name: 'Статус Progress', exact: true }).click(); await page.getByRole('option', { name: 'exception', exact: true }).click();
+  await expect(line).toHaveClass(/ant-progress-status-exception/); await expect(circle).toHaveClass(/ant-progress-status-exception/);
+  await fixture.getByRole('checkbox', { name: 'Показывать значение Progress', exact: true }).uncheck(); await expect(fixture.locator('.ant-progress-indicator')).toHaveCount(0);
+  await expect(circle).toHaveAttribute('aria-valuenow', '100');
+});
+
+test('showcase reports export stages and cancels without a late result before retrying', async ({ page }) => {
+  const time = new Date('2026-10-27T12:00:00Z'); await page.clock.install({ time }); await page.clock.pauseAt(time);
+  await page.goto('/ant-design#notification'); const fixture = page.locator('#notification');
+  const notice = page.locator('#showcase-notifications .ant-notification-notice:not([inert])');
+  await fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true }).click();
+  const meter = notice.getByRole('progressbar', { name: 'Подготовка отчёта', exact: true }); const original = await meter.elementHandle();
+  await expect(meter).toHaveAttribute('aria-valuenow', '0'); await page.clock.runFor(200); await expect(meter).toHaveAttribute('aria-valuenow', '25');
+  await notice.getByRole('button', { name: 'Отменить экспорт', exact: true }).click(); await expect(notice).toHaveAccessibleName('Экспорт отменён');
+  await expect(fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true })).toBeFocused();
+  await page.clock.fastForward(5000); await expect(notice).toHaveAccessibleName('Экспорт отменён'); await expect(meter).toHaveAttribute('aria-valuenow', '25');
+  expect(await meter.evaluate((node, old) => node === old, original)).toBe(true); await expect(notice.getByRole('button', { name: 'Скачать отчёт', exact: true })).toHaveCount(0);
+  await notice.getByRole('button', { name: 'Повторить экспорт', exact: true }).click(); await expect(meter).toHaveAttribute('aria-valuenow', '0');
+  await page.clock.fastForward(700); await expect(notice).toHaveAccessibleName('Отчёт готов'); await expect(meter).toHaveAttribute('aria-valuenow', '100');
+});
+
 test('showcase exports a report through Notification and downloads its actual CSV content', async ({ page }, testInfo) => {
   await page.clock.install(); await page.goto('/ant-design#notification');
   const fixture = page.locator('#notification'); const notice = page.locator('#showcase-notifications .ant-notification-notice:not([inert])');
   await fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true }).click();
   await expect(notice).toHaveAccessibleName('Готовим отчёт'); await expect(fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true })).toBeDisabled();
   await page.clock.fastForward(700); await expect(notice).toHaveAccessibleName('Отчёт готов'); await expect(notice).toHaveCount(1);
-  await expect.poll(() => notice.evaluate((node) => node.getAnimations().length)).toBe(0);
+  await expect.poll(() => notice.evaluate((node) => node.getAnimations({ subtree: true }).length)).toBe(0);
   await page.screenshot({ path: testInfo.outputPath('notification-example.png') });
   const downloading = page.waitForEvent('download'); await notice.getByRole('button', { name: 'Скачать отчёт', exact: true }).click();
   const download = await downloading; expect(download.suggestedFilename()).toBe('report.csv');
@@ -23,6 +54,7 @@ test('showcase retries a failed Notification export in place and recovers focus 
   await fixture.getByRole('checkbox', { name: 'Ошибка следующего экспорта', exact: true }).check();
   await fixture.getByRole('button', { name: 'Экспортировать отчёт', exact: true }).click(); await page.clock.fastForward(700);
   await expect(notice).toHaveAccessibleName('Не удалось подготовить отчёт');
+  await expect(notice.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '90'); await expect(notice.getByRole('progressbar')).toHaveClass(/ant-progress-status-exception/);
   await notice.getByRole('button', { name: 'Повторить экспорт', exact: true }).click(); await expect(notice).toHaveAccessibleName('Готовим отчёт');
   await expect(fixture.getByRole('checkbox', { name: 'Ошибка следующего экспорта', exact: true })).toBeFocused();
   await page.clock.fastForward(700); await expect(notice).toHaveAccessibleName('Отчёт готов'); await expect(notice).toHaveCount(1);
@@ -862,6 +894,14 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders Progress geometry and semantic values before hydration', async ({ page }) => {
+    await page.goto('/ant-design#progress'); const fixture = page.locator('#progress');
+    await expect(fixture.getByRole('progressbar', { name: 'Линейный прогресс', exact: true })).toHaveAttribute('aria-valuenow', '42.5');
+    const circle = fixture.getByRole('progressbar', { name: 'Круговой прогресс', exact: true });
+    await expect(circle).toHaveAttribute('aria-valuetext', '42.5%'); await expect(circle.locator('svg')).toBeVisible();
+    await expect(circle.locator('.ant-progress-circle-path')).toHaveAttribute('r', '47');
+  });
 
   test('provides labelled form controls and keeps the modal hidden before hydration', async ({ page }) => {
     await page.goto('/ant-design');

@@ -79,6 +79,7 @@ Drawer, модальность, анимацию, сохранение черн�
 Alert, статусы, действие/retry, закрытие, callbacks и фокус,
 Message, независимые очереди, ключи, таймеры, hover, await, Modal/Drawer и loading → success/error,
 Notification, шесть положений, действия, hover/focus-паузы, клавиатуру и экспорт CSV с retry,
+Progress, line/circle, проценты, статусы, SVG, форматирование и отмену экспорта,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

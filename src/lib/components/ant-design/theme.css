@@ -253,6 +253,12 @@
   --ant-message-content-bg: var(--ant-color-bg-elevated);
 }
 
+.ant-progress-css-var {
+  --ant-progress-circle-text-color: var(--ant-color-text);
+  --ant-progress-default-color: var(--ant-color-info);
+  --ant-progress-remaining-color: var(--ant-color-fill-secondary);
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);

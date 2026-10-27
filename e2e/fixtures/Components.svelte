@@ -23,6 +23,7 @@
   import AlertFixtures from './AlertFixtures.svelte';
   import MessageFixtures from './MessageFixtures.svelte';
   import NotificationFixtures from './NotificationFixtures.svelte';
+  import ProgressFixtures from './ProgressFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -109,6 +110,7 @@
     <AlertFixtures />
     <MessageFixtures />
     <NotificationFixtures />
+    <ProgressFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>
