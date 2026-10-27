@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Form и FormItem.
+Modal, Tooltip, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -68,7 +68,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Button | Default, primary, dashed, text, link; loading, danger, block, shape; snippets для содержимого и иконки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
-| Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, ориентация, reverse/RTL, FormData, reset и FormItem |
+| Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | CheckboxGroup | Типизированный массив выбранных значений, options, disabled, нативные checkbox, FormData, reset и интеграция с FormItem |
@@ -78,6 +78,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
 | Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор и раскрытие строк, закрепление заголовка и колонок, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
+| Tooltip | Текст, hover/focus, bind:open, задержки, Escape, четыре положения, стрелка, автоматический переворот и aria-describedby |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -258,8 +259,74 @@ FormItem передаёт id, name, label, ошибку, описание и blu
 завершения действия. Числовое поле не имеет name, поэтому FormData содержит
 громкость один раз. Также показаны ориентация, reverse, disabled, проверка и reset.
 
-Реализован один бегунок. Range, marks/dots, tooltip, перетаскивание диапазона
+Tooltip по умолчанию показывает число при наведении, фокусе и перетаскивании;
+подсказка следует за видимым бегунком. `tooltip={{ formatter: (value) => value + '%' }}`
+задаёт формат. `tooltip={false}`, `tooltip={{ open: false }}`, formatter=null
+или результат formatter=null отключают подсказку и её описание. `open: true`
+показывает её постоянно у доступного Slider. Также поддерживаются placement
+и arrow. По умолчанию положение top, для вертикального Slider — right, в RTL — left.
+Escape скрывает подсказку, сохраняя фокус и число; следующее действие открывает
+её снова. Disabled скрывает подсказку. Текст дополняет aria-describedby поля,
+сохраняя help/ошибку FormItem. Числовые callbacks от показа подсказки не вызываются.
+
+Реализован один бегунок. Range, marks/dots, перетаскивание диапазона
 и динамическое добавление бегунков пока отсутствуют.
+
+## Tooltip
+
+```svelte
+<script lang="ts">
+  import { Button, Tooltip } from '$lib/components/ant-design';
+
+  let open = $state(false);
+</script>
+
+<Tooltip title="Сохранить изменения" bind:open placement="top">
+  <Button>Сохранить</Button>
+</Tooltip>
+```
+
+Title принимает строку, число или null. Пустая строка, пробелы, undefined и null
+отключают показ и связь описания; число 0 отображается. Текст экранируется.
+Children — snippet с одним основным DOM-элементом, например Button, Input или
+нативной кнопкой. Этот элемент служит anchor и получает aria-describedby.
+Wrapper сохраняет обработчики дочернего элемента и не добавляет остановку Tab;
+для клавиатурного доступа используйте фокусируемый дочерний элемент.
+Hover работает и вокруг disabled Button; disabled ConfigProvider не отключает
+объясняющую подсказку.
+
+`bind:open` передаёт видимость владельцу; без привязки компонент хранит её сам.
+DefaultOpen задаёт начальное состояние. `onOpenChange(open)` вызывается при
+пользовательском открытии/закрытии; внешнее изменение open и начальное состояние
+не вызывают callback. Как и другие bindable props модуля, open следует модели
+Svelte; для синхронизации владельца используйте bind:open.
+
+Trigger по умолчанию `['hover', 'focus']`; можно выбрать одно событие или
+передать пустой массив для программного показа. MouseEnterDelay и mouseLeaveDelay
+задаются в секундах, по умолчанию 0.1. Фокус открывает подсказку сразу. Pointer
+с типом touch не имитирует hover. На подсказку можно перевести указатель, она
+остаётся видимой; клик по ней сохраняет фокус. Escape и нажатие снаружи закрывают
+её. После Escape она остаётся скрытой до нового наведения/фокуса. В Modal первый
+Escape закрывает Tooltip, следующий — Modal.
+
+Placement принимает top/bottom/left/right; arrow=false скрывает стрелку.
+По умолчанию autoAdjustOverflow переворачивает подсказку, если с другой стороны
+больше места, и удерживает её в видимой области. False отключает переворот и
+сдвиг. Положение обновляется при прокрутке, resize и перемещении anchor, пока
+подсказка открыта. Class и style относятся к wrapper.
+
+Поверхность использует нативный `popover="manual"` в верхнем слое браузера,
+без переноса DOM в body: overflow контейнера не обрезает её, контекст темы и
+модальность dialog сохраняются. Нужен браузер с Popover API, как для фильтров Table.
+Скрытый или находящийся за пределами viewport anchor скрывает поверхность;
+при возвращении anchor внешний open сохраняется. В SSR поверхность скрыта,
+позиционирование и aria-describedby подключаются после гидратации. Добавление
+описания сохраняет существующие ID и отслеживает их изменения; cleanup удаляет
+только ID Tooltip.
+
+Галерея находится на `/ant-design#tooltip`. Первая версия поддерживает обычный
+текст и четыре положения; rich snippets, click/contextMenu, именованные цвета,
+corner placements и getPopupContainer пока отсутствуют.
 
 ## Select
 
@@ -1073,6 +1140,8 @@ InputNumber использует input с role=spinbutton: стрелки мен
 завершает черновик. Кнопки увеличения и уменьшения сохраняют фокус в input.
 Slider использует нативный range: стрелки, Home/End и PageUp/PageDown,
 label и видимый фокус бегунка. Tab не добавляет отдельную остановку на дорожке.
+Tooltip использует role=tooltip и aria-describedby основного дочернего control.
+Поверхность не перехватывает фокус; Escape сохраняет текущий control.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1144,6 +1213,11 @@ Console warnings/errors и необработанные ошибки брауз�
 Снимки светлой, тёмной и мобильной страницы сохраняются для визуального
 просмотра; автоматического сравнения с эталонными изображениями пока нет.
 
+Tooltip проверяется на задержки и отмену ожидающего показа, hover/focus, Escape
+внутри Modal, сохранение описаний, четыре положения, переворот, обрезающие
+контейнеры, прокрутку, resize, темы, RTL и узкий экран. Проверяются форматирование
+подсказки Slider, слежение за бегунком и отсутствие числовых callbacks от закрытия.
+
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
 DatePicker/RangePicker,
@@ -1164,6 +1238,9 @@ InputNumber outlined находится в [vendor/input-number.css](./vendor/in
 адаптация тем и reduced motion — в theme.css и InputNumber.svelte.
 [vendor/slider.css](./vendor/slider.css) содержит Slider с одним бегунком из
 того же архива; нативный control и reduced motion адаптированы в Slider.svelte.
+[vendor/tooltip.css](./vendor/tooltip.css) содержит базовые Tooltip и стрелку
+из того же архива. Native popover, позиционирование и reduced motion реализованы
+в TooltipPopup.svelte и tooltip.dom.ts; тёмная тема адаптирована в theme.css.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.

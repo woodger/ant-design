@@ -256,7 +256,7 @@ test('Slider Form validates numbers, accepts required zero, focuses errors and r
   await fixture.getByRole('button', { name: 'Submit Slider form', exact: true }).click();
   await expect(level).toBeFocused();
   await expect(level).toHaveAttribute('aria-invalid', 'true');
-  await expect(level).toHaveAccessibleDescription('Level must be from 20 to 80');
+  await expect(level).toHaveAccessibleDescription('Level must be from 20 to 80 0');
   await expect(gain).not.toHaveAttribute('aria-invalid');
   await fixture.getByText('Slider level', { exact: true }).click();
   await expect(level).toBeFocused();

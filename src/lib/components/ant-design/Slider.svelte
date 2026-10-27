@@ -4,6 +4,8 @@
   import { useConfig } from './config-context';
   import { useForm, useFormField } from './form-context';
   import { getSliderDirection, getSliderKeyValue, getSliderRatio, normalizeSliderValue, resolveSliderOptions, type SliderDirection, type SliderOptions } from './slider.engine';
+  import type { SliderTooltipConfig } from './tooltip.types';
+  import TooltipPopup from './TooltipPopup.svelte';
 
   export interface SliderProps extends Omit<HTMLInputAttributes, 'value' | 'defaultValue' | 'type' | 'min' | 'max' | 'step' | 'size' | 'class' | 'children' | 'readonly'> {
     value?: number | undefined;
@@ -14,6 +16,7 @@
     orientation?: 'horizontal' | 'vertical';
     reverse?: boolean;
     keyboard?: boolean;
+    tooltip?: false | SliderTooltipConfig;
     onValueChange?: (value: number) => void;
     onChangeComplete?: (value: number) => void;
     class?: string;
@@ -40,6 +43,7 @@
     orientation = 'horizontal',
     reverse = false,
     keyboard = true,
+    tooltip,
     disabled,
     id,
     name,
@@ -51,6 +55,8 @@
     onkeydown,
     onkeyup,
     onpointerdown,
+    onpointerenter,
+    onpointerleave,
     onlostpointercapture,
     onfocus,
     onblur,
@@ -64,7 +70,11 @@
   const initialDefault = untrack(() => defaultValue);
   const resets = new Set<ReturnType<typeof setTimeout>>();
   let control = $state<HTMLInputElement>();
+  let handle = $state<HTMLDivElement>();
   let dragging = $state(false);
+  let tooltipHovered = $state(false);
+  let tooltipFocused = $state(false);
+  let popupHovered = $state(false);
   let interaction: Interaction | null = null;
   let options = $derived(resolveSliderOptions({ min, max, step }));
   let resolvedValue = $derived(normalizeSliderValue(value === undefined ? initialDefault : value, options));
@@ -73,6 +83,11 @@
   let percentage = $derived(getSliderRatio(resolvedValue, options) * 100);
   let position = $derived(direction === 'rtl' || direction === 'btt' ? 100 - percentage : percentage);
   let trackStart = $derived(direction === 'rtl' || direction === 'btt' ? 100 - percentage : 0);
+  let configuredTooltipOpen = $derived(tooltip === false ? false : tooltip?.open);
+  let tooltipState = $derived({ ownerOpen: configuredTooltipOpen, disabled: resolvedDisabled, dismissed: false });
+  let tooltipTitle = $derived(tooltip === false || configuredTooltipOpen === false ? '' : tooltip?.formatter === null ? '' : tooltip?.formatter ? tooltip.formatter(resolvedValue) ?? '' : String(resolvedValue));
+  let tooltipOpen = $derived(!resolvedDisabled && !tooltipState.dismissed && configuredTooltipOpen !== false && (configuredTooltipOpen === true || tooltipHovered || tooltipFocused || popupHovered || dragging));
+  let tooltipPlacement = $derived(tooltip !== false && tooltip?.placement || (orientation === 'vertical' ? config.direction === 'rtl' ? 'left' : 'right' : 'top'));
 
   function runtime() {
     return { value, options, direction, disabled: resolvedDisabled, keyboard, resetKey: form?.resetKey };
@@ -109,6 +124,7 @@
     cancelInteraction();
     interaction = { kind, pointerId, keys: new Set(), expectedValue: value, options, direction, resetKey: form?.resetKey, changed: false, canceled: false };
     dragging = kind === 'pointer';
+    tooltipState = { ...tooltipState, dismissed: false };
 
     return interaction;
   }
@@ -191,6 +207,19 @@
     if (interaction?.kind === 'pointer' && interaction.pointerId === event.pointerId) cancelInteraction(true);
   }
 
+  function handlePointerenter(event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+    if (event.pointerType !== 'touch') {
+      tooltipHovered = true;
+      tooltipState = { ...tooltipState, dismissed: false };
+    }
+    onpointerenter?.(event);
+  }
+
+  function handlePointerleave(event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+    tooltipHovered = false;
+    onpointerleave?.(event);
+  }
+
   function handleKeydown(event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }) {
     onkeydown?.(event);
 
@@ -217,10 +246,13 @@
   }
 
   function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+    tooltipFocused = true;
+    tooltipState = { ...tooltipState, dismissed: false };
     onfocus?.(event);
   }
 
   function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+    tooltipFocused = false;
     cancelInteraction(true);
     field?.onBlur();
     onblur?.(event);
@@ -266,7 +298,7 @@
 <div class={['ant-slider', `ant-slider-${orientation}`, resolvedDisabled && 'ant-slider-disabled', dragging && 'ant-slider-lock', config.direction === 'rtl' && 'ant-slider-rtl', className]} {style}>
   <div class="ant-slider-rail" aria-hidden="true"></div>
   <div class="ant-slider-track" aria-hidden="true" style={orientation === 'horizontal' ? `left:${trackStart}%;width:${percentage}%` : `top:${trackStart}%;height:${percentage}%`}></div>
-  <div class={['ant-slider-handle', resolvedDisabled && 'ant-slider-handle-disabled']} aria-hidden="true" style={orientation === 'horizontal' ? `left:${position}%` : `top:${position}%`}></div>
+  <div bind:this={handle} class={['ant-slider-handle', resolvedDisabled && 'ant-slider-handle-disabled']} aria-hidden="true" style={orientation === 'horizontal' ? `left:${position}%` : `top:${position}%`}></div>
   <input
     {...attributes}
     bind:this={control}
@@ -290,10 +322,13 @@
     oninput={handleInput}
     onchange={handleChange}
     onpointerdown={handlePointerdown}
+    onpointerenter={handlePointerenter}
+    onpointerleave={handlePointerleave}
     onlostpointercapture={handleLostCapture}
     onkeydown={handleKeydown}
     onkeyup={handleKeyup}
     onfocus={handleFocus}
     onblur={handleBlur}
   />
+  <TooltipPopup title={resolvedDisabled ? '' : tooltipTitle} open={tooltipOpen} anchor={handle} describe={control} trigger={control} placement={tooltipPlacement} arrow={tooltip === false ? false : tooltip?.arrow ?? true} onDismiss={() => { tooltipState = { ...tooltipState, dismissed: true }; }} onHoverChange={(next) => { popupHovered = next; }} />
 </div>

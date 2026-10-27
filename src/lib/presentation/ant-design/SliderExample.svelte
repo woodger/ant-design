@@ -39,7 +39,7 @@
   <Form {form} {disabled} onFinish={(values) => { result = `Громкость сохранена: ${values.volume}%.`; }}>
     <div class="pair">
       <FormItem name="volume" label="Громкость уведомлений" help="Шаг 5. Для проверки формы сохраните значение от 10 до 90.">
-        <div class:vertical><Slider value={form.values.volume} onValueChange={setVolume} onChangeComplete={(value) => { applied = value; }} step={5} orientation={vertical ? 'vertical' : 'horizontal'} {reverse} style={vertical ? 'height: 160px' : undefined} /></div>
+        <div class:vertical><Slider value={form.values.volume} onValueChange={setVolume} onChangeComplete={(value) => { applied = value; }} step={5} orientation={vertical ? 'vertical' : 'horizontal'} {reverse} tooltip={{ formatter: (value) => `${value}%` }} style={vertical ? 'height: 160px' : undefined} /></div>
       </FormItem>
       <div class="exact">
         <label for={`slider-exact-${generatedId}`}>Точная громкость</label>

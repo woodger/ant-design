@@ -8,6 +8,7 @@
   import SwitchExample from './SwitchExample.svelte';
   import InputNumberExample from './InputNumberExample.svelte';
   import SliderExample from './SliderExample.svelte';
+  import TooltipExample from './TooltipExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -26,7 +27,8 @@
     ['table', 'Table'],
     ['server-table', 'Table · API'],
     ['expandable-table', 'Table · подробности'],
-    ['modal', 'Modal']
+    ['modal', 'Modal'],
+    ['tooltip', 'Tooltip']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -138,7 +140,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">16 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">17 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -324,6 +326,12 @@
             <p>Это компонент Modal на Svelte 5. Перемещайтесь между кнопками клавишей Tab — фокус остаётся внутри окна.</p>
             <p>Подтвердите действие или вернитесь к примерам.</p>
           </Modal>
+        </section>
+
+        <section id="tooltip">
+          <div class="section-heading"><h3>Tooltip</h3></div>
+          <p class="section-description">Текстовые подсказки для наведения и фокуса, четыре положения и управление видимостью.</p>
+          <div class="panel"><TooltipExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

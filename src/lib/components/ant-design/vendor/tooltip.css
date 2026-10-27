@@ -1,0 +1,38 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Базовые стили Tooltip из официального dist/antd.css.
+ * Селектор css-var-_R_0_.ant-tooltip заменён на .ant-tooltip.
+ * Источник: https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256 архива: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-tooltip{box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);position:absolute;z-index:var(--ant-tooltip-z-index-popup);display:block;width:max-content;max-width:var(--ant-tooltip-max-width);visibility:visible;filter:var(--ant-drop-shadow-popover);--ant-tooltip-valid-offset-x:var(--ant-tooltip-arrow-offset-x, var(--arrow-x));transform-origin:var(--ant-tooltip-valid-offset-x, 50%) var(--arrow-y, 50%);--ant-tooltip-arrow-background-color:var(--ant-color-bg-spotlight);}
+.ant-tooltip-hidden{display:none;}
+.ant-tooltip .ant-tooltip-container{min-width:calc(var(--ant-border-radius) * 2 + var(--ant-size-popup-arrow));min-height:var(--ant-control-height);padding:calc(var(--ant-padding-sm) / 2) var(--ant-padding-xs);color:var(--ant-tooltip-overlay-color, var(--ant-color-text-light-solid));text-align:start;text-decoration:none;word-wrap:break-word;background-color:var(--ant-color-bg-spotlight);border-radius:var(--ant-border-radius);box-sizing:border-box;}
+.ant-tooltip-placement-topLeft,.ant-tooltip-placement-topRight,.ant-tooltip-placement-bottomLeft,.ant-tooltip-placement-bottomRight{min-width:calc(var(--ant-border-radius) + var(--ant-size-popup-arrow) + var(--ant-tooltip-arrow-offset-horizontal));}
+.ant-tooltip-placement-left .ant-tooltip-container,.ant-tooltip-placement-leftTop .ant-tooltip-container,.ant-tooltip-placement-leftBottom .ant-tooltip-container,.ant-tooltip-placement-right .ant-tooltip-container,.ant-tooltip-placement-rightTop .ant-tooltip-container,.ant-tooltip-placement-rightBottom .ant-tooltip-container{border-radius:min(var(--ant-border-radius),8px);}
+.ant-tooltip-rtl{direction:rtl;}
+.ant-tooltip .ant-tooltip-arrow{position:absolute;z-index:1;display:block;pointer-events:none;width:var(--ant-size-popup-arrow);height:var(--ant-size-popup-arrow);overflow:hidden;}
+.ant-tooltip .ant-tooltip-arrow::before{position:absolute;bottom:0;inset-inline-start:0;width:var(--ant-size-popup-arrow);height:calc(var(--ant-size-popup-arrow) / 2);background:var(--ant-tooltip-arrow-background-color);clip-path:var(--ant-tooltip-arrow-polygon);clip-path:var(--ant-tooltip-arrow-path);content:"";}
+.ant-tooltip .ant-tooltip-arrow::after{content:"";position:absolute;width:var(--ant-tooltip-arrow-shadow-width);height:var(--ant-tooltip-arrow-shadow-width);bottom:0;inset-inline:0;margin:auto;border-radius:0 0 var(--ant-border-radius-xs) 0;transform:translateY(50%) rotate(-135deg);z-index:0;background:transparent;}
+.ant-tooltip .ant-tooltip-arrow:before{background:var(--ant-tooltip-arrow-background-color);}
+.ant-tooltip-placement-top>.ant-tooltip-arrow,.ant-tooltip-placement-topLeft>.ant-tooltip-arrow,.ant-tooltip-placement-topRight>.ant-tooltip-arrow{bottom:0;transform:translateY(100%) rotate(180deg);}
+.ant-tooltip-placement-top>.ant-tooltip-arrow{left:50%;transform:translateX(-50%) translateY(100%) rotate(180deg);}
+.ant-tooltip-placement-topLeft{--ant-tooltip-arrow-offset-x:var(--ant-tooltip-arrow-offset-horizontal);}
+.ant-tooltip-placement-topLeft >.ant-tooltip-arrow{left:var(--ant-tooltip-arrow-offset-horizontal);}
+.ant-tooltip-placement-topRight{--ant-tooltip-arrow-offset-x:calc(100% - var(--ant-tooltip-arrow-offset-horizontal));}
+.ant-tooltip-placement-topRight >.ant-tooltip-arrow{right:var(--ant-tooltip-arrow-offset-horizontal);}
+.ant-tooltip-placement-bottom>.ant-tooltip-arrow,.ant-tooltip-placement-bottomLeft>.ant-tooltip-arrow,.ant-tooltip-placement-bottomRight>.ant-tooltip-arrow{top:0;transform:translateY(-100%);}
+.ant-tooltip-placement-bottom>.ant-tooltip-arrow{left:50%;transform:translateX(-50%) translateY(-100%);}
+.ant-tooltip-placement-bottomLeft{--ant-tooltip-arrow-offset-x:var(--ant-tooltip-arrow-offset-horizontal);}
+.ant-tooltip-placement-bottomLeft >.ant-tooltip-arrow{left:var(--ant-tooltip-arrow-offset-horizontal);}
+.ant-tooltip-placement-bottomRight{--ant-tooltip-arrow-offset-x:calc(100% - var(--ant-tooltip-arrow-offset-horizontal));}
+.ant-tooltip-placement-bottomRight >.ant-tooltip-arrow{right:var(--ant-tooltip-arrow-offset-horizontal);}
+.ant-tooltip-placement-left>.ant-tooltip-arrow,.ant-tooltip-placement-leftTop>.ant-tooltip-arrow,.ant-tooltip-placement-leftBottom>.ant-tooltip-arrow{right:0;transform:translateX(100%) rotate(90deg);}
+.ant-tooltip-placement-left>.ant-tooltip-arrow{top:50%;transform:translateY(-50%) translateX(100%) rotate(90deg);}
+.ant-tooltip-placement-leftTop>.ant-tooltip-arrow{top:var(--ant-tooltip-arrow-offset-vertical);}
+.ant-tooltip-placement-leftBottom>.ant-tooltip-arrow{bottom:var(--ant-tooltip-arrow-offset-vertical);}
+.ant-tooltip-placement-right>.ant-tooltip-arrow,.ant-tooltip-placement-rightTop>.ant-tooltip-arrow,.ant-tooltip-placement-rightBottom>.ant-tooltip-arrow{left:0;transform:translateX(-100%) rotate(-90deg);}
+.ant-tooltip-placement-right>.ant-tooltip-arrow{top:50%;transform:translateY(-50%) translateX(-100%) rotate(-90deg);}
+.ant-tooltip-placement-rightTop>.ant-tooltip-arrow{top:var(--ant-tooltip-arrow-offset-vertical);}
+.ant-tooltip-placement-rightBottom>.ant-tooltip-arrow{bottom:var(--ant-tooltip-arrow-offset-vertical);}
+.ant-tooltip-pure{position:relative;max-width:none;margin:var(--ant-size-popup-arrow);}
+.ant-tooltip-css-var{--ant-tooltip-z-index-popup:1070;--ant-tooltip-max-width:250px;--ant-tooltip-arrow-offset-horizontal:12px;--ant-tooltip-arrow-offset-vertical:8px;--ant-tooltip-arrow-shadow-width:8.970562748477143px;--ant-tooltip-arrow-path:path('M 0 8 A 4 4 0 0 0 2.82842712474619 6.82842712474619 L 6.585786437626905 3.0710678118654755 A 2 2 0 0 1 9.414213562373096 3.0710678118654755 L 13.17157287525381 6.82842712474619 A 4 4 0 0 0 16 8 Z');--ant-tooltip-arrow-polygon:polygon(1.6568542494923806px 100%, 50% 1.6568542494923806px, 14.34314575050762px 100%, 1.6568542494923806px 100%);}

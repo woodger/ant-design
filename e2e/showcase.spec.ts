@@ -1,5 +1,26 @@
 import { test, expect } from './test';
 
+test('showcase opens Tooltip with keyboard and external state and changes placement and arrow', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#tooltip');
+  const fixture = page.locator('#tooltip');
+  const button = fixture.getByRole('button', { name: 'Наведите или нажмите Tab', exact: true });
+  await button.focus();
+  const tip = fixture.getByRole('tooltip').filter({ hasText: 'Изменения сохранятся после проверки формы.' });
+  await expect(tip).toBeVisible();
+  await expect(button).toHaveAccessibleDescription('Изменения сохранятся после проверки формы.');
+  await button.press('Escape');
+  await expect(tip).toBeHidden();
+  await expect(button).toBeFocused();
+  await fixture.getByRole('combobox', { name: 'Положение подсказки', exact: true }).selectOption('bottom');
+  await fixture.getByRole('checkbox', { name: 'Стрелка', exact: true }).uncheck();
+  await button.focus();
+  await expect(tip).toHaveClass(/ant-tooltip-placement-bottom/);
+  await expect(tip.locator('.ant-tooltip-arrow')).toHaveCount(0);
+  await fixture.getByRole('button', { name: 'Показать подсказку', exact: true }).click();
+  await expect(fixture.getByRole('tooltip').filter({ hasText: 'Подсказкой можно управлять через bind:open.' })).toBeVisible();
+  await fixture.screenshot({ path: testInfo.outputPath('tooltip.png') });
+});
+
 test('showcase hydrates and updates theme colors and component sizes', async ({ page }, testInfo) => {
   await page.goto('/ant-design');
   const input = page.getByLabel('Редактируемое значение', { exact: true });
@@ -308,7 +329,7 @@ test('showcase synchronizes Slider and InputNumber, applies a completed change a
   await fixture.getByRole('button', { name: 'Сохранить громкость', exact: true }).click();
   await expect(slider).toBeFocused();
   await expect(slider).toHaveAttribute('aria-invalid', 'true');
-  await expect(slider).toHaveAccessibleDescription('Для сохранения выберите громкость от 10 до 90.');
+  await expect(slider).toHaveAccessibleDescription('Для сохранения выберите громкость от 10 до 90. 0%');
   await slider.press('ArrowRight');
   await slider.press('ArrowRight');
   await fixture.getByRole('button', { name: 'Сохранить громкость', exact: true }).click();

@@ -9,6 +9,10 @@
 
 ### Added
 
+- Tooltip: текст и числовой ноль, bind:open, defaults, hover/focus, задержки,
+  Escape, четыре положения, стрелка, автоматический переворот, aria-describedby
+  и нативный popover внутри Modal. Добавлены подсказки Slider с форматированием,
+  стили Ant Design 6.6.8, темы/RTL, галерея и unit/SSR/Chromium-проверки.
 - Slider с одним бегунком: bind:value, min/max/step, мышь и касание,
   клавиатура, onChangeComplete, ориентация, reverse/RTL, disabled, FormItem,
   FormData и reset. Добавлены стили Ant Design 6.6.8, темы, отмена активных
