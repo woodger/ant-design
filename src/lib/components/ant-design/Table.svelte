@@ -2,6 +2,7 @@
   import { untrack } from 'svelte';
   import { useConfig } from './config-context';
   import { getPaginationState } from './pagination.engine';
+  import { getTableFixedOffsets } from './table-layout.engine';
   import { areTableFiltersEqual, changeTableSelection, getNextTableSorter, getTableData, getTableFilters, getTableSelection } from './table.engine';
   import type { TableChange, TableFilters, TableFilterValue, TableKey, TableProps, TableSorter } from './table.types';
   import { ruRU } from './types';
@@ -60,6 +61,65 @@
   let resolvedDisabled = $derived((disabled ?? config.componentDisabled) || loading);
   let resolvedSize = $derived(size ?? config.componentSize);
   let strings = $derived({ ...ruRU.table, ...config.locale.table });
+  let content = $state<HTMLDivElement>();
+  let table = $state<HTMLTableElement>();
+  let selectionOffset = $derived(rowSelection ? 1 : 0);
+  let fixedColumns = $derived([...(rowSelection ? [selectionOptions?.fixed ?? false] : []), ...columns.map((column) => column.fixed)]);
+  let fixedCells = $derived(fixedColumns.map((fixed, index) => ({
+    side: fixed === true ? 'start' : fixed || undefined,
+    offset: `var(--ant-table-fixed-${index}, auto)`
+  })));
+
+  $effect(() => {
+    const element = table;
+    const viewport = content;
+    const fixed = fixedColumns;
+    const hasHeader = scroll?.y !== undefined;
+
+    if (!element || !viewport || (!fixed.some(Boolean) && !hasHeader)) {
+      return;
+    }
+
+    const cells = Array.from(element.tHead?.rows[0]?.cells ?? []);
+
+    const measure = () => {
+      const widths = cells.map((cell) => cell.getBoundingClientRect().width);
+      const offsets = getTableFixedOffsets(fixed, widths);
+      const pinnedWidth = widths.reduce((sum, width, index) => sum + (fixed[index] ? width : 0), 0);
+      const enabled = cells.length === fixed.length && pinnedWidth < viewport.clientWidth;
+      let startWidth = 0;
+      let endWidth = 0;
+
+      offsets.forEach((offset, index) => {
+        const property = `--ant-table-fixed-${index}`;
+
+        if (enabled && offset !== undefined) {
+          element.style.setProperty(property, `${offset}px`);
+
+          if (fixed[index] === 'end') endWidth += widths[index];
+          else startWidth += widths[index];
+        } else {
+          element.style.removeProperty(property);
+        }
+      });
+      element.style.setProperty('--ant-table-fixed-position', enabled ? 'sticky' : 'relative');
+      viewport.style.setProperty('--ant-table-fixed-start-width', `${startWidth}px`);
+      viewport.style.setProperty('--ant-table-fixed-end-width', `${endWidth}px`);
+      viewport.style.setProperty('--ant-table-header-height', `${hasHeader ? element.tHead?.getBoundingClientRect().height ?? 0 : 0}px`);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    cells.forEach((cell) => observer.observe(cell));
+
+    return () => {
+      observer.disconnect();
+      fixed.forEach((_, index) => element.style.removeProperty(`--ant-table-fixed-${index}`));
+      element.style.removeProperty('--ant-table-fixed-position');
+      ['--ant-table-fixed-start-width', '--ant-table-fixed-end-width', '--ant-table-header-height'].forEach((property) => viewport.style.removeProperty(property));
+    };
+  });
 
   function notifyChange(action: TableChange<Row>['action']) {
     onChange?.({
@@ -145,6 +205,19 @@
 <style>
   .ant-table-wrapper { min-width: 0; max-width: 100%; }
   .ant-table-content { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+  .table-sticky { isolation: isolate; scroll-padding-inline: var(--ant-table-fixed-start-width, 0px) var(--ant-table-fixed-end-width, 0px); }
+  .table-scroll-y { overflow-y: auto; overscroll-behavior-y: contain; scroll-padding-top: var(--ant-table-header-height, 0px); }
+  .ant-table-wrapper .ant-table-cell.table-fixed-cell { position: var(--ant-table-fixed-position, relative); background: var(--ant-color-bg-container); }
+  .ant-table-wrapper .table-scroll-y .ant-table-thead > tr > th { position: sticky; top: 0; z-index: 2; }
+  /* Непрозрачная подложка нужна и для токенов темы с alpha. */
+  .ant-table-wrapper .table-scroll-y .ant-table-thead > tr > th,
+  .ant-table-wrapper .ant-table-thead > tr > .table-fixed-cell { background: linear-gradient(var(--ant-table-header-bg), var(--ant-table-header-bg)) var(--ant-color-bg-container); }
+  .ant-table-wrapper .table-scroll-y .ant-table-thead > tr > th.ant-table-column-sort,
+  .ant-table-wrapper .ant-table-thead > tr > .table-fixed-cell.ant-table-column-sort { background: linear-gradient(var(--ant-table-header-sort-active-bg), var(--ant-table-header-sort-active-bg)) var(--ant-color-bg-container); }
+  .ant-table-wrapper .table-scroll-y .ant-table-thead > tr > th.ant-table-column-has-sorters:hover,
+  .ant-table-wrapper .ant-table-thead > tr > .table-fixed-cell.ant-table-column-has-sorters:hover { background: linear-gradient(var(--ant-table-header-sort-hover-bg), var(--ant-table-header-sort-hover-bg)) var(--ant-color-bg-container); }
+  .ant-table-wrapper .ant-table-tbody > tr > .table-fixed-cell.ant-table-column-sort { background: linear-gradient(var(--ant-table-body-sort-bg), var(--ant-table-body-sort-bg)) var(--ant-color-bg-container); }
+  .ant-table-wrapper .ant-table-tbody > tr.ant-table-row-selected > .table-fixed-cell { background: linear-gradient(var(--ant-table-row-selected-bg), var(--ant-table-row-selected-bg)) var(--ant-color-bg-container); }
   .ant-table-content:focus-visible, .sort-button:focus-visible { outline: var(--ant-line-width-focus) solid var(--ant-color-primary-border); outline-offset: 2px; }
   caption { padding: var(--ant-padding-sm); color: var(--ant-color-text-heading); text-align: start; font-weight: 600; }
   .sort-button { width: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; cursor: pointer; }
@@ -164,8 +237,8 @@
   <div class={['ant-table', `ant-table-${resolvedSize === 'middle' ? 'medium' : resolvedSize}`, bordered && 'ant-table-bordered', !visibleRows.length && 'ant-table-empty']}>
     <div class="ant-table-container">
       <!-- svelte-ignore a11y_no_noninteractive_tabindex (Фокус нужен для прокрутки таблицы с клавиатуры.) -->
-      <div class="ant-table-content" role="region" aria-label={caption ?? ariaLabel ?? strings.label} tabindex="0">
-        <table aria-label={ariaLabel ?? (caption ? undefined : strings.label)} aria-busy={loading || undefined} style:min-width={typeof scroll?.x === 'number' ? `${scroll.x}px` : scroll?.x}>
+      <div bind:this={content} class={['ant-table-content', (scroll?.y !== undefined || fixedColumns.some(Boolean)) && 'table-sticky', scroll?.y !== undefined && 'table-scroll-y']} style:max-height={typeof scroll?.y === 'number' ? `${scroll.y}px` : scroll?.y} role="region" aria-label={caption ?? ariaLabel ?? strings.label} tabindex="0">
+        <table bind:this={table} aria-label={ariaLabel ?? (caption ? undefined : strings.label)} aria-busy={loading || undefined} style:min-width={typeof scroll?.x === 'number' ? `${scroll.x}px` : scroll?.x}>
           {#if caption}<caption>{caption}</caption>{/if}
           <colgroup>
             {#if rowSelection}<col style="width: 48px" />{/if}
@@ -174,14 +247,15 @@
           <thead class="ant-table-thead">
             <tr>
               {#if rowSelection}
-                <th scope="col" class="ant-table-cell ant-table-selection-column">
+                <th scope="col" class={['ant-table-cell ant-table-selection-column', selectionOptions?.fixed && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start']} style:inset-inline-start={selectionOptions?.fixed ? fixedCells[0].offset : undefined} style:z-index={selectionOptions?.fixed ? 3 : undefined}>
                   <Checkbox checked={selection.all} indeterminate={selection.some} disabled={resolvedDisabled || selection.disabled} aria-label={strings.selectAll} onCheckedChange={(checked) => changeSelection(changeableKeys, checked, 'all')} />
                 </th>
               {/if}
-              {#each columns as column (column.key)}
+              {#each columns as column, columnIndex (column.key)}
                 {@const sortable = typeof column.sorter === 'function' || (mode === 'server' && column.sorter === true)}
                 {@const order = tableData.sorter?.columnKey === column.key ? tableData.sorter.order : undefined}
-                <th scope="col" class={['ant-table-cell', sortable && 'ant-table-column-has-sorters', order && 'ant-table-column-sort']} style:text-align={column.align} aria-sort={order === 'ascend' ? 'ascending' : order === 'descend' ? 'descending' : undefined}>
+                {@const fixed = fixedCells[columnIndex + selectionOffset]}
+                <th scope="col" class={['ant-table-cell', fixed.side && `table-fixed-cell ant-table-cell-fix ant-table-cell-fix-${fixed.side}`, sortable && 'ant-table-column-has-sorters', order && 'ant-table-column-sort']} style:inset-inline-start={fixed.side === 'start' ? fixed.offset : undefined} style:inset-inline-end={fixed.side === 'end' ? fixed.offset : undefined} style:z-index={fixed.side ? 3 : undefined} style:text-align={column.align} aria-sort={order === 'ascend' ? 'ascending' : order === 'descend' ? 'descending' : undefined}>
                   <div class="column-heading">
                     {#if sortable}
                       <button type="button" class="sort-button ant-table-column-sorters" disabled={resolvedDisabled} title={sortDescription(column.key, tableData.sorter)} onclick={() => changeSort(column.key)}>
@@ -201,12 +275,13 @@
             {#each visibleRows as row, index (row.key)}
               <tr class={['ant-table-row', rowSelection && selectedKeys.has(row.key) && 'ant-table-row-selected']}>
                 {#if rowSelection}
-                  <td class="ant-table-cell ant-table-selection-column">
+                  <td class={['ant-table-cell ant-table-selection-column', selectionOptions?.fixed && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start']} style:inset-inline-start={selectionOptions?.fixed ? fixedCells[0].offset : undefined} style:z-index={selectionOptions?.fixed ? 1 : undefined}>
                     <Checkbox checked={selectedKeys.has(row.key)} disabled={resolvedDisabled || row.checkbox.disabled} aria-label={row.checkbox['aria-label'] ?? `${strings.selectRow} ${row.key}`} onCheckedChange={(checked) => changeSelection([row.key], checked, 'single')} />
                   </td>
                 {/if}
-                {#each columns as column (column.key)}
-                  <td class={['ant-table-cell', tableData.sorter?.columnKey === column.key && 'ant-table-column-sort']} style:text-align={column.align}>
+                {#each columns as column, columnIndex (column.key)}
+                  {@const fixed = fixedCells[columnIndex + selectionOffset]}
+                  <td class={['ant-table-cell', fixed.side && `table-fixed-cell ant-table-cell-fix ant-table-cell-fix-${fixed.side}`, tableData.sorter?.columnKey === column.key && 'ant-table-column-sort']} style:inset-inline-start={fixed.side === 'start' ? fixed.offset : undefined} style:inset-inline-end={fixed.side === 'end' ? fixed.offset : undefined} style:z-index={fixed.side ? 1 : undefined} style:text-align={column.align}>
                     {#if column.render}{@render column.render(row.record, index)}{:else}{cellValue(row.record, column.dataIndex)}{/if}
                   </td>
                 {/each}

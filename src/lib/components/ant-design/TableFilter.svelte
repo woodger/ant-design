@@ -54,6 +54,7 @@
     });
     const observer = new ResizeObserver(positionPanel);
     observer.observe(panel);
+    for (const cell of trigger.closest('tr')?.cells ?? []) observer.observe(cell);
     window.addEventListener('resize', positionPanel);
     window.addEventListener('scroll', positionPanel, true);
 

@@ -131,4 +131,36 @@ describe('Table server rendering', () => {
     expect(body).not.toContain('Clara');
     expect(body).not.toContain('aria-label="Страница 4"');
   });
+
+  it('renders one complete native table with scroll constraints and fixed column metadata before measurement', () => {
+    const { body } = render(Table<RecordRow>, { props: {
+      dataSource, caption: 'Fixed people', pagination: false, scroll: { x: 900, y: '18rem' }, rowSelection: { fixed: true },
+      columns: [{ ...columns[0], fixed: true, width: 180 }, { ...columns[1], fixed: 'end', width: '8rem' }],
+      onChange: () => { throw new Error('Unexpected layout callback'); },
+      onSelectionChange: () => { throw new Error('Unexpected selection callback'); }
+    } });
+
+    expect(body.match(/<table\b/g)).toHaveLength(1);
+    expect(body.match(/<thead\b/g)).toHaveLength(1);
+    expect(body).toContain('table-scroll-y');
+    expect(body).toContain('max-height: 18rem');
+    expect(body).toContain('min-width: 900px');
+    expect(body).toContain('ant-table-cell-fix-start');
+    expect(body).toContain('ant-table-cell-fix-end');
+    expect(body).toContain('var(--ant-table-fixed-1, auto)');
+    expect(body).toContain('Anna');
+    expect(body).toContain('Boris');
+    expect(body).toContain('Clara');
+    expect(body).not.toContain('--ant-table-fixed-position:');
+  });
+
+  it('keeps an empty server page intact when only the header is fixed', () => {
+    const { body } = render(Table<RecordRow>, { props: { columns, dataSource: [], mode: 'server', total: 95, current: 4, rowSelection: true, scroll: { y: 240 } } });
+
+    expect(body).toContain('max-height: 240px');
+    expect(body).toContain('colspan="3"');
+    expect(body).toContain('Нет данных');
+    expect(body).not.toContain('table-fixed-cell');
+    expect(body).toMatch(/aria-label="Страница 4"[^>]*aria-current="page"/);
+  });
 });

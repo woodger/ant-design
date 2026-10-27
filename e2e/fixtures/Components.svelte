@@ -5,6 +5,7 @@
   import TableFixtures from './TableFixtures.svelte';
   import TableFilterFixtures from './TableFilterFixtures.svelte';
   import ServerTableFixtures from './ServerTableFixtures.svelte';
+  import FixedTableFixtures from './FixedTableFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -73,6 +74,7 @@
     <TableFixtures />
     <TableFilterFixtures />
     <ServerTableFixtures />
+    <FixedTableFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

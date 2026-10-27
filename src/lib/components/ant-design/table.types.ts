@@ -6,6 +6,7 @@ export type TableKey = string | number;
 export type TableRowKey<Row extends object> = keyof Row | ((record: Row) => TableKey);
 export type TableSortOrder = 'ascend' | 'descend';
 export type TableMode = 'client' | 'server';
+export type TableFixed = boolean | 'start' | 'end';
 export type TableFilterValue = TableKey | boolean;
 export type TableFilters = Record<string, TableFilterValue[]>;
 
@@ -30,9 +31,11 @@ export interface TableColumn<Row extends object> {
   filterMultiple?: boolean;
   align?: 'left' | 'center' | 'right';
   width?: number | string;
+  fixed?: TableFixed;
 }
 
 export interface TableRowSelection<Row extends object> {
+  fixed?: boolean;
   getCheckboxProps?: (record: Row) => { disabled?: boolean; 'aria-label'?: string };
 }
 
@@ -72,7 +75,7 @@ export interface TableProps<Row extends object> {
   size?: ComponentSize;
   caption?: string;
   empty?: Snippet;
-  scroll?: { x?: number | string };
+  scroll?: { x?: number | string; y?: number | string };
   'aria-label'?: string;
   class?: string;
   style?: string;

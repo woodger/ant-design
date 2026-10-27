@@ -263,7 +263,7 @@
 
         <section id="server-table">
           <div class="section-heading"><h3>Table · серверный режим</h3></div>
-          <p class="section-description">Загрузка страниц, серверные сортировка и фильтры. Демо имитирует API с задержкой; попробуйте обновление, ошибку и повтор запроса.</p>
+          <p class="section-description">Загрузка страниц, серверные сортировка и фильтры, закрепление заголовка и колонок. Демо имитирует API с задержкой; попробуйте обновление, ошибку и повтор запроса.</p>
           <div class="panel"><RemoteTableExample /></div>
         </section>
 

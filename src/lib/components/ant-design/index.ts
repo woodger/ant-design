@@ -14,7 +14,7 @@ export type { ButtonProps } from './Button.svelte';
 export type { InputProps } from './Input.svelte';
 export type { CheckboxProps } from './Checkbox.svelte';
 export type { PaginationProps } from './Pagination.svelte';
-export type { TableProps, TableColumn, TableKey, TableRowKey, TableSorter, TableSortOrder, TableRowSelection, TablePaginationConfig, TableChange, TableFilters, TableFilterOption, TableFilterValue, TableMode } from './table.types';
+export type { TableProps, TableColumn, TableKey, TableRowKey, TableSorter, TableSortOrder, TableRowSelection, TablePaginationConfig, TableChange, TableFilters, TableFilterOption, TableFilterValue, TableMode, TableFixed } from './table.types';
 export type { SelectProps } from './select.types';
 export type { FormProps } from './form.types';
 export type { ModalProps } from './Modal.svelte';

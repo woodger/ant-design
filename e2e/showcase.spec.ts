@@ -122,6 +122,35 @@ test('showcase retries a failed remote page with its existing query', async ({ p
   await expect(fixture.getByRole('status', { name: 'Результат удалённой загрузки', exact: true })).toHaveText('Всего: 36. Страница: 2. Выбрано: 0.');
 });
 
+test('showcase toggles fixed table layout while preserving remote data and selection', async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 1100, height: 900 });
+  await page.goto('/ant-design');
+  const fixture = page.locator('#server-table');
+  const table = fixture.getByRole('table', { name: 'Удалённые участники', exact: true });
+  const region = fixture.getByRole('region', { name: 'Удалённые участники', exact: true });
+  const pagination = fixture.getByRole('navigation', { name: 'Страницы удалённых участников', exact: true });
+  await expect(table.locator('tbody tr > td:nth-child(2)')).toHaveCount(5);
+  await table.getByRole('checkbox', { name: 'Выбрать удалённого участника 1', exact: true }).check();
+  await pagination.getByRole('combobox').click();
+  await pagination.getByRole('option', { name: '10 / стр.', exact: true }).click();
+  await expect(table.locator('tbody tr > td:nth-child(2)')).toHaveCount(10);
+  await region.evaluate((element) => { element.scrollTo({ left: element.scrollWidth, top: 220 }); });
+  await expect.poll(() => region.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+  await expect.poll(() => region.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    const cells = element.querySelector('thead tr')!.children;
+    return Math.max(Math.abs(cells[0].getBoundingClientRect().left - bounds.left), Math.abs(cells[4].getBoundingClientRect().right - bounds.left - element.clientWidth), Math.abs(cells[1].getBoundingClientRect().top - bounds.top));
+  })).toBeLessThan(1.5);
+  await region.screenshot({ path: testInfo.outputPath('showcase-fixed-table.png') });
+  await fixture.getByRole('checkbox', { name: 'Закрепить заголовок и колонки', exact: true }).uncheck();
+
+  await expect(table.locator('.table-fixed-cell')).toHaveCount(0);
+  await expect(region).toHaveCSS('max-height', 'none');
+  await expect(table.locator('tbody tr > td:nth-child(2)')).toHaveCount(10);
+  await expect(table.getByRole('checkbox', { name: 'Выбрать удалённого участника 1', exact: true })).toBeChecked();
+  await expect(fixture.getByRole('status', { name: 'Результат удалённой загрузки', exact: true })).toHaveText('Всего: 36. Страница: 1. Выбрано: 1.');
+});
+
 test('showcase applies combined filters, shows empty results and restores data after reset', async ({ page }) => {
   await page.goto('/ant-design');
   const table = page.getByRole('table', { name: 'Участники проекта', exact: true });

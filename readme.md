@@ -61,6 +61,7 @@ preview на `127.0.0.1:4173`. Отдельный Vite-стенд из `e2e/fixt
 
 Сценарии покрывают Input, Select, Checkbox, Pagination, Table, Modal и Form,
 включая серверные страницы Table, отмену запросов, поздние ответы и ошибки/retry,
+закрепление заголовка и колонок, resize и клавиатурную прокрутку,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.
