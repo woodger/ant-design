@@ -3,7 +3,8 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, CheckboxGroup, Pagination, Table,
+Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, CheckboxGroup,
+Radio, RadioGroup, Pagination, Table,
 Modal, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
@@ -69,6 +70,8 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | CheckboxGroup | Типизированный массив выбранных значений, options, disabled, нативные checkbox, FormData, reset и интеграция с FormItem |
+| Radio | Checked/defaultChecked, disabled, нативные события, синхронизация соседних radio и FormData |
+| RadioGroup | Типизированный одиночный выбор, options, уникальное имя группы, горизонтальное/вертикальное расположение, required, reset и FormItem |
 | Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
 | Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор и раскрытие строк, закрепление заголовка и колонок, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
@@ -249,6 +252,86 @@ options; disabled, отсутствующие и невыбранные вари
 «Все права», промежуточным состоянием, проверкой количества, отправкой и сбросом.
 Общий выбор управляется владельцем через массив, как и в примере Ant Design.
 Группа пока строится через options; вложенные Checkbox и snippets для вариантов
+не поддерживаются.
+
+## Radio и RadioGroup
+
+Radio использует нативный input[type=radio], поддерживает bind:checked,
+defaultChecked и `onCheckedChange(checked)`. Содержимое передаётся snippet,
+как у Checkbox. Варианты с одинаковым непустым name в одной форме и одном
+DOM-корне образуют нативную группу. Выбор одного снимает соседний; bind:checked
+соседа тоже обновляется. Его callback при этом не вызывается: нативный change
+получает выбранный radio. Внешнее обновление checked синхронизирует соседей без
+callbacks. Нативный onchange также доступен. Без name отдельные Radio независимы.
+
+Для общего типизированного значения используйте RadioGroup.
+`RadioGroupProps<Value>` и `RadioOption<Value>` принимают string, number и
+boolean. Options содержит примитивы или `{ value, label, disabled? }`.
+Повторяющиеся значения отображаются один раз, с первой подписью и disabled.
+
+```svelte
+<script lang="ts">
+  import { RadioGroup } from '$lib/components/ant-design';
+
+  const options = [
+    { value: 0, label: 'Базовый' },
+    { value: 1, label: 'Командный' },
+    { value: 2, label: 'Архивный', disabled: true }
+  ];
+  let plan = $state<number | undefined>(0);
+</script>
+
+<RadioGroup {options} bind:value={plan} name="plan" aria-label="Тариф" orientation="vertical" />
+```
+
+Пользовательский выбор обновляет bind:value и вызывает onValueChange(value)
+один раз, только при смене значения. Числовой 0 и boolean false остаются
+полноценными выбранными значениями и отличаются от строк "0" и "false".
+Для внешней очистки присвойте undefined. Изменение props не вызывает callbacks
+и не переписывает значение владельца. Если выбранный вариант исчезает,
+в группе нет отмеченного input; после возвращения option выбор восстанавливается.
+
+Без name и FormItem.name RadioGroup назначает уникальное нативное имя,
+чтобы соседние группы не снимали выбор друг друга. Это имя также используется
+в FormData; для стабильного имени поля задавайте name явно. Одинаковое имя
+в разных формах не объединяет варианты. Внутри одной формы для независимых
+групп используйте разные имена.
+
+Стрелки переключают нативный выбор и фокус, пропуская disabled options;
+Space выбирает сфокусированный вариант, Tab выходит из группы. Orientation
+по умолчанию horizontal; vertical располагает варианты столбцом. Группа
+наследует disabled из Form/FormItem и ConfigProvider. Явный disabled=false
+переопределяет наследование, disabled группы блокирует все options.
+
+Для отдельного Radio defaultChecked, а для RadioGroup defaultValue
+фиксируются при создании. С привязкой задавайте начальное значение у владельца
+без defaults. Нативный reset восстанавливает начальные значения и обновляет
+привязки в следующей задаче после события, без callbacks. Отменённый reset
+сохраняет текущий выбор. Атрибут form связывает controls с внешней формой.
+Form сбрасывает значения через модель resetFields.
+
+Выбранный доступный radio передаёт в FormData строку под своим name.
+`new FormData(form).get('plan')` возвращает, например, '0' или 'false';
+при отсутствии выбранного доступного варианта — null.
+Required использует нативное правило группы: нужен один
+выбранный вариант среди её input. Для пустого списка options используйте
+правила Form, поскольку нативного input в такой группе нет.
+
+В Form передавайте `value={form.values.plan}` и
+`onValueChange={(value) => form.setFieldValue('plan', value)}`. Правило required
+проверяет значение поля и принимает 0/false. Для отдельного Radio с boolean
+используйте checked/onCheckedChange; если требуется именно true, задайте
+custom validator, как в примере Checkbox.
+
+RadioGroup получает из FormItem имя, подпись, required и описание ошибки.
+Fieldset с ролью radiogroup сообщает required/invalid; отдельные Radio связаны
+с описанием ошибки. Нажатие подписи FormItem и ошибка формы переводят фокус
+к выбранному доступному варианту либо первому доступному. Пустая группа может
+получить фокус сама, без дополнительного шага Tab.
+
+Галерея `/ant-design#radio` показывает отдельные Radio для расположения
+вариантов и форму с числовым тарифом, boolean-публикацией, отправкой и сбросом.
+RadioGroup пока строится через options; вложенные Radio и Radio.Button
 не поддерживаются.
 
 ## Pagination
@@ -741,6 +824,9 @@ Checkbox использует нативный input: нажатие подпи�
 id, name, required, ошибки и описание самому input.
 CheckboxGroup объединяет нативные input в именованный fieldset; FormItem
 передаёт имя группы, описание и ошибки, а required проверяется правилом массива.
+RadioGroup использует нативную группу input[type=radio], именованный radiogroup,
+стрелки и Space. Tab сохраняет нативный порядок; FormItem направляет фокус к
+выбранному доступному варианту или первому доступному.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -790,6 +876,8 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 нативный reset Checkbox, boolean-поля Form, переходы и смену размера Pagination,
 CheckboxGroup, типы значений, порядок options, повторяющиеся поля FormData,
 отмену reset, фокус группы и выбор всех прав,
+Radio/RadioGroup, нативное снятие соседнего radio, независимые имена,
+числовой ноль и boolean false, required, отмену reset, ориентацию и фокус ошибок,
 сочетания фильтров, сортировки, страниц и выбора Table, loading и замену данных,
 серверный total, сохранение ключей между страницами, отмену запросов, поздние ответы,
 ошибки/retry и повторную загрузку допустимой страницы при уменьшении total,
@@ -817,7 +905,8 @@ Tree/TreeSelect, Upload, Select tags, Form.List, вложенные name paths,
 [пакета antd 6.6.8](https://registry.npmjs.org/antd/-/antd-6.6.8.tgz).
 В [vendor/antd.css](./vendor/antd.css) оставлены правила Button, Input, Select,
 Checkbox, Pagination, Table, Modal, Form и связанные animations; глобальные токены
-сохранены. Селекторы
+сохранены. В [vendor/radio.css](./vendor/radio.css) добавлены обычные Radio и
+RadioGroup из того же архива. Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.
 

@@ -251,6 +251,31 @@ test('showcase validates and submits CheckboxGroup permissions with select-all a
   await expect(all).toHaveAttribute('aria-checked', 'mixed');
 });
 
+test('showcase validates RadioGroup choices, submits zero and false and resets its form', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#radio');
+  const plan = fixture.getByRole('radiogroup', { name: 'Тариф участника', exact: true });
+  const published = fixture.getByRole('radiogroup', { name: 'Режим публикации', exact: true });
+  const draft = published.getByRole('radio', { name: 'Черновик', exact: true });
+  await expect(plan.getByRole('radio', { name: 'Базовый', exact: true })).toBeChecked();
+  await expect(plan.getByRole('radio', { name: 'Архивный', exact: true })).toBeDisabled();
+  await fixture.getByRole('button', { name: 'Сохранить настройки', exact: true }).click();
+  await expect(draft).toBeFocused();
+  await expect(published).toHaveAccessibleDescription('Выберите режим публикации.');
+  await draft.check();
+  await fixture.getByRole('radio', { name: 'Вертикально', exact: true }).check();
+  await expect(plan).toHaveAttribute('aria-orientation', 'vertical');
+  await fixture.getByRole('button', { name: 'Сохранить настройки', exact: true }).click();
+  await expect(fixture.getByRole('status')).toHaveText('Тариф: Базовый. Публикация: Черновик.');
+  expect(await fixture.locator('form').evaluate((element) => Object.fromEntries(new FormData(element as HTMLFormElement)))).toEqual({ plan: '0', published: 'false' });
+  await fixture.screenshot({ path: testInfo.outputPath('radio.png') });
+  await fixture.getByRole('button', { name: 'Сбросить настройки', exact: true }).click();
+  await expect(plan.getByRole('radio', { name: 'Базовый', exact: true })).toBeChecked();
+  await expect(published.locator('input:checked')).toHaveCount(0);
+  await expect(published).not.toHaveAttribute('aria-invalid');
+  await expect(fixture.getByRole('status')).toHaveCount(0);
+});
+
 test('showcase validates its real form and resets values after successful submission', async ({ page }) => {
   await page.goto('/ant-design');
   const name = page.getByLabel('Имя', { exact: true });
@@ -376,6 +401,8 @@ test.describe('server-rendered showcase', () => {
     await expect(page.getByRole('checkbox', { name: 'Все права', exact: true })).toHaveAttribute('aria-checked', 'mixed');
     await expect(page.getByRole('checkbox', { name: 'Просмотр', exact: true })).toBeChecked();
     await expect(page.getByRole('group', { name: 'Права участника', exact: true })).toBeVisible();
+    await expect(page.getByRole('radiogroup', { name: 'Тариф участника', exact: true }).getByRole('radio', { name: 'Базовый', exact: true })).toBeChecked();
+    await expect(page.getByRole('radiogroup', { name: 'Режим публикации', exact: true }).getByRole('radio')).toHaveCount(2);
     await expect(page.getByRole('navigation', { name: 'Пример пагинации', exact: true }).locator('[aria-current="page"]')).toHaveText('1');
     const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
     await expect(table.locator('tbody tr')).toHaveCount(5);

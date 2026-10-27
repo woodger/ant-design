@@ -4,6 +4,7 @@
   import RemoteTableExample from './RemoteTableExample.svelte';
   import ExpandableTableExample from './ExpandableTableExample.svelte';
   import MultipleSelectExample from './MultipleSelectExample.svelte';
+  import RadioExample from './RadioExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -13,6 +14,7 @@
     ['select', 'Select'],
     ['select-multiple', 'Select · multiple'],
     ['checkbox', 'Checkbox'],
+    ['radio', 'Radio / RadioGroup'],
     ['form', 'Form'],
     ['pagination', 'Pagination'],
     ['table', 'Table'],
@@ -130,7 +132,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">11 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">13 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -213,6 +215,12 @@
             <p class="output">Выбрано прав: <strong>{demo.permissions.length}</strong> из {demo.permissionOptions.length}.</p>
             {#if demo.permissionResult}<p class="result" role="status">{demo.permissionResult}</p>{/if}
           </div>
+        </section>
+
+        <section id="radio">
+          <div class="section-heading"><h3>Radio и RadioGroup</h3></div>
+          <p class="section-description">Выберите тариф и режим публикации. Перемещайтесь между вариантами стрелками или переключите их расположение.</p>
+          <div class="panel"><RadioExample /></div>
         </section>
 
         <section id="form">

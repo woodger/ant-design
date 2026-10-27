@@ -137,6 +137,12 @@
   --ant-select-multiple-selector-bg-disabled: var(--ant-color-bg-container-disabled);
 }
 
+.ant-radio-css-var {
+  --ant-radio-dot-color-disabled: var(--ant-color-text-disabled);
+  --ant-radio-radio-color: var(--ant-color-text-light-solid);
+  --ant-radio-radio-bg-color: var(--ant-color-primary);
+}
+
 .ant-modal-css-var {
   --ant-modal-content-bg: var(--ant-color-bg-elevated);
   --ant-modal-title-color: var(--ant-color-text-heading);
