@@ -1,6 +1,7 @@
 export { default as ConfigProvider } from './ConfigProvider.svelte';
 export { default as Button } from './Button.svelte';
 export { default as Input } from './Input.svelte';
+export { default as InputNumber } from './InputNumber.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';
 export { default as Radio } from './Radio.svelte';
@@ -16,6 +17,7 @@ export { createForm, type FormInstance, type SubmissionResult } from './form.mod
 export { FormValidationError } from './FormValidationError';
 export type { ButtonProps } from './Button.svelte';
 export type { InputProps } from './Input.svelte';
+export type { InputNumberProps } from './InputNumber.svelte';
 export type { CheckboxProps } from './Checkbox.svelte';
 export type { CheckboxGroupProps, CheckboxGroupOption, CheckboxGroupValue } from './checkbox-group.types';
 export type { RadioProps, RadioGroupProps, RadioOption, RadioValue } from './radio.types';
@@ -28,4 +30,4 @@ export type { ModalProps } from './Modal.svelte';
 export type { ConfigProviderProps } from './ConfigProvider.svelte';
 export type { FormItemProps } from './FormItem.svelte';
 export type { ValidationRule, FormRules, FieldErrors, FormValue, FormValues } from './validation.engine';
-export { ruRU, enUS, type Locale, type PaginationLocale, type TableLocale, type ComponentSize, type ThemeConfig, type SelectOption } from './types';
+export { ruRU, enUS, type Locale, type InputNumberLocale, type PaginationLocale, type TableLocale, type ComponentSize, type ThemeConfig, type SelectOption } from './types';

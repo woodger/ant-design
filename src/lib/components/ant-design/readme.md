@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, InputNumber, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
@@ -67,6 +67,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | ConfigProvider | Светлая и тёмная темы, три основных цвета, компактная плотность, размеры, disabled, направление и локаль |
 | Button | Default, primary, dashed, text, link; loading, danger, block, shape; snippets для содержимого и иконки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
+| InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | CheckboxGroup | Типизированный массив выбранных значений, options, disabled, нативные checkbox, FormData, reset и интеграция с FormItem |
@@ -88,6 +89,87 @@ Select возвращает `undefined`, множественного — `[]`; 
 Button `type` задаёт оформление, `htmlType` задаёт нативный тип кнопки и по
 умолчанию равен `button`. Вариант `link` остаётся кнопкой действия; для навигации
 используйте нативную ссылку. Кнопка loading недоступна для повторного нажатия.
+
+## InputNumber
+
+InputNumber редактирует `number | null` через `bind:value` и
+`onValueChange(value)`. Очистка возвращает null, а `0` остаётся числом.
+`defaultValue` фиксируется при создании отдельного control. При использовании
+привязки задайте начальное число или null у владельца без defaultValue.
+
+```svelte
+<script lang="ts">
+  import { InputNumber } from '$lib/components/ant-design';
+
+  let quantity = $state<number | null>(2);
+</script>
+
+<label for="quantity">Количество</label>
+<InputNumber id="quantity" name="quantity" bind:value={quantity} min={0} max={99} step={1} precision={0} />
+```
+
+Компонент хранит редактируемый текст отдельно от числа. Промежуточные `-`,
+`1.` и завершающие нули остаются в поле при наборе. Корректное число в пределах
+min/max сразу обновляет модель; пустая строка обновляет её на null. Нечисловой
+или выходящий за границы черновик не заменяет последнее принятое число.
+Поддерживаются знак, десятичная точка и экспонента; запятая не является
+десятичным разделителем этой версии. Составной ввод IME публикует число
+после compositionend.
+
+Blur и Enter завершают редактирование: числовой черновик ограничивается
+min/max и округляется с precision, нечисловой возвращается к последнему числу.
+Precision задаёт от 0 до 100 знаков после точки; равные половины округляются
+от нуля, например `1.005` с precision=2 становится `1.01`. Округление остаётся
+внутри границ. Отображение дополняется нулями до precision. Если диапазон
+не содержит числа с указанной precision, значение не меняется. Это обычный
+JavaScript number; precision не добавляет произвольную числовую точность.
+
+По умолчанию min/max равны Number.MIN_SAFE_INTEGER/Number.MAX_SAFE_INTEGER,
+step равен 1. Дробный положительный step поддерживается без хвостов вроде
+`0.30000000000000004` при сложении десятичных шагов. Неположительный или
+нечисловой step заменяется на 1, нечисловые границы — на defaults; некорректная
+precision игнорируется. При min > max изменение числа блокируется, очистка
+остаётся доступной. Внешние value и изменения min/max не вызывают callbacks
+и не ограничивают число автоматически. Выход за границы виден в оформлении;
+NaN и Infinity отображаются как пустое значение без callback.
+
+ArrowUp/ArrowDown и кнопки меняют число на step, сохраняя фокус в поле.
+На границе недоступно движение наружу. `keyboard={false}` отключает стрелки,
+`controls={false}` скрывает кнопки; эти настройки независимы. Enter завершает
+ввод и сохраняет нативную отправку формы. `onkeydown` вызывается до обработки
+клавиш; preventDefault отменяет её. Колесо мыши число не меняет.
+`oninput` и остальные нативные события получают DOM-текст; числовое значение
+получайте через onValueChange.
+
+Размеры small/middle/large, disabled и направление наследуются из
+ConfigProvider. Явные props переопределяют наследование. Readonly задаётся
+нативным `readonly`; disabled/readonly блокируют изменение числа и скрывают
+кнопки. Status принимает error/warning и наследует ошибку FormItem.
+Поддерживаются светлая/тёмная темы, основные цвета, компактный режим, RTL и
+prefers-reduced-motion. Кнопки и сообщение нативной проверки локализуются
+через `locale.inputNumber`; вложенный провайдер объединяет отдельные подписи.
+
+Поле использует input с role=spinbutton и aria-valuenow/min/max. Доступное имя
+задаётся label, FormItem либо aria-label/aria-labelledby; кнопки изменения
+не добавляют остановки Tab. Нативные required и проверка числового черновика
+работают в обычной HTML-форме. В Form правила модели управляют проверкой,
+а FormItem передаёт id, name, required, статус, описание ошибки и blur/touched.
+Передавайте `value={form.values.quantity}` и
+`onValueChange={(value) => form.setFieldValue('quantity', value)}`.
+Required считает `0` заданным значением, min/max сравнивают числа.
+
+С name либо FormItem.name FormData содержит одно поле с канонической строкой
+числа, например '1.2' для текста `1.20`, или '' для null. Disabled исключает
+поле, readonly сохраняет его. Атрибут form связывает input и скрытое поле
+с внешней формой. Нативный reset восстанавливает исходный defaultValue либо
+null и обновляет привязку в следующей задаче без callback. Отменённый reset
+сохраняет значение; удаление control отменяет ожидающую задачу. Reset модели
+Form восстанавливает её initialValues и сбрасывает черновик, даже если число
+осталось прежним.
+
+Пример количества, цены и расчёта стоимости доступен на `/ant-design#input-number`.
+Реализован вариант outlined с boolean controls. `stringMode`, formatter/parser,
+другие варианты оформления, prefix/suffix и изменение колесом пока отсутствуют.
 
 ## Select
 
@@ -809,7 +891,7 @@ ConfigProvider пока не перенесены.
 
 По умолчанию используется `ruRU`; `enUS` также экспортируется. `locale` принимает
 частичное переопределение подписей кнопок и служебных сообщений. Вложенная группа
-`locale.pagination` и `locale.table` также объединяются с настройками родителя по отдельным
+`locale.pagination`, `locale.table` и `locale.inputNumber` также объединяются с настройками родителя по отдельным
 подписям. Тексты правил валидации задаются в `message` или возвращаются из validator.
 
 ## Формы и валидация
@@ -897,6 +979,8 @@ RadioGroup использует нативную группу input[type=radio],
 Switch использует нативную кнопку с role=switch: Space и Enter переключают
 состояние, disabled/loading исключают кнопку из Tab. Имя остаётся постоянным,
 а checked-состояние передаёт aria-checked.
+InputNumber использует input с role=spinbutton: стрелки меняют число, Enter
+завершает черновик. Кнопки увеличения и уменьшения сохраняют фокус в input.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -950,6 +1034,8 @@ Radio/RadioGroup, нативное снятие соседнего radio, нез
 числовой ноль и boolean false, required, отмену reset, ориентацию и фокус ошибок,
 Switch, snippets, loading, keyboard, FormData, reset, сохранение с откатом,
 повторную попытку, поздние ответы после удаления и reduced motion,
+InputNumber, промежуточный текст, курсор, IME, дробный шаг, precision, null/zero,
+числовую валидацию, нативный reset, reset модели и FormData,
 сочетания фильтров, сортировки, страниц и выбора Table, loading и замену данных,
 серверный total, сохранение ключей между страницами, отмену запросов, поздние ответы,
 ошибки/retry и повторную загрузку допустимой страницы при уменьшении total,
@@ -979,7 +1065,9 @@ Tree/TreeSelect, Upload, Select tags, Form.List, вложенные name paths,
 Checkbox, Pagination, Table, Modal, Form и связанные animations; глобальные токены
 сохранены. В [vendor/radio.css](./vendor/radio.css) добавлены обычные Radio и
 RadioGroup из того же архива; [vendor/switch.css](./vendor/switch.css) содержит
-Switch вместе с правилами reduced motion. Селекторы
+Switch вместе с правилами reduced motion.
+InputNumber outlined находится в [vendor/input-number.css](./vendor/input-number.css),
+адаптация тем и reduced motion — в theme.css и InputNumber.svelte. Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.
 

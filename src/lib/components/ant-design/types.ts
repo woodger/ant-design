@@ -18,6 +18,13 @@ export interface Locale {
   selectRequiredText?: string;
   pagination?: Partial<PaginationLocale>;
   table?: Partial<TableLocale>;
+  inputNumber?: Partial<InputNumberLocale>;
+}
+
+export interface InputNumberLocale {
+  increase: string;
+  decrease: string;
+  invalidNumber: string;
 }
 
 export interface TableLocale {
@@ -55,6 +62,11 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  inputNumber: {
+    increase: 'Увеличить значение',
+    decrease: 'Уменьшить значение',
+    invalidNumber: 'Введите число в допустимом диапазоне.'
+  },
   removeText: 'Удалить',
   selectRequiredText: 'Выберите хотя бы один вариант.',
   okText: 'Подтвердить',
@@ -93,6 +105,11 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  inputNumber: {
+    increase: 'Increase value',
+    decrease: 'Decrease value',
+    invalidNumber: 'Enter a number within the allowed range.'
+  },
   removeText: 'Remove',
   selectRequiredText: 'Select at least one option.',
   okText: 'OK',

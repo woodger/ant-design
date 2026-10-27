@@ -276,6 +276,46 @@ test('showcase validates RadioGroup choices, submits zero and false and resets i
   await expect(fixture.getByRole('status')).toHaveCount(0);
 });
 
+test('showcase calculates a numeric order, preserves zero and submits and resets its form', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#input-number');
+  const quantity = fixture.getByRole('spinbutton', { name: 'Количество', exact: true });
+  const price = fixture.getByRole('spinbutton', { name: 'Цена за единицу', exact: true });
+  await expect(quantity).toHaveValue('2');
+  await expect(price).toHaveValue('12.50');
+  await expect(fixture.getByRole('status', { name: 'Стоимость заказа', exact: true })).toHaveText(/25,00.*₽/);
+  await price.fill('0.2');
+  await price.press('ArrowUp');
+  await expect(price).toHaveValue('0.30');
+  await quantity.fill('3');
+  await fixture.getByRole('button', { name: 'Рассчитать заказ', exact: true }).click();
+  await expect(fixture.getByRole('status', { name: 'Результат расчёта', exact: true })).toHaveText(/Заказ рассчитан: 0,90.*₽/);
+  expect(await fixture.locator('form').evaluate((element) => Object.fromEntries(new FormData(element as HTMLFormElement)))).toEqual({ quantity: '3', price: '0.3' });
+  await fixture.screenshot({ path: testInfo.outputPath('input-number.png') });
+  await quantity.fill('0');
+  await fixture.getByRole('button', { name: 'Рассчитать заказ', exact: true }).click();
+  await expect(fixture.getByRole('status', { name: 'Результат расчёта', exact: true })).toHaveText(/Заказ рассчитан: 0,00.*₽/);
+  await fixture.getByRole('button', { name: 'Сбросить заказ', exact: true }).click();
+  await expect(quantity).toHaveValue('2');
+  await expect(price).toHaveValue('12.50');
+  await expect(fixture.getByRole('status', { name: 'Результат расчёта', exact: true })).toHaveCount(0);
+});
+
+test('showcase validates empty numeric fields and focuses the named invalid control', async ({ page }) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#input-number');
+  const quantity = fixture.getByRole('spinbutton', { name: 'Количество', exact: true });
+  await quantity.fill('');
+  await fixture.getByRole('button', { name: 'Рассчитать заказ', exact: true }).click();
+  await expect(quantity).toBeFocused();
+  await expect(quantity).toHaveAttribute('aria-invalid', 'true');
+  await expect(quantity).toHaveAccessibleDescription('Введите количество.');
+  await expect(fixture.getByRole('status', { name: 'Стоимость заказа', exact: true })).toHaveText('Стоимость: —');
+  await quantity.fill('1');
+  await quantity.press('Enter');
+  await expect(fixture.getByRole('status', { name: 'Результат расчёта', exact: true })).toHaveText(/Заказ рассчитан: 12,50.*₽/);
+});
+
 test('showcase saves a Switch setting immediately, rolls back an error and retries', async ({ page }) => {
   await page.goto('/ant-design');
   const fixture = page.locator('#switch');
@@ -441,6 +481,8 @@ test.describe('server-rendered showcase', () => {
     await expect(page.getByRole('radiogroup', { name: 'Режим публикации', exact: true }).getByRole('radio')).toHaveCount(2);
     await expect(page.getByRole('switch', { name: 'Автоматические уведомления', exact: true })).toHaveAttribute('aria-checked', 'false');
     await expect(page.getByRole('switch', { name: 'Еженедельный отчёт', exact: true })).toHaveAttribute('aria-checked', 'false');
+    await expect(page.getByRole('spinbutton', { name: 'Количество', exact: true })).toHaveValue('2');
+    await expect(page.getByRole('spinbutton', { name: 'Цена за единицу', exact: true })).toHaveValue('12.50');
     await expect(page.getByRole('navigation', { name: 'Пример пагинации', exact: true }).locator('[aria-current="page"]')).toHaveText('1');
     const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
     await expect(table.locator('tbody tr')).toHaveCount(5);

@@ -33,6 +33,7 @@
   provideForm({
     get disabled() { return (disabled ?? config.componentDisabled) || form.isSubmitting; },
     get layout() { return layout; },
+    get resetKey() { return form.values; },
     getFieldError: (name) => form.getFieldError(getFieldName(name)),
     isFieldRequired: (name) => form.isFieldRequired(getFieldName(name)),
     touchField: (name) => form.touchField(getFieldName(name))

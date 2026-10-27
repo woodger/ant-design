@@ -3,6 +3,7 @@ import { getContext, setContext } from 'svelte';
 export interface FormContext {
   readonly disabled: boolean;
   readonly layout: 'vertical' | 'horizontal';
+  readonly resetKey?: object;
   getFieldError(name: string): readonly string[];
   isFieldRequired(name: string): boolean;
   touchField(name: string): void;

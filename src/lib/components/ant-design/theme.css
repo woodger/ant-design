@@ -122,6 +122,24 @@
   --ant-input-input-font-size-lg: var(--ant-font-size-lg);
 }
 
+.ant-input-number-css-var {
+  --ant-input-number-active-border-color: var(--ant-color-primary);
+  --ant-input-number-hover-border-color: var(--ant-color-primary-hover);
+  --ant-input-number-hover-bg: var(--ant-color-bg-container);
+  --ant-input-number-active-bg: var(--ant-color-bg-container);
+  --ant-input-number-active-shadow: 0 0 0 2px color-mix(in srgb, var(--ant-color-primary) 15%, transparent);
+  --ant-input-number-handle-bg: var(--ant-color-bg-container);
+  --ant-input-number-handle-border-color: var(--ant-color-border);
+  --ant-input-number-handle-hover-color: var(--ant-color-primary-hover);
+  --ant-input-number-handle-active-bg: var(--ant-color-fill-quaternary);
+  --ant-input-number-input-font-size: var(--ant-font-size);
+  --ant-input-number-input-font-size-sm: var(--ant-font-size);
+  --ant-input-number-input-font-size-lg: var(--ant-font-size-lg);
+  --ant-input-number-padding-block: max(0px, calc((var(--ant-control-height) - var(--ant-font-size) * var(--ant-line-height) - var(--ant-line-width) * 2) / 2));
+  --ant-input-number-padding-block-sm: max(0px, calc((var(--ant-control-height-sm) - var(--ant-font-size) * var(--ant-line-height) - var(--ant-line-width) * 2) / 2));
+  --ant-input-number-padding-block-lg: max(0px, calc((var(--ant-control-height-lg) - var(--ant-font-size-lg) * var(--ant-line-height-lg) - var(--ant-line-width) * 2) / 2));
+}
+
 .ant-select-css-var {
   --ant-select-selector-bg: var(--ant-color-bg-container);
   --ant-select-clear-bg: var(--ant-color-bg-container);

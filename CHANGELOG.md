@@ -9,6 +9,10 @@
 
 ### Added
 
+- InputNumber: bind:value с number/null, defaultValue, числовой черновик,
+  min/max, дробный step, precision, кнопки и клавиатура, disabled/readonly,
+  FormItem, FormData и reset. Добавлены стили Ant Design 6.6.8, темы, RTL,
+  локаль, пример расчёта стоимости и unit/SSR/Chromium-проверки.
 - Switch: bind:checked, defaults, loading, disabled, два размера, snippets
   состояний, клавиатура, FormData и FormItem. Добавлены стили Ant Design 6.6.8,
   темы/RTL/reduced motion, пример асинхронного сохранения с откатом ошибки,

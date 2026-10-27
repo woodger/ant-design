@@ -37,7 +37,8 @@
         ...parent.locale,
         ...locale,
         pagination: { ...parent.locale.pagination, ...locale?.pagination },
-        table: { ...parent.locale.table, ...locale?.table }
+        table: { ...parent.locale.table, ...locale?.table },
+        inputNumber: { ...parent.locale.inputNumber, ...locale?.inputNumber }
       };
     }
   };
