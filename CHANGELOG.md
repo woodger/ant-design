@@ -9,6 +9,11 @@
 
 ### Added
 
+- Drawer: модальная панель на нативном dialog, bind:open, callbacks, четыре
+  стороны и размеры, title/extra/footer snippets, анимация и reduced motion.
+  Добавлены ленивое содержимое, сохранение state, forceRender/destroyOnHidden,
+  клавиатура и возврат фокуса, стили Ant Design 6.6.8, темы/RTL, работа с Modal,
+  редактор строки Table через Form/Tabs/Collapse и unit/SSR/Chromium-проверки.
 - Collapse: типизированные items/snippets, extra, bind:activeKey, defaults и
   callbacks, независимые панели и accordion, header/icon/disabled и размеры.
   Добавлены ленивые панели с сохранением state, forceRender/destroyOnHidden,

@@ -1,5 +1,53 @@
 import { test, expect } from './test';
 
+test('showcase edits Table rows in Drawer, validates fields and retains unsaved form and tab state', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#drawer');
+  const fixture = page.locator('#drawer');
+  const trigger = fixture.getByRole('button', { name: 'Редактировать: Анна', exact: true });
+  await trigger.click();
+  const drawer = page.getByRole('dialog', { name: 'Участник: Анна', exact: true });
+  const name = drawer.getByLabel('Имя в карточке', { exact: true });
+  await name.fill('');
+  await drawer.getByRole('button', { name: 'Сохранить участника', exact: true }).click();
+  await expect(drawer.getByText('Введите имя участника.', { exact: true })).toBeVisible();
+  await expect(name).toBeFocused();
+  await name.fill('Мария');
+  await drawer.getByRole('combobox', { name: 'Роль в карточке', exact: true }).click();
+  await drawer.getByRole('option', { name: 'Менеджер', exact: true }).click();
+  await drawer.getByRole('tab', { name: 'Заметки карточки', exact: true }).click();
+  await drawer.getByRole('textbox', { name: 'Заметка в карточке', exact: true }).fill('Новый комментарий');
+  await drawer.getByRole('button', { name: 'Закрыть карточку', exact: true }).click();
+  await expect(drawer).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await expect(name).toHaveValue('Мария');
+  await expect(drawer.getByRole('tab', { name: 'Заметки карточки', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(drawer.getByRole('textbox', { name: 'Заметка в карточке', exact: true })).toHaveValue('Новый комментарий');
+  await expect.poll(() => drawer.evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(0);
+  await page.screenshot({ path: testInfo.outputPath('drawer-editor.png') });
+  await drawer.getByRole('button', { name: 'Сохранить участника', exact: true }).click();
+  await expect(drawer).toBeHidden();
+  await expect(fixture.getByRole('row').filter({ hasText: 'Мария' })).toContainText('Менеджер');
+  await expect(fixture.getByRole('status', { name: 'Результат карточки участника', exact: true })).toHaveText('Участник сохранён: Мария.');
+});
+
+test('showcase resets destroyed Drawer editors and keeps separate records independent', async ({ page }) => {
+  await page.goto('/ant-design#drawer');
+  const fixture = page.locator('#drawer');
+  await fixture.getByRole('checkbox', { name: 'Сбрасывать карточку при закрытии', exact: true }).check();
+  await fixture.getByRole('button', { name: 'Редактировать: Анна', exact: true }).click();
+  const anna = page.getByRole('dialog', { name: 'Участник: Анна', exact: true });
+  await anna.getByLabel('Имя в карточке', { exact: true }).fill('Несохранённый черновик');
+  await page.keyboard.press('Escape');
+  await expect(anna).toBeHidden();
+  await fixture.getByRole('button', { name: 'Редактировать: Анна', exact: true }).click();
+  await expect(anna.getByLabel('Имя в карточке', { exact: true })).toHaveValue('Анна');
+  await page.keyboard.press('Escape');
+  await expect(anna).toBeHidden();
+  await fixture.getByRole('button', { name: 'Редактировать: Михаил', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Участник: Михаил', exact: true }).getByLabel('Имя в карточке', { exact: true })).toHaveValue('Михаил');
+});
+
 test('showcase edits collapsed form sections, keeps reset actions independent and supports nested fields', async ({ page }, testInfo) => {
   await page.goto('/ant-design#collapse');
   const fixture = page.locator('#collapse');

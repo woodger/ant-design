@@ -14,6 +14,7 @@
   import DropdownExample from './DropdownExample.svelte';
   import TabsExample from './TabsExample.svelte';
   import CollapseExample from './CollapseExample.svelte';
+  import DrawerExample from './DrawerExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -38,7 +39,8 @@
     ['popconfirm', 'Popconfirm'],
     ['dropdown', 'Dropdown'],
     ['tabs', 'Tabs'],
-    ['collapse', 'Collapse']
+    ['collapse', 'Collapse'],
+    ['drawer', 'Drawer']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -150,7 +152,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">22 компонента</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">23 компонента</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -372,6 +374,12 @@
           <div class="section-heading"><h3>Collapse</h3></div>
           <p class="section-description">Раскрываемые разделы анкеты: несколько панелей или accordion, независимая кнопка сброса и вложенные поля.</p>
           <div class="panel"><CollapseExample /></div>
+        </section>
+
+        <section id="drawer">
+          <div class="section-heading"><h3>Drawer</h3></div>
+          <p class="section-description">Редактирование строки таблицы в выдвижной карточке. Закройте и откройте панель, чтобы проверить сохранение черновика.</p>
+          <div class="panel"><DrawerExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

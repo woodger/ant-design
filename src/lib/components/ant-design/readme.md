@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -84,6 +84,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Dropdown | Плоское меню команд, click/hover, bind:open, disabled/danger, snippets, шесть положений, стрелки/typeahead и возврат фокуса |
 | Tabs | Типизированные панели, bind:activeKey, line/card, четыре положения, ручная клавиатурная активация, сохранение содержимого и destroyOnHidden |
 | Collapse | Независимые панели и accordion, bind:activeKey, snippets, extra, header/icon/disabled, сохранение содержимого и destroyOnHidden |
+| Drawer | Модальная выдвижная панель, bind:open, четыре стороны, размеры, snippets, анимация, сохранение содержимого и destroyOnHidden |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -750,6 +751,88 @@ start/end относительно кнопки заголовка и напра
 пересоздаёт поля с исходными значениями, сохраняя открытые внешние панели.
 Первая версия не поддерживает legacy Collapse.Panel, пользовательский expandIcon,
 classNames/styles и React-анимацию высоты.
+
+## Drawer
+
+```svelte
+<script lang="ts">
+  import { Button, Drawer, Input } from '$lib/components/ant-design';
+
+  let open = $state(false);
+</script>
+
+{#snippet footer()}<Button onclick={() => { open = false; }}>Закрыть</Button>{/snippet}
+
+<Button onclick={() => { open = true; }}>Редактировать</Button>
+<Drawer bind:open title="Карточка участника" {footer}>
+  <label>Имя<Input defaultValue="Анна" /></label>
+</Drawer>
+```
+
+Drawer v1 — модальная панель на нативном dialog. `bind:open` передаёт запрос
+видимости владельцу; без binding компонент может закрываться самостоятельно.
+Начальное open=true подготавливает содержимое в SSR и открывает настоящий
+модальный dialog после гидратации. Атрибут open не выводится в SSR, чтобы
+избежать промежуточного немодального окна.
+
+Title принимает строку или пассивный Snippet, children/extra/footer — Snippet.
+Заголовок использует h2; интерактивные действия размещайте в extra/footer.
+Без footer нижняя область отсутствует. Без title именуйте dialog через
+aria-label или aria-labelledby. Внешнее aria-labelledby имеет приоритет;
+aria-label заменяет автоматически созданную связь с визуальным title.
+Aria-describedby связывает внешнее описание. Id/class/style относятся к
+корневому dialog; дополнительные semantic classNames/styles не поддерживаются.
+
+Placement — физическая сторона top/right/bottom/left, по умолчанию right.
+RTL меняет направление содержимого, сохраняя выбранную сторону. Size задаёт
+ширину для left/right и высоту для top/bottom: default=378px, large=736px,
+положительное число в px или корректную CSS-длину, например 50% или 30rem.
+Размер ограничен viewport; пустая строка и неположительное/нефинитное число
+используют default. Header и footer остаются на месте, длинное body прокручивается.
+
+Closable=false убирает кнопку закрытия. Keyboard=false отключает закрытие по
+Escape. Mask принимает объект с closable (по умолчанию true) и blur (false).
+Закрытие по фону требует начала и конца основного pointer-действия на фоне;
+перетаскивание из панели или в панель не закрывает её. Маска всегда включена,
+фон страницы остаётся inert. Drawer не наследует disabled от Form/ConfigProvider;
+его поля и пользовательские кнопки получают собственный контекст.
+
+Пользовательское закрытие сначала записывает open=false в binding, затем
+вызывает onClose(Event) один раз: click для кнопки, cancel для Escape,
+pointerup для фона. Callback уведомляет о запросе и не отменяет его.
+Изменение open владельцем, нативный dialog.close() и удаление компонента
+не вызывают onClose. Нативное закрытие синхронизирует binding; позднее событие
+старого закрытия не закрывает заново открытый dialog.
+
+При открытии фокус получает первый доступный control; без controls — сам
+dialog. Нативная модальность удерживает фон inert и ограничивает Tab;
+после закрытия фокус возвращается к доступному opener. Select, Tooltip и
+Popover потребляют свой Escape раньше Drawer. Поддерживается стек с Modal
+и другими модальными Drawer без push. Прокрутка страницы заблокирована,
+пока остаётся открытый модальный Drawer или Modal.
+
+Содержимое ленивое и после первого открытия сохраняет локальный state и
+DOM-черновики в закрытом dialog. ForceRender монтирует его сразу и сохраняет
+даже при destroyOnHidden. DestroyOnHidden удаляет header/body/footer после
+завершения ухода панели; отключение настройки не монтирует уничтоженное
+содержимое заново. Удаление Drawer уничтожает его содержимое и освобождает
+модальность. Состояние, хранимое снаружи, не сбрасывается.
+Сохранённые скрытые поля остаются в DOM и нативной FormData своей формы;
+их таймеры и подписки продолжают работать. Для фокуса ошибки закрытую панель
+сначала должен открыть владелец формы.
+
+Панель выдвигается от выбранной стороны, маска меняет прозрачность.
+При запросе закрытия dialog сохраняет модальность до завершения анимации.
+Повторное открытие прерывает уход без уничтожения черновика. Reduced motion
+отключает анимацию; изменение этой настройки завершает текущую анимацию.
+Темы и compact используют существующие глобальные токены Ant Design.
+
+Галерея `/ant-design#drawer` редактирует строку Table через Form с валидацией,
+Tabs и Collapse. Черновик сохраняется при закрытии той же карточки; переход
+к другому участнику создаёт отдельный редактор. DestroyOnHidden пересоздаёт
+редактор из сохранённой строки. Сохранение обновляет Table и закрывает панель.
+Первая версия не поддерживает немодальный режим, mask=false, resizable, push,
+getContainer/порталы, loading/Skeleton, focusable и afterOpenChange.
 
 ## Select
 
@@ -1581,6 +1664,9 @@ Collapse использует нативные кнопки внутри heading
 и обычную последовательность Tab. Extra отделён от кнопки заголовка, скрытое
 содержимое недоступно для Tab. Именованные regions ограничены небольшими группами
 и accordion; при скрытии или удалении сфокусированной панели фокус восстанавливается.
+Drawer использует именованный модальный dialog, нативную кнопку закрытия и
+естественный Tab. Фон inert, Escape закрывает верхнюю поверхность, закрытие
+возвращает фокус opener. Во время анимации ухода модальность сохраняется.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1682,6 +1768,12 @@ Unit/SSR/Chromium-проверки покрывают ленивое монти�
 forceRender/destroyOnHidden, FormData, вложенность, ARIA, Enter/Space/Tab,
 восстановление фокуса, перестановку items, Modal, размеры, RTL, темы, reduced motion,
 мобильные длинные подписи и сохранение/сброс анкеты в галерее.
+Drawer проверяется на binding/callbacks, четыре стороны и размеры, закрытие
+кнопкой/Escape/фоном, pointer-drag, модальность и возврат фокуса, прокрутку,
+ленивое содержимое, forceRender/destroyOnHidden и повторное открытие при уходе.
+SSR/Chromium-проверки покрывают удаление, RTL/локаль, темы, reduced motion,
+Select/Popover/Tooltip, Tabs/Collapse, стек с Modal и мобильное длинное содержимое.
+Галерея проверяет валидацию, сохранение черновика, обновление строки Table и сброс.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1731,6 +1823,12 @@ Collapse.svelte адаптирует заголовки к нативным кн
 collapse.engine.ts — ключами и выбором доступного заголовка,
 CollapsePanel.svelte — временем жизни содержимого. Темы и отступы кнопок
 адаптированы в theme.css и scoped-стилях компонента.
+[vendor/drawer.css](./vendor/drawer.css) содержит 32 правила модального Drawer
+и его токены из того же архива. Корневые селекторы ограничены
+:where(.ant-drawer-css-var); React motion, resizable, skeleton и inline/pure
+исключены. Drawer.svelte адаптирует нативный dialog и жизненный цикл содержимого;
+drawer.dom.ts управляет модальностью и отменяемой Web Animations API-анимацией,
+drawer.engine.ts — размерами, направлением ухода и длительностью.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.
