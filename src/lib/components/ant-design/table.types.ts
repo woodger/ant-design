@@ -39,6 +39,14 @@ export interface TableRowSelection<Row extends object> {
   getCheckboxProps?: (record: Row) => { disabled?: boolean; 'aria-label'?: string };
 }
 
+export interface TableExpandable<Row extends object> {
+  expandedRowRender: Snippet<[record: Row, index: number]>;
+  rowExpandable?: (record: Row) => boolean;
+  columnTitle?: string;
+  columnWidth?: number | string;
+  fixed?: boolean;
+}
+
 export type TablePaginationConfig = Pick<PaginationProps, 'showSizeChanger' | 'pageSizeOptions' | 'hideOnSinglePage' | 'showTotal' | 'aria-label'>;
 
 export interface TableChange<Row extends object> {
@@ -69,6 +77,11 @@ export interface TableProps<Row extends object> {
   defaultSelectedRowKeys?: readonly TableKey[];
   onChange?: (change: TableChange<Row>) => void;
   onSelectionChange?: (keys: TableKey[], rows: Row[], info: { type: 'single' | 'all' }) => void;
+  expandable?: TableExpandable<Row>;
+  expandedRowKeys?: TableKey[];
+  defaultExpandedRowKeys?: readonly TableKey[];
+  onExpand?: (expanded: boolean, record: Row) => void;
+  onExpandedRowsChange?: (keys: TableKey[]) => void;
   loading?: boolean;
   disabled?: boolean;
   bordered?: boolean;

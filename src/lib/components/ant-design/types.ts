@@ -30,6 +30,9 @@ export interface TableLocale {
   filterTitle?: string;
   filterApply?: string;
   filterReset?: string;
+  expandColumn?: string;
+  expandRow?: string;
+  collapseRow?: string;
 }
 
 export interface PaginationLocale {
@@ -78,7 +81,10 @@ export const ruRU = {
     cancelSort: 'Сбросить сортировку',
     filterTitle: 'Фильтр',
     filterApply: 'Применить',
-    filterReset: 'Сбросить'
+    filterReset: 'Сбросить',
+    expandColumn: 'Подробности',
+    expandRow: 'Раскрыть строку',
+    collapseRow: 'Свернуть строку'
   }
 } satisfies Locale;
 
@@ -111,6 +117,9 @@ export const enUS = {
     cancelSort: 'Clear sorting',
     filterTitle: 'Filter',
     filterApply: 'Apply',
-    filterReset: 'Reset'
+    filterReset: 'Reset',
+    expandColumn: 'Details',
+    expandRow: 'Expand row',
+    collapseRow: 'Collapse row'
   }
 } satisfies Locale;

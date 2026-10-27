@@ -69,7 +69,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Select | Один строковый или числовой value; options, поиск, очистка, disabled options, клавиатура и значение для FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
-| Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор строк, закрепление заголовка и колонок, loading и пустые данные |
+| Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор и раскрытие строк, закрепление заголовка и колонок, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
@@ -262,6 +262,68 @@ disabled-строки при расчёте checked/indeterminate и отклю�
 Размер наследуется из `componentSize`; доступны `bordered`, `caption`,
 `aria-label`, `class` и `style`. `scroll.x` задаёт минимальную ширину таблицы:
 горизонтальная прокрутка остаётся внутри фокусируемого контейнера.
+
+### Раскрываемые строки
+
+`expandable` добавляет перед колонкой выбора отдельную колонку с кнопками
+раскрытия. `expandedRowRender(record, index)` — типизированный snippet с
+подробностями; index начинается с 0 среди строк данных текущей страницы.
+`rowExpandable(record)` позволяет скрыть кнопку и подробности отдельных строк.
+По умолчанию раскрытие доступно для каждой переданной записи.
+
+```svelte
+<script lang="ts">
+  import { Button, Table, type TableColumn, type TableKey } from '$lib/components/ant-design';
+
+  interface Person { key: number; name: string; email: string; active: boolean }
+  const people: Person[] = [
+    { key: 0, name: 'Анна', email: 'anna@example.com', active: true },
+    { key: 1, name: 'Борис', email: 'boris@example.com', active: false }
+  ];
+  const columns: TableColumn<Person>[] = [{ key: 'name', title: 'Имя', dataIndex: 'name', width: 200 }];
+  let expanded = $state<TableKey[]>([0]);
+</script>
+
+{#snippet details(person: Person, index: number)}<p>{index + 1}. {person.name}: {person.email}</p>{/snippet}
+<Button onclick={() => { expanded = []; }}>Свернуть все</Button>
+<Table dataSource={people} {columns} caption="Участники"
+  expandable={{ expandedRowRender: details, rowExpandable: (person) => person.active, fixed: true }}
+  bind:expandedRowKeys={expanded} />
+```
+
+`expandedRowKeys` поддерживает привязку. Для отдельной таблицы доступны
+`defaultExpandedRowKeys`, которые читаются один раз. `[]` сворачивает все строки.
+Раскрытие использует тот же rowKey, что и выбор; числовой `0` и строковый `"0"`
+различаются. Ключи сохраняются при сортировке, фильтрации, смене страниц,
+замене/удалении данных, выключении expandable и изменении rowExpandable.
+Подробности отображаются только для доступных строк текущего dataSource и страницы;
+кэша записей нет. Возвращённая запись с сохранённым ключом снова раскрывается.
+
+Пользовательское переключение сначала обновляет привязку, затем вызывает
+`onExpand(expanded, record)` и `onExpandedRowsChange(keys)` в этом порядке.
+Keys содержит все раскрытые ключи, включая отсутствующие на текущей странице.
+Внешние изменения props не вызывают эти callbacks. Раскрытие не меняет выбор
+или пагинацию и не вызывает общий onChange. currentDataSource и total считают
+только записи, строки подробностей в них не входят.
+
+`expandable.columnWidth` принимает число или CSS-ширину, по умолчанию 48px.
+`columnTitle` задаёт видимый заголовок; по умолчанию он только доступен скринридеру.
+`fixed: true` закрепляет колонку у начала строки, включая RTL. Смещения и colspan
+учитывают раскрытие, выбор и данные. При горизонтальной прокрутке содержимое
+подробностей остаётся в ширине видимой области. Ширины колонок данных сохраняются.
+
+Кнопка имеет type=button и aria-expanded; в раскрытом состоянии aria-controls
+ссылается на существующий блок подробностей с уникальным ID. Enter и Space
+переключают состояние и сохраняют фокус на кнопке. Loading и disabled блокируют
+переключение, disabled наследуется из ConfigProvider. Подписи задаются через
+`locale.table.expandColumn`, `expandRow`, `collapseRow`.
+
+Snippet создаётся только для видимой раскрытой строки. Сворачивание, скрытие
+фильтром, уход со страницы или запрет rowExpandable удаляют его из DOM и
+сбрасывают локальное состояние controls. Данные, которые нужно сохранить,
+держите у владельца. SSR сразу отображает переданные раскрытые строки.
+Раскрытие нажатием на всю строку, forceRender и иерархические данные пока не
+поддерживаются. Живой пример карточек участников доступен на `/ant-design`.
 
 ### Закрепление заголовка и колонок
 
@@ -585,6 +647,7 @@ confirmLoading, обрабатывает ошибки и сбрасывает op
 серверный total, сохранение ключей между страницами, отмену запросов, поздние ответы,
 ошибки/retry и повторную загрузку допустимой страницы при уменьшении total,
 геометрию закреплённых заголовков и колонок, resize, клавиатурный фокус и узкий экран,
+раскрываемые строки, callbacks, сохранение ключей, жизненный цикл snippets и colspan,
 клавиатуру Select,
 очистку и числовой ноль, фокус и закрытие Modal, async validation, повторную
 отправку, ошибки и reset Form, оба layout, темы, размеры, RTL, локаль, мобильный
@@ -595,7 +658,7 @@ Console warnings/errors и необработанные ошибки брауз�
 
 Эта версия покрывает перечисленное ядро. Checkbox.Group, simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
-раскрываемые строки, DatePicker/RangePicker,
+DatePicker/RangePicker,
 Tree/TreeSelect, Upload, множественный Select, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.

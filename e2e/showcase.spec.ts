@@ -178,6 +178,30 @@ test('showcase applies combined filters, shows empty results and restores data a
   await expect(table.locator('tbody tr > td:nth-child(2)')).toHaveText(['Анна Иванова', 'Борис Соколов', 'Вера Петрова', 'Глеб Волков', 'Дарья Орлова']);
 });
 
+test('showcase expands participant cards and retains expansion independently of selection and pagination', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#expandable-table');
+  const table = fixture.getByRole('table', { name: 'Карточки участников', exact: true });
+  const pagination = fixture.getByRole('navigation', { name: 'Страницы карточек участников', exact: true });
+  await expect(table.locator('.ant-table-expanded-row')).toContainText('marina@example.com');
+  await expect(table.getByRole('button', { name: 'Раскрыть строку 3', exact: true })).toHaveCount(0);
+  await table.getByRole('checkbox', { name: 'Выбрать карточку 1', exact: true }).check();
+  await pagination.getByRole('button', { name: 'Страница 2', exact: true }).click();
+  await expect(table.locator('.ant-table-expanded-row')).toHaveCount(0);
+  await table.getByRole('button', { name: 'Раскрыть строку 4', exact: true }).click();
+  await expect(table.locator('.ant-table-expanded-row')).toContainText('oleg@example.com');
+  await pagination.getByRole('button', { name: 'Страница 1', exact: true }).click();
+  await expect(table.locator('.ant-table-expanded-row')).toContainText('marina@example.com');
+  await expect(table.getByRole('checkbox', { name: 'Выбрать карточку 1', exact: true })).toBeChecked();
+  await expect(fixture.getByRole('status', { name: 'Раскрытие карточек', exact: true })).toHaveText('Раскрыто: 2. Выбрано: 1.');
+  await fixture.screenshot({ path: testInfo.outputPath('expandable-table.png') });
+  await fixture.getByRole('button', { name: 'Свернуть все подробности', exact: true }).click();
+
+  await expect(table.locator('.ant-table-expanded-row')).toHaveCount(0);
+  await expect(fixture.getByRole('status', { name: 'Раскрытие карточек', exact: true })).toHaveText('Раскрыто: 0. Выбрано: 1.');
+  await expect(fixture.getByRole('button', { name: 'Свернуть все подробности', exact: true })).toBeDisabled();
+});
+
 test('showcase updates the select-all checkbox and pagination bindings after hydration', async ({ page }) => {
   await page.goto('/ant-design');
   const all = page.getByRole('checkbox', { name: 'Все права', exact: true });
@@ -301,6 +325,10 @@ test.describe('server-rendered showcase', () => {
     await expect(table.locator('tbody tr > td:nth-child(2)').first()).toHaveText('Анна Иванова');
     await expect(page.getByRole('table', { name: 'Удалённые участники', exact: true }).getByRole('cell', { name: 'Нет данных', exact: true })).toBeVisible();
     await expect(page.getByRole('status', { name: 'Результат удалённой загрузки', exact: true })).toHaveText('Всего: 0. Страница: 1. Выбрано: 0.');
+    const expanded = page.getByRole('table', { name: 'Карточки участников', exact: true });
+    await expect(expanded.locator('.ant-table-row')).toHaveCount(3);
+    await expect(expanded.locator('.ant-table-expanded-row')).toContainText('marina@example.com');
+    await expect(expanded.getByRole('button', { name: 'Свернуть строку 1', exact: true })).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('dialog')).not.toBeVisible();
   });
 });

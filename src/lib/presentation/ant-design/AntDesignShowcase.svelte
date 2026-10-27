@@ -2,6 +2,7 @@
   import { Button, Checkbox, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select, Table, type TableColumn } from '$lib/components/ant-design';
   import { createShowcase, type ShowcaseMember } from './showcase.model.svelte';
   import RemoteTableExample from './RemoteTableExample.svelte';
+  import ExpandableTableExample from './ExpandableTableExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -14,6 +15,7 @@
     ['pagination', 'Pagination'],
     ['table', 'Table'],
     ['server-table', 'Table · API'],
+    ['expandable-table', 'Table · подробности'],
     ['modal', 'Modal']
   ];
   const frameworks = [
@@ -265,6 +267,12 @@
           <div class="section-heading"><h3>Table · серверный режим</h3></div>
           <p class="section-description">Загрузка страниц, серверные сортировка и фильтры, закрепление заголовка и колонок. Демо имитирует API с задержкой; попробуйте обновление, ошибку и повтор запроса.</p>
           <div class="panel"><RemoteTableExample /></div>
+        </section>
+
+        <section id="expandable-table">
+          <div class="section-heading"><h3>Table · раскрываемые строки</h3></div>
+          <p class="section-description">Нажмите «+» у имени, чтобы увидеть сведения об участнике. Раскрытие и выбор сохраняются при смене страницы.</p>
+          <div class="panel"><ExpandableTableExample /></div>
         </section>
 
         <section id="modal">

@@ -169,6 +169,8 @@
   --ant-table-row-hover-bg: var(--ant-color-fill-quaternary);
   --ant-table-row-selected-bg: var(--ant-color-primary-bg);
   --ant-table-row-selected-hover-bg: var(--ant-color-primary-bg-hover);
+  --ant-table-row-expanded-bg: var(--ant-color-fill-quaternary);
+  --ant-table-expand-icon-bg: var(--ant-color-bg-container);
   --ant-table-border-color: var(--ant-color-border-secondary);
   --ant-table-header-split-color: var(--ant-color-border-secondary);
   --ant-table-header-icon-color: var(--ant-color-text-tertiary);
