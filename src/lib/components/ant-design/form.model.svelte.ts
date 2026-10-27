@@ -4,8 +4,23 @@ import {
   type FieldErrors,
   type FieldName,
   type FormRules,
+  type FormValue,
   type FormValues
 } from './validation.engine';
+
+function copyValue<Value extends FormValue>(value: Value): Value {
+  return (Array.isArray(value) ? [...value] : value) as Value;
+}
+
+function copyValues<Values extends FormValues>(source: Values): Values {
+  const copy = { ...source };
+
+  for (const name of Object.keys(copy) as FieldName<Values>[]) {
+    copy[name] = copyValue(copy[name]);
+  }
+
+  return copy;
+}
 
 export type SubmissionResult<Values extends FormValues> =
   | { status: 'success' }
@@ -37,12 +52,12 @@ export function createForm<Values extends FormValues>({
   initialValues: Values;
   rules?: FormRules<Values>;
 }): FormInstance<Values> {
-  const defaults = { ...initialValues };
+  const defaults = copyValues(initialValues);
   const names = Object.keys(defaults) as FieldName<Values>[];
   const runs = new Map<FieldName<Values>, number>();
   let revision = 0;
   let request = 0;
-  let values = $state<Values>({ ...defaults });
+  let values = $state<Values>(copyValues(defaults));
   let errors = $state<FieldErrors<Values>>({});
   let touched = $state<Partial<Record<FieldName<Values>, boolean>>>({});
   let validating = $state<Partial<Record<FieldName<Values>, boolean>>>({});
@@ -50,7 +65,7 @@ export function createForm<Values extends FormValues>({
   let submissionError = $state.raw<unknown>();
 
   async function validateFields(fields: readonly FieldName<Values>[] = names): Promise<Values> {
-    const snapshot = { ...values };
+    const snapshot = copyValues(values);
     const startRevision = revision;
     const token = ++request;
     const nextErrors: FieldErrors<Values> = {};
@@ -115,7 +130,7 @@ export function createForm<Values extends FormValues>({
         return;
       }
 
-      values[name] = value;
+      values[name] = copyValue(value);
       errors[name] = [];
       revision++;
       submissionError = undefined;
@@ -124,7 +139,7 @@ export function createForm<Values extends FormValues>({
     setFieldsValue(next) {
       for (const name of names) {
         if (Object.hasOwn(next, name)) {
-          values[name] = next[name] as Values[typeof name];
+          values[name] = copyValue(next[name] as Values[typeof name]);
           errors[name] = [];
         }
       }
@@ -140,7 +155,7 @@ export function createForm<Values extends FormValues>({
     resetFields() {
       revision++;
       runs.clear();
-      values = { ...defaults };
+      values = copyValues(defaults);
       errors = {};
       touched = {};
       validating = {};

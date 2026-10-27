@@ -198,4 +198,64 @@ describe('createForm', () => {
     expect(retry.status).toBe('success');
     expect(form.submissionError).toBeUndefined();
   });
+
+  it('isolates initial arrays and restores fresh defaults on every reset', () => {
+    const initial = { roles: [0, 2], name: 'Anna' };
+    const form = createForm({ initialValues: initial });
+    initial.roles.push(3);
+    form.setFieldValue('roles', [4]);
+    form.resetFields();
+
+    expect(form.values.roles).toEqual([0, 2]);
+    form.setFieldValue('roles', [5]);
+    form.resetFields();
+    expect(form.values.roles).toEqual([0, 2]);
+    expect(initial.roles).toEqual([0, 2, 3]);
+  });
+
+  it('copies arrays supplied through both value setters', () => {
+    const form = createForm({ initialValues: { roles: [] as number[], name: 'Anna' } });
+    const roles = [0];
+    form.setFieldValue('roles', roles);
+    roles.push(1);
+    expect(form.values.roles).toEqual([0]);
+
+    const next = [2];
+    form.setFieldsValue({ roles: next });
+    next.push(3);
+    expect(form.values).toEqual({ roles: [2], name: 'Anna' });
+  });
+
+  it('returns an independent array snapshot from validation and submission', async () => {
+    const form = createForm({ initialValues: { roles: [0] } });
+    const snapshot = await form.validateFields();
+    snapshot.roles.push(2);
+    expect(form.values.roles).toEqual([0]);
+
+    const result = await form.submit((values) => { values.roles.push(3); });
+    expect(result.status).toBe('success');
+    expect(form.values.roles).toEqual([0]);
+    form.resetFields();
+    expect(form.values.roles).toEqual([0]);
+  });
+
+  it('keeps asynchronous array validation snapshots stable and rejects a stale result', async () => {
+    const pending = deferred<string>();
+    let observed: readonly (string | number | boolean)[] | undefined;
+    const form = createForm({
+      initialValues: { roles: [0] },
+      rules: { roles: [{ validator: (value) => { if (Array.isArray(value)) observed = value; return pending.promise; } }] }
+    });
+    const validation = form.validateFields().catch((error: unknown) => error);
+    form.setFieldValue('roles', [2]);
+    pending.resolve('Old role rejected');
+    const error = await validation;
+
+    expect(observed).toEqual([0]);
+    expect(error).toBeInstanceOf(FormValidationError);
+    expect((error as FormValidationError).outOfDate).toBe(true);
+    expect((error as FormValidationError).values).toEqual({ roles: [0] });
+    expect(form.values.roles).toEqual([2]);
+    expect(form.getFieldError('roles')).toEqual([]);
+  });
 });

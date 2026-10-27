@@ -1,11 +1,32 @@
 import { describe, expect, it } from 'vitest';
-import { filterOptions, getEnabledIndex } from './select.engine';
+import { filterOptions, getEnabledIndex, getSelectValues } from './select.engine';
 
 const options = [
   { value: 0, label: 'Svelte 5' },
   { value: 1, label: 'React', disabled: true },
   { value: 2, label: 'Vue' }
 ];
+
+describe('getSelectValues', () => {
+  it('deduplicates values in selection order while preserving primitive types', () => {
+    expect(getSelectValues([0, '0', 2, 0, '0', 3])).toEqual([0, '0', 2, 3]);
+  });
+
+  it('copies readonly arrays and retains values missing from available options', () => {
+    const input = Object.freeze([0, 99]);
+    const result = getSelectValues(input);
+    result.push(2);
+
+    expect(input).toEqual([0, 99]);
+    expect(result).toEqual([0, 99, 2]);
+  });
+
+  it('treats an absent selection as an empty array without coercing scalar values', () => {
+    expect(getSelectValues(undefined)).toEqual([]);
+    expect(getSelectValues(0)).toEqual([]);
+    expect(getSelectValues('0')).toEqual([]);
+  });
+});
 
 describe('filterOptions', () => {
   it('matches labels without changing numeric values or the source list', () => {

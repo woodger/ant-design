@@ -255,6 +255,33 @@ test('showcase validates its real form and resets values after successful submis
   await expect(confirmation).toHaveValue('');
 });
 
+test('showcase submits and resets a multiple Select with array validation', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#select-multiple');
+  const input = fixture.getByLabel('Команды участника', { exact: true });
+  await expect(fixture.getByRole('status', { name: 'Выбранные команды', exact: true })).toHaveText('Выбрано команд: 2.');
+  await input.click();
+  await fixture.getByRole('option', { name: 'Аналитика', exact: true }).click();
+  await fixture.getByRole('option', { name: 'Поддержка', exact: true }).click();
+  await expect(fixture.getByRole('option', { name: 'Архив', exact: true })).toBeDisabled();
+  await input.press('Escape');
+  await fixture.getByRole('button', { name: 'Сохранить команды', exact: true }).click();
+  await expect(input).toBeFocused();
+  await expect(input).toHaveAccessibleDescription('Выберите не более трёх команд.');
+  await fixture.getByRole('button', { name: 'Удалить Поддержка', exact: true }).click();
+  await fixture.getByRole('button', { name: 'Сохранить команды', exact: true }).click();
+  await expect(fixture.getByRole('status').filter({ hasText: 'Сохранены команды:' })).toHaveText('Сохранены команды: Разработка, Дизайн, Аналитика.');
+  await fixture.screenshot({ path: testInfo.outputPath('multiple-select.png') });
+  await fixture.getByRole('button', { name: 'Очистить', exact: true }).click();
+  await fixture.getByRole('button', { name: 'Сохранить команды', exact: true }).click();
+  await expect(input).toHaveAccessibleDescription('Выберите хотя бы одну команду.');
+  await fixture.getByRole('button', { name: 'Сбросить команды', exact: true }).click();
+
+  await expect(fixture.getByRole('status', { name: 'Выбранные команды', exact: true })).toHaveText('Выбрано команд: 2.');
+  await expect(input).not.toHaveAttribute('aria-invalid');
+  expect(await fixture.locator('form').evaluate((element) => new FormData(element as HTMLFormElement).getAll('teams'))).toEqual(['0', '1']);
+});
+
 test('ConfigProvider updates inherited direction and locale in controls and dialogs', async ({ page }) => {
   await page.goto('http://127.0.0.1:4174');
   await page.getByLabel('Right to left').check();
@@ -317,6 +344,8 @@ test.describe('server-rendered showcase', () => {
     await expect(page.getByLabel('Редактируемое значение', { exact: true })).toHaveValue('Svelte 5');
     await expect(page.getByLabel('Имя', { exact: true })).toHaveCount(1);
     await expect(page.getByLabel('Роль', { exact: true })).toHaveValue('Разработчик');
+    await expect(page.locator('#select-multiple').getByRole('button', { name: 'Удалить Разработка', exact: true })).toBeVisible();
+    await expect(page.locator('#select-multiple').getByRole('button', { name: 'Удалить Дизайн', exact: true })).toBeVisible();
     await expect(page.getByRole('checkbox', { name: 'Все права', exact: true })).toHaveAttribute('aria-checked', 'mixed');
     await expect(page.getByRole('checkbox', { name: 'Просмотр', exact: true })).toBeChecked();
     await expect(page.getByRole('navigation', { name: 'Пример пагинации', exact: true }).locator('[aria-current="page"]')).toHaveText('1');

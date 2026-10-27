@@ -1,5 +1,9 @@
 import type { SelectOption } from './types';
 
+export function getSelectValues<Value extends string | number>(value: Value | readonly Value[] | undefined): Value[] {
+  return Array.isArray(value) ? [...new Set<Value>(value)] : [];
+}
+
 export function filterOptions<Value extends string | number>(
   options: readonly SelectOption<Value>[],
   search: string

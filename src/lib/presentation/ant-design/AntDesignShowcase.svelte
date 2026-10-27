@@ -3,6 +3,7 @@
   import { createShowcase, type ShowcaseMember } from './showcase.model.svelte';
   import RemoteTableExample from './RemoteTableExample.svelte';
   import ExpandableTableExample from './ExpandableTableExample.svelte';
+  import MultipleSelectExample from './MultipleSelectExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -10,6 +11,7 @@
     ['buttons', 'Button'],
     ['inputs', 'Input'],
     ['select', 'Select'],
+    ['select-multiple', 'Select · multiple'],
     ['checkbox', 'Checkbox'],
     ['form', 'Form'],
     ['pagination', 'Pagination'],
@@ -188,6 +190,12 @@
             </div>
             <p class="output">Выбрано: <strong>{demo.selected ?? 'ничего'}</strong>. Используйте ↑ ↓, Enter и Escape.</p>
           </div>
+        </section>
+
+        <section id="select-multiple">
+          <div class="section-heading"><h3>Select · множественный выбор</h3></div>
+          <p class="section-description">Выберите несколько команд, найдите вариант по названию или удалите выбранный элемент. Форма проверяет количество команд.</p>
+          <div class="panel"><MultipleSelectExample /></div>
         </section>
 
         <section id="checkbox">

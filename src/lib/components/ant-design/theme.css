@@ -132,6 +132,9 @@
   --ant-select-hover-border-color: var(--ant-color-primary-hover);
   --ant-select-active-border-color: var(--ant-color-primary);
   --ant-select-active-outline-color: color-mix(in srgb, var(--ant-color-primary) 15%, transparent);
+  --ant-select-multiple-item-bg: var(--ant-color-fill-tertiary);
+  --ant-select-multiple-item-color-disabled: var(--ant-color-text-disabled);
+  --ant-select-multiple-selector-bg-disabled: var(--ant-color-bg-container-disabled);
 }
 
 .ant-modal-css-var {

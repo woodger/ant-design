@@ -9,6 +9,10 @@
 
 ### Added
 
+- Множественный Select: mode="multiple", типизированные массивы, поиск,
+  удаление элементов, клавиатура, repeated FormData, native reset, required,
+  темы и RTL. Form поддерживает плоские массивы, ограничения количества и
+  независимые копии defaults/snapshots; добавлены примеры и unit/SSR/Chromium-проверки.
 - Раскрываемые строки Table: типизированный expandedRowRender, rowExpandable,
   bind:expandedRowKeys, defaults и отдельные callbacks. Сохранение ключей между
   страницами, доступные кнопки, закрепление колонки, RTL, SSR и примеры с проверками

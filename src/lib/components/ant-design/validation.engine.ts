@@ -1,4 +1,4 @@
-export type FormValue = string | number | boolean | null | undefined;
+export type FormValue = string | number | boolean | null | undefined | readonly (string | number | boolean)[];
 export type FormValues = Record<string, FormValue>;
 export type FieldName<Values> = Extract<keyof Values, string>;
 
@@ -23,7 +23,8 @@ export async function validateValue<Values extends FormValues>(
   rules: readonly ValidationRule<Values>[]
 ): Promise<string[]> {
   const errors: string[] = [];
-  const empty = value === null || value === undefined || (typeof value === 'string' && !value.trim());
+  const array = Array.isArray(value);
+  const empty = value === null || value === undefined || (typeof value === 'string' && !value.trim()) || (array && value.length === 0);
 
   for (const rule of rules) {
     if (empty && rule.required) {
@@ -35,19 +36,19 @@ export async function validateValue<Values extends FormValues>(
       continue;
     }
 
-    const length = typeof value === 'string' ? [...value].length : typeof value === 'number' ? value : undefined;
+    const length = array ? value.length : typeof value === 'string' ? [...value].length : typeof value === 'number' ? value : undefined;
 
     if (length !== undefined && rule.min !== undefined && length < rule.min) {
-      errors.push(rule.message ?? `Минимальное значение: ${rule.min}.`);
+      errors.push(rule.message ?? `${array ? 'Минимальное количество' : 'Минимальное значение'}: ${rule.min}.`);
       continue;
     }
 
     if (length !== undefined && rule.max !== undefined && length > rule.max) {
-      errors.push(rule.message ?? `Максимальное значение: ${rule.max}.`);
+      errors.push(rule.message ?? `${array ? 'Максимальное количество' : 'Максимальное значение'}: ${rule.max}.`);
       continue;
     }
 
-    if (!empty && rule.pattern && !new RegExp(rule.pattern.source, rule.pattern.flags).test(String(value))) {
+    if (!empty && !array && rule.pattern && !new RegExp(rule.pattern.source, rule.pattern.flags).test(String(value))) {
       errors.push(rule.message ?? 'Проверьте формат значения.');
       continue;
     }

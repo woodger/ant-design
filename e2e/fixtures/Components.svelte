@@ -7,6 +7,7 @@
   import ServerTableFixtures from './ServerTableFixtures.svelte';
   import FixedTableFixtures from './FixedTableFixtures.svelte';
   import ExpandableTableFixtures from './ExpandableTableFixtures.svelte';
+  import MultipleSelectFixtures from './MultipleSelectFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -77,6 +78,7 @@
     <ServerTableFixtures />
     <FixedTableFixtures />
     <ExpandableTableFixtures />
+    <MultipleSelectFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

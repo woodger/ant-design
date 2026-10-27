@@ -45,4 +45,21 @@ describe('validateValue', () => {
 
     expect(errors).toEqual(['Unavailable']);
   });
+
+  it('requires a nonempty array while retaining zero and false as valid items', async () => {
+    expect(await validateValue([], {}, [{ required: true, message: 'Choose a role' }])).toEqual(['Choose a role']);
+    expect(await validateValue([0, false], {}, [{ required: true }])).toEqual([]);
+    expect(await validateValue([], {}, [{ min: 2 }])).toEqual([]);
+  });
+
+  it('checks array item counts without coercing items to strings or numbers', async () => {
+    expect(await validateValue([100], {}, [{ min: 2 }])).toEqual(['Минимальное количество: 2.']);
+    expect(await validateValue(['a', 'b', 'c'], {}, [{ max: 2, message: 'Choose up to two' }])).toEqual(['Choose up to two']);
+    expect(await validateValue([0, 1], {}, [{ min: 2, max: 2, pattern: /^never$/ }])).toEqual([]);
+  });
+
+  it('passes arrays to custom validators including empty optional selections', async () => {
+    expect(await validateValue([], {}, [{ validator: (value) => Array.isArray(value) && value.length === 0 ? 'Custom empty' : undefined }])).toEqual(['Custom empty']);
+    expect(await validateValue([0], { allowed: [0, 2] }, [{ validator: (value, values) => Array.isArray(value) && value.every((item) => values.allowed.includes(item)) ? undefined : 'Unknown item' }])).toEqual([]);
+  });
 });

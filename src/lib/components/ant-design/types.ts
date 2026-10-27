@@ -14,6 +14,8 @@ export interface Locale {
   emptyText: string;
   searchText: string;
   submitErrorText: string;
+  removeText?: string;
+  selectRequiredText?: string;
   pagination?: Partial<PaginationLocale>;
   table?: Partial<TableLocale>;
 }
@@ -53,6 +55,8 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  removeText: 'Удалить',
+  selectRequiredText: 'Выберите хотя бы один вариант.',
   okText: 'Подтвердить',
   cancelText: 'Отмена',
   closeText: 'Закрыть',
@@ -89,6 +93,8 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  removeText: 'Remove',
+  selectRequiredText: 'Select at least one option.',
   okText: 'OK',
   cancelText: 'Cancel',
   closeText: 'Close',
