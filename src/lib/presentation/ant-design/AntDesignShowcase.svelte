@@ -12,6 +12,7 @@
   import PopoverExample from './PopoverExample.svelte';
   import PopconfirmExample from './PopconfirmExample.svelte';
   import DropdownExample from './DropdownExample.svelte';
+  import TabsExample from './TabsExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -34,7 +35,8 @@
     ['tooltip', 'Tooltip'],
     ['popover', 'Popover'],
     ['popconfirm', 'Popconfirm'],
-    ['dropdown', 'Dropdown']
+    ['dropdown', 'Dropdown'],
+    ['tabs', 'Tabs']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -146,7 +148,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">20 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">21 компонент</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -356,6 +358,12 @@
           <div class="section-heading"><h3>Dropdown</h3></div>
           <p class="section-description">Меню действий в строке таблицы: карточка участника, копирование и архив. Управляется мышью и клавиатурой.</p>
           <div class="panel"><DropdownExample /></div>
+        </section>
+
+        <section id="tabs">
+          <div class="section-heading"><h3>Tabs</h3></div>
+          <p class="section-description">Профиль, настройки и история участника. Переключайтесь между разделами мышью или клавиатурой и сравните сохранение черновика со сбросом.</p>
+          <div class="panel"><TabsExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

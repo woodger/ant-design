@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Dropdown, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -82,6 +82,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Popover | Интерактивные snippets, click/hover/focus, bind:open, четыре положения, стрелка, автоматический переворот, клавиатура и возврат фокуса |
 | Popconfirm | Подтверждение и отмена, Promise/loading, повтор после ошибки, защита от поздних результатов, snippets, локализация и клавиатура |
 | Dropdown | Плоское меню команд, click/hover, bind:open, disabled/danger, snippets, шесть положений, стрелки/typeahead и возврат фокуса |
+| Tabs | Типизированные панели, bind:activeKey, line/card, четыре положения, ручная клавиатурная активация, сохранение содержимого и destroyOnHidden |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -571,6 +572,94 @@ Arrow по умолчанию false. Поверхность использует
 копирование и архивирование участника. Первая версия ограничена плоскими командами:
 отдельный Menu, подменю, selectable/checkable items, contextMenu, Dropdown.Button,
 href, popupRender и getPopupContainer пока отсутствуют.
+
+## Tabs
+
+```svelte
+<script lang="ts">
+  import { Input, Tabs } from '$lib/components/ant-design';
+
+  let activeKey = $state<string | undefined>('profile');
+</script>
+
+{#snippet profile()}
+  <label>Имя<Input defaultValue="Анна" /></label>
+{/snippet}
+{#snippet history()}<p>Последние изменения профиля.</p>{/snippet}
+
+<Tabs
+  aria-label="Разделы участника"
+  bind:activeKey
+  items={[
+    { key: 'profile', label: 'Профиль', children: profile },
+    { key: 'access', label: 'Доступ', disabled: true },
+    { key: 'history', label: 'История', children: history }
+  ]}
+/>
+```
+
+`items` принимает readonly-массив TabsItem: строковый key, label (строку или
+пассивный Snippet), необязательные children (Snippet), icon, disabled,
+forceRender и destroyOnHidden. Ключи идентифицируют панели при перестановке;
+содержимое и его фокус сохраняются.
+Пустой строковый ключ допустим; при повторении используется первое вхождение.
+Icon декоративный. Label должен давать вкладке доступное имя; интерактивные
+элементы внутри label не поддерживаются. `aria-label` или `aria-labelledby`
+именует список вкладок. Id/class/style относятся к корневому контейнеру.
+
+`bind:activeKey` хранит выбранный ключ. DefaultActiveKey читается при создании;
+без ключа выбирается первая доступная вкладка. Для binding задавайте начальное
+значение у владельца без defaultActiveKey. При неизвестном, удалённом или
+отключённом ключе отображается первая доступная панель. Внешнее значение при
+этом сохраняется: его восстановление снова выберет соответствующую вкладку.
+Если доступных вкладок нет, ни одна панель не выбрана, а фокус может получить
+сам tablist. Пустой items показывает ConfigProvider.locale.emptyText.
+
+`onTabClick(key, MouseEvent)` вызывается и по клику, и при нативной активации
+Enter/Space, включая уже выбранную вкладку. PreventDefault отменяет смену
+панели. Затем обновляется binding и вызывается onChange(key), если выбранная
+вкладка действительно изменилась. Обновления владельцем, изменение defaults,
+fallback при удалении/disabled и перемещение фокуса не вызывают onChange.
+После onTabClick доступность пункта проверяется повторно: обработчик может
+удалить или отключить вкладку.
+
+Клавиатура использует ручную активацию. Стрелки перемещают фокус по кругу,
+пропуская disabled; Home/End выбирают первый/последний доступный заголовок.
+В горизонтальном списке действуют Left/Right с учётом RTL, в вертикальном —
+Up/Down. Enter и Space активируют сфокусированную вкладку. Список добавляет
+одну остановку Tab; после выхода повторный вход возвращает фокус к выбранной
+вкладке. Tab из списка переходит к именованной активной панели, затем к её
+полям и кнопкам. При скрытии сфокусированной панели или удалении/disabled
+сфокусированного заголовка фокус переходит на доступный заголовок либо tablist.
+Изменения при фокусе снаружи Tabs не перемещают его внутрь.
+
+Содержимое ленивое: впервые монтируется при активации и по умолчанию сохраняется
+в скрытой панели, включая локальный state дочерних компонентов и DOM-черновики.
+DestroyOnHidden=true удаляет содержимое при скрытии; следующий визит создаёт
+новый экземпляр. После уничтожения отключение destroyOnHidden само по себе
+не монтирует панель заново. Значение на отдельном item переопределяет общее,
+включая явное false. ForceRender=true монтирует содержимое сразу и сохраняет
+его даже вместе с destroyOnHidden. Удаление key всегда уничтожает панель.
+Состояние, которое владелец хранит снаружи Tabs, уничтожение панели не сбрасывает.
+
+Сохранённая скрытая панель остаётся в DOM; её таймеры и подписки продолжают
+работать. Поля посещённых/forceRender-панелей участвуют в нативной FormData,
+даже когда скрыты; ещё не смонтированных или уничтоженных полей в FormData нет.
+Tabs не является полем формы и не наследует disabled от Form/ConfigProvider:
+доступность навигации задаётся disabled отдельных items. Заголовки используют
+button type=button и не отправляют окружающую форму.
+
+Type поддерживает line и card, tabPlacement — top, bottom, start, end.
+Start/end разрешаются относительно RTL. На экране шириной до 575px вертикальный
+список переходит наверх. Переполнение прокручивается; навигация показывает
+сфокусированный заголовок без прокрутки всей страницы. Size использует общий
+ComponentSize: small/middle/large, по умолчанию ConfigProvider.componentSize.
+Тема, compact, RTL и reduced motion применяются через существующие токены.
+
+Галерея `/ant-design#tabs` показывает профиль, настройки, историю Table,
+сохранение черновиков, destroyOnHidden и Tabs внутри Modal. Первая версия
+не поддерживает editable-card, добавление/закрытие пользователем, drag-and-drop,
+меню переполнения more, renderTabBar, tabBarExtraContent и настройку indicator.
 
 ## Select
 
@@ -1395,6 +1484,9 @@ Popconfirm использует тот же dialog с именем и описа
 Dropdown использует role=menu и нативные button с role=menuitem, один активный
 tabindex и разделители. Стрелки и typeahead обходят доступные команды;
 Escape закрывает меню раньше Modal, Tab сохраняет естественную навигацию.
+Tabs использует tablist, нативные button с role=tab и связанные tabpanel.
+Aria-selected сообщает выбор; стрелки двигают фокус без активации. Скрытые
+панели недоступны для Tab. Escape остаётся доступен содержащему Modal.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1485,6 +1577,11 @@ Tab/Escape, hover-задержки, defaults и внешнее управлен�
 списка и восстановление фокуса, замену trigger и ARIA-атрибуты владельца.
 Chromium проверяет шесть положений, переворот, clipping, прокрутку, Modal,
 темы/RTL/reduced motion, touch и длинные подписи; галерея выполняет команды Table.
+Tabs проверяется на выбор/defaults и callbacks, ручную клавиатурную активацию,
+ленивое монтирование, сохранение локального state, forceRender, destroyOnHidden
+и переопределения item. Browser-проверки покрывают ARIA-связи, фокус при
+изменении items, четыре положения line/card, размеры, RTL, индикатор, прокрутку,
+темы/reduced motion, touch, Modal и сохранение профиля в галерее.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1522,6 +1619,11 @@ Dropdown.svelte добавляет нативные menu buttons и управл
 dropdown.engine.ts — навигацию и typeahead, popup.dom.ts — поверхность и выравнивание.
 Корневые селекторы Dropdown ограничены :where(.ant-dropdown-css-var), чтобы
 не менять существующие popover-фильтры Table с классом ant-dropdown.
+[vendor/tabs.css](./vendor/tabs.css) содержит line/card, расположения, индикатор
+и токены Tabs из того же архива. Селекторы корня ограничены
+:where(.ant-tabs-css-var), группы с общими declarations сохранены.
+Tabs.svelte и tabs.engine.ts управляют выбором и фокусом, TabsPanel.svelte —
+временем жизни содержимого; tabs.dom.ts измеряет индикатор и прокручивает заголовки.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.

@@ -1,5 +1,34 @@
 import { test, expect } from './test';
 
+test('showcase preserves tab drafts, saves the profile and demonstrates destroyOnHidden', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#tabs');
+  const fixture = page.locator('#tabs');
+  const tabs = fixture.getByRole('tablist', { name: 'Разделы участника', exact: true });
+  const profile = fixture.getByRole('tabpanel', { name: 'Профиль', exact: true });
+  await profile.getByLabel('Имя участника', { exact: true }).fill('Мария');
+  await tabs.getByRole('tab', { name: 'Настройки', exact: true }).click();
+  await fixture.getByRole('checkbox', { name: 'Получать еженедельный отчёт', exact: true }).check();
+  await tabs.getByRole('tab', { name: 'История', exact: true }).click();
+  await expect(fixture.getByRole('table', { name: 'История участника', exact: true })).toBeVisible();
+  await tabs.getByRole('tab', { name: 'Профиль', exact: true }).click();
+  await expect(profile.getByLabel('Имя участника', { exact: true })).toHaveValue('Мария');
+  await profile.getByRole('button', { name: 'Сохранить профиль участника', exact: true }).click();
+  await expect(fixture.getByRole('status', { name: 'Результат профиля участника', exact: true })).toHaveText('Профиль сохранён: Мария.');
+  await fixture.screenshot({ path: testInfo.outputPath('tabs-profile.png') });
+  await tabs.getByRole('tab', { name: 'Настройки', exact: true }).click();
+  await expect(fixture.getByRole('checkbox', { name: 'Получать еженедельный отчёт', exact: true })).toBeChecked();
+  await fixture.getByRole('checkbox', { name: 'Сбрасывать содержимое при скрытии', exact: true }).check();
+  await tabs.getByRole('tab', { name: 'Профиль', exact: true }).click();
+  await expect(profile.getByLabel('Имя участника', { exact: true })).toHaveValue('Анна');
+  await expect(tabs.getByRole('tab', { name: 'Доступ', exact: true })).toBeDisabled();
+  await fixture.getByRole('button', { name: 'Открыть вкладки в окне', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Вкладки в карточке', exact: true });
+  await dialog.getByRole('tab', { name: 'Заметки', exact: true }).click();
+  await expect(dialog.getByLabel('Заметка об участнике', { exact: true })).toHaveValue('Новый участник проекта');
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+});
+
 test('showcase runs table row commands through Dropdown and opens a member card', async ({ page }, testInfo) => {
   await page.goto('/ant-design#dropdown');
   const fixture = page.locator('#dropdown');
@@ -683,5 +712,6 @@ test.describe('server-rendered showcase', () => {
     await expect(expanded.getByRole('button', { name: 'Свернуть строку 1', exact: true })).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('#modal dialog')).not.toBeVisible();
     await expect(page.locator('#dropdown dialog')).not.toBeVisible();
+    await expect(page.locator('#tabs dialog')).not.toBeVisible();
   });
 });

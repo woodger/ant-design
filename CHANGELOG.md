@@ -9,6 +9,11 @@
 
 ### Added
 
+- Tabs: типизированные items/snippets, bind:activeKey, defaults и callbacks,
+  ручная клавиатурная активация, line/card, четыре положения и размеры.
+  Добавлены ленивые панели с сохранением state, forceRender/destroyOnHidden,
+  восстановление фокуса, стили Ant Design 6.6.8, темы/RTL, прокрутка, Modal,
+  пример профиля и unit/SSR/Chromium-проверки.
 - Dropdown: типизированное плоское menu.items с иконками, disabled/danger и
   разделителями, bind:open, click/hover, клавиатура/typeahead, Tab/Escape и
   возврат фокуса. Добавлены стили Ant Design 6.6.8, шесть положений, переворот,

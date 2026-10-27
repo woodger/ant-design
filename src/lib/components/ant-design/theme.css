@@ -232,6 +232,18 @@
   --ant-dropdown-padding-block: max(2px, calc((var(--ant-control-height) - var(--ant-font-size) * var(--ant-line-height)) / 2));
 }
 
+.ant-tabs-css-var {
+  --ant-tabs-card-bg: var(--ant-color-fill-quaternary);
+  --ant-tabs-ink-bar-color: var(--ant-color-primary);
+  --ant-tabs-item-color: var(--ant-color-text);
+  --ant-tabs-item-selected-color: var(--ant-color-primary);
+  --ant-tabs-item-hover-color: var(--ant-color-primary-hover);
+  --ant-tabs-item-active-color: var(--ant-color-primary-active);
+  --ant-tabs-title-font-size: var(--ant-font-size);
+  --ant-tabs-title-font-size-sm: var(--ant-font-size);
+  --ant-tabs-title-font-size-lg: var(--ant-font-size-lg);
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);
