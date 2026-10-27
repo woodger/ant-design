@@ -13,6 +13,7 @@
   import PopconfirmExample from './PopconfirmExample.svelte';
   import DropdownExample from './DropdownExample.svelte';
   import TabsExample from './TabsExample.svelte';
+  import CollapseExample from './CollapseExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -36,7 +37,8 @@
     ['popover', 'Popover'],
     ['popconfirm', 'Popconfirm'],
     ['dropdown', 'Dropdown'],
-    ['tabs', 'Tabs']
+    ['tabs', 'Tabs'],
+    ['collapse', 'Collapse']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -148,7 +150,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">21 компонент</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">22 компонента</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -364,6 +366,12 @@
           <div class="section-heading"><h3>Tabs</h3></div>
           <p class="section-description">Профиль, настройки и история участника. Переключайтесь между разделами мышью или клавиатурой и сравните сохранение черновика со сбросом.</p>
           <div class="panel"><TabsExample /></div>
+        </section>
+
+        <section id="collapse">
+          <div class="section-heading"><h3>Collapse</h3></div>
+          <p class="section-description">Раскрываемые разделы анкеты: несколько панелей или accordion, независимая кнопка сброса и вложенные поля.</p>
+          <div class="panel"><CollapseExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

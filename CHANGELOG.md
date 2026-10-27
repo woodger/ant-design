@@ -9,6 +9,11 @@
 
 ### Added
 
+- Collapse: типизированные items/snippets, extra, bind:activeKey, defaults и
+  callbacks, независимые панели и accordion, header/icon/disabled и размеры.
+  Добавлены ленивые панели с сохранением state, forceRender/destroyOnHidden,
+  нативные заголовки с клавиатурой и восстановлением фокуса, стили Ant Design
+  6.6.8, темы/RTL, вложенность, Modal, пример анкеты и unit/SSR/Chromium-проверки.
 - Tabs: типизированные items/snippets, bind:activeKey, defaults и callbacks,
   ручная клавиатурная активация, line/card, четыре положения и размеры.
   Добавлены ленивые панели с сохранением state, forceRender/destroyOnHidden,

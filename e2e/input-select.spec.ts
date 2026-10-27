@@ -115,7 +115,7 @@ test('Select dismisses on Escape, Tab and outside pointer interaction', async ({
   await expect(page.locator('#select-fixture').getByRole('button', { name: 'Очистить', exact: true })).toBeFocused();
 
   await select.click();
-  await page.getByRole('heading').click();
+  await page.getByRole('heading', { name: 'Component browser fixtures', exact: true }).click();
 
   await expect(select).toHaveAttribute('aria-expanded', 'false');
 });

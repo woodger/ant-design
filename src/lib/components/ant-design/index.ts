@@ -8,6 +8,7 @@ export { default as Popover } from './Popover.svelte';
 export { default as Popconfirm } from './Popconfirm.svelte';
 export { default as Dropdown } from './Dropdown.svelte';
 export { default as Tabs } from './Tabs.svelte';
+export { default as Collapse } from './Collapse.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';
 export { default as Radio } from './Radio.svelte';
@@ -30,6 +31,7 @@ export type { PopoverProps, PopoverContent, PopoverPlacement, PopoverTrigger } f
 export type { PopconfirmProps } from './popconfirm.types';
 export type { DropdownProps, DropdownMenuProps, DropdownItem, DropdownMenuItem, DropdownDivider, DropdownClickInfo, DropdownPlacement, DropdownTrigger } from './dropdown.types';
 export type { TabsProps, TabsItem, TabsType, TabsPlacement } from './tabs.types';
+export type { CollapseProps, CollapseItem, CollapseTrigger, CollapseActiveKey } from './collapse.types';
 export type { CheckboxProps } from './Checkbox.svelte';
 export type { CheckboxGroupProps, CheckboxGroupOption, CheckboxGroupValue } from './checkbox-group.types';
 export type { RadioProps, RadioGroupProps, RadioOption, RadioValue } from './radio.types';

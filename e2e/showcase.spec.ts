@@ -1,5 +1,35 @@
 import { test, expect } from './test';
 
+test('showcase edits collapsed form sections, keeps reset actions independent and supports nested fields', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#collapse');
+  const fixture = page.locator('#collapse');
+  const form = fixture.getByRole('group', { name: 'Анкета участника', exact: true });
+  const contacts = form.getByRole('button', { name: 'Контакты', exact: true });
+  await fixture.getByLabel('Имя для связи', { exact: true }).fill('Мария');
+  await contacts.click();
+  await form.getByRole('button', { name: 'Уведомления', exact: true }).click();
+  await fixture.getByRole('checkbox', { name: 'Получать новости анкеты', exact: true }).uncheck();
+  await contacts.click();
+  await expect(fixture.getByLabel('Имя для связи', { exact: true })).toHaveValue('Мария');
+  await fixture.getByRole('button', { name: 'Сохранить анкету', exact: true }).click();
+  await expect(fixture.getByRole('status', { name: 'Результат анкеты', exact: true })).toHaveText('Анкета сохранена: Мария. Новости: выключены.');
+  await form.getByRole('button', { name: 'Сбросить анкету', exact: true }).click();
+  await expect(contacts).toHaveAttribute('aria-expanded', 'true');
+  await expect(fixture.getByLabel('Имя для связи', { exact: true })).toHaveValue('Анна');
+  await form.getByRole('button', { name: 'Дополнительно', exact: true }).click();
+  const nested = fixture.getByRole('group', { name: 'Дополнительные поля', exact: true });
+  await nested.getByRole('button', { name: 'Адрес', exact: true }).click();
+  await expect(nested.getByLabel('Город участника', { exact: true })).toHaveValue('Москва');
+  await page.setViewportSize({ width: 1280, height: 1200 });
+  await fixture.evaluate((element) => element.scrollIntoView({ block: 'start' }));
+  await fixture.screenshot({ path: testInfo.outputPath('collapse-form.png') });
+  await fixture.getByRole('checkbox', { name: 'Сбрасывать содержимое при скрытии', exact: true }).check();
+  await nested.getByLabel('Город участника', { exact: true }).fill('Казань');
+  await form.getByRole('button', { name: 'Дополнительно', exact: true }).click();
+  await form.getByRole('button', { name: 'Дополнительно', exact: true }).click();
+  await expect(nested.getByRole('button', { name: 'Адрес', exact: true })).toHaveAttribute('aria-expanded', 'false');
+});
+
 test('showcase preserves tab drafts, saves the profile and demonstrates destroyOnHidden', async ({ page }, testInfo) => {
   await page.goto('/ant-design#tabs');
   const fixture = page.locator('#tabs');

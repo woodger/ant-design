@@ -18,6 +18,7 @@
   import PopconfirmFixtures from './PopconfirmFixtures.svelte';
   import DropdownFixtures from './DropdownFixtures.svelte';
   import TabsFixtures from './TabsFixtures.svelte';
+  import CollapseFixtures from './CollapseFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -99,6 +100,7 @@
     <PopconfirmFixtures />
     <DropdownFixtures />
     <TabsFixtures />
+    <CollapseFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

@@ -74,6 +74,7 @@ Popover, интерактивные snippets, click/hover/focus, клавиат�
 Popconfirm, асинхронное подтверждение, ошибки/повтор и защиту от поздних результатов,
 Dropdown, меню команд строки Table, клавиатуру/typeahead, фокус, hover и шесть положений,
 Tabs, ручную активацию, сохранение панелей, destroyOnHidden, прокрутку и вкладки в Modal,
+Collapse, независимые панели и accordion, extra, вложенность, фокус и анкету с сохранением черновиков,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

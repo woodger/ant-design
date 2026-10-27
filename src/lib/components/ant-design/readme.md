@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -83,6 +83,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Popconfirm | Подтверждение и отмена, Promise/loading, повтор после ошибки, защита от поздних результатов, snippets, локализация и клавиатура |
 | Dropdown | Плоское меню команд, click/hover, bind:open, disabled/danger, snippets, шесть положений, стрелки/typeahead и возврат фокуса |
 | Tabs | Типизированные панели, bind:activeKey, line/card, четыре положения, ручная клавиатурная активация, сохранение содержимого и destroyOnHidden |
+| Collapse | Независимые панели и accordion, bind:activeKey, snippets, extra, header/icon/disabled, сохранение содержимого и destroyOnHidden |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -660,6 +661,95 @@ ComponentSize: small/middle/large, по умолчанию ConfigProvider.compon
 сохранение черновиков, destroyOnHidden и Tabs внутри Modal. Первая версия
 не поддерживает editable-card, добавление/закрытие пользователем, drag-and-drop,
 меню переполнения more, renderTabBar, tabBarExtraContent и настройку indicator.
+
+## Collapse
+
+```svelte
+<script lang="ts">
+  import { Collapse, Input, type CollapseActiveKey } from '$lib/components/ant-design';
+
+  let activeKey = $state<CollapseActiveKey>(['contacts']);
+</script>
+
+{#snippet contacts()}<label>Имя<Input defaultValue="Анна" /></label>{/snippet}
+{#snippet preferences()}<p>Настройки участника.</p>{/snippet}
+
+<Collapse
+  aria-label="Анкета участника"
+  bind:activeKey
+  items={[
+    { key: 'contacts', label: 'Контакты', children: contacts },
+    { key: 'preferences', label: 'Настройки', children: preferences }
+  ]}
+/>
+```
+
+`items` принимает readonly-массив CollapseItem: строковый key, label (строку или
+пассивный Snippet), необязательные children и extra (Snippet), collapsible,
+showArrow, forceRender и destroyOnHidden. Пустой ключ допустим; при повторении
+используется первое вхождение. Ключ сохраняет экземпляр панели и фокус при
+перестановке. Интерактивные элементы размещаются в extra или children; label
+должен давать кнопке доступное имя и не содержать других controls.
+Extra находится рядом с заголовком, вне кнопки раскрытия: его действия не
+переключают панель. Id/class/style относятся к корневому контейнеру;
+aria-label или aria-labelledby именует группу.
+
+`bind:activeKey` принимает строку или readonly-массив строк. Активация пользователем
+сначала записывает в binding новый массив, затем вызывает onChange с отдельным
+массивом; изменение массива callback не меняет значение владельца. Ключи
+дедуплицируются с сохранением порядка активации. DefaultActiveKey читается при
+создании; без начального значения все панели закрыты, в том числе в accordion.
+Для binding задавайте начальное значение у владельца без defaultActiveKey.
+Внешние изменения, defaults и переключение accordion не вызывают onChange.
+
+Без accordion можно открыть несколько панелей. В accordion отображается только
+первый запрошенный ключ; повторная активация закрывает его. Неизвестные ключи
+сохраняются без подстановки другой панели и без перезаписи владельца. Отключение
+accordion снова показывает остальные запрошенные панели. Удаление item не
+удаляет его ключ из значения владельца. Пустой items показывает locale.emptyText.
+
+Collapsible поддерживает header (вся кнопка заголовка), icon (только стрелка
+для указателя) и disabled. Enter/Space активируют нативную кнопку и в режиме
+icon. Значение item переопределяет общее, включая header поверх disabled.
+ShowArrow=false скрывает стрелку; вместе с icon используется header, чтобы
+сохранить доступную зону активации. Disabled запрещает переключение пользователем,
+но не скрывает панель, открываемую владельцем. Collapse не наследует disabled
+от Form/ConfigProvider; поля внутри получают собственный контекст.
+
+Каждый заголовок содержит button type=button внутри heading. HeadingLevel
+задаёт уровень 2–6 (по умолчанию 3); вложенному Collapse задавайте следующий
+уровень. Aria-expanded/aria-controls связывают кнопку с содержимым. В accordion
+и группах до шести items панели получают именованный role=region; в больших
+группах без accordion лишние landmarks не создаются. Все доступные заголовки,
+extra и поля обходятся обычным Tab; стрелки не перехватываются. Escape остаётся
+содержащему Modal. При скрытии сфокусированного содержимого фокус возвращается
+к его доступному заголовку. При удалении/disabled заголовка выбирается открытый
+доступный заголовок, затем первый доступный либо сама группа. Изменения при
+фокусе снаружи Collapse не перемещают его внутрь.
+
+Содержимое впервые монтируется при открытии и по умолчанию сохраняет локальный
+state и DOM-черновики в скрытой панели. DestroyOnHidden=true удаляет содержимое
+при закрытии; отключение этой настройки не монтирует уже уничтоженную панель.
+Значение item переопределяет общее, включая false. ForceRender=true монтирует
+содержимое сразу и сохраняет его даже с destroyOnHidden. Удаление key уничтожает
+панель; состояние вне неё сохраняется. Скрытые сохранённые панели остаются в DOM,
+их таймеры и подписки продолжают работать. Поля посещённых/forceRender-панелей
+участвуют в FormData даже при скрытии; ещё не смонтированных или уничтоженных
+полей в FormData нет. Перед фокусом ошибки скрытой панели владелец формы должен
+открыть её. Кнопки заголовков не отправляют окружающую форму.
+
+Size использует small/middle/large и ConfigProvider.componentSize. Bordered=false
+убирает внешнюю рамку, ghost — фон и разделители. ExpandIconPlacement задаёт
+start/end относительно кнопки заголовка и направления RTL; extra остаётся
+отдельным элементом после заголовка. Темы, compact и reduced motion используют
+существующие токены. Высота содержимого меняется сразу; анимируется только
+стрелка, с учётом reduced motion.
+
+Галерея `/ant-design#collapse` показывает анкету, вложенные панели, сохранение
+черновиков, destroyOnHidden и независимую кнопку сброса в extra. Сброс примера
+пересоздаёт поля с исходными значениями, сохраняя открытые внешние панели.
+Первая версия не поддерживает legacy Collapse.Panel, пользовательский expandIcon,
+classNames/styles и React-анимацию высоты.
 
 ## Select
 
@@ -1487,6 +1577,10 @@ Escape закрывает меню раньше Modal, Tab сохраняет е
 Tabs использует tablist, нативные button с role=tab и связанные tabpanel.
 Aria-selected сообщает выбор; стрелки двигают фокус без активации. Скрытые
 панели недоступны для Tab. Escape остаётся доступен содержащему Modal.
+Collapse использует нативные кнопки внутри headings, aria-expanded/aria-controls
+и обычную последовательность Tab. Extra отделён от кнопки заголовка, скрытое
+содержимое недоступно для Tab. Именованные regions ограничены небольшими группами
+и accordion; при скрытии или удалении сфокусированной панели фокус восстанавливается.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1582,6 +1676,12 @@ Tabs проверяется на выбор/defaults и callbacks, ручную 
 и переопределения item. Browser-проверки покрывают ARIA-связи, фокус при
 изменении items, четыре положения line/card, размеры, RTL, индикатор, прокрутку,
 темы/reduced motion, touch, Modal и сохранение профиля в галерее.
+Collapse проверяется на независимое раскрытие и accordion, порядок binding/callback,
+defaults, неизвестные ключи, header/icon/disabled и переопределения item.
+Unit/SSR/Chromium-проверки покрывают ленивое монтирование, сохранение state,
+forceRender/destroyOnHidden, FormData, вложенность, ARIA, Enter/Space/Tab,
+восстановление фокуса, перестановку items, Modal, размеры, RTL, темы, reduced motion,
+мобильные длинные подписи и сохранение/сброс анкеты в галерее.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1624,6 +1724,13 @@ dropdown.engine.ts — навигацию и typeahead, popup.dom.ts — пов�
 :where(.ant-tabs-css-var), группы с общими declarations сохранены.
 Tabs.svelte и tabs.engine.ts управляют выбором и фокусом, TabsPanel.svelte —
 временем жизни содержимого; tabs.dom.ts измеряет индикатор и прокручивает заголовки.
+[vendor/collapse.css](./vendor/collapse.css) содержит 49 правил Collapse и его
+токены из того же архива. Корневые селекторы ограничены
+:where(.ant-collapse-css-var); React motion и правила ColorPicker исключены.
+Collapse.svelte адаптирует заголовки к нативным кнопкам и управляет DOM-фокусом,
+collapse.engine.ts — ключами и выбором доступного заголовка,
+CollapsePanel.svelte — временем жизни содержимого. Темы и отступы кнопок
+адаптированы в theme.css и scoped-стилях компонента.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.

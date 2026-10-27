@@ -244,6 +244,11 @@
   --ant-tabs-title-font-size-lg: var(--ant-font-size-lg);
 }
 
+.ant-collapse-css-var {
+  --ant-collapse-header-bg: var(--ant-color-fill-quaternary);
+  --ant-collapse-content-bg: var(--ant-color-bg-container);
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);
