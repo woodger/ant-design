@@ -11,6 +11,8 @@ export { default as Tabs } from './Tabs.svelte';
 export { default as Collapse } from './Collapse.svelte';
 export { default as Drawer } from './Drawer.svelte';
 export { default as Alert } from './Alert.svelte';
+export { default as MessageHolder } from './MessageHolder.svelte';
+export { createMessage } from './message.model.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';
 export { default as Radio } from './Radio.svelte';
@@ -36,6 +38,7 @@ export type { TabsProps, TabsItem, TabsType, TabsPlacement } from './tabs.types'
 export type { CollapseProps, CollapseItem, CollapseTrigger, CollapseActiveKey } from './collapse.types';
 export type { DrawerProps, DrawerPlacement, DrawerSize } from './drawer.types';
 export type { AlertProps, AlertType, AlertVariant, AlertContent, AlertClosable } from './alert.types';
+export type { MessageType, MessageKey, MessageContent, MessageConfig, MessageOptions, MessageHandle, MessageInstance, MessageHolderProps } from './message.types';
 export type { CheckboxProps } from './Checkbox.svelte';
 export type { CheckboxGroupProps, CheckboxGroupOption, CheckboxGroupValue } from './checkbox-group.types';
 export type { RadioProps, RadioGroupProps, RadioOption, RadioValue } from './radio.types';

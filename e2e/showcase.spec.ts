@@ -1,5 +1,49 @@
 import { test, expect } from './test';
 
+test('showcase updates a loading Message to success or error and supports retry', async ({ page }, testInfo) => {
+  await page.clock.install();
+  await page.goto('/ant-design#message');
+  const fixture = page.locator('#message');
+  const notices = page.locator('#showcase-messages .ant-message-notice:not([inert])');
+  await fixture.getByRole('button', { name: 'Сохранить настройки с сообщением', exact: true }).click();
+  await expect(notices).toHaveText('Сохраняем настройки…');
+  await expect(notices).toHaveClass(/ant-message-notice-loading/);
+  await page.clock.fastForward(700);
+  await expect(notices).toHaveText('Настройки сохранены.');
+  await expect(notices).toHaveClass(/ant-message-notice-success/);
+  await expect(notices).toHaveCount(1);
+  await expect.poll(() => notices.evaluate((node) => node.getAnimations().length)).toBe(0);
+  await page.screenshot({ path: testInfo.outputPath('message-example.png') });
+  await fixture.getByRole('checkbox', { name: 'Ошибка следующего сохранения Message', exact: true }).check();
+  await fixture.getByRole('button', { name: 'Сохранить настройки с сообщением', exact: true }).click();
+  await page.clock.fastForward(700);
+  await expect(notices).toContainText('Не удалось сохранить настройки.');
+  await expect(notices).toHaveClass(/ant-message-notice-error/);
+  await fixture.getByRole('button', { name: 'Сохранить настройки с сообщением', exact: true }).click();
+  await page.clock.fastForward(700);
+  await expect(notices).toHaveText('Настройки сохранены.');
+  await page.clock.fastForward(4000);
+  await expect(page.locator('#showcase-messages')).toHaveCount(0);
+});
+
+test('showcase waits for Message completion and cancels pending feedback when reset', async ({ page }) => {
+  await page.clock.install();
+  await page.goto('/ant-design#message');
+  const fixture = page.locator('#message');
+  const notices = page.locator('#showcase-messages .ant-message-notice:not([inert])');
+  await fixture.getByRole('button', { name: 'Последовательные сообщения', exact: true }).click();
+  await expect(notices).toHaveText('Проверяем данные…');
+  await page.clock.fastForward(1500);
+  await expect(notices).toHaveText('Данные проверены.');
+  await fixture.getByRole('button', { name: 'Сбросить пример Message', exact: true }).click();
+  await expect(page.locator('#showcase-messages')).toHaveCount(0);
+  await fixture.getByRole('button', { name: 'Сохранить настройки с сообщением', exact: true }).click();
+  await fixture.getByRole('button', { name: 'Сбросить пример Message', exact: true }).click();
+  await page.clock.fastForward(5000);
+  await expect(page.locator('#showcase-messages')).toHaveCount(0);
+  await expect(fixture.getByRole('status', { name: 'Результат примера Message', exact: true })).toHaveText('Пример сброшен.');
+});
+
 test('showcase applies Alert actions, dismisses notifications and recreates closed instances', async ({ page }, testInfo) => {
   await page.goto('/ant-design#alert');
   const fixture = page.locator('#alert');

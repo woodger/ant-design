@@ -9,6 +9,11 @@
 
 ### Added
 
+- Message: createMessage и MessageHolder, пять типов, строки/snippets,
+  ключи и обновления, duration/hover-пауза/maxCount, destroy и callable/thenable
+  handles. Добавлены изоляция SSR и контекст ConfigProvider, нативный popover
+  внутри Modal/Drawer, темы/RTL/reduced motion, пример loading → success/error
+  и unit/SSR/Chromium-проверки.
 - Alert: success/info/warning/error, title/description/icon/action snippets,
   outlined/filled, banner, closable с callbacks, анимацией и reduced motion.
   Добавлены filled-иконки Ant Design с MIT-лицензией, доступные объявления,

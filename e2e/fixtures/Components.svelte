@@ -21,6 +21,7 @@
   import CollapseFixtures from './CollapseFixtures.svelte';
   import DrawerFixtures from './DrawerFixtures.svelte';
   import AlertFixtures from './AlertFixtures.svelte';
+  import MessageFixtures from './MessageFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -105,6 +106,7 @@
     <CollapseFixtures />
     <DrawerFixtures />
     <AlertFixtures />
+    <MessageFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

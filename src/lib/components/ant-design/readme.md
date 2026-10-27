@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert, MessageHolder, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -86,6 +86,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Collapse | Независимые панели и accordion, bind:activeKey, snippets, extra, header/icon/disabled, сохранение содержимого и destroyOnHidden |
 | Drawer | Модальная выдвижная панель, bind:open, четыре стороны, размеры, snippets, анимация, сохранение содержимого и destroyOnHidden |
 | Alert | Четыре статуса, title/description/icon/action snippets, outlined/filled, banner, закрытие с callbacks, анимацией и доступным фокусом |
+| MessageHolder / createMessage | Изолированная очередь пяти типов сообщений, ключи и обновления, таймеры, hover-пауза, maxCount, callable/thenable handle и контекст ConfigProvider |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -914,6 +915,95 @@ Modal/Drawer ограничен активным dialog. Фокус снаруж
 Первая версия не поддерживает React ErrorBoundary, бегущую строку, semantic
 classNames/styles и устаревшие message/onClose/afterClose/closeText/closeIcon
 на верхнем уровне props. Используются title и объект closable из API 6.6.8.
+
+## Message
+
+Создавайте экземпляр у владельца, чтобы компоненты и SSR-запросы не разделяли
+очередь. Один экземпляр поддерживает один смонтированный MessageHolder:
+
+```svelte
+<script lang="ts">
+  import { Button, MessageHolder, createMessage } from '$lib/components/ant-design';
+
+  const message = createMessage({ maxCount: 3 });
+
+  async function save() {
+    const close = message.loading({ key: 'save', content: 'Сохраняем…', duration: 0 });
+    try {
+      const response = await fetch('/api/settings', { method: 'POST' });
+      if (!response.ok) throw new Error('Save failed');
+      message.success({ key: 'save', content: 'Настройки сохранены.' });
+    } catch {
+      message.error({ key: 'save', content: 'Не удалось сохранить настройки.' });
+    }
+    // close() закроет обновлённое сообщение; await дождётся его удаления.
+    const closed = await close;
+    if (closed) console.log('Сообщение удалено');
+  }
+</script>
+
+<MessageHolder {message} />
+<Button onclick={save}>Сохранить</Button>
+```
+
+Open принимает MessageConfig с обязательным content. Методы info/success/warning/
+error/loading принимают строку, пассивный Snippet или объект с content. После
+первого аргумента можно передать duration и onClose, либо сразу onClose.
+Типизированный метод задаёт свой type; open без type использует info.
+Icon принимает декоративный Snippet; по умолчанию используются filled-иконки
+статусов и вращающийся loading. Class/style относятся к отдельному сообщению.
+Snippet содержимого и иконки должен обходиться без ссылок, кнопок и полей ввода.
+
+Duration задаётся в секундах, по умолчанию 3; 0 отключает автоудаление.
+CreateMessage фиксирует defaults duration, pauseOnHover=true и maxCount;
+конфигурация сообщения может переопределить duration/pauseOnHover.
+Невалидная duration использует default. MaxCount ограничивает активные сообщения
+по FIFO, положительное конечное значение округляется вниз; без допустимого
+значения ограничения нет. Уходящие сообщения остаются в DOM до конца анимации
+и не занимают активные места. Hover сохраняет оставшееся время, уход указателя
+возобновляет отсчёт. На touch hover-пауза не включается.
+
+Key — string или number; 0 и пустая строка являются допустимыми ключами.
+Повтор активного ключа обновляет содержимое на том же месте, перезапускает
+duration и заменяет onClose. Все handles этого активного сообщения ждут одно
+завершение. Уходящий ключ можно открыть заново: это отдельное сообщение,
+старый handle его не закроет. Destroy(key) закрывает ключ, destroy() — всю
+очередь экземпляра. Другие экземпляры независимы.
+
+Возвращаемый MessageHandle можно вызвать для закрытия или ожидать через await/
+then. OnClose вызывается один раз при запросе закрытия, включая timer и FIFO;
+handle завершается true после анимации и фактического удаления DOM. Уходящий
+контент получает inert/aria-hidden. При reduced motion уход завершается сразу,
+включение этого режима завершает уже запущенную анимацию. Ошибка onClose не
+мешает закрытию остальных сообщений destroy(), после обработки она передаётся
+вызывающему коду.
+
+До первого монтирования сообщения можно поставить в очередь: SSR выводит
+скрытую поверхность без таймеров и callbacks. Отсчёт начинается после показа.
+Удаление holder или замена его message отменяет таймеры/анимации, очищает очередь
+без onClose и завершает ожидающие handles false. Поздние вызовы такого экземпляра
+возвращают false без постановки в очередь; повторное монтирование разрешает
+новые сообщения. Для последовательных действий проверяйте результат await,
+чтобы не продолжать сценарий после удаления holder.
+
+Holder наследует тему, compact и направление ближайшего ConfigProvider.
+Нативный manual popover показывает обычный вертикальный список по центру сверху.
+Top по умолчанию 8px: число задаёт px, строка — CSS-длину. Id/class/style
+относятся к поверхности списка. Фокус и клавиши Tab/Escape остаются у страницы;
+сообщение использует role=status, aria-atomic=true и декоративную иконку.
+Для срочного объявления можно явно задать role=alert. ConfigProvider.disabled
+не отключает обратную связь.
+
+Внутри Modal/Drawer размещайте holder в содержимом нужного dialog. При закрытом,
+скрытом или перекрытом другим модальным окном контексте поверхность скрыта,
+таймеры приостановлены; после возврата продолжается оставшееся время.
+При скрытии вкладки отсчёт также приостанавливается.
+Фоновые holders также ждут закрытия верхнего dialog. Отдельный holder нужен
+для сообщений другого контекста. Галерея `/ant-design#message` показывает
+loading → success/error, повтор, последовательные сообщения и отмену при сбросе.
+
+В первой версии нет глобального static API/config, getContainer, collapsing
+stack, других положений, интерактивных действий и semantic classNames/styles.
 
 ## Select
 
@@ -1751,6 +1841,9 @@ Drawer использует именованный модальный dialog, н
 Alert предоставляет alert/status, атомарное объявление и декоративные иконки.
 Закрытие доступно нативной кнопкой, уход скрыт от accessibility tree;
 фокус из удаляемого сообщения переходит к доступному соседнему control.
+Message использует пассивные status/alert без остановок Tab и переноса фокуса.
+Закрытие host dialog остаётся у Modal/Drawer; скрытые контексты приостанавливают
+очередь и её таймеры.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1864,6 +1957,12 @@ callbacks и фактическое удаление DOM, disabled, Enter/Space/
 и мобильные длинные сообщения. SSR защищает defaults, escaping, атрибуты
 доступности и прежние outline-иконки. Галерея проверяет действие, закрытие,
 повторный показ и сохранение query при retry удалённой Table.
+Message проверяется на независимость экземпляров и SSR-запросов, пять типов,
+ключи/обновления, duration, FIFO, callbacks, await и stale handles. Unit-проверки
+управляют часами на границе holder; Chromium проверяет реальную видимость,
+hover, удаление DOM после анимации, detach/замену, Modal/Drawer и вложенные
+контексты, сохранение фокуса, темы/compact/RTL/reduced motion и мобильный перенос.
+Галерея проверяет loading → success/error, повтор и отмену при сбросе.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1924,6 +2023,13 @@ drawer.engine.ts — размерами, направлением ухода и 
 ограничены :where(.ant-alert-css-var); React motion исключён. Alert.svelte
 управляет закрытием, alert.dom.ts — отменяемой анимацией и переносом фокуса.
 Scoped-стили адаптируют мобильные действия и размер кнопки закрытия.
+[vendor/message.css](./vendor/message.css) содержит 21 правило Message из того
+же архива: базовую поверхность, верхнее положение, пять статусов и токены.
+Корневые селекторы ограничены :where(.ant-message-css-var); React motion,
+collapsing stack и остальные положения исключены. MessageHolder.svelte и
+MessageNotice.svelte адаптируют нативный popover и обычный поток списка;
+message.dom.ts управляет видимостью контекста и отменяемой Web Animations
+API-анимацией. Theme.css связывает фон с темой, иконки переиспользуют Icon.svelte.
 Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

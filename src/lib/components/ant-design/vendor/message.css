@@ -1,0 +1,28 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Message top из официального dist/antd.css; React motion, stack и прочие положения исключены.
+ * css-var-_R_0_.ant-message-css-var заменён на .ant-message-css-var;
+ * корень .ant-message ограничен :where(.ant-message-css-var).
+ * Источник: https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256 архива: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-message-css-var{font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-message-css-var::before,.ant-message-css-var::after{box-sizing:border-box;}
+.ant-message-css-var [class^="ant-message"],.ant-message-css-var [class*=" ant-message"]{box-sizing:border-box;}
+.ant-message-css-var [class^="ant-message"]::before,.ant-message-css-var [class*=" ant-message"]::before,.ant-message-css-var [class^="ant-message"]::after,.ant-message-css-var [class*=" ant-message"]::after{box-sizing:border-box;}
+.ant-message:where(.ant-message-css-var){box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);--notification-margin-edge:var(--ant-margin-lg);position:fixed;z-index:var(--ant-message-z-index-popup);width:100%;max-width:100vw;height:100vh;overflow:hidden;overscroll-behavior:contain;}
+.ant-message:where(.ant-message-css-var).ant-message-list{max-height:100vh;padding:var(--notification-margin-edge);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;pointer-events:none;}
+.ant-message:where(.ant-message-css-var).ant-message-list::-webkit-scrollbar{display:none;width:0;height:0;}
+.ant-message:where(.ant-message-css-var) .ant-message-list-content{position:relative;display:flex;flex-shrink:0;flex-direction:column;gap:var(--ant-margin);width:100%;will-change:height,transform;transition:none;pointer-events:none;}
+.ant-message-rtl{direction:rtl;}
+.ant-message:where(.ant-message-css-var) .ant-message-notice{position:absolute;width:max-content;max-width:calc(100vw - calc(var(--ant-margin-lg) * 2));padding:var(--ant-message-content-padding);pointer-events:auto;--ant-notification-icon-font-size:var(--ant-font-size-lg);--ant-notification-title-font-size:var(--ant-font-size);--ant-notification-title-line-height:var(--ant-line-height);box-sizing:border-box;color:var(--ant-color-text);background:var(--ant-message-content-bg);border-radius:var(--ant-border-radius-lg);box-shadow:var(--ant-box-shadow);font-size:var(--ant-font-size);line-height:var(--ant-line-height);word-wrap:break-word;overflow:visible;transform:scale(var(--notification-scale, 1));transition:transform var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out),inset var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out),clip-path var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out),opacity var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out);z-index:1;}
+.ant-message:where(.ant-message-css-var) .ant-message-notice::after{position:absolute;inset-inline:0;top:calc(var(--ant-margin) * -1);height:var(--ant-margin);content:"";}
+.ant-message:where(.ant-message-css-var) .ant-message-notice-wrapper{display:flex;align-items:center;gap:var(--ant-margin-xs);}
+.ant-message:where(.ant-message-css-var) .ant-message-notice-title{color:var(--ant-color-text-heading);font-size:var(--ant-notification-title-font-size);line-height:var(--ant-notification-title-line-height);}
+.ant-message:where(.ant-message-css-var) .ant-message-notice-icon{flex:none;font-size:var(--ant-notification-icon-font-size);line-height:1;}
+.ant-message:where(.ant-message-css-var) .ant-message-notice-icon.ant-message-notice-icon-success{color:var(--ant-color-success);}
+.ant-message:where(.ant-message-css-var) .ant-message-notice-icon.ant-message-notice-icon-info,.ant-message:where(.ant-message-css-var) .ant-message-notice-icon.ant-message-notice-icon-loading{color:var(--ant-color-info);}
+.ant-message:where(.ant-message-css-var) .ant-message-notice-icon.ant-message-notice-icon-warning{color:var(--ant-color-warning);}
+.ant-message:where(.ant-message-css-var) .ant-message-notice-icon.ant-message-notice-icon-error{color:var(--ant-color-error);}
+.ant-message:where(.ant-message-css-var).ant-message-top{top:calc(var(--notification-top, var(--notification-margin-edge, 0px)) - var(--notification-margin-edge, 0px));bottom:auto;display:flex;flex-direction:column;margin-inline:0;left:50%;right:auto;transform:translateX(-50%);}
+.ant-message:where(.ant-message-css-var).ant-message-top .ant-message-notice{top:var(--notification-y, 0);left:50%;transform:translate3d(-50%, 0, 0) scale(var(--notification-scale, 1));transform-origin:center bottom;}
+.ant-message-css-var{--ant-message-z-index-popup:2010;--ant-message-content-bg:#ffffff;--ant-message-content-padding:9px 12px;}

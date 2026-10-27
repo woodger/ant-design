@@ -249,6 +249,10 @@
   --ant-collapse-content-bg: var(--ant-color-bg-container);
 }
 
+.ant-message-css-var {
+  --ant-message-content-bg: var(--ant-color-bg-elevated);
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);
