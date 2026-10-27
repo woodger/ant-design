@@ -132,7 +132,12 @@ test('Drawer cancels a pending exit when reopened without losing content or clos
   await open(page);
   await draft(page).fill('Reopened draft');
   await page.keyboard.press('Control+Alt+o');
-  await dialog(page).evaluate((element) => { for (const animation of element.getAnimations({ subtree: true })) animation.pause(); });
+  await dialog(page).evaluate((element) => {
+    // Переходы фокуса дочерних полей продолжаются независимо от движения Drawer.
+    for (const surface of element.querySelectorAll(':scope > .ant-drawer-content-wrapper, :scope > .ant-drawer-mask')) {
+      for (const animation of surface.getAnimations()) animation.pause();
+    }
+  });
   await page.keyboard.press('Control+Alt+o');
   await expect.poll(() => dialog(page).evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(0);
   await expect(dialog(page)).toBeVisible();

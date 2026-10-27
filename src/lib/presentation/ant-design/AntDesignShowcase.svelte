@@ -15,6 +15,7 @@
   import TabsExample from './TabsExample.svelte';
   import CollapseExample from './CollapseExample.svelte';
   import DrawerExample from './DrawerExample.svelte';
+  import AlertExample from './AlertExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -40,7 +41,8 @@
     ['dropdown', 'Dropdown'],
     ['tabs', 'Tabs'],
     ['collapse', 'Collapse'],
-    ['drawer', 'Drawer']
+    ['drawer', 'Drawer'],
+    ['alert', 'Alert']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -152,7 +154,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">23 компонента</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">24 компонента</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -380,6 +382,12 @@
           <div class="section-heading"><h3>Drawer</h3></div>
           <p class="section-description">Редактирование строки таблицы в выдвижной карточке. Закройте и откройте панель, чтобы проверить сохранение черновика.</p>
           <div class="panel"><DrawerExample /></div>
+        </section>
+
+        <section id="alert">
+          <div class="section-heading"><h3>Alert</h3></div>
+          <p class="section-description">Результаты действий и предупреждения: четыре типа, подробное описание, независимое действие и закрытие сообщения.</p>
+          <div class="panel"><AlertExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

@@ -1,5 +1,26 @@
 import { test, expect } from './test';
 
+test('showcase applies Alert actions, dismisses notifications and recreates closed instances', async ({ page }, testInfo) => {
+  await page.goto('/ant-design#alert');
+  const fixture = page.locator('#alert');
+  const message = fixture.getByRole('status', { name: 'Настраиваемое сообщение', exact: true });
+  await fixture.getByRole('combobox', { name: 'Тип сообщения', exact: true }).selectOption('error');
+  await expect(message).toContainText('Не удалось сохранить настройки');
+  await message.getByRole('button', { name: 'Повторить сохранение', exact: true }).click();
+  await expect(message).toContainText('Настройки сохранены');
+  await expect(message).toHaveClass(/ant-alert-success/);
+  await expect(fixture.getByRole('status', { name: 'Результат уведомления', exact: true })).toHaveText('Настройки применены.');
+  await fixture.screenshot({ path: testInfo.outputPath('alert-example.png') });
+  await message.getByRole('button', { name: 'Закрыть', exact: true }).click();
+  await expect(message).toHaveCount(0);
+  await expect(fixture.getByRole('status', { name: 'Результат уведомления', exact: true })).toHaveText('Сообщение закрыто.');
+  const restore = fixture.getByRole('button', { name: 'Показать сообщение снова', exact: true });
+  await expect(restore).toBeFocused();
+  await restore.click();
+  await expect(message).toBeVisible();
+  await expect(message).toContainText('Настройки сохранены');
+});
+
 test('showcase edits Table rows in Drawer, validates fields and retains unsaved form and tab state', async ({ page }, testInfo) => {
   await page.goto('/ant-design#drawer');
   const fixture = page.locator('#drawer');
@@ -348,6 +369,7 @@ test('showcase retries a failed remote page with its existing query', async ({ p
   await fixture.getByRole('button', { name: 'Пример ошибки загрузки', exact: true }).click();
 
   await expect(fixture.getByRole('alert')).toContainText('Не удалось загрузить данные. Попробуйте ещё раз.');
+  await expect(fixture.getByRole('alert')).toHaveClass(/ant-alert-error/);
   await expect(table.getByRole('cell', { name: 'Нет данных', exact: true })).toBeVisible();
   await fixture.getByRole('button', { name: 'Повторить загрузку', exact: true }).click();
 

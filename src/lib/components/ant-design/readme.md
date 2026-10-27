@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -85,6 +85,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Tabs | Типизированные панели, bind:activeKey, line/card, четыре положения, ручная клавиатурная активация, сохранение содержимого и destroyOnHidden |
 | Collapse | Независимые панели и accordion, bind:activeKey, snippets, extra, header/icon/disabled, сохранение содержимого и destroyOnHidden |
 | Drawer | Модальная выдвижная панель, bind:open, четыре стороны, размеры, snippets, анимация, сохранение содержимого и destroyOnHidden |
+| Alert | Четыре статуса, title/description/icon/action snippets, outlined/filled, banner, закрытие с callbacks, анимацией и доступным фокусом |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -833,6 +834,86 @@ Tabs и Collapse. Черновик сохраняется при закрыти�
 редактор из сохранённой строки. Сохранение обновляет Table и закрывает панель.
 Первая версия не поддерживает немодальный режим, mask=false, resizable, push,
 getContainer/порталы, loading/Skeleton, focusable и afterOpenChange.
+
+## Alert
+
+```svelte
+<script lang="ts">
+  import { Alert, Button } from '$lib/components/ant-design';
+
+  let revision = $state(0);
+</script>
+
+{#key revision}
+  <Alert
+    type="warning"
+    title="Есть несохранённые изменения"
+    description="Сохраните настройки перед выходом."
+    showIcon
+    closable
+  />
+{/key}
+<Button onclick={() => { revision++; }}>Показать сообщение снова</Button>
+```
+
+Type поддерживает success/info/warning/error, по умолчанию info. Variant —
+outlined или filled; filled сохраняет фон статуса и убирает видимую рамку.
+Banner убирает рамку и скругления; без явно заданных type/showIcon использует
+warning и видимую иконку. В обычном режиме showIcon=false.
+
+Title и description принимают строку или Snippet, icon/action — Snippet.
+Пустые строки title/description не создают соответствующую область. Snippet
+считается присутствующим; условное отсутствие содержимого выражайте через
+undefined у владельца. Description включает увеличенные отступы и иконку.
+Icon декоративный и отображается только при showIcon, включая пользовательский
+snippet. Для интерактивных controls используйте description/action;
+icon и closable.closeIcon не должны содержать интерактивных элементов.
+Действия не закрывают Alert и не вызывают callbacks закрытия.
+
+Closable=false по умолчанию. True добавляет нативную кнопку type=button с
+ConfigProvider.locale.closeText. Объект дополнительно поддерживает disabled,
+closeIcon (строка или Snippet), aria-label/aria-labelledby/aria-describedby,
+onClose(MouseEvent) и afterClose(). Пользовательский текст closeIcon остаётся
+декоративным содержимым; доступное имя задаётся через aria-label или локаль.
+Disabled запрещает закрытие, сохраняя действия. Alert не наследует disabled
+от Form/ConfigProvider; вложенные controls используют собственный контекст.
+
+Enter/Space и нажатие на кнопку запускают закрытие ровно один раз. OnClose
+уведомляет о запросе и не отменяет его через preventDefault; callbacks
+фиксируются на момент запроса. После onClose панель плавно сворачивается.
+Во время ухода содержимое остаётся в DOM, но получает inert и aria-hidden.
+AfterClose вызывается после удаления содержимого, включая при reduced motion.
+Удаление или замена компонента отменяет анимацию и ожидающий afterClose.
+При включении reduced motion текущий уход завершается сразу.
+
+Закрытый экземпляр остаётся закрытым при изменении props. Для повторного показа
+создайте новый экземпляр через условное монтирование или новый key; публичного
+open/bind:open нет. Изменение типа и содержимого открытого сообщения сохраняет
+его дочерние экземпляры. SSR показывает открытое сообщение без вызова callbacks;
+анимация запускается только при пользовательском закрытии.
+
+Role по умолчанию alert с неотложным объявлением, как в Ant Design. Для обычного
+результата действия задавайте role=status с мягким объявлением. Aria-atomic=true
+по умолчанию; aria-live и aria-atomic можно переопределить. Aria-label,
+aria-labelledby и aria-describedby именуют и описывают корневой контейнер.
+Id/class/style также относятся к корню. Появление и обновление не перемещают
+фокус. При закрытии фокус из сообщения переходит к следующему доступному control
+в DOM, затем к предыдущему либо содержащему нативному dialog. Поиск внутри
+Modal/Drawer ограничен активным dialog. Фокус снаружи и фокус, выбранный onClose
+у владельца, сохраняются. Иконки не добавляют остановок Tab. Кнопка закрытия
+использует естественную клавиатуру и не отправляет окружающую форму;
+тип пользовательских action-кнопок задаёт их владелец.
+
+Темы, compact, RTL и цвета статусов используют существующие токены. На ширине
+до 575px action переносится на отдельную строку, оставляя место длинному тексту.
+Кнопка закрытия имеет зону не меньше 24px. Галерея `/ant-design#alert` показывает
+настройки сообщения, действие и повторное создание закрытого экземпляра.
+Ошибка загрузки `/ant-design#server-table` использует Alert с прежним retry:
+текущая страница и query сохраняются.
+
+Первая версия не поддерживает React ErrorBoundary, бегущую строку, semantic
+classNames/styles и устаревшие message/onClose/afterClose/closeText/closeIcon
+на верхнем уровне props. Используются title и объект closable из API 6.6.8.
 
 ## Select
 
@@ -1667,6 +1748,9 @@ Collapse использует нативные кнопки внутри heading
 Drawer использует именованный модальный dialog, нативную кнопку закрытия и
 естественный Tab. Фон inert, Escape закрывает верхнюю поверхность, закрытие
 возвращает фокус opener. Во время анимации ухода модальность сохраняется.
+Alert предоставляет alert/status, атомарное объявление и декоративные иконки.
+Закрытие доступно нативной кнопкой, уход скрыт от accessibility tree;
+фокус из удаляемого сообщения переходит к доступному соседнему control.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1774,6 +1858,12 @@ Drawer проверяется на binding/callbacks, четыре сторон�
 SSR/Chromium-проверки покрывают удаление, RTL/локаль, темы, reduced motion,
 Select/Popover/Tooltip, Tabs/Collapse, стек с Modal и мобильное длинное содержимое.
 Галерея проверяет валидацию, сохранение черновика, обновление строки Table и сброс.
+Alert проверяется на типы, banner/defaults, outlined/filled, snippets и иконки,
+callbacks и фактическое удаление DOM, disabled, Enter/Space/Tab, порядок фокуса,
+отмену анимации при unmount/замене, reduced motion, локаль, RTL, темы, Modal/Drawer
+и мобильные длинные сообщения. SSR защищает defaults, escaping, атрибуты
+доступности и прежние outline-иконки. Галерея проверяет действие, закрытие,
+повторный показ и сохранение query при retry удалённой Table.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1829,6 +1919,15 @@ CollapsePanel.svelte — временем жизни содержимого. Т�
 исключены. Drawer.svelte адаптирует нативный dialog и жизненный цикл содержимого;
 drawer.dom.ts управляет модальностью и отменяемой Web Animations API-анимацией,
 drawer.engine.ts — размерами, направлением ухода и длительностью.
+[vendor/alert.css](./vendor/alert.css) содержит 37 правил Alert из того же
+архива: четыре статуса, outlined/filled, banner и токены. Корневые селекторы
+ограничены :where(.ant-alert-css-var); React motion исключён. Alert.svelte
+управляет закрытием, alert.dom.ts — отменяемой анимацией и переносом фокуса.
+Scoped-стили адаптируют мобильные действия и размер кнопки закрытия.
+Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
+[Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
+и подключены к существующему Icon.svelte с сохранением outline-иконок.
+Их отдельная [MIT-лицензия](./vendor/LICENSE.ant-design-icons) включена в пакет.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.

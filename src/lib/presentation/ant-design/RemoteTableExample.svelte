@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button, Checkbox, Table, type TableColumn, type TableKey } from '$lib/components/ant-design';
+  import { Alert, Button, Checkbox, Table, type TableColumn, type TableKey } from '$lib/components/ant-design';
   import { createRemoteTable } from './remote-table.model.svelte';
   import { createMemberSource, remoteTeams, type RemoteMember } from './remote-members';
 
@@ -29,14 +29,15 @@
 <style>
   .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
   .remote-status { margin: 16px 0 0; color: var(--ant-color-text-tertiary); font-size: 12px; }
-  .error { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; color: var(--ant-color-error); }
+  .error { margin-bottom: 16px; }
   .active { color: var(--ant-color-success); }
 </style>
 
 {#snippet memberStatus(member: RemoteMember)}<span class:active={member.active}>{member.active ? 'Активен' : 'Приостановлен'}</span>{/snippet}
+{#snippet retry()}<Button type="primary" onclick={remote.retry}>Повторить загрузку</Button>{/snippet}
 
 <div class="actions"><Button onclick={() => { void remote.load(); }}>Обновить данные</Button><Button onclick={showError}>Пример ошибки загрузки</Button><Checkbox bind:checked={fixed}>Закрепить заголовок и колонки</Checkbox></div>
-{#if remote.error}<div class="error" role="alert"><span>{remote.error}</span><Button type="primary" onclick={remote.retry}>Повторить загрузку</Button></div>{/if}
+{#if remote.error}<div class="error"><Alert type="error" title={remote.error} action={retry} showIcon /></div>{/if}
 <Table
   mode="server"
   total={remote.total}

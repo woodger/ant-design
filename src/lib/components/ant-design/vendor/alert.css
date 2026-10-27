@@ -1,0 +1,44 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Alert из официального dist/antd.css; React motion исключён.
+ * css-var-_R_0_.ant-alert заменён на .ant-alert-css-var;
+ * корень .ant-alert ограничен :where(.ant-alert-css-var).
+ * Источник: https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256 архива: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-alert:where(.ant-alert-css-var){font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-alert:where(.ant-alert-css-var)::before,.ant-alert:where(.ant-alert-css-var)::after{box-sizing:border-box;}
+.ant-alert:where(.ant-alert-css-var) [class^="ant-alert"],.ant-alert:where(.ant-alert-css-var) [class*=" ant-alert"]{box-sizing:border-box;}
+.ant-alert:where(.ant-alert-css-var) [class^="ant-alert"]::before,.ant-alert:where(.ant-alert-css-var) [class*=" ant-alert"]::before,.ant-alert:where(.ant-alert-css-var) [class^="ant-alert"]::after,.ant-alert:where(.ant-alert-css-var) [class*=" ant-alert"]::after{box-sizing:border-box;}
+.ant-alert:where(.ant-alert-css-var){box-sizing:border-box;margin:0;padding:var(--ant-alert-default-padding);color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);position:relative;display:flex;align-items:center;word-wrap:break-word;border-radius:var(--ant-alert-border-radius);border-width:var(--ant-line-width);border-style:var(--ant-line-type);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-success{border-color:var(--ant-color-success-border);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-info{border-color:var(--ant-color-info-border);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-warning{border-color:var(--ant-color-warning-border);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-error{border-color:var(--ant-color-error-border);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-filled{border-color:transparent;}
+.ant-alert:where(.ant-alert-css-var).ant-alert-rtl{direction:rtl;}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-section{flex:1;min-width:0;}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-icon{margin-inline-end:var(--ant-margin-xs);line-height:0;}
+.ant-alert-description{display:none;font-size:var(--ant-font-size);line-height:var(--ant-line-height);}
+.ant-alert-title{color:var(--ant-color-text-heading);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-with-description{align-items:flex-start;padding:var(--ant-alert-with-description-padding);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-with-description .ant-alert-icon{margin-inline-end:var(--ant-margin-sm);font-size:var(--ant-alert-with-description-icon-size);line-height:0;}
+.ant-alert:where(.ant-alert-css-var).ant-alert-with-description .ant-alert-title{display:block;margin-bottom:var(--ant-margin-xs);color:var(--ant-color-text-heading);font-size:var(--ant-font-size-lg);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-with-description .ant-alert-description{display:block;color:var(--ant-color-text);}
+.ant-alert:where(.ant-alert-css-var).ant-alert-banner{margin-bottom:0;border:0!important;border-radius:0;}
+.ant-alert-success{background:var(--ant-color-success-bg);}
+.ant-alert-success .ant-alert-icon{color:var(--ant-color-success);}
+.ant-alert-info{background:var(--ant-color-info-bg);}
+.ant-alert-info .ant-alert-icon{color:var(--ant-color-info);}
+.ant-alert-warning{background:var(--ant-color-warning-bg);}
+.ant-alert-warning .ant-alert-icon{color:var(--ant-color-warning);}
+.ant-alert-error{background:var(--ant-color-error-bg);}
+.ant-alert-error .ant-alert-icon{color:var(--ant-color-error);}
+.ant-alert-error .ant-alert-description>pre{margin:0;padding:0;}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-actions{margin-inline-start:var(--ant-margin-xs);}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-close-icon{margin-inline-start:var(--ant-margin-xs);padding:0;overflow:hidden;font-size:var(--ant-font-size-icon);line-height:var(--ant-font-size-icon);background-color:transparent;border:none;cursor:pointer;}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-close-icon:focus-visible{outline:var(--ant-line-width-focus) solid var(--ant-color-primary-border);outline-offset:1px;transition:outline-offset 0s,outline 0s;}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-close-icon .anticon-close{color:var(--ant-color-icon);transition:color var(--ant-motion-duration-mid);}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-close-icon .anticon-close:hover{color:var(--ant-color-icon-hover);}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-close-icon:disabled{cursor:not-allowed;color:var(--ant-color-text-disabled);}
+.ant-alert:where(.ant-alert-css-var) .ant-alert-close-icon:disabled .anticon-close{color:inherit;pointer-events:none;}
+.ant-alert-css-var{--ant-alert-border-radius:8px;--ant-alert-with-description-icon-size:24px;--ant-alert-default-padding:8px 12px;--ant-alert-with-description-padding:20px 24px;}

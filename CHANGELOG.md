@@ -9,6 +9,11 @@
 
 ### Added
 
+- Alert: success/info/warning/error, title/description/icon/action snippets,
+  outlined/filled, banner, closable с callbacks, анимацией и reduced motion.
+  Добавлены filled-иконки Ant Design с MIT-лицензией, доступные объявления,
+  перенос фокуса, темы/RTL, мобильные действия, пример и SSR/Chromium-проверки.
+  Ошибка загрузки удалённой Table использует Alert с прежним retry и query.
 - Drawer: модальная панель на нативном dialog, bind:open, callbacks, четыре
   стороны и размеры, title/extra/footer snippets, анимация и reduced motion.
   Добавлены ленивое содержимое, сохранение state, forceRender/destroyOnHidden,

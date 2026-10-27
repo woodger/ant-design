@@ -1,5 +1,8 @@
 <script lang="ts">
-  let { name }: { name: 'down' | 'left' | 'right' | 'close' | 'check' | 'loading' | 'filter' | 'warning' } = $props();
+  import { statusIcons } from './status-icons';
+
+  let { name }: { name: 'down' | 'left' | 'right' | 'close' | 'check' | 'loading' | 'filter' | 'warning' | keyof typeof statusIcons } = $props();
+  let statusPath = $derived(name in statusIcons ? statusIcons[name as keyof typeof statusIcons] : undefined);
 </script>
 
 <style>
@@ -10,9 +13,10 @@
 </style>
 
 <svg
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
+  viewBox={statusPath ? '0 0 1024 1024' : '0 0 24 24'}
+  fill={statusPath ? 'currentColor' : 'none'}
+  fill-rule={name === 'close-circle-filled' ? 'evenodd' : undefined}
+  stroke={statusPath ? 'none' : 'currentColor'}
   stroke-width="1.8"
   stroke-linecap="round"
   stroke-linejoin="round"
@@ -20,7 +24,9 @@
   focusable="false"
   class:loading={name === 'loading'}
 >
-  {#if name === 'down'}
+  {#if statusPath}
+    <path d={statusPath} />
+  {:else if name === 'down'}
     <path d="m6 9 6 6 6-6" />
   {:else if name === 'left'}
     <path d="m15 6-6 6 6 6" />
