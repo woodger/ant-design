@@ -1,5 +1,41 @@
 import { test, expect } from './test';
 
+test('showcase cancels deletion, handles failure and retries Popconfirm before removing a table row', async ({ page }, testInfo) => {
+  await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await page.goto('/ant-design#popconfirm');
+  await page.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
+  const fixture = page.locator('#popconfirm');
+  const trigger = fixture.getByRole('button', { name: 'Удалить: Анна', exact: true });
+  const popup = fixture.getByRole('dialog', { name: 'Удалить запись «Анна»?', exact: true });
+  const restore = fixture.getByRole('button', { name: 'Восстановить записи', exact: true });
+  await trigger.click();
+  await popup.getByRole('button', { name: 'Оставить', exact: true }).click();
+  await expect(popup).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await fixture.getByRole('checkbox', { name: 'Следующее удаление завершится ошибкой', exact: true }).check();
+  await trigger.click();
+  await popup.getByRole('button', { name: 'Удалить', exact: true }).click();
+  await expect(popup).toHaveAttribute('aria-busy', 'true');
+  await page.keyboard.press('Escape');
+  await expect(popup).toBeVisible();
+  await page.clock.runFor(600);
+  await expect(popup.getByRole('alert')).toHaveText('Не удалось выполнить действие. Попробуйте ещё раз.');
+  await expect(popup.getByRole('button', { name: 'Удалить', exact: true })).toBeEnabled();
+  await expect(restore).toBeEnabled();
+  await expect(trigger).toBeVisible();
+  await page.clock.runFor(300);
+  await page.screenshot({ path: testInfo.outputPath('popconfirm-error.png') });
+  await popup.getByRole('button', { name: 'Удалить', exact: true }).click();
+  await expect(popup.getByRole('alert')).toHaveCount(0);
+  await page.clock.runFor(600);
+  await expect(trigger).toHaveCount(0);
+  await expect(popup).toBeHidden();
+  await expect(fixture.getByRole('status', { name: 'Результат удаления', exact: true })).toHaveText('Анна: запись удалена.');
+  await expect(restore).toBeFocused();
+  await restore.click();
+  await expect(trigger).toBeVisible();
+});
+
 test('showcase edits and saves a profile inside Popover and restores its trigger focus', async ({ page }, testInfo) => {
   await page.goto('/ant-design#popover');
   const fixture = page.locator('#popover');

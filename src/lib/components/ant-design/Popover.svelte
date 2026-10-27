@@ -6,7 +6,7 @@
   import { getTooltipDelay } from './tooltip.engine';
   import type { PopoverContent, PopoverProps, PopoverTrigger } from './popover.types';
 
-  let { children, title, content, open = $bindable<boolean | undefined>(), defaultOpen = false, onOpenChange, trigger = ['hover', 'focus'], placement = 'top', arrow = true, autoAdjustOverflow = true, mouseEnterDelay = 0.1, mouseLeaveDelay = 0.1, 'aria-label': ariaLabel, class: className = '', style }: PopoverProps = $props();
+  let { children, title, content, open = $bindable<boolean | undefined>(), defaultOpen = false, onOpenChange, trigger = ['hover', 'focus'], placement = 'top', arrow = true, autoAdjustOverflow = true, mouseEnterDelay = 0.1, mouseLeaveDelay = 0.1, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, 'aria-busy': ariaBusy, popupClass, class: className = '', style }: PopoverProps = $props();
 
   const config = useConfig();
   const generatedId = $props.id();
@@ -193,10 +193,15 @@
   }
 
   function dismiss(reason: 'escape' | 'outside' | 'trigger') {
+    const previous = { clicked, dismissed, focusOnShow };
     clicked = false;
     dismissed = true;
     focusOnShow = false;
     request(false);
+    if (visible) {
+      ({ clicked, dismissed, focusOnShow } = previous);
+      return;
+    }
     if (reason === 'escape' && popup?.contains(popup.ownerDocument.activeElement) && anchor instanceof HTMLElement) {
       closing = true;
       anchor.focus({ preventScroll: true });
@@ -217,7 +222,7 @@
 </style>
 
 <span bind:this={host} role="presentation" class={['ant-popover-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onfocusin={handleFocus} onfocusout={handleBlur} onclick={handleClick}>{@render children()}</span>
-<div bind:this={popup} {id} role="dialog" popover="manual" hidden tabindex="-1" dir={config.direction} aria-label={ariaLabel} aria-labelledby={!ariaLabel && hasTitle ? titleId : undefined} class={['ant-popover', `ant-popover-placement-${shown ? actualPlacement : placement}`, config.direction === 'rtl' && 'ant-popover-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') handlePopupHover(true); }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => { popupFocused = true; cancelPending(); }} onfocusout={handlePopupBlur}>
+<div bind:this={popup} {id} role="dialog" popover="manual" hidden tabindex="-1" dir={config.direction} aria-label={ariaLabel} aria-labelledby={!ariaLabel ? ariaLabelledby ?? (hasTitle ? titleId : undefined) : undefined} aria-describedby={ariaDescribedby} aria-busy={ariaBusy} class={['ant-popover', popupClass, `ant-popover-placement-${shown ? actualPlacement : placement}`, config.direction === 'rtl' && 'ant-popover-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') handlePopupHover(true); }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => { popupFocused = true; cancelPending(); }} onfocusout={handlePopupBlur}>
   {#if arrow}<div class="ant-popover-arrow" aria-hidden="true"></div>{/if}
   <div class="ant-popover-container">
     {#if hasTitle}<div id={titleId} class="ant-popover-title">{#if typeof title === 'function'}{@render title()}{:else}{title}{/if}</div>{/if}

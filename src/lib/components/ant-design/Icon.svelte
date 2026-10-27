@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { name }: { name: 'down' | 'left' | 'right' | 'close' | 'check' | 'loading' | 'filter' } = $props();
+  let { name }: { name: 'down' | 'left' | 'right' | 'close' | 'check' | 'loading' | 'filter' | 'warning' } = $props();
 </script>
 
 <style>
@@ -32,6 +32,8 @@
     <path d="m5 12 4 4L19 6" />
   {:else if name === 'filter'}
     <path d="M4 5h16l-6 7v6l-4 2v-8z" />
+  {:else if name === 'warning'}
+    <circle cx="12" cy="12" r="9" /><path d="M12 7v6M12 17h.01" />
   {:else}
     <path d="M21 12a9 9 0 1 1-9-9" />
   {/if}

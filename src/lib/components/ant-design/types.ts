@@ -14,6 +14,7 @@ export interface Locale {
   emptyText: string;
   searchText: string;
   submitErrorText: string;
+  confirmErrorText?: string;
   removeText?: string;
   selectRequiredText?: string;
   pagination?: Partial<PaginationLocale>;
@@ -76,6 +77,7 @@ export const ruRU = {
   emptyText: 'Ничего не найдено',
   searchText: 'Поиск',
   submitErrorText: 'Не удалось отправить форму. Попробуйте ещё раз.',
+  confirmErrorText: 'Не удалось выполнить действие. Попробуйте ещё раз.',
   pagination: {
     label: 'Пагинация',
     previous: 'Предыдущая страница',
@@ -119,6 +121,7 @@ export const enUS = {
   emptyText: 'No options',
   searchText: 'Search',
   submitErrorText: 'Could not submit the form. Please try again.',
+  confirmErrorText: 'Could not complete the action. Please try again.',
   pagination: {
     label: 'Pagination',
     previous: 'Previous page',

@@ -9,6 +9,11 @@
 
 ### Added
 
+- Popconfirm: title/description/icon snippets, подтверждение и отмена,
+  bind:open, disabled, настройки кнопок, Promise/loading, ошибки и повтор,
+  защита от повторного запуска и поздних результатов. Добавлены стили Ant Design
+  6.6.8, локализация, темы/RTL, Modal/Tooltip, пример удаления строки Table
+  и unit/SSR/Chromium-проверки.
 - Popover: строки и Svelte snippets, bind:open, defaults, click/hover/focus,
   интерактивные поля и кнопки, естественный порядок Tab, Escape и возврат фокуса.
   Добавлены стили Ant Design 6.6.8, четыре положения, переворот у края окна,

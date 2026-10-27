@@ -19,6 +19,10 @@ export interface PopoverProps {
   mouseEnterDelay?: number;
   mouseLeaveDelay?: number;
   'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-busy'?: boolean;
+  popupClass?: string;
   class?: string;
   style?: string;
 }

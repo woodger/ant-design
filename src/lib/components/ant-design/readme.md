@@ -5,7 +5,7 @@
 
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Form и FormItem.
+Modal, Tooltip, Popover, Popconfirm, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -80,6 +80,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
 | Tooltip | Текст, hover/focus, bind:open, задержки, Escape, четыре положения, стрелка, автоматический переворот и aria-describedby |
 | Popover | Интерактивные snippets, click/hover/focus, bind:open, четыре положения, стрелка, автоматический переворот, клавиатура и возврат фокуса |
+| Popconfirm | Подтверждение и отмена, Promise/loading, повтор после ошибки, защита от поздних результатов, snippets, локализация и клавиатура |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -375,6 +376,8 @@ mouseLeaveDelay задаются в секундах, по умолчанию 0.
 Escape закрывает карточку и возвращает фокус из содержимого к trigger;
 нажатие снаружи сохраняет фокус на выбранном внешнем элементе. Закрытие через
 bind:open возвращает фокус, если он находился внутри карточки.
+Function binding может отклонить изменение open; отклонённое закрытие сохраняет
+фокус и текущие способы удержания карточки открытой.
 
 Placement принимает top/bottom/left/right, arrow=false скрывает стрелку.
 AutoAdjustOverflow по умолчанию переворачивает и сдвигает поверхность у края
@@ -383,6 +386,9 @@ viewport; false сохраняет запрошенное положение. П
 Смена положения сохраняет текущий ввод, выделение и фокус. Class и style
 относятся к wrapper. Поддерживаются темы ConfigProvider, compact, RTL и
 prefers-reduced-motion.
+PopupClass относится к самой поверхности. Aria-labelledby, aria-describedby
+и aria-busy позволяют связать её с содержимым составного компонента;
+aria-label имеет приоритет при выборе имени.
 
 Popover использует нативный `popover="manual"` и требует Popover API.
 Поверхность остаётся в исходном DOM-поддереве и показывается в верхнем слое:
@@ -404,6 +410,90 @@ snippet, компонент считает содержимое доступны
 карточку с кнопкой. Первая версия ограничена четырьмя положениями;
 contextMenu, corner placements, destroyOnHidden, getPopupContainer и
 произвольные цветовые варианты пока отсутствуют.
+
+## Popconfirm
+
+```svelte
+<script lang="ts">
+  import { Button, Popconfirm } from '$lib/components/ant-design';
+
+  let open = $state(false);
+
+  async function remove() {
+    // Здесь владелец выполняет запрос и обновляет данные после успеха.
+  }
+</script>
+
+<Popconfirm
+  title="Удалить запись?"
+  description="Запись исчезнет из списка."
+  bind:open
+  okText="Удалить"
+  okButtonProps={{ danger: true }}
+  onConfirm={remove}
+>
+  <Button danger>Удалить</Button>
+</Popconfirm>
+```
+
+Title обязателен; title и description принимают строку, число или Svelte
+snippet. Число 0 отображается, строки экранируются. Пустая строка title отключает
+карточку; snippet должен содержать доступный заголовок. Icon — декоративный snippet;
+по умолчанию показан знак предупреждения,
+icon=null скрывает его. Children содержит один основной DOM-элемент, обычно
+Button. Его атрибуты и обработчики сохраняются.
+
+Popover обеспечивает открытие кликом, Enter/Space нативной кнопки, четыре
+положения top/bottom/left/right, arrow и autoAdjustOverflow. В содержимом
+сначала находится отмена, затем подтверждение; showCancel=false скрывает
+отмену. При открытии фокусируется первый доступный control, для обычного
+описания — кнопка отмены. Tab следует естественному порядку, Escape закрывает
+карточку и возвращает фокус. Поддерживаются Modal, вложенный Tooltip, темы,
+compact, RTL и prefers-reduced-motion. Требуется нативный Popover API.
+
+`bind:open`, defaultOpen и `onOpenChange(open)` следуют модели Svelte.
+DefaultOpen учитывается один раз; внешние изменения open не вызывают
+onOpenChange. `onConfirm(event)` вызывается только кнопкой подтверждения.
+Синхронное завершение и успешный Promise закрывают карточку; без onConfirm
+подтверждение просто закрывает её. `onCancel(event)` вызывается только кнопкой
+отмены. Escape, клик снаружи и повторный клик trigger меняют видимость через
+onOpenChange и не вызывают onCancel.
+
+Во время Promise подтверждение показывает loading, обе кнопки отключены;
+повторный запуск, Escape, клик снаружи, повторный клик trigger и уход фокуса
+не закрывают карточку. Внешнее open остаётся под контролем владельца.
+Закрытие, повторное открытие, disabled и удаление компонента делают старый
+результат неактуальным: он не закрывает новую карточку, не сбрасывает её
+loading и не вызывает onError. Эта защита относится к состоянию Popconfirm;
+отменой запроса и изменениями данных управляет владелец onConfirm.
+
+Синхронный throw и отклонение Promise оставляют карточку открытой и показывают
+безопасное сообщение с role=alert. `onError(error)` получает исходную ошибку
+как unknown; её технический текст автоматически не выводится. Повторная
+попытка очищает сообщение. Кнопки используют okText/cancelText или
+locale.okText/cancelText; сообщение ошибки задаётся locale.confirmErrorText.
+Поддерживаются ruRU и enUS, а частичная locale наследуется из ConfigProvider.
+
+OkType задаёт тип подтверждения; okButtonProps/cancelButtonProps настраивают
+размер, danger, disabled, атрибуты и события кнопок. Их onclick вызывается перед
+внутренним действием: preventDefault отменяет подтверждение или отмену.
+HtmlType всегда button, loading управляется Popconfirm. Disabled наследуется
+из Form и ConfigProvider; disabled=false переопределяет наследование.
+Disabled скрывает карточку и блокирует её действия, сохраняя open владельца;
+исходный trigger не заменяется и сам по себе не отключается этим prop.
+
+Карточка получает role=dialog, имя от title и описание от description.
+Trigger сохраняет существующий aria-describedby и связан с карточкой через
+aria-controls/aria-expanded. Во время ожидания выставляется aria-busy;
+фокус из отключаемых кнопок сохраняется на содержимом. Class/style относятся
+к wrapper trigger, как у Popover. Содержимое закрытой карточки остаётся
+смонтированным, состояние ошибки сбрасывается для нового открытия.
+
+Галерея `/ant-design#popconfirm` показывает удаление строки Table с задержкой,
+отменой, ошибкой и повтором. После удаления trigger фокус переходит к кнопке
+восстановления записей. Пример освобождает ожидающие таймеры при удалении.
+Первая версия поддерживает открытие по клику и четыре положения;
+hover/contextMenu, corner placements и getPopupContainer пока отсутствуют.
 
 ## Select
 
@@ -1222,6 +1312,9 @@ Tooltip использует role=tooltip и aria-describedby основного
 Popover предоставляет именованный немодальный dialog с доступными кнопками и
 полями. Trigger связан через aria-controls/aria-expanded; Escape возвращает
 фокус из содержимого, Tab продолжает естественную навигацию.
+Popconfirm использует тот же dialog с именем и описанием подтверждения.
+Кнопки не отправляют окружающую форму. Во время Promise aria-busy сообщает
+ожидание, а Escape потребляется до содержащего Modal без закрытия подтверждения.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -1302,6 +1395,11 @@ Popover проверяется на ввод и действия в snippets, с
 сохранение ARIA, положения и переворот, прокрутку/resize, вложенный Tooltip,
 Modal, темы/RTL, touch и узкий экран. Галерея проверяет сохранение и отмену
 редактирования профиля.
+Popconfirm проверяется на подтверждение/отмену и их callbacks, Promise/loading,
+ошибки и повтор, внешнее закрытие, повторное открытие, disabled, удаление и
+поздние результаты, события дочерних кнопок, Form, Modal, Tooltip, темы,
+локаль, RTL, четыре положения и touch. Модель подтверждения проверяется
+отдельно с управляемыми Promise; галерея удаляет и восстанавливает строку Table.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -1330,6 +1428,9 @@ InputNumber outlined находится в [vendor/input-number.css](./vendor/in
 из того же архива. Общая DOM-логика поверхностей находится в popup.dom.ts;
 расчёт положения переиспользует tooltip.engine.ts. Popover.svelte и popover.dom.ts
 добавляют интерактивное содержимое, ARIA-связь и управление фокусом.
+[vendor/popconfirm.css](./vendor/popconfirm.css) содержит Popconfirm из того же
+архива. Popconfirm.svelte использует Popover для поверхности и фокуса,
+а popconfirm.model.svelte.ts связывает результат действия с текущим открытием.
 Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.
