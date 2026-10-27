@@ -6,7 +6,7 @@
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Progress, Form и FormItem.
+MessageHolder, NotificationHolder, Progress, Spin, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -90,6 +90,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | MessageHolder / createMessage | Изолированная очередь пяти типов сообщений, ключи и обновления, таймеры, hover-пауза, maxCount, callable/thenable handle и контекст ConfigProvider |
 | NotificationHolder / createNotification | Подробные уведомления с title/description/actions snippets, четыре статуса, шесть положений, ключи, таймеры, hover/focus-пауза и закрытие |
 | Progress | Line/circle, управляемый percent, статусы, размеры, цвета, форматирование, ARIA, темы/RTL/reduced motion и SSR |
+| Spin | Standalone и сохранённые children, spinning/delay, три размера, description/indicator snippets, блокировка busy-контента и восстановление фокуса |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1192,6 +1193,77 @@ unmount и защищает повтор от результата предыд�
 percentPosition, semantic classNames/styles и автоматического Tooltip для
 маленького circle. Подпись format принимает строку; snippets не поддерживаются.
 
+## Spin
+
+```svelte
+<script lang="ts">
+  import { Button, Input, Spin } from '$lib/components/ant-design';
+
+  let loading = $state(false);
+  let draft = $state<string | undefined>('Анна');
+</script>
+
+<Button onclick={() => { loading = !loading; }}>Переключить загрузку</Button>
+<Spin spinning={loading} delay={200} description="Обновляем профиль…" aria-label="Профиль">
+  <label for="profile-name">Имя</label>
+  <Input id="profile-name" bind:value={draft} />
+</Spin>
+```
+
+Без children Spin показывает отдельный индикатор; spinning по умолчанию true.
+С children компонент сохраняет их DOM и локальное состояние между загрузками.
+Запросами, результатом и отменой операции управляет владелец; Spin отображает
+переданный spinning и не выполняет запросов.
+
+Delay задаётся в миллисекундах и откладывает только индикатор. Busy-контент
+сразу получает inert и aria-busy=true, даже когда индикатор ещё скрыт.
+Положительная конечная задержка округляется вниз и ограничивается 2147483647;
+отрицательные, NaN и Infinity означают 0. При короткой загрузке индикатор не
+появляется. Изменение spinning или нормализованной delay отменяет старый таймер;
+новая задержка отсчитывается заново, в том числе после показа индикатора.
+Изменение содержимого, подписи или размера не перезапускает задержку.
+Unmount отменяет таймер; SSR не создаёт таймеров и скрывает отложенный индикатор.
+
+Size принимает small, medium и large с точками 14, 20 и 32px. Без size используется
+ConfigProvider.componentSize; middle соответствует medium. Поддерживаются темы,
+compact, primary, RTL и динамический prefers-reduced-motion. Стандартная анимация
+и CSS-анимации/переходы внутри indicator отключаются при reduced motion;
+таймерами, SVG/JavaScript-анимацией собственного snippet управляет его владелец.
+Высота wrapper определяется содержимым.
+
+Description принимает строку или пассивный Snippet; indicator — пассивный Snippet,
+заменяющий четыре точки. Строки экранируются. Indicator декоративный, без controls
+и остановок Tab. Id/class/style относятся к корню. Отдельный индикатор можно
+сделать декоративным через aria-hidden, когда текстовый статус уже есть рядом.
+
+Видимый индикатор использует role=status, polite и atomic. Wrapper — именованная
+group; её status находится рядом с busy-контентом, вне inert. Объявление не
+охватывает форму. Имя задаётся aria-label/aria-labelledby; без них используется
+строковая description или Locale.spin.loadingText. Для snippet-description
+нужно содержательное доступное имя. ruRU/enUS включают «Загрузка…»/«Loading…»;
+частичная locale.spin использует ruRU для отсутствующих полей.
+
+Если фокус был внутри блокируемых children, он временно переходит на wrapper
+с tabindex=-1, вне обычного Tab. После загрузки он возвращается в прежний
+доступный control, затем в доступный control внутри children или соседний control
+текущего dialog/документа. Если пользователь уже перевёл фокус наружу, Spin
+его не возвращает. При unmount сфокусированного wrapper используются сохранённые
+доступные соседи. Escape остаётся у содержащего Modal/Drawer.
+ConfigProvider.disabled не скрывает обратную связь.
+
+Table использует отдельный декоративный Spin в существующей строке загрузки.
+Текстовый status, aria-busy таблицы, блокировка её controls и данные сохранены;
+таблица не оборачивается в Spin.
+
+Галерея `/ant-design#spin` показывает размеры, задержку, быстрый/медленный ответ,
+сохранение имени, checkbox и счётчика, ошибку с Alert/retry, отмену и сброс.
+При retry фокус переходит с удаляемой кнопки Alert на карточку профиля.
+Её [модель](../../presentation/ant-design/spin-load.model.svelte.ts) отменяет
+ожидающий результат при cancel/reset/unmount и защищает новую попытку от старой.
+
+В первой версии нет fullscreen, percent/auto, глобального setDefaultIndicator,
+semantic classNames/styles и устаревших tip/default-size.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2036,6 +2108,9 @@ Notification поддерживает интерактивные действи�
 фокус восстанавливается в доступном соседнем control текущего контекста.
 Progress предоставляет именованный progressbar со значением и локализованным
 статусом. Он не меняет Tab/focus order и не создаёт собственные live-объявления.
+Spin объявляет отдельный status и немедленно блокирует children через inert
+и aria-busy. Временная парковка фокуса на wrapper не добавляет остановку Tab;
+возврат учитывает замену controls, unmount и выбор пользователя.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2169,6 +2244,12 @@ SVG-геометрию, форматирование/escaping и SSR без та
 Modal/Drawer, мобильное переполнение и SSR до гидратации. Модель экспорта
 проверяет этапы, отмену, retry, сброс и unmount; галерея проверяет общие controls
 line/circle, промежуточные проценты, отмену без позднего результата и CSV.
+Spin проверяется на нормализацию delay, короткую загрузку, смену запроса,
+отмену таймеров и SSR без них. Chromium проверяет немедленную блокировку,
+сохранение DOM/черновика/локального состояния, парковку и возврат фокуса,
+замену поля и unmount, snippets, размеры, локаль/темы/RTL/reduced motion,
+Modal/Drawer и мобильный перенос. Галерея проверяет быстрый/медленный ответ,
+ошибку/retry, отмену, сброс и SSR до гидратации; Table сохраняет прежний status.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2251,6 +2332,12 @@ Progress.svelte адаптирует SVG, доступность, перепол
 motion; progress.engine.ts нормализует значения/размеры и рассчитывает дугу.
 Theme.css связывает цвет, фон и текст с токенами темы. Иконки переиспользуют
 существующий Icon.svelte и лицензированные status-icons.ts.
+[vendor/spin.css](./vendor/spin.css) содержит 27 правил и два keyframes из того
+же архива: standalone/embedded Spin, четыре точки, размеры и токены.
+Корневые селекторы ограничены :where(.ant-spin-css-var); правила List,
+fullscreen и percent исключены. Spin.svelte адаптирует доступность, inert,
+перенос текста и reduced motion, spin.model.svelte.ts управляет ожиданием,
+spin.dom.ts — парковкой/возвратом фокуса. Новые иконки и лицензии не добавлены.
 Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

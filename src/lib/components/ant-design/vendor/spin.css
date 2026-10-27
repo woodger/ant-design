@@ -1,0 +1,36 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Standalone/embedded Spin из официального dist/antd.css; fullscreen, percent и List исключены.
+ * .css-var-_R_0_.ant-spin заменён на .ant-spin-css-var;
+ * корень .ant-spin ограничен :where(.ant-spin-css-var).
+ * Источник: https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256 архива: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-spin:where(.ant-spin-css-var){font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-spin:where(.ant-spin-css-var)::before,.ant-spin:where(.ant-spin-css-var)::after{box-sizing:border-box;}
+.ant-spin:where(.ant-spin-css-var) [class^="ant-spin"],.ant-spin:where(.ant-spin-css-var) [class*=" ant-spin"]{box-sizing:border-box;}
+.ant-spin:where(.ant-spin-css-var) [class^="ant-spin"]::before,.ant-spin:where(.ant-spin-css-var) [class*=" ant-spin"]::before,.ant-spin:where(.ant-spin-css-var) [class^="ant-spin"]::after,.ant-spin:where(.ant-spin-css-var) [class*=" ant-spin"]::after{box-sizing:border-box;}
+.ant-spin:where(.ant-spin-css-var){box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);position:relative;}
+.ant-spin-rtl{direction:rtl;}
+.ant-spin:where(.ant-spin-css-var).ant-spin-section,.ant-spin:where(.ant-spin-css-var) >.ant-spin-section{display:flex;align-items:center;flex-direction:column;gap:var(--ant-padding-sm);color:var(--ant-color-primary);}
+.ant-spin:where(.ant-spin-css-var).ant-spin-section{display:inline-flex;}
+.ant-spin:where(.ant-spin-css-var) >.ant-spin-section{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);z-index:1;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-description{font-size:var(--ant-font-size);line-height:1;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-container{position:relative;transition:opacity var(--ant-motion-duration-slow);}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-container::after{position:absolute;top:0;inset-inline-end:0;bottom:0;inset-inline-start:0;z-index:10;width:100%;height:100%;background:var(--ant-color-bg-container);opacity:0;transition:all var(--ant-motion-duration-slow);content:"";pointer-events:none;}
+.ant-spin-spinning .ant-spin-description{text-shadow:0 0px 5px var(--ant-color-bg-container);}
+.ant-spin-spinning .ant-spin-container{clear:both;opacity:0.5;user-select:none;pointer-events:none;}
+.ant-spin-spinning .ant-spin-container::after{opacity:0.4;pointer-events:auto;}
+.ant-spin:where(.ant-spin-css-var){--ant-spin-dot-holder-size:var(--ant-spin-dot-size);--ant-spin-dot-item-size:calc((var(--ant-spin-dot-holder-size) - var(--ant-margin-xxs) / 2) / 2);}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot{position:relative;display:inline-block;font-size:var(--ant-spin-dot-holder-size);width:1em;height:1em;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot-holder{width:1em;height:1em;font-size:var(--ant-spin-dot-holder-size);display:inline-block;transition:transform var(--ant-motion-duration-slow) ease,opacity var(--ant-motion-duration-slow) ease;transform-origin:50% 50%;line-height:1;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot-spin{transform:rotate(45deg);animation-name:antRotate;animation-duration:1.2s;animation-iteration-count:infinite;animation-timing-function:linear;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot-item{position:absolute;display:block;width:var(--ant-spin-dot-item-size);height:var(--ant-spin-dot-item-size);background:currentColor;border-radius:100%;transform:scale(0.75);transform-origin:50% 50%;opacity:0.3;animation-name:antSpinMove;animation-duration:1s;animation-iteration-count:infinite;animation-timing-function:linear;animation-direction:alternate;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot-item:nth-child(1){top:0;inset-inline-start:0;animation-delay:0s;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot-item:nth-child(2){top:0;inset-inline-end:0;animation-delay:0.4s;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot-item:nth-child(3){inset-inline-end:0;bottom:0;animation-delay:0.8s;}
+.ant-spin:where(.ant-spin-css-var) .ant-spin-dot-item:nth-child(4){bottom:0;inset-inline-start:0;animation-delay:1.2s;}
+.ant-spin-sm{--ant-spin-dot-holder-size:var(--ant-spin-dot-size-sm);}
+.ant-spin-lg{--ant-spin-dot-holder-size:var(--ant-spin-dot-size-lg);}
+.ant-spin-css-var{--ant-spin-content-height:400px;--ant-spin-dot-size:20px;--ant-spin-dot-size-sm:14px;--ant-spin-dot-size-lg:32px;}
+@keyframes antRotate{to{transform:rotate(405deg);}}
+@keyframes antSpinMove{to{opacity:1;}}

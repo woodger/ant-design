@@ -16,6 +16,7 @@ export { createMessage } from './message.model.svelte';
 export { default as NotificationHolder } from './NotificationHolder.svelte';
 export { createNotification } from './notification.model.svelte';
 export { default as Progress } from './Progress.svelte';
+export { default as Spin } from './Spin.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';
 export { default as Radio } from './Radio.svelte';
@@ -45,6 +46,8 @@ export type { MessageType, MessageKey, MessageContent, MessageConfig, MessageOpt
 export type { NotificationType, NotificationPlacement, NotificationKey, NotificationContent, NotificationClosable, NotificationConfig, NotificationOptions, NotificationInstance, NotificationHolderProps } from './notification.types';
 export type { ProgressProps, ProgressType, ProgressStatus, ProgressSize, ProgressLineSize, ProgressCircleSize } from './progress.types';
 export type { ProgressLocale } from './types';
+export type { SpinProps, SpinSize } from './spin.types';
+export type { SpinLocale } from './types';
 export type { CheckboxProps } from './Checkbox.svelte';
 export type { CheckboxGroupProps, CheckboxGroupOption, CheckboxGroupValue } from './checkbox-group.types';
 export type { RadioProps, RadioGroupProps, RadioOption, RadioValue } from './radio.types';

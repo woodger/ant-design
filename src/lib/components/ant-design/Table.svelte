@@ -10,6 +10,7 @@
   import Icon from './Icon.svelte';
   import Pagination from './Pagination.svelte';
   import TableFilter from './TableFilter.svelte';
+  import Spin from './Spin.svelte';
 
   let {
     mode = 'client',
@@ -271,7 +272,7 @@
 </style>
 
 <div class={['ant-table-wrapper ant-table-css-var', config.direction === 'rtl' && 'ant-table-wrapper-rtl', className]} dir={config.direction} {style}>
-  {#if loading}<div class="loading-state" role="status"><Icon name="loading" />{strings.loadingText}</div>{/if}
+  {#if loading}<div class="loading-state" role="status"><Spin size="small" aria-hidden />{strings.loadingText}</div>{/if}
   <div class={['ant-table', `ant-table-${resolvedSize === 'middle' ? 'medium' : resolvedSize}`, bordered && 'ant-table-bordered', !visibleRows.length && 'ant-table-empty']}>
     <div class="ant-table-container">
       <!-- svelte-ignore a11y_no_noninteractive_tabindex (Фокус нужен для прокрутки таблицы с клавиатуры.) -->

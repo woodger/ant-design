@@ -185,6 +185,8 @@ test('Table loading and disabled context block managed controls and preserve exp
 
   await expect(table).toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#table-fixture').getByRole('status', { name: '', exact: true })).toHaveText('Загрузка данных…');
+  await expect(page.locator('#table-fixture .loading-state .ant-spin')).toHaveAttribute('aria-hidden', 'true');
+  await expect(page.locator('#table-fixture .loading-state').getByRole('status')).toHaveCount(0);
   await expect(table.getByRole('button', { name: 'Score', exact: true })).toBeDisabled();
   await expect(table.getByRole('checkbox', { name: 'Select Anna', exact: true })).toBeDisabled();
   await expect(page.getByRole('navigation', { name: 'People pages', exact: true }).getByRole('combobox')).toBeDisabled();

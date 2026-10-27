@@ -1,5 +1,60 @@
 import { test, expect } from './test';
 
+test.describe('Spin showcase', () => {
+  test.beforeEach(async ({ page }) => {
+    const time = new Date('2026-10-27T12:00:00Z'); await page.clock.install({ time }); await page.clock.pauseAt(time);
+    await page.goto('/ant-design#spin');
+  });
+
+  test('skips the indicator for a fast response while retaining the draft', async ({ page }) => {
+    const fixture = page.locator('#spin'); const spin = fixture.locator('#showcase-spin');
+    const content = spin.locator('.ant-spin-container'); const indicator = spin.locator('.ant-spin-section');
+    const draft = fixture.getByRole('textbox', { name: 'Имя в черновике', exact: true }); await draft.fill('Мария');
+    await fixture.getByRole('button', { name: 'Быстрый ответ', exact: true }).click();
+    await expect(content).toHaveAttribute('inert', ''); await expect(content).toHaveAttribute('aria-busy', 'true'); await expect(indicator).toHaveCount(0);
+    await page.clock.fastForward(100); await expect(content).not.toHaveAttribute('inert'); await expect(indicator).toHaveCount(0);
+    await expect(fixture.getByRole('status', { name: 'Результат примера Spin', exact: true })).toHaveText('Данные обновлены. Версия: 1.');
+    await expect(draft).toHaveValue('Мария'); await page.clock.fastForward(1000); await expect(indicator).toHaveCount(0);
+  });
+
+  test('parks focus during a slow request and retains the same edited card after completion', async ({ page }, testInfo) => {
+    const fixture = page.locator('#spin'); const spin = fixture.locator('#showcase-spin');
+    const draft = fixture.getByRole('textbox', { name: 'Имя в черновике', exact: true }); const original = await draft.elementHandle();
+    await draft.fill('Мария'); await fixture.getByRole('checkbox', { name: 'Уведомления профиля', exact: true }).uncheck();
+    await fixture.getByRole('button', { name: 'Изменить карточку', exact: true }).click();
+    const trigger = fixture.getByRole('button', { name: 'Обновить из карточки', exact: true }); await trigger.click();
+    await expect(spin).toBeFocused(); await expect(spin.locator('.ant-spin-section')).toHaveCount(0);
+    await page.clock.fastForward(250); await expect(spin.getByRole('status', { name: 'Загружаем профиль…', exact: true })).toBeVisible();
+    await page.emulateMedia({ reducedMotion: 'reduce' }); await fixture.screenshot({ path: testInfo.outputPath('spin-example.png') });
+    await page.clock.fastForward(500); await expect(trigger).toBeFocused(); await expect(draft).toHaveValue('Мария');
+    await expect(fixture.getByRole('checkbox', { name: 'Уведомления профиля', exact: true })).not.toBeChecked();
+    await expect(fixture.getByText('Изменений в карточке: 1. Версия данных: 1.', { exact: true })).toBeVisible();
+    expect(await draft.evaluate((node, old) => node === old, original)).toBe(true);
+  });
+
+  test('retries a failed request through Alert without discarding the draft', async ({ page }) => {
+    const fixture = page.locator('#spin'); const result = fixture.getByRole('status', { name: 'Результат примера Spin', exact: true });
+    const draft = fixture.getByRole('textbox', { name: 'Имя в черновике', exact: true }); await draft.fill('Черновик');
+    await fixture.getByRole('button', { name: 'Ошибка загрузки профиля', exact: true }).click(); await page.clock.fastForward(700);
+    await expect(result).toHaveText('Не удалось загрузить профиль.'); await expect(fixture.getByRole('alert')).toContainText('Черновик сохранён.');
+    await expect(draft).toHaveValue('Черновик'); await fixture.getByRole('button', { name: 'Повторить загрузку профиля', exact: true }).click();
+    await expect(fixture.getByRole('alert')).toHaveCount(0); await expect(fixture.locator('#showcase-spin')).toBeFocused(); await page.clock.fastForward(700);
+    await expect(result).toHaveText('Данные обновлены. Версия: 1.'); await expect(draft).toHaveValue('Черновик');
+    await page.keyboard.press('Tab'); await expect(draft).toBeFocused();
+  });
+
+  test('cancels and resets pending requests without late results and accepts a fresh request', async ({ page }) => {
+    const fixture = page.locator('#spin'); const start = fixture.getByRole('button', { name: 'Загрузить профиль', exact: true });
+    const result = fixture.getByRole('status', { name: 'Результат примера Spin', exact: true });
+    await start.click(); await page.clock.fastForward(250); await fixture.getByRole('button', { name: 'Отменить загрузку', exact: true }).click();
+    await expect(start).toBeFocused(); await expect(result).toHaveText('Загрузка отменена.'); await page.clock.fastForward(1000);
+    await expect(result).toHaveText('Загрузка отменена.'); await expect(fixture.locator('#showcase-spin .ant-spin-section')).toHaveCount(0);
+    await start.click(); await fixture.getByRole('button', { name: 'Сбросить пример Spin', exact: true }).click(); await page.clock.fastForward(1000);
+    await expect(result).toHaveText('Измените черновик и обновите данные.'); await expect(fixture.getByRole('textbox', { name: 'Имя в черновике', exact: true })).toHaveValue('Анна');
+    await start.click(); await page.clock.fastForward(700); await expect(result).toHaveText('Данные обновлены. Версия: 1.');
+  });
+});
+
 test('showcase changes line and circle Progress through shared controls', async ({ page }, testInfo) => {
   await page.goto('/ant-design#progress'); const fixture = page.locator('#progress');
   const line = fixture.getByRole('progressbar', { name: 'Линейный прогресс', exact: true });
@@ -894,6 +949,15 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders available Spin content and decorative sizes before hydration', async ({ page }) => {
+    await page.goto('/ant-design#spin'); const fixture = page.locator('#spin'); const spin = fixture.locator('#showcase-spin');
+    await expect(spin).toHaveRole('group'); await expect(spin).toHaveAccessibleName('Профиль участника');
+    await expect(spin.locator('.ant-spin-container')).toHaveAttribute('aria-busy', 'false'); await expect(spin.locator('.ant-spin-container')).not.toHaveAttribute('inert');
+    await expect(spin.locator('.ant-spin-section')).toHaveCount(0); await expect(fixture.getByRole('textbox', { name: 'Имя в черновике', exact: true })).toHaveValue('Анна');
+    await expect(fixture.locator('.sizes .ant-spin[aria-hidden="true"]')).toHaveCount(3);
+    await expect(fixture.getByRole('status', { name: 'Результат примера Spin', exact: true })).toHaveText('Измените черновик и обновите данные.');
+  });
 
   test('renders Progress geometry and semantic values before hydration', async ({ page }) => {
     await page.goto('/ant-design#progress'); const fixture = page.locator('#progress');

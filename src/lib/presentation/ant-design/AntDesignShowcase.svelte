@@ -19,6 +19,7 @@
   import MessageExample from './MessageExample.svelte';
   import NotificationExample from './NotificationExample.svelte';
   import ProgressExample from './ProgressExample.svelte';
+  import SpinExample from './SpinExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -48,7 +49,8 @@
     ['alert', 'Alert'],
     ['message', 'Message'],
     ['notification', 'Notification'],
-    ['progress', 'Progress']
+    ['progress', 'Progress'],
+    ['spin', 'Spin']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -160,7 +162,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">27 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">28 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -412,6 +414,12 @@
           <div class="section-heading"><h3>Progress</h3></div>
           <p class="section-description">Ход выполнения операции: линейный и круговой индикаторы, статусы и форматирование значения.</p>
           <div class="panel"><ProgressExample /></div>
+        </section>
+
+        <section id="spin">
+          <div class="section-heading"><h3>Spin</h3></div>
+          <p class="section-description">Ожидание загрузки: задержка показа, сохранение черновика, отмена и повтор после ошибки.</p>
+          <div class="panel"><SpinExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

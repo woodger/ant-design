@@ -21,7 +21,10 @@ export interface Locale {
   table?: Partial<TableLocale>;
   inputNumber?: Partial<InputNumberLocale>;
   progress?: Partial<ProgressLocale>;
+  spin?: Partial<SpinLocale>;
 }
+
+export interface SpinLocale { loadingText: string; }
 
 export interface ProgressLocale {
   label: string;
@@ -70,6 +73,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  spin: { loadingText: 'Загрузка…' },
   progress: { label: 'Ход выполнения', successText: 'Завершено', exceptionText: 'Ошибка' },
   inputNumber: {
     increase: 'Увеличить значение',
@@ -115,6 +119,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  spin: { loadingText: 'Loading…' },
   progress: { label: 'Progress', successText: 'Completed', exceptionText: 'Failed' },
   inputNumber: {
     increase: 'Increase value',

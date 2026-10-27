@@ -9,6 +9,11 @@
 
 ### Added
 
+- Spin: standalone и сохранённые children, spinning/delay, три размера,
+  description/indicator snippets, немедленная блокировка через inert/aria-busy
+  и восстановление фокуса. Добавлены стили Ant Design 6.6.8, локаль, темы/RTL/
+  reduced motion, интеграция с Table, галерея с отменой/ошибкой/retry
+  и unit/SSR/Chromium-проверки.
 - Progress: line/circle, нормализация percent, явные/автоматические статусы,
   размеры, цвета, подпись/format, доступные значения и локаль. Добавлены стили
   Ant Design 6.6.8, SVG-дуга, темы/RTL/reduced motion, галерея и unit/SSR/Chromium.
