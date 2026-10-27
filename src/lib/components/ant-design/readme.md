@@ -6,7 +6,7 @@
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Progress, Spin, Form и FormItem.
+MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -91,6 +91,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | NotificationHolder / createNotification | Подробные уведомления с title/description/actions snippets, четыре статуса, шесть положений, ключи, таймеры, hover/focus-пауза и закрытие |
 | Progress | Line/circle, управляемый percent, статусы, размеры, цвета, форматирование, ARIA, темы/RTL/reduced motion и SSR |
 | Spin | Standalone и сохранённые children, spinning/delay, три размера, description/indicator snippets, блокировка busy-контента и восстановление фокуса |
+| Skeleton | Каркас первой загрузки, avatar/title/paragraph, размеры и ширины, active/round, замена children, доступный статус и фокус |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1264,6 +1265,80 @@ Table использует отдельный декоративный Spin в �
 В первой версии нет fullscreen, percent/auto, глобального setDefaultIndicator,
 semantic classNames/styles и устаревших tip/default-size.
 
+## Skeleton
+
+```svelte
+<script lang="ts">
+  import { Skeleton } from '$lib/components/ant-design';
+
+  let loading = $state(true);
+</script>
+
+<Skeleton {loading} active avatar paragraph={{ rows: 3 }} aria-label="Профиль участника">
+  <p>Анна — разработчик.</p>
+</Skeleton>
+```
+
+Skeleton показывает структуру будущего содержимого при первой загрузке.
+Loading по умолчанию true; active и round — false, avatar — false,
+title и paragraph — true. При loading=true children не монтируются;
+при переходе к false монтируется Snippet children. Повторный переход к true
+размонтирует содержимое и уничтожает его локальное состояние и нативные черновики.
+Данные, которые должны переживать такую замену, хранит владелец. Для обновления
+уже показанной формы используйте Spin с сохранёнными children.
+
+Avatar принимает boolean или объект с shape=circle/square и size=small/medium/
+large либо числом в px. По умолчанию составной Skeleton использует large:
+40px, compact — 36px. Small/medium соответствуют control-height-sm/control-height;
+ConfigProvider.componentSize не меняет выбранный размер. Без paragraph, но с
+title автоматическая форма square, в остальных случаях circle. Числовой размер
+0 допустим; отрицательный или неконечный размер использует large.
+
+Title принимает boolean или { width }; paragraph — boolean или { rows, width }.
+Ширина — неотрицательное число в px или CSS-строка. Для title по умолчанию
+используется 38% без avatar и 50% с avatar при наличии paragraph; без paragraph
+заголовок занимает полную ширину. Paragraph по умолчанию содержит три строки
+без avatar при наличии title, в остальных сочетаниях — две.
+Скалярная ширина задаёт последнюю строку; массив задаёт ширину каждой строки.
+Пропущенные элементы массива используют обычные CSS-правила, включая стандартные
+61% для последней строки из трёх и более. Без avatar или title последняя строка
+также получает 61%. Rows округляется вниз и ограничивается 1000; 0 допустим,
+отрицательные/NaN/Infinity используют рассчитанное число строк по умолчанию.
+Пустые строки и некорректные числовые ширины используют значения по умолчанию.
+
+Round скругляет title и строки paragraph. Active включает CSS-анимацию;
+prefers-reduced-motion отключает её динамически. Каркас наследует цвета,
+плотность и направление из ConfigProvider. Аватар сохраняет пропорцию 1:1;
+большие размеры и ширины ограничены доступным контейнером. Компонент не
+выполняет запросов, не создаёт таймеров и не измеряет DOM для разметки.
+SSR сразу выводит каркас или готовое содержимое согласно loading.
+
+Корень — постоянная именованная group; id/class/style и aria-label/labelledby/
+describedby относятся к ней. Busy-контейнер получает aria-busy; отдельный
+status вне него объявляет Locale.skeleton.loadingText с polite/atomic.
+Плейсхолдеры декоративные, без доступных заголовков, controls и остановок Tab.
+Ru/en-тексты — «Загрузка…»/«Loading…»; отсутствующие поля locale.skeleton
+используют ruRU. Для статического превью aria-hidden скрывает всю группу и
+подавляет status. ConfigProvider.disabled не скрывает обратную связь.
+
+Если loading удаляет сфокусированные children, фокус предварительно переходит
+на постоянную group с tabindex=-1. Он остаётся там после завершения; Tab входит
+в новое содержимое. Skeleton не фокусирует новые controls автоматически и не
+меняет фокус, выбранный снаружи. При unmount припаркованный фокус переходит к
+доступному сохранённому соседу в текущем dialog/документе. Escape остаётся
+у содержащего Modal/Drawer.
+
+Галерея `/ant-design#skeleton` настраивает каркас и показывает первую загрузку,
+быстрый ответ, ошибки с Alert/retry, отмену и сброс. После получения данных
+обновления используют Spin и сохраняют имя, checkbox, счётчик и DOM карточки.
+Примеры Skeleton и Spin используют одну
+[модель загрузки](../../presentation/ant-design/spin-load.model.svelte.ts),
+которая отменяет ожидание при cancel/reset/unmount и защищает новую попытку
+от старого результата. При retry фокус переходит на постоянную группу карточки.
+
+В первой версии нет отдельных SkeletonAvatar/Button/Input/Image/Node,
+semantic classNames/styles, prefixCls и устаревшего size=default.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2111,6 +2186,9 @@ Progress предоставляет именованный progressbar со зн
 Spin объявляет отдельный status и немедленно блокирует children через inert
 и aria-busy. Временная парковка фокуса на wrapper не добавляет остановку Tab;
 возврат учитывает замену controls, unmount и выбор пользователя.
+Skeleton заменяет children декоративным каркасом и объявляет отдельный status.
+Фокус из удаляемого содержимого остаётся на постоянной группе; после загрузки
+Tab входит в новые controls. Автоматического фокуса в новые children нет.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2250,6 +2328,12 @@ Spin проверяется на нормализацию delay, коротку�
 замену поля и unmount, snippets, размеры, локаль/темы/RTL/reduced motion,
 Modal/Drawer и мобильный перенос. Галерея проверяет быстрый/медленный ответ,
 ошибку/retry, отмену, сброс и SSR до гидратации; Table сохраняет прежний status.
+Skeleton проверяется на расчёт конфигураций, нулевые/дробные/некорректные
+размеры и ширины, число строк, SSR и отсутствие таймеров. Chromium проверяет
+реальную геометрию, размонтирование/новое состояние children, парковку фокуса,
+Tab, выбор снаружи, unmount, Modal/Drawer, темы/локаль/RTL/reduced motion и
+мобильные ограничения. Галерея проверяет первую загрузку, обновление через Spin
+с сохранением DOM и черновика, ошибку/retry, отмену, сброс и SSR до гидратации.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2338,6 +2422,15 @@ Theme.css связывает цвет, фон и текст с токенами 
 fullscreen и percent исключены. Spin.svelte адаптирует доступность, inert,
 перенос текста и reduced motion, spin.model.svelte.ts управляет ожиданием,
 spin.dom.ts — парковкой/возвратом фокуса. Новые иконки и лицензии не добавлены.
+[vendor/skeleton.css](./vendor/skeleton.css) содержит 22 правила и один keyframes
+из того же архива: составной Skeleton, avatar/title/paragraph, active и round.
+Корневые селекторы ограничены :where(.ant-skeleton-css-var); отдельные элементы
+и block исключены, active ограничен тремя используемыми частями.
+Skeleton.svelte использует декоративный div для title, постоянную группу,
+отдельный status, адаптивный flex-layout, пропорции аватара и reduced motion.
+skeleton.engine.ts рассчитывает конфигурацию; skeleton.dom.ts сохраняет фокус
+при замене children. Theme.css связывает градиент с fill-токенами темы.
+Новые иконки и лицензии не добавлены.
 Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

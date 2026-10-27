@@ -22,7 +22,10 @@ export interface Locale {
   inputNumber?: Partial<InputNumberLocale>;
   progress?: Partial<ProgressLocale>;
   spin?: Partial<SpinLocale>;
+  skeleton?: Partial<SkeletonLocale>;
 }
+
+export interface SkeletonLocale { loadingText: string; }
 
 export interface SpinLocale { loadingText: string; }
 
@@ -73,6 +76,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  skeleton: { loadingText: 'Загрузка…' },
   spin: { loadingText: 'Загрузка…' },
   progress: { label: 'Ход выполнения', successText: 'Завершено', exceptionText: 'Ошибка' },
   inputNumber: {
@@ -119,6 +123,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  skeleton: { loadingText: 'Loading…' },
   spin: { loadingText: 'Loading…' },
   progress: { label: 'Progress', successText: 'Completed', exceptionText: 'Failed' },
   inputNumber: {

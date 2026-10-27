@@ -1,0 +1,31 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Основной Skeleton с avatar/title/paragraph из официального dist/antd.css.
+ * Отдельные Button/Avatar/Input/Image/Node и block исключены; active ограничен основным Skeleton.
+ * .css-var-_R_0_.ant-skeleton заменён на .ant-skeleton-css-var;
+ * корень .ant-skeleton ограничен :where(.ant-skeleton-css-var).
+ * Источник: https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256 архива: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-skeleton:where(.ant-skeleton-css-var){font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-skeleton:where(.ant-skeleton-css-var)::before,.ant-skeleton:where(.ant-skeleton-css-var)::after{box-sizing:border-box;}
+.ant-skeleton:where(.ant-skeleton-css-var) [class^="ant-skeleton"],.ant-skeleton:where(.ant-skeleton-css-var) [class*=" ant-skeleton"]{box-sizing:border-box;}
+.ant-skeleton:where(.ant-skeleton-css-var) [class^="ant-skeleton"]::before,.ant-skeleton:where(.ant-skeleton-css-var) [class*=" ant-skeleton"]::before,.ant-skeleton:where(.ant-skeleton-css-var) [class^="ant-skeleton"]::after,.ant-skeleton:where(.ant-skeleton-css-var) [class*=" ant-skeleton"]::after{box-sizing:border-box;}
+.ant-skeleton:where(.ant-skeleton-css-var){display:table;width:100%;}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-header{display:table-cell;padding-inline-end:var(--ant-padding);vertical-align:top;}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-header .ant-skeleton-avatar{display:inline-block;vertical-align:top;background:var(--ant-skeleton-gradient-from-color);width:var(--ant-control-height);height:var(--ant-control-height);line-height:var(--ant-control-height);}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-header .ant-skeleton-avatar-circle{border-radius:50%;}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-header .ant-skeleton-avatar-lg{width:var(--ant-control-height-lg);height:var(--ant-control-height-lg);line-height:var(--ant-control-height-lg);}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-header .ant-skeleton-avatar-sm{width:var(--ant-control-height-sm);height:var(--ant-control-height-sm);line-height:var(--ant-control-height-sm);}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-section{display:table-cell;width:100%;vertical-align:top;}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-section .ant-skeleton-title{width:100%;height:var(--ant-skeleton-title-height);background:var(--ant-skeleton-gradient-from-color);border-radius:var(--ant-skeleton-block-radius);}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-section .ant-skeleton-title +.ant-skeleton-paragraph{margin-block-start:var(--ant-control-height-sm);}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-section .ant-skeleton-paragraph{padding:0;}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-section .ant-skeleton-paragraph >li{width:100%;height:var(--ant-skeleton-paragraph-li-height);list-style:none;background:var(--ant-skeleton-gradient-from-color);border-radius:var(--ant-skeleton-block-radius);}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-section .ant-skeleton-paragraph >li +li{margin-block-start:var(--ant-control-height-xs);}
+.ant-skeleton:where(.ant-skeleton-css-var) .ant-skeleton-section .ant-skeleton-paragraph>li:last-child:not(:first-child):not(:nth-child(2)){width:61%;}
+.ant-skeleton-round .ant-skeleton-section .ant-skeleton-title,.ant-skeleton-round .ant-skeleton-section .ant-skeleton-paragraph>li{border-radius:100px;}
+.ant-skeleton-with-avatar .ant-skeleton-section .ant-skeleton-title{margin-block-start:var(--ant-margin-sm);}
+.ant-skeleton-with-avatar .ant-skeleton-section .ant-skeleton-title +.ant-skeleton-paragraph{margin-block-start:var(--ant-skeleton-paragraph-margin-top);}
+.ant-skeleton:where(.ant-skeleton-css-var).ant-skeleton-active .ant-skeleton-title,.ant-skeleton:where(.ant-skeleton-css-var).ant-skeleton-active .ant-skeleton-paragraph>li,.ant-skeleton:where(.ant-skeleton-css-var).ant-skeleton-active .ant-skeleton-avatar{background:linear-gradient(90deg, var(--ant-skeleton-gradient-from-color) 25%, var(--ant-skeleton-gradient-to-color) 37%, var(--ant-skeleton-gradient-from-color) 63%);background-size:400% 100%;animation-name:ant-skeleton-loading;animation-duration:1.4s;animation-timing-function:ease;animation-iteration-count:infinite;}
+.ant-skeleton-css-var{--ant-skeleton-color:rgba(0,0,0,0.06);--ant-skeleton-color-gradient-end:rgba(0,0,0,0.15);--ant-skeleton-gradient-from-color:rgba(0,0,0,0.06);--ant-skeleton-gradient-to-color:rgba(0,0,0,0.15);--ant-skeleton-title-height:16px;--ant-skeleton-block-radius:4px;--ant-skeleton-paragraph-margin-top:28px;--ant-skeleton-paragraph-li-height:16px;}
+@keyframes ant-skeleton-loading{0%{background-position:100% 50%;}100%{background-position:0 50%;}}

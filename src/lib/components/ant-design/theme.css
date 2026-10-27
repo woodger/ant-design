@@ -259,6 +259,13 @@
   --ant-progress-remaining-color: var(--ant-color-fill-secondary);
 }
 
+.ant-skeleton-css-var {
+  --ant-skeleton-color: var(--ant-color-fill-secondary);
+  --ant-skeleton-color-gradient-end: var(--ant-color-fill);
+  --ant-skeleton-gradient-from-color: var(--ant-color-fill-secondary);
+  --ant-skeleton-gradient-to-color: var(--ant-color-fill);
+}
+
 .ant-svelte-theme {
   --ant-color-link: var(--ant-color-primary);
   --ant-color-link-hover: var(--ant-color-primary-hover);

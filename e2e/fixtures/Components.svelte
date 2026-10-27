@@ -25,6 +25,7 @@
   import NotificationFixtures from './NotificationFixtures.svelte';
   import ProgressFixtures from './ProgressFixtures.svelte';
   import SpinFixtures from './SpinFixtures.svelte';
+  import SkeletonFixtures from './SkeletonFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -113,6 +114,7 @@
     <NotificationFixtures />
     <ProgressFixtures />
     <SpinFixtures />
+    <SkeletonFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

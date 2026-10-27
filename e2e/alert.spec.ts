@@ -6,8 +6,19 @@ const close = (page: Page) => message(page).getByRole('button', { name: 'Зак�
 const events = (page: Page) => page.getByRole('status', { name: 'Alert events', exact: true });
 const after = (page: Page) => page.getByRole('button', { name: 'After Alert', exact: true });
 async function setting(page: Page, name: string, value: string) { await page.getByRole('combobox', { name: `Alert ${name}`, exact: true }).selectOption(value); }
-async function pauseMotion(page: Page) {
-  const count = await message(page).evaluate((element) => { const motions = element.getAnimations(); for (const motion of motions) motion.pause(); return motions.length; });
+async function closeAndPauseMotion(page: Page) {
+  // Короткая анимация может завершиться до следующего evaluate после click.
+  await message(page).evaluate((element) => {
+    const animate = element.animate;
+    element.animate = (keyframes, options) => {
+      element.animate = animate;
+      const motion = animate.call(element, keyframes, options);
+      motion.pause();
+      return motion;
+    };
+  });
+  await close(page).click();
+  const count = await message(page).evaluate((element) => element.getAnimations().length);
   expect(count).toBeGreaterThan(0);
 }
 
@@ -137,8 +148,7 @@ test('Alert closing remains available when ConfigProvider disables form controls
 });
 
 test('Alert keeps its DOM during the exit animation while suppressing repeated activation and live announcements', async ({ page }) => {
-  await close(page).click();
-  await pauseMotion(page);
+  await closeAndPauseMotion(page);
   await expect(message(page)).toHaveAttribute('inert', '');
   await expect(message(page)).toHaveAttribute('aria-hidden', 'true');
   await expect(events(page)).toHaveText('["close:click"]');
@@ -156,16 +166,14 @@ test('Alert completes immediately with reduced motion and finishes a paused exit
   await expect(events(page)).toHaveText('["close:click","after:removed"]');
   await page.getByRole('button', { name: 'Restore Alert', exact: true }).click();
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await close(page).click();
-  await pauseMotion(page);
+  await closeAndPauseMotion(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(message(page)).toHaveCount(0);
   await expect(events(page)).toHaveText('["close:click","after:removed","close:click","after:removed"]');
 });
 
 test('Alert cancels its exit and late callbacks when unmounted and can mount a fresh instance', async ({ page }) => {
-  await close(page).click();
-  await pauseMotion(page);
+  await closeAndPauseMotion(page);
   await page.keyboard.press('Control+Alt+q');
   await expect(message(page)).toHaveCount(0);
   await page.keyboard.press('Control+Alt+q');

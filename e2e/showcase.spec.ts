@@ -1,5 +1,66 @@
 import { test, expect } from './test';
 
+test.describe('Skeleton showcase', () => {
+  test.beforeEach(async ({ page }) => {
+    const time = new Date('2026-10-27T12:00:00Z'); await page.clock.install({ time }); await page.clock.pauseAt(time);
+    await page.goto('/ant-design#skeleton');
+  });
+
+  test('shows the first-load skeleton and then mounts the loaded card', async ({ page }, testInfo) => {
+    const fixture = page.locator('#skeleton'); const skeleton = fixture.locator('#showcase-skeleton');
+    const input = fixture.getByRole('textbox', { name: 'Имя в карточке Skeleton', exact: true }); await expect(input).toHaveCount(0);
+    await fixture.getByRole('button', { name: 'Загрузить карточку', exact: true }).click(); await expect(skeleton.locator('.ant-skeleton')).toBeVisible();
+    await expect(skeleton.locator('.ant-skeleton-content')).toHaveAttribute('aria-busy', 'true'); await expect(skeleton.locator('.loading-status')).toHaveText('Загрузка…');
+    await page.emulateMedia({ reducedMotion: 'reduce' }); await fixture.screenshot({ path: testInfo.outputPath('skeleton-example.png') });
+    await page.clock.fastForward(700); await expect(input).toHaveValue('Анна'); await expect(skeleton.locator('.ant-skeleton')).toHaveCount(0);
+    await expect(fixture.getByRole('status', { name: 'Результат примера Skeleton', exact: true })).toHaveText('Карточка загружена. Версия: 1.');
+  });
+
+  test('refreshes through Spin while retaining the same edited card and its focused action', async ({ page }) => {
+    const fixture = page.locator('#skeleton'); await fixture.getByRole('button', { name: 'Быстрый ответ карточки', exact: true }).click(); await page.clock.fastForward(100);
+    const input = fixture.getByRole('textbox', { name: 'Имя в карточке Skeleton', exact: true }); const original = await input.elementHandle(); await input.fill('Мария');
+    await fixture.getByRole('checkbox', { name: 'Уведомления карточки', exact: true }).uncheck(); await fixture.getByRole('button', { name: 'Изменить карточку Skeleton', exact: true }).click();
+    const trigger = fixture.getByRole('button', { name: 'Обновить загруженную карточку', exact: true }); await trigger.click();
+    const spin = fixture.locator('#skeleton-example-refresh'); await expect(spin).toBeFocused(); await expect(spin.locator('.ant-spin-container')).toHaveAttribute('inert', '');
+    await expect(fixture.locator('#showcase-skeleton .ant-skeleton')).toHaveCount(0); await page.clock.fastForward(250); await expect(spin.locator('.ant-spin-section')).toBeVisible();
+    await page.clock.fastForward(500); await expect(trigger).toBeFocused(); await expect(input).toHaveValue('Мария');
+    await expect(fixture.getByRole('checkbox', { name: 'Уведомления карточки', exact: true })).not.toBeChecked();
+    await expect(fixture.getByText('Изменений в карточке: 1. Версия данных: 2.', { exact: true })).toBeVisible();
+    expect(await input.evaluate((node, old) => node === old, original)).toBe(true);
+  });
+
+  test('retries first-load and refresh errors through Alert while retaining an existing draft', async ({ page }) => {
+    const fixture = page.locator('#skeleton'); const fail = fixture.getByRole('button', { name: 'Ошибка загрузки карточки', exact: true });
+    const retry = fixture.getByRole('button', { name: 'Повторить загрузку карточки', exact: true });
+    const input = fixture.getByRole('textbox', { name: 'Имя в карточке Skeleton', exact: true });
+    await fail.click(); await page.clock.fastForward(700); await expect(fixture.getByRole('alert')).toContainText('Попробуйте загрузить карточку ещё раз.');
+    await expect(input).toHaveCount(0); await retry.click(); await expect(fixture.locator('#showcase-skeleton')).toBeFocused();
+    await page.clock.fastForward(700); await page.keyboard.press('Tab'); await expect(input).toBeFocused(); await input.fill('Черновик');
+    await fail.click(); await page.clock.fastForward(700); await expect(input).toHaveValue('Черновик'); await expect(fixture.getByRole('alert')).toContainText('Черновик сохранён.');
+    await retry.click(); await page.clock.fastForward(700); await expect(input).toHaveValue('Черновик');
+    await expect(fixture.getByRole('status', { name: 'Результат примера Skeleton', exact: true })).toHaveText('Карточка загружена. Версия: 2.');
+  });
+
+  test('cancels pending loads and resets the card without late results before a fresh attempt', async ({ page }) => {
+    const fixture = page.locator('#skeleton'); const start = fixture.getByRole('button', { name: 'Загрузить карточку', exact: true });
+    const result = fixture.getByRole('status', { name: 'Результат примера Skeleton', exact: true });
+    await start.click(); await fixture.getByRole('button', { name: 'Отменить загрузку карточки', exact: true }).click(); await expect(start).toBeFocused();
+    await page.clock.fastForward(1000); await expect(result).toHaveText('Загрузка карточки отменена.'); await expect(fixture.locator('#skeleton-example-name')).toHaveCount(0);
+    await start.click(); await page.clock.fastForward(700); await fixture.getByRole('textbox', { name: 'Имя в карточке Skeleton', exact: true }).fill('Discard this draft');
+    await start.click(); await fixture.getByRole('button', { name: 'Сбросить пример Skeleton', exact: true }).click(); await page.clock.fastForward(1000);
+    await expect(result).toHaveText('Загрузите карточку участника.'); await expect(fixture.locator('#skeleton-example-name')).toHaveCount(0);
+    await start.click(); await page.clock.fastForward(700); await expect(fixture.getByRole('textbox', { name: 'Имя в карточке Skeleton', exact: true })).toHaveValue('Анна');
+  });
+
+  test('changes the decorative preview without starting a request', async ({ page }) => {
+    const fixture = page.locator('#skeleton'); const preview = fixture.locator('.preview');
+    await fixture.getByRole('checkbox', { name: 'Заголовок Skeleton', exact: true }).uncheck(); await fixture.getByRole('checkbox', { name: 'Скругление Skeleton', exact: true }).check();
+    await fixture.getByRole('spinbutton', { name: 'Строки Skeleton', exact: true }).fill('5'); await page.keyboard.press('Tab');
+    await expect(preview.locator('.ant-skeleton-title')).toHaveCount(0); await expect(preview.locator('li')).toHaveCount(5); await expect(preview.locator('.ant-skeleton')).toHaveClass(/ant-skeleton-round/);
+    await expect(preview.getByRole('status')).toHaveCount(0); await expect(fixture.getByRole('status', { name: 'Результат примера Skeleton', exact: true })).toHaveText('Загрузите карточку участника.');
+  });
+});
+
 test.describe('Spin showcase', () => {
   test.beforeEach(async ({ page }) => {
     const time = new Date('2026-10-27T12:00:00Z'); await page.clock.install({ time }); await page.clock.pauseAt(time);
@@ -949,6 +1010,14 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders a decorative Skeleton preview and idle card before hydration', async ({ page }) => {
+    await page.goto('/ant-design#skeleton'); const fixture = page.locator('#skeleton'); const skeleton = fixture.locator('#showcase-skeleton');
+    await expect(fixture.locator('.preview .ant-skeleton-host')).toHaveAttribute('aria-hidden', 'true'); await expect(fixture.locator('.preview li')).toHaveCount(3);
+    await expect(skeleton).toHaveRole('group'); await expect(skeleton).toHaveAccessibleName('Карточка участника');
+    await expect(skeleton.locator('.ant-skeleton-content')).toHaveAttribute('aria-busy', 'false'); await expect(skeleton.locator('.loading-status')).toHaveCount(0);
+    await expect(fixture.locator('#skeleton-example-name')).toHaveCount(0); await expect(fixture.getByRole('status', { name: 'Результат примера Skeleton', exact: true })).toHaveText('Загрузите карточку участника.');
+  });
 
   test('renders available Spin content and decorative sizes before hydration', async ({ page }) => {
     await page.goto('/ant-design#spin'); const fixture = page.locator('#spin'); const spin = fixture.locator('#showcase-spin');

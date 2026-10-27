@@ -9,6 +9,11 @@
 
 ### Added
 
+- Skeleton: loading/active/round, конфигурации avatar/title/paragraph,
+  ширины и число строк, замена children, доступный статус и парковка фокуса.
+  Добавлены стили Ant Design 6.6.8, темы/compact/RTL/reduced motion, SSR,
+  галерея первой загрузки с обновлением через Spin и сохранением черновика,
+  ошибки/retry, отмена/сброс и unit/SSR/Chromium-проверки.
 - Spin: standalone и сохранённые children, spinning/delay, три размера,
   description/indicator snippets, немедленная блокировка через inert/aria-busy
   и восстановление фокуса. Добавлены стили Ant Design 6.6.8, локаль, темы/RTL/
