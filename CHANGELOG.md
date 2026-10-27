@@ -9,6 +9,10 @@
 
 ### Added
 
+- Switch: bind:checked, defaults, loading, disabled, два размера, snippets
+  состояний, клавиатура, FormData и FormItem. Добавлены стили Ant Design 6.6.8,
+  темы/RTL/reduced motion, пример асинхронного сохранения с откатом ошибки,
+  защитой от повторных запросов и поздних ответов, unit/SSR/Chromium-проверки.
 - Radio и RadioGroup: типизированный одиночный выбор, нативные стрелки/Space,
   синхронизация соседних Radio, независимые имена групп, required и отменяемый
   reset. Добавлены официальные стили Ant Design 6.6.8, интеграция с FormItem, ориентация,

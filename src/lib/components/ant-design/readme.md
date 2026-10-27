@@ -4,7 +4,7 @@
 > 6.6.8 на Svelte 5 и TypeScript.
 
 Модуль содержит ConfigProvider, Button, Input, Select, Checkbox, CheckboxGroup,
-Radio, RadioGroup, Pagination, Table,
+Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
@@ -72,6 +72,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | CheckboxGroup | Типизированный массив выбранных значений, options, disabled, нативные checkbox, FormData, reset и интеграция с FormItem |
 | Radio | Checked/defaultChecked, disabled, нативные события, синхронизация соседних radio и FormData |
 | RadioGroup | Типизированный одиночный выбор, options, уникальное имя группы, горизонтальное/вертикальное расположение, required, reset и FormItem |
+| Switch | Checked/defaultChecked, loading, disabled, обычный/малый размеры, snippets состояний, клавиатура, FormData и FormItem |
 | Pagination | Страницы, переходы по пять страниц, выбор pageSize, диапазон записей, размеры, RTL и локаль |
 | Table | Типизированные колонки и snippets, фильтры, стабильная сортировка одной колонки, локальная и серверная пагинация, выбор и раскрытие строк, закрепление заголовка и колонок, loading и пустые данные |
 | Modal | Нативный dialog, заголовок, footer snippet, закрытие, confirmLoading и callbacks |
@@ -333,6 +334,72 @@ Fieldset с ролью radiogroup сообщает required/invalid; отдел�
 вариантов и форму с числовым тарифом, boolean-публикацией, отправкой и сбросом.
 RadioGroup пока строится через options; вложенные Radio и Radio.Button
 не поддерживаются.
+
+## Switch
+
+Switch переключает boolean-состояние через `bind:checked` и
+`onCheckedChange(checked)`. Отдельному control можно задать defaultChecked;
+он фиксируется при создании. С привязкой задавайте начальное значение у
+владельца без defaultChecked. Внешние изменения checked не вызывают callback.
+
+```svelte
+<script lang="ts">
+  import { Switch } from '$lib/components/ant-design';
+
+  let notifications = $state(false);
+</script>
+
+<Switch id="notifications" bind:checked={notifications} name="notifications">
+  {#snippet checkedChildren()}Вкл{/snippet}
+  {#snippet unCheckedChildren()}Выкл{/snippet}
+</Switch>
+<label for="notifications">Уведомления</label>
+```
+
+Компонент использует button с type=button, role=switch и aria-checked.
+Space, Enter, нажатие control или связанной подписи меняют состояние один раз
+и не отправляют форму. Нативный onclick доступен; preventDefault в этом
+обработчике отменяет переключение. Доступное имя задаётся через label,
+FormItem или aria-label/aria-labelledby. Snippets checkedChildren и
+unCheckedChildren предназначены для коротких подписей и декоративных иконок.
+Они скрыты от accessibility tree, поэтому имя control не меняется вместе
+с текстом состояния.
+
+Размеры — middle и small. По умолчанию наследуется componentSize;
+small включает малый размер, middle/large провайдера используют обычный.
+Явный size переопределяет наследование. Disabled наследуется из Form/FormItem
+и ConfigProvider, disabled=false переопределяет его. Loading показывает
+индикатор, выставляет aria-busy и блокирует действия даже с disabled=false.
+Существующее checked-состояние при блокировке сохраняется. Стили поддерживают
+светлую/тёмную тему, основные цвета, RTL и prefers-reduced-motion.
+
+С name или FormItem.name включённый доступный Switch передаёт `name=on` в
+нативную FormData, как Checkbox. `new FormData(form).get('notifications')`
+возвращает 'on' либо null; false, disabled и loading исключают поле.
+Модель Form при этом хранит boolean, включая false. Атрибут form связывает
+control с внешней формой. Нативный reset восстанавливает defaultChecked
+и обновляет привязку в следующей задаче после события, без callbacks.
+Отменённый reset сохраняет текущее состояние. При удалении Switch ожидающий
+reset отменяется.
+
+Для Form передавайте `checked={form.values.notifications}` и
+`onCheckedChange={(value) => form.setFieldValue('notifications', value)}`.
+FormItem передаёт id, имя, required, ошибки и описание кнопке. Ошибка формы
+переводит фокус на Switch; blur отмечает поле touched. Reset формы использует
+resetFields модели. Правило required считает false заданным значением;
+для обязательного включения задайте custom validator:
+`validator: (value) => value === true ? undefined : 'Включите настройку.'`.
+Проверкой значения управляют правила Form.
+
+Сохранение и ошибки остаются у владельца: Switch сообщает новое состояние,
+а владелец задаёт checked и loading. Галерея `/ant-design#switch` содержит
+пример асинхронного сохранения с [моделью состояния](../../presentation/ant-design/switch-setting.model.svelte.ts):
+ожидание блокирует повторные запросы, успех подтверждает значение, ошибка
+возвращает последнее сохранённое состояние, следующая попытка очищает ошибку.
+При удалении примера запрос отменяется, поздний результат игнорируется.
+Флажок ошибки в примере влияет только на следующее сохранение. Ниже показан
+малый Switch с проверкой и сбросом Form. API использует checked/defaultChecked;
+React-алиасы value/defaultValue пока не поддерживаются.
 
 ## Pagination
 
@@ -827,6 +894,9 @@ CheckboxGroup объединяет нативные input в именованн�
 RadioGroup использует нативную группу input[type=radio], именованный radiogroup,
 стрелки и Space. Tab сохраняет нативный порядок; FormItem направляет фокус к
 выбранному доступному варианту или первому доступному.
+Switch использует нативную кнопку с role=switch: Space и Enter переключают
+состояние, disabled/loading исключают кнопку из Tab. Имя остаётся постоянным,
+а checked-состояние передаёт aria-checked.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -878,6 +948,8 @@ CheckboxGroup, типы значений, порядок options, повторя
 отмену reset, фокус группы и выбор всех прав,
 Radio/RadioGroup, нативное снятие соседнего radio, независимые имена,
 числовой ноль и boolean false, required, отмену reset, ориентацию и фокус ошибок,
+Switch, snippets, loading, keyboard, FormData, reset, сохранение с откатом,
+повторную попытку, поздние ответы после удаления и reduced motion,
 сочетания фильтров, сортировки, страниц и выбора Table, loading и замену данных,
 серверный total, сохранение ключей между страницами, отмену запросов, поздние ответы,
 ошибки/retry и повторную загрузку допустимой страницы при уменьшении total,
@@ -906,7 +978,8 @@ Tree/TreeSelect, Upload, Select tags, Form.List, вложенные name paths,
 В [vendor/antd.css](./vendor/antd.css) оставлены правила Button, Input, Select,
 Checkbox, Pagination, Table, Modal, Form и связанные animations; глобальные токены
 сохранены. В [vendor/radio.css](./vendor/radio.css) добавлены обычные Radio и
-RadioGroup из того же архива. Селекторы
+RadioGroup из того же архива; [vendor/switch.css](./vendor/switch.css) содержит
+Switch вместе с правилами reduced motion. Селекторы
 `.css-var-_R_0_` заменены на `:root`/`.ant-svelte-theme` и классы компонентов.
 SHA-256 исходного архива записан в заголовке файла.
 

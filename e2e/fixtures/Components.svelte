@@ -10,6 +10,7 @@
   import MultipleSelectFixtures from './MultipleSelectFixtures.svelte';
   import CheckboxGroupFixtures from './CheckboxGroupFixtures.svelte';
   import RadioFixtures from './RadioFixtures.svelte';
+  import SwitchFixtures from './SwitchFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -83,6 +84,7 @@
     <MultipleSelectFixtures />
     <CheckboxGroupFixtures />
     <RadioFixtures />
+    <SwitchFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

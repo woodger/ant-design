@@ -276,6 +276,42 @@ test('showcase validates RadioGroup choices, submits zero and false and resets i
   await expect(fixture.getByRole('status')).toHaveCount(0);
 });
 
+test('showcase saves a Switch setting immediately, rolls back an error and retries', async ({ page }) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#switch');
+  const widget = fixture.getByRole('switch', { name: 'Автоматические уведомления', exact: true });
+  const status = fixture.getByRole('status', { name: 'Сохранение уведомлений', exact: true });
+  await widget.click();
+  await expect(status).toHaveText('Уведомления включены.');
+  await expect(widget).toHaveAttribute('aria-checked', 'true');
+  await fixture.getByRole('checkbox', { name: 'Ошибка следующего сохранения', exact: true }).check();
+  await widget.click();
+  await expect(fixture.getByRole('alert')).toHaveText('Не удалось сохранить настройку. Попробуйте ещё раз.');
+  await expect(widget).toHaveAttribute('aria-checked', 'true');
+  await expect(fixture.getByRole('checkbox', { name: 'Ошибка следующего сохранения', exact: true })).not.toBeChecked();
+  await widget.click();
+  await expect(status).toHaveText('Уведомления выключены.');
+  await expect(widget).toHaveAttribute('aria-checked', 'false');
+  await expect(fixture.getByRole('alert')).toHaveCount(0);
+});
+
+test('showcase validates a Switch field, serializes it and resets its form', async ({ page }, testInfo) => {
+  await page.goto('/ant-design');
+  const fixture = page.locator('#switch');
+  const widget = fixture.getByRole('switch', { name: 'Еженедельный отчёт', exact: true });
+  await fixture.getByRole('button', { name: 'Сохранить параметры', exact: true }).click();
+  await expect(widget).toBeFocused();
+  await expect(widget).toHaveAccessibleDescription('Включите отчёт для проверки формы.');
+  await fixture.getByText('Еженедельный отчёт', { exact: true }).click();
+  await fixture.getByRole('button', { name: 'Сохранить параметры', exact: true }).click();
+  await expect(fixture.getByRole('status', { name: 'Результат формы Switch', exact: true })).toHaveText('Параметры сохранены.');
+  expect(await fixture.locator('form').evaluate((element) => new FormData(element as HTMLFormElement).get('digest'))).toBe('on');
+  await fixture.screenshot({ path: testInfo.outputPath('switch.png') });
+  await fixture.getByRole('button', { name: 'Сбросить параметры', exact: true }).click();
+  await expect(widget).toHaveAttribute('aria-checked', 'false');
+  await expect(widget).not.toHaveAttribute('aria-invalid');
+});
+
 test('showcase validates its real form and resets values after successful submission', async ({ page }) => {
   await page.goto('/ant-design');
   const name = page.getByLabel('Имя', { exact: true });
@@ -403,6 +439,8 @@ test.describe('server-rendered showcase', () => {
     await expect(page.getByRole('group', { name: 'Права участника', exact: true })).toBeVisible();
     await expect(page.getByRole('radiogroup', { name: 'Тариф участника', exact: true }).getByRole('radio', { name: 'Базовый', exact: true })).toBeChecked();
     await expect(page.getByRole('radiogroup', { name: 'Режим публикации', exact: true }).getByRole('radio')).toHaveCount(2);
+    await expect(page.getByRole('switch', { name: 'Автоматические уведомления', exact: true })).toHaveAttribute('aria-checked', 'false');
+    await expect(page.getByRole('switch', { name: 'Еженедельный отчёт', exact: true })).toHaveAttribute('aria-checked', 'false');
     await expect(page.getByRole('navigation', { name: 'Пример пагинации', exact: true }).locator('[aria-current="page"]')).toHaveText('1');
     const table = page.getByRole('table', { name: 'Участники проекта', exact: true });
     await expect(table.locator('tbody tr')).toHaveCount(5);
