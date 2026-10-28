@@ -9,6 +9,11 @@
 
 ### Added
 
+- Tag и CheckableTag: preset/status цвета, filled/outlined/solid, snippets,
+  отменяемый onClose, disabled, нативные кнопки и восстановление фокуса.
+  Добавлены стили Ant Design 6.6.8, темы/compact/RTL/reduced motion, SSR и
+  Chromium-проверки. Галерея показывает защищённые метки, добавление/удаление/
+  повторное создание и фильтрацию отдельной Table через управляемый checked.
 - Steps: управляемый current/onChange, стабильные items, четыре статуса,
   title/subTitle/content/icon snippets, horizontal/vertical и medium/small.
   Добавлены стили Ant Design 6.6.8, локаль, темы/compact/RTL/reduced motion,

@@ -6,7 +6,8 @@
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps, Form и FormItem.
+MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
+Tag, CheckableTag, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -95,6 +96,8 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Empty | Пустое состояние, default/simple SVG, image/description snippets, действия, локаль, темы и восстановление фокуса |
 | Result | Семь статусов, официальные иконки/SVG, заголовок, описание, действия, подробности и восстановление фокуса |
 | Steps | Управляемые этапы, статусы, snippets, нативные кнопки, horizontal/vertical, medium/small, локаль, темы и восстановление фокуса |
+| Tag | Статусные/preset цвета, filled/outlined/solid, snippets, отменяемое закрытие, disabled и восстановление фокуса |
+| CheckableTag | Управляемый checked/onChange, нативная toggle-кнопка, aria-pressed, disabled и snippets |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1550,6 +1553,89 @@ Dot/navigation/inline/panel, outlined, percent, initial, maxCount, ellipsis,
 iconRender, semantic classNames/styles и устаревшие direction/description/
 labelPlacement/progressDot отложены.
 
+## Tag и CheckableTag
+
+```svelte
+<script lang="ts">
+  import { CheckableTag, Tag } from '$lib/components/ant-design';
+  let checked = $state(false);
+</script>
+
+<Tag color="success" variant="outlined">Готово</Tag>
+<Tag closeIcon closeLabel="Удалить обязательную метку"
+  onClose={event => event.preventDefault()}>Обязательная метка</Tag>
+<CheckableTag {checked} onChange={value => { checked = value; }}>
+  Показывать готовые задачи
+</CheckableTag>
+```
+
+Tag показывает метку с обязательным children Snippet. Icon и пользовательский
+closeIcon также принимают Snippet. Содержимое — короткая phrasing-разметка
+без вложенных controls. Иконки декоративные, aria-hidden/inert.
+Сам Tag не создаёт остановок Tab или live-region. Именование через aria-label/
+aria-labelledby добавляет корневому span роль group; id/class/style и
+aria-describedby относятся к этому корню.
+
+Variant: filled (по умолчанию), outlined, solid. Color по умолчанию default;
+статусы — success/processing/error/default/warning. Предустановленные цвета:
+blue/purple/cyan/green/magenta/pink/red/orange/yellow/volcano/geekblue/lime/gold.
+Pink и magenta используют соответствующие токены Ant Design. Статусный цвет не добавляет
+role=status и не запускает анимацию/объявление. TagColor, TagPresetColor,
+TagStatusColor и TagVariant экспортируются через index.ts.
+
+CloseIcon=false/undefined скрывает закрытие; true показывает существующий Icon
+close, Snippet заменяет его изображение внутри той же нативной кнопки.
+CloseLabel задаёт имя кнопки, по умолчанию locale.closeText. Описание кнопки
+ссылается на содержимое метки, поэтому одинаковое «Закрыть» сохраняет контекст.
+Disabled наследует ConfigProvider.componentDisabled; false явно снимает его.
+Disabled запрещает закрытие и callbacks, не удаляя содержимое.
+
+OnClose получает нативный MouseEvent; event.preventDefault() синхронно отменяет
+закрытие. Возвращаемое значение и Promise не ожидаются. Повторный вход из callback
+не вызывает onClose ещё раз. Прямой DOM listener останавливает всплытие клика;
+Enter и Space работают через нативную кнопку type=button
+и не отправляют форму. Callback может удалить весь компонент или выбрать фокус.
+
+После принятого закрытия содержимое удаляется из DOM. Изменение props не
+открывает тот же экземпляр заново: для восстановления нужен новый экземпляр/key.
+Tag не изменяет коллекцию владельца; при удалении записи или отмене onClose
+владелец синхронизирует свою модель. Фокус из закрытой/удалённой кнопки переходит
+на следующий доступный control текущего dialog/документа, затем предыдущий.
+При скрытии closeIcon механизм также восстанавливает фокус. Явный выбор
+владельца сохраняется; закрытие не создаёт дополнительных объявлений.
+
+CheckableTag — отдельный export с обязательным children и декоративным icon.
+Это нативный button type=button с aria-pressed, а не поле формы. Checked по
+умолчанию false и полностью управляется владельцем. OnChange сообщает !checked;
+компонент не присваивает checked и не поддерживает bind:checked/defaultChecked.
+Внешнее обновление checked не вызывает callback. При disabled остаются значение
+и содержимое, но кнопка исключается из Tab и не меняет состояние.
+
+CheckableTag поддерживает Enter/Space и естественный Tab; при удалении кнопки
+фокус восстанавливается рядом, сохраняя выбор владельца. Id/class/style и
+aria-label/aria-labelledby/aria-describedby относятся к кнопке. Выбранные
+фильтры, их объединение и связь с Form/Table принадлежат владельцу; скрытых
+полей FormData и автоматической интеграции с FormItem нет.
+
+Компоненты наследуют тему, primary, compact и RTL. Для тёмной темы Tag связывает
+обычный цвет текста с токенами и адаптирует фон/границу preset/status меток
+через color-mix и локальные токены палитры. Solid сохраняет исходный цвет;
+обычный solid в тёмной теме использует светлый фон и тёмный текст.
+Текст переносится на узком экране; close control не сжимается. Reduced motion
+отключает встроенные transitions; ресурсы пользовательского Snippet принадлежат
+его владельцу. Новая локаль не нужна: closeText уже входит в ruRU/enUS.
+
+Галерея `/ant-design#tag` переключает цвета и варианты, показывает отмену
+закрытия и восстановление экземпляра. Модель меток обрезает пробелы, проверяет
+дубликаты без учёта регистра и защищает обязательную метку. Повторное добавление
+удалённой метки получает новый key. CheckableTag фильтрует отдельную Table по
+объединению выбранных статусов; пустой выбор показывает все строки. Ядро Table
+не изменяется. Введённые значения выводятся обычными Svelte bindings.
+
+В первой версии нет пользовательских CSS-цветов, ссылок/target,
+CheckableTagGroup, drag-and-drop, внешней анимации, semantic classNames/styles,
+prefixCls/rootClassName и устаревших bordered/closable/color-inverse aliases.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2410,6 +2496,10 @@ Steps использует именованный упорядоченный с�
 Aria-current обозначает текущий шаг, описание кнопки сообщает статус и content.
 Фокус сохраняется при перестановке и восстанавливается при удалении/отключении;
 live-region отсутствует, переходами и фокусом панели управляет владелец процесса.
+Tag использует обычный текст и описанную нативную кнопку закрытия. OnClose может
+отменить действие; удаление сохраняет доступный фокус. CheckableTag — управляемая
+toggle-кнопка с aria-pressed и нативной клавиатурой. Оба компонента скрывают
+декоративные иконки и не создают собственных live-region.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2576,6 +2666,13 @@ DOM/таймеров. Chromium проверяет управляемый выб�
 Галерея проверяет валидацию переходов, сохранение полей, отправку/Result/retry,
 reset/unmount, мобильную компоновку и SSR до гидратации. Модель проверяет
 отмену pending validation/submission и защиту от позднего завершения.
+Tag/CheckableTag проверяются на SSR snippets, ARIA, disabled, состояния и
+отсутствие DOM/таймеров/callbacks. Chromium проверяет палитры/варианты, отмену,
+защиту от повторного входа, остановку нативного всплытия, клавиатуру, unmount,
+выбор владельца, locale/темы/RTL/reduced motion, Modal/Drawer и узкий экран.
+Галерея проверяет добавление/дубликаты/защиту/удаление и повторное создание меток,
+фильтры таблицы, сохранение фокуса, reset и SSR. Модель проверяет нормализацию,
+стабильность и обновление key, повторное удаление и изоляцию экземпляров.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2696,6 +2793,13 @@ noFound.js и serverError.js: добавлены viewBox и декоративн
 структуру es/steps и нативные кнопки, локаль, responsive и reduced motion;
 steps.dom.ts восстанавливает фокус шагов и использует общий feedback.dom.ts
 при unmount. React/@rc-component зависимости, новые иконки и лицензии не добавлены.
+[vendor/tag.css](./vendor/tag.css) содержит 85 правил Tag/CheckableTag из того
+же архива: ссылки, группа и селектор DatePicker исключены; корни ограничены
+:where(.ant-tag-css-var). Declarations сохранены. Tag.svelte и CheckableTag.svelte
+добавляют нативные buttons, snippets, перенос текста, тёмную тему, reduced motion
+и восстановление фокуса через feedback.dom.ts. Listener закрытия использует
+Svelte attachment с cleanup. Используется существующий Icon close; новые
+зависимости, иконки и лицензии не добавлены.
 Пять filled-иконок в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

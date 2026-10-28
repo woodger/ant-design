@@ -1,5 +1,55 @@
 import { test, expect } from './test';
 
+test.describe('Tag showcase', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/ant-design#tag'); });
+
+  test('cancels preview closing and restores an accepted closed tag as a new instance', async ({ page }) => {
+    const fixture = page.locator('#tag'); const close = fixture.getByRole('button', { name: 'Закрыть метку предпросмотра', exact: true });
+    await fixture.getByRole('checkbox', { name: 'Отменять закрытие Tag', exact: true }).check(); await close.click(); await expect(close).toBeFocused(); await expect(fixture.getByRole('status', { name: 'Результат примера Tag', exact: true })).toContainText('Закрытие отменено.');
+    await fixture.getByRole('checkbox', { name: 'Отменять закрытие Tag', exact: true }).uncheck(); await close.click(); await expect(close).toHaveCount(0); await expect(fixture.getByRole('button', { name: 'Восстановить Tag', exact: true })).toBeFocused();
+    await fixture.getByRole('button', { name: 'Восстановить Tag', exact: true }).click(); await expect(close).toBeVisible();
+  });
+
+  test('adds trimmed labels with Enter and rejects blank and duplicate values', async ({ page }) => {
+    const fixture = page.locator('#tag'); const input = fixture.getByRole('textbox', { name: 'Новая метка проекта', exact: true }); const labels = fixture.getByRole('group', { name: 'Метки проекта', exact: true });
+    await input.fill('  Тестирование  '); await input.press('Enter'); await expect(labels.getByText('Тестирование', { exact: true })).toBeVisible(); await expect(input).toHaveValue(''); await expect(input).toBeFocused(); await expect(labels.locator('.ant-tag')).toHaveCount(4);
+    await input.fill(' тестирование '); await input.press('Enter'); await expect(fixture.getByRole('status', { name: 'Результат примера Tag', exact: true })).toContainText('Такая метка уже есть.'); await expect(labels.locator('.ant-tag')).toHaveCount(4);
+    await input.fill('  '); await fixture.getByRole('button', { name: 'Добавить метку', exact: true }).click(); await expect(input).toBeFocused(); await expect(fixture.getByRole('status', { name: 'Результат примера Tag', exact: true })).toContainText('Введите название метки.');
+  });
+
+  test('protects the required label and restores focus after deleting removable labels', async ({ page }) => {
+    const fixture = page.locator('#tag'); const labels = fixture.getByRole('group', { name: 'Метки проекта', exact: true }); const required = labels.getByRole('button', { name: 'Удалить метку Svelte', exact: true });
+    await required.click(); await expect(required).toBeFocused(); await expect(labels.locator('.ant-tag')).toHaveCount(3); await expect(fixture.getByRole('status', { name: 'Результат примера Tag', exact: true })).toContainText('Метка Svelte обязательна.');
+    await labels.getByRole('button', { name: 'Удалить метку TypeScript', exact: true }).click(); await expect(labels.getByRole('button', { name: 'Удалить метку Документация', exact: true })).toBeFocused();
+    await labels.getByRole('button', { name: 'Удалить метку Документация', exact: true }).click(); await expect(labels.locator('.ant-tag')).toHaveCount(1); await expect(fixture.getByRole('textbox', { name: 'Новая метка проекта', exact: true })).toBeFocused();
+  });
+
+  test('recreates a deleted label and resets labels and table filters', async ({ page }) => {
+    const fixture = page.locator('#tag'); const labels = fixture.getByRole('group', { name: 'Метки проекта', exact: true });
+    await labels.getByRole('button', { name: 'Удалить метку TypeScript', exact: true }).click(); const input = fixture.getByRole('textbox', { name: 'Новая метка проекта', exact: true }); await input.fill('TypeScript'); await input.press('Enter'); await expect(labels.getByRole('button', { name: 'Удалить метку TypeScript', exact: true })).toBeVisible();
+    await fixture.getByRole('group', { name: 'Фильтр задач по статусу', exact: true }).getByRole('button', { name: 'Ошибка', exact: true }).click(); await fixture.getByRole('button', { name: 'Сбросить пример Tag', exact: true }).click(); await expect(labels.locator('.ant-tag')).toHaveCount(3); await expect(fixture.getByRole('table', { name: 'Задачи с метками статуса', exact: true }).getByRole('row')).toHaveCount(5); await expect(input).toHaveValue('');
+  });
+
+  test('filters table rows by the union of selected statuses and restores all rows when cleared', async ({ page }, testInfo) => {
+    const fixture = page.locator('#tag'); const filters = fixture.getByRole('group', { name: 'Фильтр задач по статусу', exact: true }); const table = fixture.getByRole('table', { name: 'Задачи с метками статуса', exact: true });
+    await filters.getByRole('button', { name: 'Готово', exact: true }).click(); await expect(table.getByRole('row')).toHaveCount(2); await expect(table.getByRole('cell', { name: 'Готово', exact: true }).locator('.ant-tag')).toHaveClass(/ant-tag-success/);
+    await filters.getByRole('button', { name: 'Ошибка', exact: true }).click(); await expect(table.getByRole('row')).toHaveCount(3); await expect(table.getByRole('cell', { name: 'Повторить сборку', exact: true })).toBeVisible(); await fixture.screenshot({ path: testInfo.outputPath('tag-example-filter.png') });
+    await filters.getByRole('button', { name: 'Готово', exact: true }).click(); await expect(table.getByRole('row')).toHaveCount(2); await filters.getByRole('button', { name: 'Ошибка', exact: true }).click(); await expect(table.getByRole('row')).toHaveCount(5);
+  });
+
+  test('keeps the same focused toggle while keyboard filtering updates the table', async ({ page }) => {
+    const fixture = page.locator('#tag'); const filter = fixture.getByRole('group', { name: 'Фильтр задач по статусу', exact: true }).getByRole('button', { name: 'В работе', exact: true }); const original = await filter.elementHandle();
+    await filter.focus(); await page.keyboard.press('Space'); await expect(filter).toHaveAttribute('aria-pressed', 'true'); await expect(filter).toBeFocused(); await expect(fixture.getByRole('table', { name: 'Задачи с метками статуса', exact: true }).getByRole('row')).toHaveCount(2);
+    await page.keyboard.press('Enter'); await expect(filter).toHaveAttribute('aria-pressed', 'false'); expect(await filter.evaluate((node, old) => node === old, original)).toBe(true); await expect(fixture.getByRole('group', { name: 'Метки проекта', exact: true }).locator('.ant-tag')).toHaveCount(3);
+  });
+
+  test('wraps long project labels and filter buttons on a 320px viewport', async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 320, height: 800 }); const fixture = page.locator('#tag'); const initialWidth = await page.evaluate(() => document.documentElement.scrollWidth); const input = fixture.getByRole('textbox', { name: 'Новая метка проекта', exact: true }); await input.fill('LongUnbrokenProjectLabel'.repeat(8)); await input.press('Enter');
+    const bounds = await fixture.evaluate(node => ({ right: node.getBoundingClientRect().right, width: node.clientWidth, scroll: node.scrollWidth })); expect(bounds.right).toBeLessThanOrEqual(320); expect(bounds.scroll).toBeLessThanOrEqual(bounds.width); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(initialWidth);
+    await fixture.screenshot({ path: testInfo.outputPath('tag-example-mobile.png') });
+  });
+});
+
 test.describe('Steps showcase', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/ant-design#steps'); });
 
@@ -1164,6 +1214,11 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders Tag labels toggle states and table statuses before hydration', async ({ page }) => {
+    await page.goto('/ant-design#tag'); const fixture = page.locator('#tag'); await expect(fixture.getByRole('button', { name: 'Закрыть метку предпросмотра', exact: true })).toBeVisible(); await expect(fixture.getByRole('group', { name: 'Метки проекта', exact: true }).locator('.ant-tag')).toHaveCount(3);
+    const filters = fixture.getByRole('group', { name: 'Фильтр задач по статусу', exact: true }); await expect(filters.getByRole('button', { pressed: false })).toHaveCount(4); await expect(fixture.getByRole('table', { name: 'Задачи с метками статуса', exact: true }).getByRole('row')).toHaveCount(5); await expect(fixture.locator('.ant-tag[aria-live], .ant-tag[role="status"]')).toHaveCount(0);
+  });
 
   test('renders Steps and the initial form before hydration without starting a workflow', async ({ page }) => {
     await page.goto('/ant-design#steps'); const fixture = page.locator('#steps'); const steps = fixture.getByRole('list', { name: 'Этапы заявки', exact: true });
