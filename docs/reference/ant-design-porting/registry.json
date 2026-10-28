@@ -1981,10 +1981,13 @@
         {
           "id": "thumb",
           "title": "Движение индикатора при смене значения",
-          "state": "missing",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Выбранный item имеет штатное оформление; анимированный thumb — следующий отдельный этап."
+          "evidence": [
+            "src/lib/components/ant-design/segmented.dom.ts",
+            "e2e/segmented.spec.ts"
+          ],
+          "note": "Thumb с геометрией текущих labels, Web Animations API и штатными duration/easing. Повторная смена отменяет прошлый запуск; ResizeObserver и reduced motion завершают движение; SSR не создаёт DOM/observer/animation."
         },
         {
           "id": "tooltip",

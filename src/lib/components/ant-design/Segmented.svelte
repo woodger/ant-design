@@ -3,6 +3,7 @@
   import { useConfig } from './config-context';
   import { normalizeSegmentedOptions, offsetSegmentedValue } from './segmented.engine';
   import { connectFeedbackFocus } from './feedback.dom';
+  import { animateSegmentedThumb } from './segmented.dom';
   import type { SegmentedProps, SegmentedValue } from './segmented.types';
 
   let {
@@ -23,9 +24,32 @@
   let info = $derived({ props: { ...rest, options, value, defaultValue, onChange, disabled, name: nativeName, block, size, orientation, vertical, shape, class: className, rootClassName, style, classNames, styles } });
   let classes = $derived(typeof classNames === 'function' ? classNames(info) : classNames ?? {});
   let slotStyles = $derived(typeof styles === 'function' ? styles(info) : styles ?? {});
+  let group = $state<HTMLDivElement>();
+  let moving = $state(false);
+  let previousValue = untrack(() => selected);
 
   $effect(() => { const node = nativeElement; if (node) return connectFeedbackFocus(node); });
   onDestroy(() => { for (const reset of resets) clearTimeout(reset); });
+
+  $effect(() => {
+    const next = selected;
+    const previous = previousValue;
+    const element = group;
+    const currentItems = items;
+    // Смена оси или RTL отменяет старую физическую геометрию.
+    const axis = isVertical ? 'vertical' : config.direction;
+    previousValue = next;
+    if (!element || previous === next) return;
+
+    return untrack(() => {
+      const nodes = element.querySelectorAll<HTMLElement>(':scope > label');
+      const from = nodes[currentItems.findIndex(item => item.value === previous)];
+      const to = nodes[currentItems.findIndex(item => item.value === next)];
+      if (!from || !to) return;
+
+      return animateSegmentedThumb(element, from, to, axis === 'vertical', () => { moving = true; }, () => { moving = false; });
+    });
+  });
 
   function choose(next: Value) {
     if (disabled || next === selected || !items.some(item => item.value === next && !item.disabled)) return;
@@ -73,9 +97,9 @@
   aria-orientation={isVertical ? 'vertical' : 'horizontal'} tabindex={rest.tabindex ?? (disabled ? undefined : 0)} dir={config.direction}
   class={['ant-segmented ant-segmented-css-var', disabled && 'ant-segmented-disabled', block && 'ant-segmented-block', isVertical && 'ant-segmented-vertical', config.direction === 'rtl' && 'ant-segmented-rtl', mergedSize === 'small' && 'ant-segmented-sm', mergedSize === 'large' && 'ant-segmented-lg', shape === 'round' && 'ant-segmented-shape-round', className, rootClassName, classes.root]}
   style={[slotStyles.root, style].filter(Boolean).join(';')}>
-  <div class="ant-segmented-group">
+  <div class="ant-segmented-group" bind:this={group}>
     {#each items as item (item.value)}
-      <label class={['ant-segmented-item', item.value === selected && 'ant-segmented-item-selected ant-segmented-item-selected-text', (disabled || item.disabled) && 'ant-segmented-item-disabled', item.class, classes.item]} style={slotStyles.item}>
+      <label class={['ant-segmented-item', item.value === selected && !moving && 'ant-segmented-item-selected', item.value === selected && 'ant-segmented-item-selected-text', (disabled || item.disabled) && 'ant-segmented-item-disabled', item.class, classes.item]} style={slotStyles.item}>
         <input type="radio" class="ant-segmented-item-input" name={nativeName} checked={item.value === selected} disabled={disabled || item.disabled} aria-label={item['aria-label'] ?? (item.icon && item.label === undefined ? item.title : undefined)} onchange={() => choose(item.value)} onkeydown={handleKey} />
         <div class={['ant-segmented-item-label', classes.label]} title={item.title} style={slotStyles.label}>
           {#if item.icon}<span class={['ant-segmented-item-icon', classes.icon]} style={slotStyles.icon} aria-hidden="true">{@render item.icon()}</span>{/if}

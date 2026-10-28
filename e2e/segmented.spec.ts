@@ -89,3 +89,74 @@ test('Segmented follows upstream explicit disabled semantics and its gallery hyd
   await section.getByText('Месяц', { exact: true }).click();
   await expect(section.locator('strong')).toHaveText('211');
 });
+
+test('Segmented moves a single thumb between measured options and cleans it up after rapid changes', async ({ page }) => {
+  const root = page.locator('#fixture-segmented');
+  await root.evaluate(node => (node as HTMLElement).style.setProperty('--ant-motion-duration-slow', '2s'));
+  await root.getByText('Monthly', { exact: true }).click();
+  const thumb = root.locator('.ant-segmented-thumb');
+  await expect(thumb).toHaveCount(1);
+  await expect(root.locator('.ant-segmented-item-selected')).toHaveCount(0);
+  await expect(root.getByRole('radio', { name: 'Monthly' })).toBeChecked();
+  const endpoints = await thumb.evaluate(node => {
+    const effect = node.getAnimations()[0].effect;
+    if (!(effect instanceof KeyframeEffect)) throw new Error('Missing thumb keyframes');
+    return effect.getKeyframes();
+  });
+  expect(endpoints[0].transform).not.toBe(endpoints[1].transform);
+  await root.getByText('Weekly', { exact: true }).click();
+  await expect(thumb).toHaveCount(1);
+  await thumb.evaluate(node => node.getAnimations().forEach(animation => animation.finish()));
+  await expect(thumb).toHaveCount(0);
+  await expect(root.locator('.ant-segmented-item-selected')).toContainText('Weekly');
+  await expect(root.getByRole('radio', { name: 'Weekly' })).toBeChecked();
+});
+
+test('Segmented cancels motion on resize, removal and reduced motion changes', async ({ page }) => {
+  const root = page.locator('#fixture-segmented');
+  await page.getByLabel('Block Segmented').check();
+  await root.evaluate(node => (node as HTMLElement).style.setProperty('--ant-motion-duration-slow', '2s'));
+  await root.getByText('Monthly', { exact: true }).click();
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(1);
+  await page.setViewportSize({ width: 800, height: 800 });
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(0);
+  await root.getByText('Weekly', { exact: true }).click();
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(1);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(0);
+  await root.getByText('Zero', { exact: true }).click();
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(0);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await root.getByText('Monthly', { exact: true }).click();
+  await page.getByLabel('Remove monthly option').check();
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(0);
+  await root.getByText('Weekly', { exact: true }).click();
+  await root.getByText('Zero', { exact: true }).click();
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(1);
+  const animation = await root.locator('.ant-segmented-thumb').evaluateHandle(node => node.getAnimations()[0]);
+  await page.getByLabel('Mount Segmented').uncheck();
+  await expect(root).toHaveCount(0);
+  expect(await animation.evaluate(value => value.playState)).toBe('idle');
+});
+
+test('Segmented thumb ends on the selected option in RTL and vertical layouts', async ({ page }) => {
+  const root = page.locator('#fixture-segmented');
+  for (const vertical of [false, true]) {
+    await page.getByLabel('Vertical Segmented alias').setChecked(vertical);
+    await page.getByLabel('Right to left', { exact: true }).setChecked(true);
+    await root.evaluate(node => (node as HTMLElement).style.setProperty('--ant-motion-duration-slow', '2s'));
+    await root.getByText('Zero', { exact: true }).click();
+    await root.getByText('Monthly', { exact: true }).click();
+    const thumb = root.locator('.ant-segmented-thumb');
+    await expect(thumb).toHaveCount(1);
+    await thumb.evaluate(node => node.getAnimations().forEach(animation => animation.pause()));
+    await thumb.evaluate(node => { const animation = node.getAnimations()[0]; animation.currentTime = Number(animation.effect!.getTiming().duration) - 1; });
+    const overlay = (await thumb.boundingBox())!;
+    const target = (await root.locator('label').filter({ hasText: 'Monthly' }).boundingBox())!;
+    expect(Math.abs(overlay.x - target.x)).toBeLessThan(1);
+    expect(Math.abs(overlay.y - target.y)).toBeLessThan(1);
+    expect(Math.abs(overlay.width - target.width)).toBeLessThan(1);
+    await thumb.evaluate(node => node.getAnimations().forEach(animation => animation.finish()));
+    await expect(thumb).toHaveCount(0);
+  }
+});

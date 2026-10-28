@@ -301,8 +301,14 @@ onChange; checked после reset приводится к текущему valu
 к существующим темам, размеры используют токены controls. Изучена зависимость
 @rc-component/segmented 1.4.0 (commit 8cbec0b3a0a4097b683a55b39b565ea1e249b47f),
 её npm-архив сверяется по опубликованному SHA-512 и хранится только в .upstream.
-Анимированный thumb, option.tooltip, prefixCls и глобальный component config
-пока отсутствуют; реестр отмечает семейство частично перенесённым.
+При смене значения между существующими видимыми options создаётся штатный thumb.
+Геометрия labels измеряется после обновления DOM; Web Animations API перемещает
+индикатор с duration/easing токенов. Во время движения сохраняется selected-text,
+а обычный selected фон возвращается после завершения. Повторная смена отменяет
+предыдущий запуск. ResizeObserver, смена оси/RTL, изменения options и удаление
+компонента очищают animation/observer; reduced motion пропускает либо завершает
+движение. SSR не создаёт thumb, observers или animations. Option.tooltip,
+prefixCls и глобальный component config пока отсутствуют.
 
 ## InputNumber
 
