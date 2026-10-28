@@ -193,5 +193,10 @@
     "id": "divider",
     "module": "./DividerFixtures.svelte",
     "root": "divider-fixture"
+  },
+  {
+    "id": "flex",
+    "module": "./FlexFixtures.svelte",
+    "root": "flex-fixture"
   }
 ]

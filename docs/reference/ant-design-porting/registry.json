@@ -212,25 +212,89 @@
       "id": "flex",
       "name": "Flex",
       "category": "layout",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Перенос нативной Flex-компоновки без обёрток вокруг детей.",
       "upstreamPath": "components/flex",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Flex",
+          "local": [
+            "Flex"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p2",
+      "effort": "S",
+      "fixtures": [
+        "flex"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Flex.svelte",
+        "src/lib/components/ant-design/flex.types.ts",
+        "src/lib/components/ant-design/readme.md",
+        "src/lib/presentation/ant-design/FlexExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "layout",
+          "title": "Orientation/vertical, align/justify, wrap и прямые дети",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/flex.ssr.test.ts",
+            "e2e/flex.spec.ts"
+          ],
+          "note": "Orientation имеет приоритет; vertical по умолчанию использует stretch; DOM-порядок и нативный Tab сохраняются."
+        },
+        {
+          "id": "spacing",
+          "title": "Preset/числовой/CSS gap и flex shorthand",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/flex.ssr.test.ts",
+            "e2e/flex.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "Small/medium/middle/large; числовые интервалы в px; нулевые значения сохраняются; gap/flex имеют приоритет над style."
+        },
+        {
+          "id": "native-root",
+          "title": "Нативный component, nativeElement, SSR, пустой контейнер и RTL",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/flex.ssr.test.ts",
+            "e2e/flex.spec.ts"
+          ],
+          "note": "Нативные HTML-теги, атрибуты и события; :empty скрывается как в upstream; reset типографики не добавляется."
+        },
+        {
+          "id": "custom-component",
+          "title": "Пользовательский Svelte-компонент в component",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Пока поддержаны только нативные HTML-теги; forwarding props/ref в пользовательский компонент требует отдельного этапа."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls и глобальные настройки Flex в ConfigProvider",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Используются существующие direction и theme; flex.vertical/class/style в ConfigProvider пока отсутствуют."
         }
       ]
     },

@@ -27,6 +27,8 @@ export { default as Badge } from './Badge.svelte';
 export { default as Avatar } from './Avatar.svelte';
 export { default as AvatarGroup } from './AvatarGroup.svelte';
 export { default as Divider } from './Divider.svelte';
+export { default as Flex } from './Flex.svelte';
+export type { FlexProps, FlexAlign, FlexJustify, FlexGap } from './flex.types';
 export type { DividerProps, DividerOrientation, DividerTitlePlacement, DividerSize, DividerSemanticSlots, DividerSemanticInfo } from './divider.types';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';

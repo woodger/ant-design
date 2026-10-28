@@ -29,6 +29,7 @@
   import AvatarExample from './AvatarExample.svelte';
   import AvatarGroupExample from './AvatarGroupExample.svelte';
   import DividerExample from './DividerExample.svelte';
+  import FlexExample from './FlexExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -68,7 +69,8 @@
     ['badge', 'Badge'],
     ['avatar', 'Avatar'],
     ['avatar-group', 'AvatarGroup'],
-    ['divider', 'Divider']
+    ['divider', 'Divider'],
+    ['flex', 'Flex']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -492,6 +494,12 @@
           <div class="section-heading"><h2>Divider</h2></div>
           <p class="section-description">Горизонтальные разделы с подписью и вертикальные разделители текста.</p>
           <div class="panel"><DividerExample /></div>
+        </section>
+
+        <section id="flex">
+          <div class="section-heading"><h2>Flex</h2></div>
+          <p class="section-description">Компоновка без обёрток вокруг элементов: направление, интервалы и выравнивание.</p>
+          <div class="panel"><FlexExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

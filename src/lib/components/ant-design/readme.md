@@ -7,7 +7,7 @@
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Form и FormItem.
+Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -101,6 +101,8 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Badge | Числовой счётчик, overflow/showZero/dot, статусы/preset цвета, string/Snippet text, размеры, offset и доступное полное значение |
 | Avatar | Изображение, icon/children fallback, circle/square, именованные и числовые размеры, подгонка текста и доступное имя |
 | AvatarGroup | Типизированные items, стабильные ключи, общие размеры/форма, перекрытие, max.count и скрытые участники в Popover |
+| Divider | Направления, подпись, titlePlacement, варианты линий, размеры, semantic slots и nativeElement |
+| Flex | Прямые дети, направления, align/justify, wrap, gap/flex, нативный component и nativeElement |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -154,6 +156,39 @@ semantic slots, геометрию размещения, темы, RTL и узк
 Произвольные component tokens, prefixCls и component config пока не поддержаны.
 Vendor/divider.css содержит 33 правила из закреплённого архива; рецепт divider
 исключает интеграцию ColorPicker и воспроизводится через `npm run antd:css`.
+
+## Flex
+
+```svelte
+<Flex gap="small" justify="space-between" wrap>
+  <Button>Первое действие</Button>
+  <Button>Второе действие</Button>
+</Flex>
+```
+
+Flex сохраняет один корневой элемент и не оборачивает детей. Children — Snippet;
+без содержимого контейнер скрывается CSS-правилом :empty, как в Ant Design.
+Orientation=horizontal/vertical имеет приоритет над vertical. В вертикальном
+режиме без align используется stretch. Align/justify поддерживают значения,
+для которых эталон генерирует классы; остальные CSS-настройки доступны через style.
+Wrap принимает boolean или wrap/nowrap/wrap-reverse; false не добавляет класс.
+
+Gap принимает small/medium/middle/large, число в px или CSS-строку, включая
+составной row/column gap. Preset-интервалы используют токены padding: 8/16/24px.
+Ноль сохраняется. Flex принимает CSS shorthand либо число без единицы.
+Gap/flex props имеют приоритет над одноимёнными декларациями style, как upstream.
+Component выбирает нативный HTML-тег (default=div); bind:nativeElement даёт
+текущий HTMLElement и обновляется при смене тега. Class/rootClassName/style,
+нативные атрибуты и события передаются корню. Собственные роли, tabindex,
+reset шрифта и обработчики клавиатуры не добавляются. RTL меняет визуальное
+направление, сохраняя DOM-порядок и нативный Tab.
+
+Галерея — `/ant-design#flex`, отдельная фикстура — `?fixture=flex`.
+SSR/Chromium-проверки покрывают структуру, направления, выравнивание, gap/flex,
+перенос строк, пустое содержимое, смену тега, события, фокус, темы и RTL.
+Рецепт flex воспроизводит 32 правила vendor/flex.css из закреплённого архива.
+Пользовательские Svelte-компоненты в component, prefixCls и глобальная
+конфигурация flex.vertical/class/style пока не поддержаны.
 
 ## InputNumber
 

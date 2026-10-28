@@ -14,6 +14,9 @@
 
 ### Added
 
+- Flex: направления, align/justify, wrap, preset/числовой/CSS gap и flex shorthand
+  с прямыми детьми без обёрток. Добавлены нативный component/bind:nativeElement,
+  CSS-рецепт, SSR/Chromium-проверки, изолированная фикстура и галерея.
 - Divider: horizontal/vertical, подпись string/number/Snippet, titlePlacement,
   RTL, размеры, plain, dashed/dotted и совместимые aliases. Добавлены semantic
   slots, bind:nativeElement, воспроизводимый CSS-рецепт, SSR/Chromium-проверки,

@@ -88,5 +88,22 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Divider: horizontal/vertical, подпись, размеры и варианты линий; исключена интеграция ColorPicker.\n * Корни ограничены :where(.ant-divider-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "flex",
+    "output": "src/lib/components/ant-design/vendor/flex.css",
+    "expectedRules": 32,
+    "include": [
+      "\\.ant-flex(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.ant-flex(?![-\\w])",
+        "replacement": ".ant-flex:where(.ant-flex-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Flex: направления, align/justify, wrap и preset gaps; без reset типографики.\n * Корни ограничены :where(.ant-flex-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]
