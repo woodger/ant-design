@@ -6,7 +6,7 @@ export type DividerTitlePlacement = 'start' | 'end' | 'center' | 'left' | 'right
 export type DividerSize = 'small' | 'medium' | 'middle' | 'large';
 export type DividerSemanticSlots = Partial<Record<'root' | 'rail' | 'content', string>>;
 export interface DividerSemanticInfo {
-  props: DividerProps & { orientation: DividerOrientation; titlePlacement: 'start' | 'end' | 'center'; size: DividerSize };
+  props: DividerProps & { orientation: DividerOrientation; titlePlacement: 'start' | 'end' | 'center'; size: DividerSize | undefined };
 }
 
 export interface DividerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'class' | 'style'> {

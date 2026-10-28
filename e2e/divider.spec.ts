@@ -87,6 +87,24 @@ test('Divider inherits sizes and applies plain and semantic styles with margin c
   await expect(divider.locator('.custom-divider-rail').first()).toHaveCSS('border-top-color', 'rgb(0, 128, 0)');
 });
 
+test('Divider preserves default spacing and inherits only explicitly configured sizes through nested providers', async ({ page }) => {
+  const standalone = page.locator('#divider-default');
+  const nested = page.locator('#divider-nested');
+  await expect(standalone).toHaveCSS('margin-top', '24px');
+  await expect(nested).toHaveCSS('margin-top', '24px');
+  await page.getByRole('textbox', { name: 'Divider text', exact: true }).fill('');
+  await expect(page.locator('#fixture-divider')).toHaveCSS('margin-top', '24px');
+  for (const [size, margin] of [['small', '8px'], ['middle', '16px'], ['large', '24px'], ['inherit', '24px']]) {
+    await page.getByRole('combobox', { name: 'Divider context size', exact: true }).selectOption({ label: size });
+    await expect(nested).toHaveCSS('margin-top', margin);
+    await expect(standalone).toHaveCSS('margin-top', '24px');
+  }
+  await page.getByRole('combobox', { name: 'Divider context size', exact: true }).selectOption('small');
+  await page.getByRole('combobox', { name: 'Divider size', exact: true }).selectOption('large');
+  await expect(page.locator('#fixture-divider')).toHaveCSS('margin-top', '24px');
+  await expect(nested).toHaveCSS('margin-top', '8px');
+});
+
 test('Divider follows dark compact themes and remains usable on a narrow screen when disabled', async ({ page }) => {
   const divider = page.locator('#fixture-divider');
   await page.setViewportSize({ width: 360, height: 800 });

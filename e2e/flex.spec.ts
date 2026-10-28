@@ -61,6 +61,19 @@ test('Flex preserves preset, numeric, zero and CSS gaps and the flex shorthand',
   await expect(root).toHaveCSS('flex', '0 1 auto');
 });
 
+test('Flex lets inline style override preset gaps while custom gaps override inline style', async ({ page }) => {
+  const root = page.locator('#fixture-flex');
+  const gap = page.getByRole('textbox', { name: 'Flex gap', exact: true });
+  await page.getByRole('textbox', { name: 'Flex inline gap', exact: true }).fill('99px');
+  await expect(root).toHaveCSS('gap', '99px');
+  await page.getByLabel('Numeric Flex gap').check();
+  await gap.fill('12');
+  await expect(root).toHaveCSS('gap', '12px');
+  await page.getByLabel('Numeric Flex gap').uncheck();
+  await gap.fill('2px 12px');
+  await expect(root).toHaveCSS('gap', '2px 12px');
+});
+
 test('Flex wraps on narrow screens and preserves RTL visual order without changing native tab order', async ({ page }) => {
   const root = page.locator('#fixture-flex');
   await page.setViewportSize({ width: 280, height: 800 });

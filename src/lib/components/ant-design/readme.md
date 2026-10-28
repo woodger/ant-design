@@ -138,8 +138,11 @@ Deprecated orientationMargin действует только у start/end и п�
 или строку из цифр в px. Styles.content может переопределить этот отступ.
 
 Variant=solid/dashed/dotted, dashed alias и plain повторяют классы эталона.
-Size=small/medium/large наследуется от ConfigProvider; middle — совместимый alias
-medium. Без подписи large имеет отступ 24px, medium — 16px, small — 8px;
+Size=small/medium/large наследуется от явно заданного componentSize в ConfigProvider,
+включая вложенные провайдеры; middle — совместимый alias medium. Без явного
+размера Divider сохраняет стандартный отступ 24px без подписи и 16px с подписью.
+В semantic callbacks size в этом случае undefined. Без подписи large имеет
+отступ 24px, medium — 16px, small — 8px;
 с подписью large использует 16px, как upstream. Размеры действуют горизонтально.
 Темы, compact, RTL и componentDisabled не скрывают разделитель.
 
@@ -176,7 +179,9 @@ Wrap принимает boolean или wrap/nowrap/wrap-reverse; false не до
 Gap принимает small/medium/middle/large, число в px или CSS-строку, включая
 составной row/column gap. Preset-интервалы используют токены padding: 8/16/24px.
 Ноль сохраняется. Flex принимает CSS shorthand либо число без единицы.
-Gap/flex props имеют приоритет над одноимёнными декларациями style, как upstream.
+Числовой и произвольный CSS gap, а также flex имеют приоритет над одноимёнными
+декларациями style. Preset gap задаёт CSS-класс, поэтому inline style имеет
+приоритет: gap="small" со style="gap:99px" даёт 99px, gap={12} — 12px.
 Component выбирает нативный HTML-тег (default=div); bind:nativeElement даёт
 текущий HTMLElement и обновляется при смене тега. Class/rootClassName/style,
 нативные атрибуты и события передаются корню. Собственные роли, tabindex,

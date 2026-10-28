@@ -9,6 +9,7 @@
   let gap = $state('small');
   let numeric = $state(false);
   let flex = $state('');
+  let inlineGap = $state('');
   let component = $state<'div' | 'section' | 'span'>('div');
   let empty = $state(false);
   let dark = $state(false);
@@ -36,6 +37,7 @@
   <label>Flex justify<select bind:value={justify}><option value={undefined}>default</option><option>flex-start</option><option>flex-end</option><option>start</option><option>end</option><option>center</option><option>space-between</option><option>space-around</option><option>space-evenly</option><option>stretch</option><option>normal</option><option>left</option><option>right</option></select></label>
   <label>Flex gap<input bind:value={gap} /></label><label><input type="checkbox" bind:checked={numeric} /> Numeric Flex gap</label>
   <label>Flex shorthand<input bind:value={flex} /></label>
+  <label>Flex inline gap<input bind:value={inlineGap} /></label>
   <label>Flex component<select bind:value={component}><option>div</option><option>section</option><option>span</option></select></label>
   <label><input type="checkbox" bind:checked={empty} /> Empty Flex</label>
   <label><input type="checkbox" bind:checked={dark} /> Dark Flex theme</label>
@@ -45,7 +47,7 @@
       <button type="button">Before Flex</button>
       <Flex id="fixture-flex" aria-label="Items" {component} {orientation} {vertical} wrap={wrapping} {align} {justify}
         gap={gap === '' ? undefined : numeric ? Number(gap) : gap} flex={flex || undefined} bind:nativeElement
-        class="custom-flex" rootClassName="outer-flex" style="min-height:120px;font-size:21px"
+        class="custom-flex" rootClassName="outer-flex" style={`min-height:120px;font-size:21px;${inlineGap ? `gap:${inlineGap}` : ''}`}
         children={empty ? undefined : tiles} onclick={() => { clicks++; }}
       />
       <button type="button">After Flex</button>

@@ -14,7 +14,7 @@
   let placement = $derived(titlePlacement ?? (orientation && !['horizontal', 'vertical'].includes(orientation) ? orientation : 'center'));
   let logicalPlacement = $derived<'start' | 'end' | 'center'>(placement === 'left' ? config.direction === 'rtl' ? 'end' : 'start'
     : placement === 'right' ? config.direction === 'rtl' ? 'start' : 'end' : placement as 'start' | 'end' | 'center');
-  let mergedSize = $derived(size ?? config.componentSize);
+  let mergedSize = $derived(size ?? config.explicitComponentSize);
   let hasChildren = $derived(children !== undefined && children !== null && children !== false && children !== '');
   let hasMargin = $derived(logicalPlacement !== 'center' && orientationMargin != null);
   let margin = $derived(typeof orientationMargin === 'number' || /^\d+$/.test(String(orientationMargin)) ? `${orientationMargin}px` : orientationMargin);

@@ -3,6 +3,8 @@ import { ruRU, type ComponentSize, type Locale, type ThemeConfig } from './types
 
 export interface ConfigContext {
   readonly componentSize: ComponentSize;
+  // Divider отличает явно заданный размер от общего fallback middle.
+  readonly explicitComponentSize?: ComponentSize;
   readonly componentDisabled: boolean;
   readonly direction: 'ltr' | 'rtl';
   readonly theme: Required<ThemeConfig>;

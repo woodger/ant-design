@@ -29,6 +29,7 @@
   const parent = useConfig();
   const config: ConfigContext = {
     get componentSize() { return componentSize ?? parent.componentSize; },
+    get explicitComponentSize() { return componentSize ?? parent.explicitComponentSize; },
     get componentDisabled() { return componentDisabled ?? parent.componentDisabled; },
     get direction() { return direction ?? parent.direction; },
     get theme() { return { ...parent.theme, ...theme }; },

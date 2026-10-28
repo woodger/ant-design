@@ -185,7 +185,7 @@
             "e2e/divider.spec.ts",
             "tools/ant-design-css-recipes.json"
           ],
-          "note": "ClassNames/styles поддерживают объект и callback; CSS-стили передаются строками по соглашению Svelte-библиотеки."
+          "note": "Без явного size/componentSize сохраняются стандартные отступы 24px без подписи и 16px с подписью; явно заданный размер наследуется через вложенные ConfigProvider. ClassNames/styles поддерживают объект и callback; CSS-стили передаются строками по соглашению Svelte-библиотеки."
         },
         {
           "id": "rendering",
@@ -267,7 +267,7 @@
             "e2e/flex.spec.ts",
             "tools/ant-design-css-recipes.json"
           ],
-          "note": "Small/medium/middle/large; числовые интервалы в px; нулевые значения сохраняются; gap/flex имеют приоритет над style."
+          "note": "Small/medium/middle/large; числовые интервалы в px; нулевые значения сохраняются. Числовой/CSS gap и flex имеют приоритет над style; preset gap задаёт класс, который уступает inline style."
         },
         {
           "id": "native-root",

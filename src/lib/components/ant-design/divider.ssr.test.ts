@@ -5,6 +5,16 @@ import Divider from './Divider.svelte';
 import type { DividerProps } from './divider.types';
 
 describe('Divider server rendering', () => {
+  it('keeps the upstream default spacing without an explicit size', () => {
+    const body = render(Divider, { props: {
+      classNames: ({ props }) => ({ root: props.size === undefined ? 'default-size' : 'explicit-size' })
+    } }).body;
+
+    expect(body).toContain('ant-divider-horizontal');
+    expect(body).toContain('default-size');
+    expect(body).not.toMatch(/\bant-divider-(?:md|sm)\b/);
+  });
+
   it('renders an empty separator without content rails and preserves native attributes', () => {
     const body = render(Divider, { props: { id: 'divider', 'aria-label': 'Sections', title: 'Title', class: 'custom', style: 'opacity:0.5' } }).body;
 
