@@ -1,5 +1,8 @@
 node_modules
 
+# Upstream source references
+/.upstream/
+
 # Output
 .output
 .vercel
