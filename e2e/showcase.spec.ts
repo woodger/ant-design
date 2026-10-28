@@ -1,5 +1,61 @@
 import { test, expect } from './test';
 
+test.describe('Result showcase', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/ant-design#result'); });
+
+  test('submits a valid form, focuses the outcome, and preserves edited values on return', async ({ page }, testInfo) => {
+    const fixture = page.locator('#result'); const name = fixture.getByRole('textbox', { name: 'Имя в заявке' }); const email = fixture.getByRole('textbox', { name: 'Email в заявке' });
+    await name.fill('Мария'); await email.fill('maria@example.com'); await fixture.screenshot({ path: testInfo.outputPath('result-example-form.png') });
+    await fixture.getByRole('button', { name: 'Отправить заявку', exact: true }).click(); await expect(fixture.getByRole('form', { name: 'Заявка Result', exact: true })).toHaveAttribute('aria-busy', 'true'); await expect(name).toBeDisabled();
+    const outcome = fixture.getByRole('region', { name: 'Результат отправки заявки', exact: true }); await expect(outcome.getByRole('heading', { name: 'Заявка отправлена', exact: true })).toBeVisible(); await expect(outcome).toBeFocused();
+    await expect(outcome).toContainText('Мария, maria@example.com'); await expect(outcome.locator('[aria-live], [role="alert"], [role="status"]')).toHaveCount(0);
+    await outcome.screenshot({ path: testInfo.outputPath('result-example-success.png') });
+    await outcome.getByRole('button', { name: 'Изменить заявку', exact: true }).click(); await expect(name).toHaveValue('Мария'); await expect(email).toHaveValue('maria@example.com'); await expect(name).toBeFocused();
+  });
+
+  test('keeps invalid data in Form, focuses the invalid field, and does not show a completion', async ({ page }) => {
+    const fixture = page.locator('#result'); const name = fixture.getByRole('textbox', { name: 'Имя в заявке' }); const email = fixture.getByRole('textbox', { name: 'Email в заявке' });
+    await name.fill(''); await email.fill('invalid'); await fixture.getByRole('button', { name: 'Отправить заявку', exact: true }).click();
+    await expect(name).toBeFocused(); await expect(name).toHaveAttribute('aria-invalid', 'true'); await expect(email).toHaveValue('invalid'); await expect(fixture.getByText('Проверьте email', { exact: true })).toBeVisible();
+    await expect(fixture.getByRole('region', { name: 'Результат отправки заявки', exact: true })).toHaveCount(0); await expect(fixture.getByRole('status', { name: 'Результат примера Result', exact: true })).toHaveText('Состояние: editing. Действий: 0.');
+  });
+
+  test('retains a failed submission and retries successfully with the same values', async ({ page }, testInfo) => {
+    const fixture = page.locator('#result'); await fixture.getByRole('textbox', { name: 'Имя в заявке' }).fill('Алексей'); await fixture.getByRole('textbox', { name: 'Email в заявке' }).fill('alex@example.com');
+    await fixture.getByRole('checkbox', { name: 'Ошибка отправки Result', exact: true }).check(); await fixture.getByRole('button', { name: 'Отправить заявку', exact: true }).click();
+    const outcome = fixture.getByRole('region', { name: 'Результат отправки заявки', exact: true }); await expect(outcome.getByRole('heading', { name: 'Не удалось отправить заявку', exact: true })).toBeVisible(); await expect(outcome).toBeFocused();
+    await outcome.screenshot({ path: testInfo.outputPath('result-example-error.png') });
+    await fixture.getByRole('checkbox', { name: 'Ошибка отправки Result', exact: true }).uncheck(); await outcome.getByRole('button', { name: 'Повторить отправку', exact: true }).click();
+    await expect(outcome.getByRole('heading', { name: 'Заявка отправлена', exact: true })).toBeVisible(); await expect(outcome).toBeFocused(); await expect(outcome).toContainText('Алексей, alex@example.com');
+    await outcome.getByRole('button', { name: 'Изменить заявку', exact: true }).click(); await expect(fixture.getByRole('textbox', { name: 'Имя в заявке' })).toHaveValue('Алексей'); await expect(fixture.getByRole('textbox', { name: 'Email в заявке' })).toHaveValue('alex@example.com');
+  });
+
+  test('edits an unsuccessful submission without losing the draft', async ({ page }) => {
+    const fixture = page.locator('#result'); await fixture.getByRole('textbox', { name: 'Имя в заявке' }).fill('Ольга');
+    await fixture.getByRole('checkbox', { name: 'Ошибка отправки Result', exact: true }).check(); await fixture.getByRole('button', { name: 'Отправить заявку', exact: true }).click();
+    await fixture.getByRole('heading', { name: 'Не удалось отправить заявку', exact: true }).waitFor(); await fixture.getByRole('button', { name: 'Изменить заявку', exact: true }).click();
+    const name = fixture.getByRole('textbox', { name: 'Имя в заявке' }); await expect(name).toHaveValue('Ольга'); await expect(name).toBeFocused();
+  });
+
+  test('resets pending submission without allowing its late completion to replace the form', async ({ page }) => {
+    const fixture = page.locator('#result'); await fixture.getByRole('textbox', { name: 'Имя в заявке' }).fill('Старый запрос');
+    await fixture.getByRole('button', { name: 'Отправить заявку', exact: true }).click(); await expect(fixture.getByRole('form', { name: 'Заявка Result', exact: true })).toHaveAttribute('aria-busy', 'true');
+    const reset = fixture.getByRole('button', { name: 'Сбросить пример Result', exact: true }); await reset.click(); await expect(fixture.getByRole('textbox', { name: 'Имя в заявке' })).toBeEnabled(); await page.waitForTimeout(850);
+    await expect(fixture.getByRole('textbox', { name: 'Имя в заявке' })).toHaveValue('Анна'); await expect(fixture.getByRole('region', { name: 'Результат отправки заявки', exact: true })).toHaveCount(0); await expect(reset).toBeFocused();
+    await fixture.getByRole('button', { name: 'Отправить заявку', exact: true }).click(); await expect(fixture.getByRole('heading', { name: 'Заявка отправлена', exact: true })).toBeVisible();
+  });
+
+  test('changes visual statuses and actions independently of form data and HTTP routing', async ({ page }) => {
+    const fixture = page.locator('#result'); const preview = fixture.getByRole('group', { name: 'Предпросмотр Result', exact: true });
+    await fixture.getByRole('textbox', { name: 'Имя в заявке' }).fill('Черновик');
+    for (const status of ['403', '404', '500', 'warning']) {
+      await fixture.getByRole('combobox', { name: 'Статус Result', exact: true }).click(); await page.getByRole('option', { name: status, exact: true }).click(); await expect(preview).toHaveClass(new RegExp(`ant-result-${status}`));
+    }
+    await preview.getByRole('button', { name: 'Действие Result', exact: true }).click(); await fixture.getByRole('checkbox', { name: 'Действие в Result', exact: true }).uncheck(); await expect(preview.getByRole('button')).toHaveCount(0);
+    await expect(fixture.getByRole('textbox', { name: 'Имя в заявке' })).toHaveValue('Черновик'); await expect(fixture.getByRole('status', { name: 'Результат примера Result', exact: true })).toHaveText('Состояние: editing. Действий: 1.'); expect(new URL(page.url()).pathname).toBe('/ant-design');
+  });
+});
+
 test.describe('Empty showcase', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/ant-design#empty'); });
 
@@ -1056,6 +1112,15 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders Result, its native actions and an idle form before hydration', async ({ page }) => {
+    const response = await page.goto('/ant-design#result'); expect(response?.status()).toBe(200);
+    const fixture = page.locator('#result'); const preview = fixture.getByRole('group', { name: 'Предпросмотр Result', exact: true });
+    await expect(preview.getByRole('heading', { name: 'Операция завершена', level: 3, exact: true })).toBeVisible(); await expect(preview.locator('svg')).toHaveAttribute('aria-hidden', 'true');
+    await expect(preview.getByRole('button', { name: 'Действие Result', exact: true })).toBeVisible(); await expect(preview.locator('[aria-live], [role="alert"], [role="status"]')).toHaveCount(0);
+    await expect(fixture.getByRole('textbox', { name: 'Имя в заявке' })).toHaveValue('Анна'); await expect(fixture.getByRole('form', { name: 'Заявка Result', exact: true })).not.toHaveAttribute('aria-busy');
+    await expect(fixture.getByRole('region', { name: 'Результат отправки заявки', exact: true })).toHaveCount(0); await expect(fixture.getByRole('status', { name: 'Результат примера Result', exact: true })).toHaveText('Состояние: editing. Действий: 0.');
+  });
 
   test('renders Empty illustrations, footer actions and unique paint IDs before hydration', async ({ page }) => {
     await page.goto('/ant-design#empty'); const fixture = page.locator('#empty');

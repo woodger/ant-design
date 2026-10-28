@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useConfig } from './config-context';
-  import { connectEmptyFocus } from './empty.dom';
+  import { connectFeedbackFocus } from './feedback.dom';
   import BuiltinImage from './EmptyImage.svelte';
   import { ruRU } from './types';
   import type { EmptyProps } from './empty.types';
@@ -15,7 +15,7 @@
   $effect(() => {
     const node = host;
     const interactive = Boolean(children) || typeof description === 'function';
-    if (node && interactive) return connectEmptyFocus(node);
+    if (node && interactive) return connectFeedbackFocus(node);
   });
 </script>
 

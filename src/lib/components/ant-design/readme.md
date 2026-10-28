@@ -6,7 +6,7 @@
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Form и FormItem.
+MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -93,6 +93,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Spin | Standalone и сохранённые children, spinning/delay, три размера, description/indicator snippets, блокировка busy-контента и восстановление фокуса |
 | Skeleton | Каркас первой загрузки, avatar/title/paragraph, размеры и ширины, active/round, замена children, доступный статус и фокус |
 | Empty | Пустое состояние, default/simple SVG, image/description snippets, действия, локаль, темы и восстановление фокуса |
+| Result | Семь статусов, официальные иконки/SVG, заголовок, описание, действия, подробности и восстановление фокуса |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1415,6 +1416,64 @@ semantic classNames/styles, prefixCls/rootClassName и устаревшего im
 React-константам PRESENTED_IMAGE_DEFAULT/SIMPLE соответствуют строковые значения
 image. Собственный image Snippet отвечает за свои ресурсы и анимацию.
 
+## Result
+
+```svelte
+<script lang="ts">
+  import { Button, Result } from '$lib/components/ant-design';
+  let { edit }: { edit: () => void } = $props();
+</script>
+
+<Result status="success" title="Заявка отправлена"
+  subTitle="Данные сохранены." headingLevel={2}>
+  {#snippet extra()}<Button onclick={edit}>Изменить заявку</Button>{/snippet}
+  <p>Номер заявки: 42.</p>
+</Result>
+```
+
+Обработчик edit принадлежит владельцу формы. Result показывает итог операции;
+встроенных запросов, таймеров и управления данными в компоненте нет.
+Status: success/error/info/warning и 403/404/500 в строковой или числовой форме.
+По умолчанию — info. У первых четырёх статусов официальные filled-иконки;
+у 403/404/500 — отдельные иллюстрации Ant Design с исходной палитрой.
+Эти варианты не меняют маршруты и HTTP-статусы приложения.
+
+Title и subTitle принимают string или Snippet; отсутствующие/пустые строки
+не создают текстовых контейнеров. Строки экранируются. Title — нативный
+заголовок: headingLevel от 1 до 6, по умолчанию 2. Владелец выбирает уровень
+под структуру страницы и передаёт текстовое содержимое без вложенного заголовка.
+Extra — Snippet действий; children — Snippet подробностей. Порядок чтения:
+иконка, заголовок, описание, действия, подробности. Действия остаются обычными
+controls с естественным Tab/Shift+Tab и своей клавиатурной семантикой.
+
+Icon — декоративный Snippet или false для скрытия обычной иконки.
+Как в исходном Ant Design, иллюстрации 403/404/500 имеют приоритет над icon,
+включая false. Контейнер изображения aria-hidden/inert: иконка не дублирует
+заголовок и не создаёт остановок фокуса. Собственный icon отвечает за ресурсы
+и анимацию; интерактивные элементы следует передавать в extra/children.
+
+Id/class/style и aria-describedby относятся к корню. Aria-label или
+aria-labelledby создают именованную group. Собственных live-region,
+автофокуса и перехвата Tab нет. Владелец решает, нужно ли объявление результата
+или явный перенос фокуса после отправки. Если сфокусированное действие исчезает,
+фокус восстанавливается на доступном control внутри Result или рядом с ним.
+При unmount используются сохранённые соседи текущего dialog/документа;
+явный выбор фокуса владельцем сохраняется. Механизм общий с Empty.
+
+ConfigProvider передаёт тему, compact и direction. Цвета обычных иконок,
+текст и фон подробностей используют токены; иллюстрации сохраняют исходные
+цвета. Текст и действия переносятся, SVG уменьшается на узком экране.
+Встроенного текста нет: переводы заголовков, описания и действий задаёт владелец.
+
+Галерея `/ant-design#result` переключает все статусы и показывает Form →
+success/error → редактирование/retry без потери полей. После отправки владелец
+фокусирует область итога, при редактировании — поле имени. Отдельная модель
+имитирует ответ, отклоняет повторный старт и отменяет ожидание при reset/unmount,
+поэтому позднее завершение не заменяет новый экран. Это локальный пример без API.
+
+В первой версии нет semantic classNames/styles, prefixCls/rootClassName,
+React-констант PRESENTED_IMAGE_403/404/500 и инфраструктуры страниц ошибок.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2268,6 +2327,9 @@ Tab входит в новые controls. Автоматического фоку
 Empty использует декоративное inert-изображение и обычные controls footer.
 Live-region и автофокус отсутствуют; удаление сфокусированных действий
 восстанавливает доступный фокус и сохраняет выбор владельца.
+Result предоставляет нативный заголовок выбранного уровня, декоративную иконку
+и обычные controls действий/подробностей. Он не объявляет итог автоматически;
+восстановление фокуса при удалении действий использует общий механизм с Empty.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2420,6 +2482,13 @@ unmount и замену controls, выбор владельца, Modal/Drawer и
 Галерея проверяет создание первой записи, пустой поиск, сброс фильтра,
 очистку и SSR до гидратации. Проверки Table защищают colspan, точное имя
 пустой ячейки, локальные переводы, приоритет empty snippet и loading.
+Result проверяется на SSR всех статусов, string/number исключения, приоритет
+иллюстраций, snippets, escaping, уровень заголовка и отсутствие live-region.
+Chromium проверяет иконки, Tab, inert, сохранение controls/черновика,
+удаление действий/unmount, выбор владельца, Modal/Drawer, темы/compact/RTL
+и мобильный перенос. Галерея проверяет валидацию, успех, ошибку, редактирование,
+retry без потери полей, reset/unmount во время отправки и SSR до гидратации. Модель проверяется
+с управляемыми таймерами на snapshot, duplicate start и отмену позднего ответа.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2524,9 +2593,16 @@ EmptyImage.svelte переносит геометрию es/empty/empty.js и es/
 paths, ellipse, circle, viewBox и transforms сохранены, декоративный SVG не
 дублирует описание через title. Native SVG patterns заменяют getAsSolidColor,
 накладывая fill-токен на colorBgContainer с уникальными $props.id().
-empty.dom.ts управляет focusin/MutationObserver и восстановлением после tick.
+feedback.dom.ts управляет общим для Empty/Result focusin/MutationObserver
+и восстановлением после tick.
 SVG включены в исходники и покрываются существующей MIT-лицензией Ant Design.
-Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
+[vendor/result.css](./vendor/result.css) содержит все 20 правил Result из того
+же архива; корни ограничены :where(.ant-result-css-var). Result.svelte добавляет
+нативный заголовок, snippets, перенос текста/действий и мобильные ограничения.
+ResultImage.svelte переносит геометрию и цвета es/result/unauthorized.js,
+noFound.js и serverError.js: добавлены viewBox и декоративная семантика,
+удалены SVG title. Новая лицензия для этих SVG не требуется.
+Пять filled-иконок в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.
 Их отдельная [MIT-лицензия](./vendor/LICENSE.ant-design-icons) включена в пакет.

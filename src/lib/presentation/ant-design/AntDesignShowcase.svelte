@@ -22,6 +22,7 @@
   import SpinExample from './SpinExample.svelte';
   import SkeletonExample from './SkeletonExample.svelte';
   import EmptyExample from './EmptyExample.svelte';
+  import ResultExample from './ResultExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -54,7 +55,8 @@
     ['progress', 'Progress'],
     ['spin', 'Spin'],
     ['skeleton', 'Skeleton'],
-    ['empty', 'Empty']
+    ['empty', 'Empty'],
+    ['result', 'Result']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -166,7 +168,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">30 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">31 компонент</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -436,6 +438,12 @@
           <div class="section-heading"><h3>Empty</h3></div>
           <p class="section-description">Пустое состояние, создание первой записи и возврат к данным после сброса поиска.</p>
           <div class="panel"><EmptyExample /></div>
+        </section>
+
+        <section id="result">
+          <div class="section-heading"><h2>Result</h2></div>
+          <p class="section-description">Семь статусов результата и отправка формы с сохранением данных при редактировании и повторной попытке.</p>
+          <div class="panel"><ResultExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

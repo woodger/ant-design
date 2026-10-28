@@ -9,6 +9,12 @@
 
 ### Added
 
+- Result: семь статусов, официальные иконки и иллюстрации 403/404/500,
+  string/Snippet title/subTitle, extra/children и семантический заголовок.
+  Добавлены стили Ant Design 6.6.8, темы/compact/RTL, восстановление фокуса
+  общим механизмом с Empty, SSR и Chromium-проверки. Галерея показывает
+  Form → success/error → редактирование/retry без потери данных и отменяет
+  позднее завершение при reset/unmount; маршруты и HTTP-статусы не изменены.
 - Empty: default/simple SVG, image/description snippets, скрытые части,
   действия и восстановление фокуса при удалении. Добавлены стили Ant Design
   6.6.8, локаль, темы/compact/RTL, SSR и галерея создания первой записи,

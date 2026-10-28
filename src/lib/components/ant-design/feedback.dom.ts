@@ -7,7 +7,7 @@ function available(node: HTMLElement): boolean {
   return node.isConnected && node.tabIndex >= 0 && !node.matches(':disabled') && !node.closest('[inert]') && node.getClientRects().length > 0 && node.ownerDocument.defaultView!.getComputedStyle(node).visibility === 'visible';
 }
 
-export function connectEmptyFocus(host: HTMLElement) {
+export function connectFeedbackFocus(host: HTMLElement) {
   const document = host.ownerDocument;
   let target: HTMLElement | undefined;
   let neighbors: HTMLElement[] = [];
