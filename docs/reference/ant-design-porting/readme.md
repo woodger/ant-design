@@ -62,7 +62,8 @@ Report детерминированно перезаписывает тольк�
 ## Извлечение CSS
 
 [Рецепты](../../../tools/ant-design-css-recipes.json) воспроизводят существующие
-vendor/avatar.css, avatar-group.css, badge.css, divider.css и flex.css. Остальные текущие vendor-файлы
+vendor/avatar.css, avatar-group.css, badge.css, divider.css, flex.css и statistic.css.
+Остальные текущие vendor-файлы
 этим выпуском инструмента не перегенерируются. Новый компонент получает отдельный
 проверенный рецепт: include/exclude для селекторов, replacements, keyframes,
 ожидаемое число правил, заголовок происхождения и путь вывода.

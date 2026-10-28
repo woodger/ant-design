@@ -28,6 +28,8 @@ export { default as Avatar } from './Avatar.svelte';
 export { default as AvatarGroup } from './AvatarGroup.svelte';
 export { default as Divider } from './Divider.svelte';
 export { default as Flex } from './Flex.svelte';
+export { default as Statistic } from './Statistic.svelte';
+export type { StatisticProps, StatisticValue, StatisticContent, StatisticSemanticSlots, StatisticSemanticInfo } from './statistic.types';
 export type { FlexProps, FlexAlign, FlexJustify, FlexGap } from './flex.types';
 export type { DividerProps, DividerOrientation, DividerTitlePlacement, DividerSize, DividerSemanticSlots, DividerSemanticInfo } from './divider.types';
 export { default as Checkbox } from './Checkbox.svelte';

@@ -198,5 +198,10 @@
     "id": "flex",
     "module": "./FlexFixtures.svelte",
     "root": "flex-fixture"
+  },
+  {
+    "id": "statistic",
+    "module": "./StatisticFixtures.svelte",
+    "root": "statistic-fixture"
   }
 ]

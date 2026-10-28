@@ -1933,25 +1933,92 @@
       "id": "statistic",
       "name": "Statistic",
       "category": "data-display",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Поэтапный перенос Statistic 6.6.8: базовый показатель, затем отдельные Timer/Countdown.",
       "upstreamPath": "components/statistic",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Statistic",
+          "local": [
+            "Statistic"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "skeleton"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "fixtures": [
+        "statistic"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Statistic.svelte",
+        "src/lib/components/ant-design/statistic.types.ts",
+        "src/lib/components/ant-design/statistic.engine.ts",
+        "src/lib/components/ant-design/readme.md",
+        "src/lib/presentation/ant-design/StatisticExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "number",
+          "title": "Числа/строки, группировка, precision без округления и formatter",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/statistic.engine.test.ts",
+            "src/lib/components/ant-design/statistic.ssr.test.ts",
+            "e2e/statistic.spec.ts"
+          ],
+          "note": "Форматирование строк повторяет Number.tsx эталона; научная нотация и другие неподдержанные строки сохраняются как текст."
+        },
+        {
+          "id": "content",
+          "title": "Title/prefix/suffix, valueRender, semantic slots и nativeElement",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/statistic.ssr.test.ts",
+            "e2e/statistic.spec.ts"
+          ],
+          "note": "ReactNode заменён string/number/Snippet; valueRender — Snippet<[Snippet]>; styles и valueStyle — CSS-строки. Пустой Snippet считается присутствующим содержимым."
+        },
+        {
+          "id": "loading",
+          "title": "Loading через Skeleton, SSR, темы, compact и RTL",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/statistic.ssr.test.ts",
+            "e2e/statistic.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "Заголовок сохраняется; значение при loading не монтируется. Используется существующий доступный Svelte Skeleton с его служебными обёртками и локализованным статусом."
+        },
+        {
+          "id": "timer",
+          "title": "Statistic.Timer и deprecated Countdown",
+          "state": "missing",
           "requiredForV1": true,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Следующий отдельный этап семейства: направление, формат времени, callbacks и cleanup таймеров."
+        },
+        {
+          "id": "global-config",
+          "title": "Произвольные component tokens, prefixCls и component config",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Сохраняются существующие Svelte-соглашения ConfigProvider; доступны CSS-переменные и semantic styles."
         }
       ]
     },

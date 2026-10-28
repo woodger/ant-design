@@ -17,6 +17,10 @@
 
 ### Added
 
+- Statistic: строковое форматирование чисел с precision без округления,
+  разделителями и formatter, title/prefix/suffix snippets, valueRender,
+  semantic slots и loading через Skeleton. Добавлены CSS-рецепт, unit/SSR/Chromium,
+  изолированная фикстура и пример галереи; Timer/Countdown пока не перенесены.
 - Flex: направления, align/justify, wrap, preset/числовой/CSS gap и flex shorthand
   с прямыми детьми без обёрток. Добавлены нативный component/bind:nativeElement,
   CSS-рецепт, SSR/Chromium-проверки, изолированная фикстура и галерея.

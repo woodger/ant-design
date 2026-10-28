@@ -36,6 +36,7 @@
   import AvatarGroupFixtures from './AvatarGroupFixtures.svelte';
   import DividerFixtures from './DividerFixtures.svelte';
   import FlexFixtures from './FlexFixtures.svelte';
+  import StatisticFixtures from './StatisticFixtures.svelte';
 
   const controls = createControls();
 </script>
@@ -93,6 +94,7 @@
     <AvatarGroupFixtures />
     <DividerFixtures />
     <FlexFixtures />
+    <StatisticFixtures />
 
     <BasicFixtures kind="form" {controls} />
 

@@ -1,0 +1,20 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Statistic: header/title/content/value/prefix/suffix и loading Skeleton.
+ * Корни ограничены :where(.ant-statistic-css-var).
+ * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-statistic:where(.ant-statistic-css-var){font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-statistic:where(.ant-statistic-css-var)::before,.ant-statistic:where(.ant-statistic-css-var)::after{box-sizing:border-box;}
+.ant-statistic:where(.ant-statistic-css-var) [class^="ant-statistic"],.ant-statistic:where(.ant-statistic-css-var) [class*=" ant-statistic"]{box-sizing:border-box;}
+.ant-statistic:where(.ant-statistic-css-var) [class^="ant-statistic"]::before,.ant-statistic:where(.ant-statistic-css-var) [class*=" ant-statistic"]::before,.ant-statistic:where(.ant-statistic-css-var) [class^="ant-statistic"]::after,.ant-statistic:where(.ant-statistic-css-var) [class*=" ant-statistic"]::after{box-sizing:border-box;}
+.ant-statistic:where(.ant-statistic-css-var){box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-header{padding-bottom:var(--ant-margin-xxs);}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-header .ant-statistic-title{color:var(--ant-color-text-description);font-size:var(--ant-statistic-title-font-size);}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-skeleton{padding-top:var(--ant-padding);}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-content{color:var(--ant-color-text-heading);font-size:var(--ant-statistic-content-font-size);font-family:var(--ant-font-family);}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-content .ant-statistic-content-value{display:inline-block;direction:ltr;}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-content .ant-statistic-content-prefix,.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-content .ant-statistic-content-suffix{display:inline-block;}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-content .ant-statistic-content-prefix{margin-inline-end:var(--ant-margin-xxs);}
+.ant-statistic:where(.ant-statistic-css-var) .ant-statistic-content .ant-statistic-content-suffix{margin-inline-start:var(--ant-margin-xxs);}
+.ant-statistic-css-var{--ant-statistic-title-font-size:14px;--ant-statistic-content-font-size:24px;}

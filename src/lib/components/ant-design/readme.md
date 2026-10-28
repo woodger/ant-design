@@ -7,7 +7,7 @@
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Form и FormItem.
+Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -103,6 +103,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | AvatarGroup | Типизированные items, стабильные ключи, общие размеры/форма, перекрытие, max.count и скрытые участники в Popover |
 | Divider | Направления, подпись, titlePlacement, варианты линий, размеры, semantic slots и nativeElement |
 | Flex | Прямые дети, направления, align/justify, wrap, gap/flex, нативный component и nativeElement |
+| Statistic | Числа/строки, precision без округления, разделители, formatter, snippets, semantic slots и loading |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -194,6 +195,43 @@ SSR/Chromium-проверки покрывают структуру, напра�
 Рецепт flex воспроизводит 32 правила vendor/flex.css из закреплённого архива.
 Пользовательские Svelte-компоненты в component, prefixCls и глобальная
 конфигурация flex.vertical/class/style пока не поддержаны.
+
+## Statistic
+
+```svelte
+<Statistic title="Баланс" value="123456.789" precision={2} suffix="₽" />
+```
+
+Value — число или строка (default=0). Встроенное форматирование повторяет
+Ant Design Number.tsx: группа из трёх цифр, groupSeparator="," и decimalSeparator=".".
+Precision дополняет нулями или обрезает дробную часть без округления; отрицательная
+precision убирает её. Длинные числовые строки не преобразуются в number.
+Пустая строка и .5 превращаются в 0 и 0.5; неподдержанная запись, например
+"1e6", "-" или "1.", отображается как текст. Числа с JS-научной нотацией также
+не разворачиваются. Formatter(value) получает исходный value и возвращает
+строку, число или Snippet; его результат заменяет встроенное форматирование.
+
+Title/prefix/suffix принимают string/number/Snippet, null или false. Ноль
+отображается, пустые scalar-значения не создают узел. Snippet считается
+присутствующим даже при пустом выводе. ValueRender — Snippet<[Snippet]>:
+полученный snippet выводит готовый span значения, который можно обернуть.
+ClassNames/styles поддерживают root/header/title/content/value/prefix/suffix
+и callback ({ props }) с default value/loading/separators. Styles/valueStyle
+передаются CSS-строками. Style перекрывает styles.root, styles.content —
+deprecated valueStyle. Bind:nativeElement даёт HTMLDivElement.
+
+Loading сохраняет заголовок и заменяет content существующим Skeleton с active
+и paragraph=false. Используются его доступный статус и служебные обёртки;
+formatter и valueRender скрытого значения не вызываются. Statistic не добавляет
+роль, tabindex или live region для обычного значения; их можно задать нативными
+атрибутами. В RTL значение остаётся LTR, интервалы prefix/suffix логические.
+Темы наследуют цвета; compact меняет title/content с 14/24px на 12/20px.
+
+Пример — `/ant-design#statistic`, фикстура — `?fixture=statistic`. Unit/SSR/Chromium
+проверяют форматирование, loading, snippets, semantic styles, темы, RTL и фокус.
+Рецепт statistic воспроизводит 14 правил vendor/statistic.css из закреплённого
+архива. Timer/Countdown, prefixCls и глобальный component config пока отсутствуют;
+семейство остаётся частично перенесённым в реестре.
 
 ## InputNumber
 
