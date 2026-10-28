@@ -9,6 +9,11 @@
 
 ### Added
 
+- Avatar: изображения с src/srcSet, icon/children fallback, onError, circle/square,
+  размеры из контекста или числовой size, gap и автоматическая подгонка текста.
+  Добавлены стили Ant Design 6.6.8, устойчивое доступное имя, темы/compact/RTL,
+  cleanup ResizeObserver/listeners, unit/SSR/Chromium-проверки и галерея участников
+  с Badge, выбором изображения/инициалов и сохранением профиля в Drawer.
 - Badge: числовой count, overflow/showZero/dot, пять статусов, 13 preset цветов,
   string/Snippet text, medium/small, offset и полное доступное значение.
   Добавлены стили Ant Design 6.6.8, локаль, темы/compact/RTL/reduced motion,

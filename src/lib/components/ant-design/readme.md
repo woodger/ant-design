@@ -7,7 +7,7 @@
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Badge, Form и FormItem.
+Tag, CheckableTag, Badge, Avatar, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -99,6 +99,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Tag | Статусные/preset цвета, filled/outlined/solid, snippets, отменяемое закрытие, disabled и восстановление фокуса |
 | CheckableTag | Управляемый checked/onChange, нативная toggle-кнопка, aria-pressed, disabled и snippets |
 | Badge | Числовой счётчик, overflow/showZero/dot, статусы/preset цвета, string/Snippet text, размеры, offset и доступное полное значение |
+| Avatar | Изображение, icon/children fallback, circle/square, именованные и числовые размеры, подгонка текста и доступное имя |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1703,6 +1704,71 @@ prefixCls/rootClassName и устаревших aliases. Processing исполь
 CSS-пульсацию, которая отключается при reduced motion. Экспортируются BadgeProps,
 BadgeStatus, BadgeColor, BadgeSize, BadgeText, BadgeContext и BadgeLocale.
 
+## Avatar
+
+```svelte
+<script lang="ts">
+  import { Avatar, Badge } from '$lib/components/ant-design';
+</script>
+
+<Avatar src="/anna.jpg" alt="Анна Новикова">АН</Avatar>
+<Avatar shape="square" size={48} alt="Дмитрий Орлов">ДО</Avatar>
+<Badge count={3}><Avatar alt="Вера Смирнова" size="large">ВС</Avatar></Badge>
+```
+
+Avatar — пассивное представление участника. Src принимает строку; пустой или
+отсутствующий src выбирает fallback. Изображение имеет приоритет над icon
+Snippet, затем children Snippet. При ошибке загрузки onError вызывается один раз
+для текущего изображения; false сохраняет его и отменяет fallback. Остальные
+результаты выбирают icon или children. Смена src/srcSet разрешает новую загрузку,
+в том числе возврат к ранее ошибочному адресу. Изменение только обработчика
+ошибки не повторяет загрузку. SrcSet сам по себе не включает режим изображения.
+Поддерживаются нативные draggable и crossOrigin.
+
+Ошибка привязана к версии пары src/srcSet. Позднее событие старого изображения
+игнорируется; обработчик может синхронно заменить src, и новый источник
+сохраняется. После гидратации также проверяется уже завершившаяся ошибочная
+загрузка, чтобы fallback работал с изображениями из SSR. Listeners удаляются
+при замене изображения и unmount. Компонент не загружает изображения вручную
+и не вводит таймеров или повторных сетевых запросов поверх нативного img.
+
+Shape по умолчанию circle; доступен square. Размер наследуется от
+ConfigProvider.componentSize: middle соответствует medium. Именованные размеры
+small/medium/large равны 24/32/40 px. Явный size переопределяет контекст;
+числовой size принимает положительное конечное число, включая дробное.
+Неположительное/неконечное число заменяется размером из контекста. Для числового
+размера шрифт текста равен 18 px, иконки — size/2, как в исходнике.
+Class/style относятся к корню; style имеет приоритет над числовыми размерами.
+Темы и RTL наследуются, compact сохраняет собственные размеры Avatar.
+
+Gap задаёт свободное место по краям текста, по умолчанию 4 px. Конечное
+неотрицательное значение сохраняется, иначе используется 4. Длинный текст
+уменьшается через transform без изменения содержимого; короткий не увеличивается.
+Если gap занимает всю ширину или элемент скрыт, scale остаётся 1 до следующего
+измерения. ResizeObserver следит за корнем и текстом: изменение размера,
+шрифта, children и появление скрытого элемента пересчитывают масштаб. При замене
+fallback или unmount observer отключается. На SSR инициалы видимы без измерения;
+подгонка выполняется после mount. Собственной анимации нет.
+
+Alt, aria-label или aria-labelledby задают полное имя корню с role=img;
+оно сохраняется при смене изображения на fallback. Aria-describedby описывает
+этот корень. Внутренние изображения и snippets скрыты от screen reader, а
+snippets также inert: Avatar не содержит интерактивных действий. Без имени или
+с aria-hidden=true весь Avatar декоративный. Для действия оберните Avatar
+нативной кнопкой/ссылкой, задайте ей имя и при необходимости скройте повторяющий
+его Avatar. Остановок Tab, live-region, автоматического фокуса и root onclick
+компонент не добавляет. Title задаёт нативную подсказку.
+
+Галерея `/ant-design#avatar` переключает содержимое, форму, размер, gap и отмену
+fallback. Отдельный список участников сочетает Avatar с Badge и профилем в
+Drawer. Выбор фото/инициалов/ошибочного источника сохраняется после закрытия
+профиля; сброс восстанавливает участников и не меняет предпросмотр. Пример
+использует локальные data URL без внешней сети и persistence.
+
+AvatarProps, AvatarShape и AvatarSize экспортируются через index.ts. Avatar.Group,
+размеры по breakpoint, src Snippet, Image-интеграция, semantic classNames/styles
+и prefixCls/rootClassName в первую версию не входят.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2570,6 +2636,8 @@ toggle-кнопка с aria-pressed и нативной клавиатурой. 
 Badge сохраняет интерактивные children при изменениях и скрытии индикатора.
 Полное значение доступно обычным текстом; descriptionId связывает его с control
 владельца. Автоматических объявлений и дополнительных остановок Tab нет.
+Avatar сохраняет полное имя при fallback и подгонке текста. Без имени он
+декоративный; icon/children inert и не добавляют controls в порядок Tab.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2748,6 +2816,13 @@ Chromium проверяет полные описания, отсутствие 
 нативную отправку формы, палитры, locale/темы/RTL/reduced motion и узкий экран.
 Галерея проверяет Drawer, чтение без удаления, overflow, reset и SSR;
 модель — вычисление количества, повторное чтение, новые ключи и изоляцию экземпляров.
+Avatar проверяется на размеры/gap, масштаб текста, SSR snippets и доступное имя.
+Chromium проверяет загрузку/fallback/onError, смену src/srcSet, поздние события,
+подгонку после скрытия/изменения шрифта и размеров, очистку настоящего
+ResizeObserver, нативную кнопку владельца, темы/compact/RTL и Modal/Drawer.
+Галерея проверяет начальное ошибочное изображение из SSR, профили участников,
+сохранение/сброс, узкий экран и рендеринг до гидратации; модель — изоляцию и
+обновление только выбранного участника.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2881,6 +2956,13 @@ antStatusProcessing из того же архива. Селекторы Radio/Sp
 сохранены. Badge.svelte добавляет standalone-позиционирование без ScrollNumber,
 описания, логические offsets, обводку под фон темы и reduced motion.
 Новые зависимости, иконки и лицензии не добавлены.
+[vendor/avatar.css](./vendor/avatar.css) содержит 16 правил Avatar из того же
+архива: Group и интеграции с Image/anticon исключены, declarations сохранены.
+Корни ограничены :where(.ant-avatar-css-var), исходный класс токенов заменён
+на .ant-avatar-css-var. Avatar.svelte добавляет Svelte snippets, доступное имя,
+версию источника изображения и нативные listeners с cleanup; avatar.dom.ts
+подгоняет текст через ResizeObserver без React/@rc-component зависимостей.
+Существующая MIT-лицензия сохранена; новые зависимости и сторонние иконки не добавлены.
 Пять filled-иконок в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

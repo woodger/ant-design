@@ -1,0 +1,22 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Avatar image/icon/text; исключены Group и интеграции с Image/anticon.
+ * Корни ограничены :where(.ant-avatar-css-var).
+ * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-avatar-css-var{font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-avatar-css-var::before,.ant-avatar-css-var::after{box-sizing:border-box;}
+.ant-avatar-css-var [class^="ant-avatar"],.ant-avatar-css-var [class*=" ant-avatar"]{box-sizing:border-box;}
+.ant-avatar-css-var [class^="ant-avatar"]::before,.ant-avatar-css-var [class*=" ant-avatar"]::before,.ant-avatar-css-var [class^="ant-avatar"]::after,.ant-avatar-css-var [class*=" ant-avatar"]::after{box-sizing:border-box;}
+.ant-avatar:where(.ant-avatar-css-var){box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text-light-solid);font-size:var(--ant-avatar-text-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);position:relative;display:inline-flex;justify-content:center;align-items:center;overflow:hidden;white-space:nowrap;text-align:center;vertical-align:middle;background:var(--ant-color-text-placeholder);border:var(--ant-line-width) var(--ant-line-type) transparent;width:var(--ant-avatar-container-size);height:var(--ant-avatar-container-size);border-radius:50%;}
+.ant-avatar-image{background:transparent;}
+.ant-avatar:where(.ant-avatar-css-var).ant-avatar-square{border-radius:var(--ant-border-radius);}
+.ant-avatar:where(.ant-avatar-css-var).ant-avatar-icon{font-size:var(--ant-avatar-icon-font-size);}
+.ant-avatar-lg{width:var(--ant-avatar-container-size-lg);height:var(--ant-avatar-container-size-lg);border-radius:50%;font-size:var(--ant-avatar-text-font-size-lg);}
+.ant-avatar-lg.ant-avatar-square{border-radius:var(--ant-border-radius-lg);}
+.ant-avatar-lg.ant-avatar-icon{font-size:var(--ant-avatar-icon-font-size-lg);}
+.ant-avatar-sm{width:var(--ant-avatar-container-size-sm);height:var(--ant-avatar-container-size-sm);border-radius:50%;font-size:var(--ant-avatar-text-font-size-sm);}
+.ant-avatar-sm.ant-avatar-square{border-radius:var(--ant-border-radius-sm);}
+.ant-avatar-sm.ant-avatar-icon{font-size:var(--ant-avatar-icon-font-size-sm);}
+.ant-avatar:where(.ant-avatar-css-var) >img{display:block;width:100%;height:100%;object-fit:cover;}
+.ant-avatar-css-var{--ant-avatar-container-size:32px;--ant-avatar-container-size-lg:40px;--ant-avatar-container-size-sm:24px;--ant-avatar-text-font-size:14px;--ant-avatar-text-font-size-lg:14px;--ant-avatar-text-font-size-sm:14px;--ant-avatar-icon-font-size:18px;--ant-avatar-icon-font-size-lg:24px;--ant-avatar-icon-font-size-sm:14px;--ant-avatar-group-space:4px;--ant-avatar-group-overlapping:-8px;--ant-avatar-group-border-color:#ffffff;}

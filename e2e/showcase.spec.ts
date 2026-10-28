@@ -1,5 +1,50 @@
 import { test, expect } from './test';
 
+test.describe('Avatar showcase', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/ant-design#avatar'); });
+
+  test('fits live initials while retaining the full participant name', async ({ page }, testInfo) => {
+    const fixture = page.locator('#avatar'); const avatar = fixture.locator('#showcase-avatar-preview'); await fixture.getByRole('textbox', { name: 'Текст Avatar', exact: true }).fill('LONGUSERNAME'); await expect(avatar).toHaveAccessibleName('Анна Новикова');
+    await expect.poll(() => avatar.locator('.ant-avatar-string').evaluate(node => node.getBoundingClientRect().width)).toBeCloseTo(24, 0); await fixture.getByRole('textbox', { name: 'Имя Avatar', exact: true }).fill('Анна — руководитель проекта'); await expect(avatar).toHaveAccessibleName('Анна — руководитель проекта'); await fixture.screenshot({ path: testInfo.outputPath('avatar-example-light.png') });
+  });
+
+  test('switches image error fallback icon shape and numeric size', async ({ page }) => {
+    const fixture = page.locator('#avatar'); const avatar = fixture.locator('#showcase-avatar-preview'); const mode = fixture.getByRole('combobox', { name: 'Содержимое Avatar', exact: true });
+    await mode.click(); await page.getByRole('option', { name: 'Ошибка изображения', exact: true }).click(); await expect(avatar.locator('.ant-avatar-string')).toHaveText('АН'); await expect(fixture.locator('#avatar-example-errors')).toHaveText('Ошибок изображения в предпросмотре: 1.'); await expect(avatar.locator('img')).toHaveCount(0);
+    await mode.click(); await page.getByRole('option', { name: 'Изображение', exact: true }).click(); await expect.poll(() => avatar.locator('img').evaluate(node => node instanceof HTMLImageElement && node.complete && node.naturalWidth > 0)).toBe(true);
+    await mode.click(); await page.getByRole('option', { name: 'Иконка', exact: true }).click(); await expect(avatar.locator('svg')).toBeVisible(); await expect(avatar.locator('img')).toHaveCount(0); await fixture.getByRole('combobox', { name: 'Форма Avatar', exact: true }).click(); await page.getByRole('option', { name: 'square', exact: true }).click(); await expect(avatar).toHaveClass(/ant-avatar-square/);
+    await fixture.getByRole('combobox', { name: 'Размер Avatar', exact: true }).click(); await page.getByRole('option', { name: 'custom', exact: true }).click(); await fixture.getByRole('spinbutton', { name: 'Числовой размер Avatar', exact: true }).fill('64'); await expect(avatar).toHaveCSS('width', '64px');
+  });
+
+  test('lets the preview owner cancel fallback and retry after changing the source', async ({ page }) => {
+    const fixture = page.locator('#avatar'); const avatar = fixture.locator('#showcase-avatar-preview'); const mode = fixture.getByRole('combobox', { name: 'Содержимое Avatar', exact: true }); await fixture.getByRole('checkbox', { name: 'Отменять fallback Avatar', exact: true }).check(); await mode.click(); await page.getByRole('option', { name: 'Ошибка изображения', exact: true }).click();
+    await expect(fixture.locator('#avatar-example-errors')).toContainText(': 1.'); await expect(avatar.locator('img')).toHaveCount(1); await expect(avatar.locator('.ant-avatar-string')).toHaveCount(0); await expect(avatar).toHaveAccessibleName('Анна Новикова');
+    await mode.click(); await page.getByRole('option', { name: 'Инициалы', exact: true }).click(); await fixture.getByRole('checkbox', { name: 'Отменять fallback Avatar', exact: true }).uncheck(); await mode.click(); await page.getByRole('option', { name: 'Ошибка изображения', exact: true }).click(); await expect(avatar.locator('.ant-avatar-string')).toHaveText('АН'); await expect(fixture.locator('#avatar-example-errors')).toContainText(': 2.');
+  });
+
+  test('recovers an initial failed image and retains participant picture changes across Drawer reopening', async ({ page }) => {
+    const fixture = page.locator('#avatar'); const list = fixture.getByRole('list', { name: 'Участники Avatar', exact: true }); const vera = list.getByRole('listitem').filter({ hasText: 'Вера Смирнова' }); await expect(vera.locator('.ant-avatar-string')).toHaveText('ВС'); await expect(vera.locator('.ant-avatar img')).toHaveCount(0); await expect(list.getByRole('img')).toHaveCount(0);
+    const opener = fixture.getByRole('button', { name: 'Открыть профиль Анна Новикова', exact: true }); const original = await opener.elementHandle(); await opener.click(); const dialog = page.getByRole('dialog', { name: 'Профиль участника Avatar', exact: true }); const avatar = dialog.locator('#showcase-avatar-profile'); const root = await avatar.elementHandle(); await expect(avatar).toHaveAccessibleName('Анна Новикова');
+    const change = dialog.getByRole('button', { name: 'Показать инициалы участника', exact: true }); await change.click(); await expect(change).toBeFocused(); await expect(avatar.locator('.ant-avatar-string')).toHaveText('АН'); expect(await avatar.evaluate((node, previous) => node === previous, root)).toBe(true);
+    await page.keyboard.press('Escape'); await expect(opener).toBeFocused(); expect(await opener.evaluate((node, previous) => node === previous, original)).toBe(true); await opener.click(); await expect(avatar.locator('.ant-avatar-string')).toHaveText('АН'); await dialog.getByRole('button', { name: 'Показать фото участника', exact: true }).click(); await expect.poll(() => avatar.locator('img').evaluate(node => node instanceof HTMLImageElement && node.complete && node.naturalWidth > 0)).toBe(true); await dialog.getByRole('button', { name: 'Повредить фото участника', exact: true }).click(); await expect(avatar.locator('.ant-avatar-string')).toHaveText('АН'); await expect(avatar).toHaveAccessibleName('Анна Новикова');
+  });
+
+  test('resets participant pictures without changing preview inputs or unread counts', async ({ page }) => {
+    const fixture = page.locator('#avatar'); await fixture.getByRole('textbox', { name: 'Текст Avatar', exact: true }).fill('XYZ'); await fixture.getByRole('button', { name: 'Открыть профиль Анна Новикова', exact: true }).click(); const dialog = page.getByRole('dialog', { name: 'Профиль участника Avatar', exact: true }); await dialog.getByRole('button', { name: 'Показать инициалы участника', exact: true }).click(); await page.keyboard.press('Escape'); await fixture.getByRole('button', { name: 'Сбросить участников Avatar', exact: true }).click();
+    const list = fixture.getByRole('list', { name: 'Участники Avatar', exact: true }); await expect(list.getByRole('listitem')).toHaveCount(3); await expect.poll(() => list.getByRole('listitem').first().locator('.ant-avatar img').evaluate(node => node instanceof HTMLImageElement && node.complete && node.naturalWidth > 0)).toBe(true); await expect(list.locator('.ant-badge-count')).toHaveText(['3', '1']); await expect(fixture.getByRole('textbox', { name: 'Текст Avatar', exact: true })).toHaveValue('XYZ'); await expect(fixture.locator('#showcase-avatar-preview .ant-avatar-string')).toHaveText('XYZ');
+  });
+
+  test('renders a dark participant profile with a named text fallback', async ({ page }, testInfo) => {
+    await page.getByRole('button', { name: '◐ Тёмная тема', exact: true }).click(); await page.locator('#avatar').getByRole('button', { name: 'Открыть профиль Вера Смирнова', exact: true }).click(); const dialog = page.getByRole('dialog', { name: 'Профиль участника Avatar', exact: true }); const avatar = dialog.locator('#showcase-avatar-profile'); await expect(avatar.locator('.ant-avatar-string')).toHaveText('ВС'); await expect(avatar).toHaveAccessibleName('Вера Смирнова'); await expect(avatar).toHaveCSS('background-color', 'rgba(255, 255, 255, 0.25)'); await dialog.screenshot({ path: testInfo.outputPath('avatar-profile-dark.png') });
+  });
+
+  test('fits long initials roster and profile controls on a 320px viewport', async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 320, height: 800 }); const fixture = page.locator('#avatar'); const initialWidth = await page.evaluate(() => document.documentElement.scrollWidth); await fixture.getByRole('textbox', { name: 'Текст Avatar', exact: true }).fill('LongUnbrokenParticipantName'.repeat(8)); await expect.poll(() => fixture.locator('#showcase-avatar-preview .ant-avatar-string').evaluate(node => node.getBoundingClientRect().width)).toBeCloseTo(24, 0);
+    const bounds = await fixture.evaluate(node => ({ right: node.getBoundingClientRect().right, width: node.clientWidth, scroll: node.scrollWidth })); expect(bounds.right).toBeLessThanOrEqual(320); expect(bounds.scroll).toBeLessThanOrEqual(bounds.width + 1); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(initialWidth); await fixture.screenshot({ path: testInfo.outputPath('avatar-example-mobile.png') });
+    await fixture.getByRole('button', { name: 'Открыть профиль Анна Новикова', exact: true }).click(); const dialog = page.getByRole('dialog', { name: 'Профиль участника Avatar', exact: true }); await expect(dialog.getByRole('button', { name: 'Повредить фото участника', exact: true })).toBeVisible(); await dialog.screenshot({ path: testInfo.outputPath('avatar-profile-mobile.png') });
+  });
+});
+
 test.describe('Badge showcase', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/ant-design#badge'); });
 
@@ -1269,6 +1314,10 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders Avatar initials names and participant badges before hydration', async ({ page }) => {
+    await page.goto('/ant-design#avatar'); const fixture = page.locator('#avatar'); const preview = fixture.locator('#showcase-avatar-preview'); await expect(preview).toHaveAccessibleName('Анна Новикова'); await expect(preview.locator('.ant-avatar-string')).toHaveText('АН'); await expect(preview.locator('.ant-avatar-string')).toBeVisible(); await expect(fixture.getByRole('list', { name: 'Участники Avatar', exact: true }).getByRole('listitem')).toHaveCount(3); await expect(fixture.locator('.ant-badge-count')).toHaveText(['3', '1']); await expect(fixture.locator('#avatar-example-errors')).toContainText(': 0.'); await expect(fixture.locator('.ant-avatar[aria-live], .ant-avatar[tabindex]')).toHaveCount(0); await expect(page.getByRole('dialog', { name: 'Профиль участника Avatar', exact: true })).toHaveCount(0);
+  });
 
   test('renders Badge counts descriptions and passive statuses before hydration', async ({ page }) => {
     await page.goto('/ant-design#badge'); const fixture = page.locator('#badge'); await expect(fixture.locator('#showcase-badge-preview sup')).toHaveText('5'); await expect(fixture.getByRole('button', { name: 'Кнопка с Badge', exact: true })).toHaveAccessibleDescription('Количество: 5'); await expect(fixture.getByRole('button', { name: 'Открыть уведомления Badge', exact: true })).toHaveAccessibleDescription('Количество: 2');

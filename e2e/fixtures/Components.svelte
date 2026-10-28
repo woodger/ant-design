@@ -31,6 +31,7 @@
   import StepsFixtures from './StepsFixtures.svelte';
   import TagFixtures from './TagFixtures.svelte';
   import BadgeFixtures from './BadgeFixtures.svelte';
+  import AvatarFixtures from './AvatarFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -125,6 +126,7 @@
     <StepsFixtures />
     <TagFixtures />
     <BadgeFixtures />
+    <AvatarFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>
