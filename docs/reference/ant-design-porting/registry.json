@@ -1920,7 +1920,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "tooltip"
       ],
       "upstreamPackages": [
         {
@@ -1992,10 +1993,13 @@
         {
           "id": "tooltip",
           "title": "Tooltip отдельных options",
-          "state": "missing",
+          "state": "supported",
           "requiredForV1": false,
-          "evidence": [],
-          "note": "Tooltip не включён в первый этап; title и доступное имя icon-only options доступны."
+          "evidence": [
+            "src/lib/components/ant-design/segmented.ssr.test.ts",
+            "e2e/segmented.spec.ts"
+          ],
+          "note": "Строка либо локальные TooltipProps; существующий Tooltip использует span с display:contents и native popover. Проверяются block, disabled option, клавиатура и измерения thumb."
         },
         {
           "id": "global-config",

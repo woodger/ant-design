@@ -1,6 +1,7 @@
 import type { Snippet } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
 import type { ComponentSize } from './types';
+import type { TooltipProps } from './tooltip.types';
 
 export type SegmentedValue = string | number;
 export interface SegmentedOption<Value extends SegmentedValue = SegmentedValue> {
@@ -11,6 +12,7 @@ export interface SegmentedOption<Value extends SegmentedValue = SegmentedValue> 
   'aria-label'?: string;
   disabled?: boolean;
   class?: string;
+  tooltip?: string | Omit<TooltipProps, 'children'>;
 }
 export type SegmentedSemanticSlots = Partial<Record<'root' | 'item' | 'label' | 'icon', string>>;
 export interface SegmentedProps<Value extends SegmentedValue = SegmentedValue> extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'class' | 'style' | 'onchange'> {

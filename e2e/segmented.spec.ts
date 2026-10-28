@@ -160,3 +160,44 @@ test('Segmented thumb ends on the selected option in RTL and vertical layouts', 
     await expect(thumb).toHaveCount(0);
   }
 });
+
+test('Segmented option tooltips preserve block geometry, keyboard selection and thumb measurement', async ({ page }) => {
+  const root = page.locator('#fixture-segmented');
+  await page.getByLabel('Block Segmented').check();
+  await page.getByLabel('Segmented tooltips', { exact: true }).check();
+  const widths = await root.locator('label').evaluateAll(nodes => nodes.map(node => node.getBoundingClientRect().width));
+  expect(Math.max(...widths) - Math.min(...widths)).toBeLessThan(1);
+  await root.getByText('Weekly', { exact: true }).hover();
+  await expect(page.getByRole('tooltip')).toHaveText('Weekly report');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('tooltip')).toBeHidden();
+  await root.getByRole('radio', { name: 'Zero', exact: true }).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(root.getByRole('radio', { name: 'Weekly', exact: true })).toBeChecked();
+  await expect(root.getByRole('radio', { name: 'Weekly', exact: true })).toBeFocused();
+  await root.evaluate(node => {
+    const element = node as HTMLElement;
+    element.style.setProperty('--ant-motion-duration-slow', '2s');
+    element.style.transform = 'scale(0.8)';
+    element.style.transformOrigin = 'left top';
+  });
+  await root.getByText('Monthly', { exact: true }).click();
+  await expect(root.locator('.ant-segmented-thumb')).toHaveCount(1);
+  await root.locator('.ant-segmented-thumb').evaluate(node => {
+    const animation = node.getAnimations()[0];
+    animation.pause();
+    animation.currentTime = Number(animation.effect!.getTiming().duration) - 1;
+  });
+  const overlay = (await root.locator('.ant-segmented-thumb').boundingBox())!;
+  const target = (await root.locator('label').filter({ hasText: 'Monthly' }).boundingBox())!;
+  expect(Math.abs(overlay.x - target.x)).toBeLessThan(1);
+  expect(Math.abs(overlay.width - target.width)).toBeLessThan(1);
+  await root.locator('.ant-segmented-thumb').evaluate(node => node.getAnimations().forEach(animation => animation.finish()));
+  await expect(root.locator('.ant-segmented-item-selected')).toContainText('Monthly');
+  await page.getByLabel('Disabled weekly option').check();
+  await root.getByText('Weekly', { exact: true }).hover();
+  await expect(page.getByRole('tooltip')).toHaveText('Weekly report');
+  const bounds = (await root.getByText('Weekly', { exact: true }).boundingBox())!;
+  await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+  await expect(root.getByRole('radio', { name: 'Monthly', exact: true })).toBeChecked();
+});

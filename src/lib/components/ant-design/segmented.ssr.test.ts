@@ -35,4 +35,11 @@ describe('Segmented SSR', () => {
     expect(body).toContain('ant-segmented-block');
     expect(body).not.toContain('tabindex="0"');
   });
+  it('renders tooltip options with the existing hidden popover without changing checked inputs', () => {
+    const body = render(Segmented, { props: { options: [{ value: 'week', label: 'Weekly', tooltip: 'Weekly report' }] } }).body;
+    expect(body).toContain('display:contents');
+    expect(body).toContain('Weekly report');
+    expect(body).toContain('popover="manual"');
+    expect(body).toContain('checked=""');
+  });
 });

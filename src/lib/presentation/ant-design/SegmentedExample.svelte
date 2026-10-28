@@ -5,5 +5,5 @@
   const totals: Record<string, number> = { day: 12, week: 58, month: 211 };
 </script>
 
-<Segmented aria-label="Период отчёта" options={[{ value: 'day', label: 'День' }, { value: 'week', label: 'Неделя' }, { value: 'month', label: 'Месяц' }]} bind:value={period} />
+<Segmented aria-label="Период отчёта" options={[{ value: 'day', label: 'День' }, { value: 'week', label: 'Неделя', tooltip: 'Показатели за последние семь дней' }, { value: 'month', label: 'Месяц' }]} bind:value={period} />
 <p>Выполнено задач: <strong>{totals[String(period)]}</strong></p>

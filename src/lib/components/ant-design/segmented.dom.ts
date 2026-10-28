@@ -7,9 +7,8 @@ export function animateSegmentedThumb(group: HTMLElement, from: HTMLElement, to:
   if (reduced.matches || !from.getClientRects().length || !to.getClientRects().length || !(duration > 0)) return () => {};
 
   function geometry(node: HTMLElement) {
-    const root = group.getBoundingClientRect();
-    const rect = node.getBoundingClientRect();
-    return { x: rect.left - root.left, y: rect.top - root.top, width: rect.width, height: rect.height };
+    // MotionThumb эталона измеряет layout, а не масштабированные экранные rect.
+    return { x: node.offsetLeft, y: node.offsetTop, width: node.clientWidth, height: node.clientHeight };
   }
   const first = geometry(from);
   const last = geometry(to);

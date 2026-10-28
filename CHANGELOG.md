@@ -19,12 +19,11 @@
 
 ### Added
 
-- Segmented thumb: геометрия labels, Web Animations API, RTL/vertical,
-  отмена повторного движения, resize и reduced motion с очисткой ресурсов.
-  Добавлены браузерные проверки конечных координат и lifecycle.
 - Segmented: типизированные options/value, defaultValue/onChange, native radio,
-  клавиатура, размеры, block/round, semantic slots, темы и RTL. Добавлены CSS-рецепт,
-  unit/SSR/Chromium, отдельная фикстура и галерея; thumb motion и tooltip пока отсутствуют.
+  клавиатура, размеры, block/round, semantic slots, темы и RTL. Добавлены thumb
+  через Web Animations API с отменой/resize/reduced motion и option.tooltip через
+  существующий Tooltip, включая disabled options и block/scale-геометрию.
+  Добавлены CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.
 - StatisticTimer и совместимый StatisticCountdown: countup/countdown, формат
   длительности, onChange/onFinish, стабильный SSR-placeholder, cleanup и защита
   от поздних callbacks. Добавлены unit/SSR/Chromium, отдельная фикстура и запуск

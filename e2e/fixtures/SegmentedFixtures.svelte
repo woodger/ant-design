@@ -14,13 +14,14 @@
   let compact = $state(false);
   let custom = $state(false);
   let rich = $state(false);
+  let tooltips = $state(false);
   let reversed = $state(false);
   let remove = $state(false);
   let mounted = $state(true);
   let nativeElement = $state<HTMLDivElement>();
   let items = $derived<SegmentedOption[]>([
     { value: 0, label: 'Zero' },
-    { value: 'week', label: rich ? weekLabel : 'Weekly', icon: rich ? icon : undefined, disabled: optionDisabled },
+    { value: 'week', label: rich ? weekLabel : 'Weekly', icon: rich ? icon : undefined, disabled: optionDisabled, tooltip: tooltips ? { title: 'Weekly report', mouseEnterDelay: 0, mouseLeaveDelay: 0 } : undefined },
     ...remove ? [] : [{ value: 'month', label: 'Monthly' }]
   ]);
   let options = $derived(reversed ? [...items].reverse() : items);
@@ -42,6 +43,7 @@
   <label><input type="checkbox" bind:checked={compact} /> Compact Segmented theme</label>
   <label><input type="checkbox" bind:checked={custom} /> Custom Segmented slots</label>
   <label><input type="checkbox" bind:checked={rich} /> Rich Segmented labels</label>
+  <label><input type="checkbox" bind:checked={tooltips} /> Segmented tooltips</label>
   <label><input type="checkbox" bind:checked={reversed} /> Reverse Segmented options</label>
   <label><input type="checkbox" bind:checked={remove} /> Remove monthly option</label>
   <label><input type="checkbox" bind:checked={mounted} /> Mount Segmented</label>
