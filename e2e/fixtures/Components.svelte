@@ -28,6 +28,7 @@
   import SkeletonFixtures from './SkeletonFixtures.svelte';
   import EmptyFixtures from './EmptyFixtures.svelte';
   import ResultFixtures from './ResultFixtures.svelte';
+  import StepsFixtures from './StepsFixtures.svelte';
 
   const controls = createControls();
   const options = [
@@ -119,6 +120,7 @@
     <SkeletonFixtures />
     <EmptyFixtures />
     <ResultFixtures />
+    <StepsFixtures />
 
     <section id="form-fixture" aria-label="Form fixture">
       <label><input type="checkbox" bind:checked={controls.horizontalForm} /> Horizontal form</label>

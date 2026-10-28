@@ -6,7 +6,7 @@
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Form и FormItem.
+MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -94,6 +94,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Skeleton | Каркас первой загрузки, avatar/title/paragraph, размеры и ширины, active/round, замена children, доступный статус и фокус |
 | Empty | Пустое состояние, default/simple SVG, image/description snippets, действия, локаль, темы и восстановление фокуса |
 | Result | Семь статусов, официальные иконки/SVG, заголовок, описание, действия, подробности и восстановление фокуса |
+| Steps | Управляемые этапы, статусы, snippets, нативные кнопки, horizontal/vertical, medium/small, локаль, темы и восстановление фокуса |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1474,6 +1475,81 @@ success/error → редактирование/retry без потери пол�
 В первой версии нет semantic classNames/styles, prefixCls/rootClassName,
 React-констант PRESENTED_IMAGE_403/404/500 и инфраструктуры страниц ошибок.
 
+## Steps
+
+```svelte
+<script lang="ts">
+  import { Steps } from '$lib/components/ant-design';
+  let current = $state(0);
+</script>
+
+<Steps {current} onChange={index => { current = index; }} items={[
+  { key: 'data', title: 'Данные', content: 'Заполните форму' },
+  { key: 'review', title: 'Проверка', subTitle: 'Перед отправкой' },
+  { key: 'send', title: 'Отправка', disabled: true }
+]} />
+```
+
+Steps показывает этапы процесса. Current управляется владельцем и отсчитывается
+от нуля; onChange сообщает запрошенный индекс, не меняя current самостоятельно.
+Владелец может проверить поля перед принятием перехода. Повторный выбор текущего
+шага, disabled и внешние обновления не вызывают callback. Без onChange список
+пассивный и не создаёт остановок Tab. Привязка bind:current не используется.
+
+Items имеют обязательные стабильные строковые key и title. При повторении key
+остаётся первое вхождение; индексы относятся к этому нормализованному списку.
+Пустой список допустим. Конечное current округляется вниз и ограничивается
+диапазоном 0..items.length; NaN/Infinity дают 0. Current=items.length отмечает
+все автоматические шаги завершёнными без aria-current. Нормализация не
+перезаписывает значение владельца и не генерирует callbacks.
+
+Автоматические статусы: finish до current, process на current, wait после него.
+Status меняет состояние текущего шага на wait/process/finish/error;
+items.status имеет приоритет над вычисленным состоянием. Disabled ограничивает
+выбор и не меняет статус или current. Корневой disabled наследует
+ConfigProvider.componentDisabled; false явно снимает его, сохраняя items.disabled.
+
+Title/subTitle/content принимают string или Snippet; icon — декоративный Snippet.
+Строки экранируются. Заголовок и подзаголовок находятся в нативной кнопке выбора
+и должны содержать только текст/phrasing-разметку без вложенных controls.
+Content находится отдельно и допускает блочную разметку; панели с полями
+и действиями остаются у владельца. Иконки и линии
+aria-hidden; icon также inert. Check/close используют существующий Icon.
+Выбранный шаг помечен aria-current="step"; доступное описание кнопки содержит
+локализованный статус и content. Собственных live-region и автофокуса нет.
+
+Список использует ol/list, кнопки — естественные Tab/Shift+Tab, Enter и Space.
+Это не tablist: содержимое и переходы принадлежат владельцу. При удалении или
+отключении сфокусированного шага фокус переходит на следующий доступный шаг,
+затем предыдущий. Keyed-перестановка сохраняет сфокусированную кнопку.
+Если шагов/кнопок больше нет или Steps размонтирован, выбирается доступный
+сосед текущего dialog/документа. Явный выбор владельца сохраняется.
+
+Orientation: horizontal/vertical, по умолчанию horizontal. Responsive=true
+переключает горизонтальный список в вертикальный при ширине viewport меньше
+532px; SSR до гидратации не измеряет viewport и использует orientation.
+При responsive=false сохраняется горизонтальная ориентация с внутренней
+прокруткой при нехватке места. Size: medium/small; отсутствующий size наследует
+small из ConfigProvider, остальные общие размеры дают medium.
+Темы, compact, primary и RTL используют токены. Reduced motion отключает
+встроенные transitions. Id/class/style и aria-describedby относятся к ol;
+aria-label/aria-labelledby задают имя, по умолчанию locale.steps.label.
+
+Locale.steps содержит label/wait/process/finish/error. RuRU и enUS предоставляют
+все строки; вложенные частичные переводы сохраняют значения родительского
+ConfigProvider. Отсутствующие значения дополняются ruRU. Тексты items задаёт владелец.
+
+Галерея `/ant-design#steps` показывает независимый предпросмотр и многошаговую
+заявку: данные → проверка → отправка → Result. Form проверяет поля, владелец
+открывает следующие шаги и фокусирует панель/ошибочное поле. Возврат и retry
+сохраняют данные; reset/unmount отменяют ожидание и игнорируют поздние результаты.
+Модель отправки общая с примером Result. Сетевых запросов и сохранения в storage нет.
+
+Первая версия использует type=default, variant=filled и titlePlacement=horizontal.
+Dot/navigation/inline/panel, outlined, percent, initial, maxCount, ellipsis,
+iconRender, semantic classNames/styles и устаревшие direction/description/
+labelPlacement/progressDot отложены.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2330,6 +2406,10 @@ Live-region и автофокус отсутствуют; удаление сф�
 Result предоставляет нативный заголовок выбранного уровня, декоративную иконку
 и обычные controls действий/подробностей. Он не объявляет итог автоматически;
 восстановление фокуса при удалении действий использует общий механизм с Empty.
+Steps использует именованный упорядоченный список и нативные кнопки выбора.
+Aria-current обозначает текущий шаг, описание кнопки сообщает статус и content.
+Фокус сохраняется при перестановке и восстанавливается при удалении/отключении;
+live-region отсутствует, переходами и фокусом панели управляет владелец процесса.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2489,6 +2569,13 @@ Chromium проверяет иконки, Tab, inert, сохранение contr
 и мобильный перенос. Галерея проверяет валидацию, успех, ошибку, редактирование,
 retry без потери полей, reset/unmount во время отправки и SSR до гидратации. Модель проверяется
 с управляемыми таймерами на snapshot, duplicate start и отмену позднего ответа.
+Steps проверяется на нормализацию индексов/ключей, приоритет статусов и SSR без
+DOM/таймеров. Chromium проверяет управляемый выбор, нативную клавиатуру, passive
+режим, status/snippets, disabled, удаление/перестановку/unmount, Modal/Drawer,
+локаль/темы/compact/RTL/reduced motion и responsive/внутреннюю прокрутку.
+Галерея проверяет валидацию переходов, сохранение полей, отправку/Result/retry,
+reset/unmount, мобильную компоновку и SSR до гидратации. Модель проверяет
+отмену pending validation/submission и защиту от позднего завершения.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2602,6 +2689,13 @@ SVG включены в исходники и покрываются сущес�
 ResultImage.svelte переносит геометрию и цвета es/result/unauthorized.js,
 noFound.js и serverError.js: добавлены viewBox и декоративная семантика,
 удалены SVG title. Новая лицензия для этих SVG не требуется.
+[vendor/steps.css](./vendor/steps.css) содержит 66 правил default/filled Steps
+из того же архива. Из комбинированных селекторов исключены отложенные варианты;
+корни ограничены :where(.ant-steps-css-var), role-button selectors адаптированы
+к классу интерактивного шага. Declarations сохранены. Steps.svelte адаптирует
+структуру es/steps и нативные кнопки, локаль, responsive и reduced motion;
+steps.dom.ts восстанавливает фокус шагов и использует общий feedback.dom.ts
+при unmount. React/@rc-component зависимости, новые иконки и лицензии не добавлены.
 Пять filled-иконок в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

@@ -9,6 +9,12 @@
 
 ### Added
 
+- Steps: управляемый current/onChange, стабильные items, четыре статуса,
+  title/subTitle/content/icon snippets, horizontal/vertical и medium/small.
+  Добавлены стили Ant Design 6.6.8, локаль, темы/compact/RTL/reduced motion,
+  responsive, нативная клавиатура и восстановление фокуса. Галерея показывает
+  Form → проверка → отправка → Result с сохранением полей, retry и отменой
+  pending work при reset/unmount; добавлены unit/SSR/Chromium-проверки.
 - Result: семь статусов, официальные иконки и иллюстрации 403/404/500,
   string/Snippet title/subTitle, extra/children и семантический заголовок.
   Добавлены стили Ant Design 6.6.8, темы/compact/RTL, восстановление фокуса

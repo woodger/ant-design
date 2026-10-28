@@ -1,5 +1,57 @@
 import { test, expect } from './test';
 
+test.describe('Steps showcase', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/ant-design#steps'); });
+
+  test('validates the initial data and keeps later steps disabled until they are unlocked', async ({ page }) => {
+    const fixture = page.locator('#steps'); const steps = fixture.getByRole('list', { name: 'Этапы заявки', exact: true });
+    await expect(steps.getByRole('button', { name: 'Проверка', exact: true })).toBeDisabled(); await expect(steps.getByRole('button', { name: 'Отправка', exact: true })).toBeDisabled();
+    const name = fixture.getByRole('textbox', { name: 'Имя в многошаговой заявке' }); await name.fill(''); await fixture.getByRole('textbox', { name: 'Email в многошаговой заявке' }).fill('invalid'); await fixture.getByRole('button', { name: 'Проверить данные заявки', exact: true }).click();
+    await expect(name).toBeFocused(); await expect(name).toHaveAttribute('aria-invalid', 'true'); await expect(fixture.getByRole('status', { name: 'Результат примера Steps', exact: true })).toHaveText('Этап: 0. Состояние: editing.');
+  });
+
+  test('returns to preserved data and validates direct selection of an already unlocked step', async ({ page }) => {
+    const fixture = page.locator('#steps'); const name = fixture.getByRole('textbox', { name: 'Имя в многошаговой заявке' }); const email = fixture.getByRole('textbox', { name: 'Email в многошаговой заявке' });
+    await name.fill('Мария'); await email.fill('maria@example.com'); await fixture.getByRole('button', { name: 'Проверить данные заявки', exact: true }).click();
+    const panel = fixture.getByRole('region', { name: 'Текущий этап заявки', exact: true }); await expect(panel).toBeFocused(); await expect(panel).toContainText('Мария'); await fixture.getByRole('button', { name: 'Назад к данным', exact: true }).click(); await expect(name).toBeFocused(); await expect(email).toHaveValue('maria@example.com');
+    await email.fill('invalid'); await fixture.getByRole('list', { name: 'Этапы заявки', exact: true }).getByRole('button', { name: 'Проверка', exact: true }).click(); await expect(email).toBeFocused(); await expect(email).toHaveAttribute('aria-invalid', 'true');
+    await email.fill('new@example.com'); await fixture.getByRole('list', { name: 'Этапы заявки', exact: true }).getByRole('button', { name: 'Проверка', exact: true }).click(); await expect(panel).toContainText('new@example.com'); await expect(panel).toBeFocused();
+  });
+
+  test('completes every step, focuses Result and keeps submitted fields when editing', async ({ page }, testInfo) => {
+    const fixture = page.locator('#steps'); await fixture.getByRole('textbox', { name: 'Имя в многошаговой заявке' }).fill('Мария'); await fixture.getByRole('button', { name: 'Проверить данные заявки', exact: true }).click(); await fixture.getByRole('button', { name: 'К отправке заявки', exact: true }).click();
+    await fixture.screenshot({ path: testInfo.outputPath('steps-example-review.png') }); await fixture.getByRole('button', { name: 'Отправить многошаговую заявку', exact: true }).click(); const panel = fixture.getByRole('region', { name: 'Текущий этап заявки', exact: true }); await expect(panel).toHaveAttribute('aria-busy', 'true');
+    await expect(panel.getByRole('heading', { name: 'Заявка по шагам отправлена', exact: true })).toBeVisible(); await expect(panel).toBeFocused(); const steps = fixture.getByRole('list', { name: 'Этапы заявки', exact: true }); await expect(steps.locator('[aria-current]')).toHaveCount(0); await expect(steps.locator('.ant-steps-item-finish')).toHaveCount(3);
+    await panel.screenshot({ path: testInfo.outputPath('steps-example-success.png') }); await panel.getByRole('button', { name: 'Изменить данные заявки', exact: true }).click(); await expect(fixture.getByRole('textbox', { name: 'Имя в многошаговой заявке' })).toHaveValue('Мария'); await expect(fixture.getByRole('textbox', { name: 'Имя в многошаговой заявке' })).toBeFocused();
+  });
+
+  test('keeps the failed final step and retries the same draft successfully', async ({ page }, testInfo) => {
+    const fixture = page.locator('#steps'); await fixture.getByRole('checkbox', { name: 'Ошибка отправки Steps', exact: true }).check(); await fixture.getByRole('button', { name: 'Проверить данные заявки', exact: true }).click(); await fixture.getByRole('button', { name: 'К отправке заявки', exact: true }).click(); await fixture.getByRole('button', { name: 'Отправить многошаговую заявку', exact: true }).click();
+    const panel = fixture.getByRole('region', { name: 'Текущий этап заявки', exact: true }); await expect(panel.getByRole('heading', { name: 'Не удалось отправить заявку по шагам', exact: true })).toBeVisible(); await expect(panel).toBeFocused(); await expect(fixture.getByRole('list', { name: 'Этапы заявки', exact: true }).locator('.ant-steps-item-error')).toHaveCount(1); await panel.screenshot({ path: testInfo.outputPath('steps-example-error.png') });
+    await fixture.getByRole('checkbox', { name: 'Ошибка отправки Steps', exact: true }).uncheck(); await panel.getByRole('button', { name: 'Повторить отправку заявки', exact: true }).click(); await expect(panel.getByRole('heading', { name: 'Заявка по шагам отправлена', exact: true })).toBeVisible(); await expect(panel).toContainText('Анна, anna@example.com');
+  });
+
+  test('cancels a pending request on reset and does not complete the reset workflow later', async ({ page }) => {
+    const fixture = page.locator('#steps'); await fixture.getByRole('button', { name: 'Проверить данные заявки', exact: true }).click(); await fixture.getByRole('button', { name: 'К отправке заявки', exact: true }).click(); await fixture.getByRole('button', { name: 'Отправить многошаговую заявку', exact: true }).click(); await expect(fixture.getByRole('region', { name: 'Текущий этап заявки', exact: true })).toHaveAttribute('aria-busy', 'true');
+    const reset = fixture.getByRole('button', { name: 'Сбросить пример Steps', exact: true }); await reset.click(); await page.waitForTimeout(850); await expect(fixture.getByRole('status', { name: 'Результат примера Steps', exact: true })).toHaveText('Этап: 0. Состояние: editing.'); await expect(fixture.getByRole('textbox', { name: 'Имя в многошаговой заявке' })).toHaveValue('Анна'); await expect(reset).toBeFocused();
+  });
+
+  test('changes preview statuses and layout independently of the workflow', async ({ page }) => {
+    const fixture = page.locator('#steps'); const preview = fixture.getByRole('list', { name: 'Предпросмотр Steps', exact: true }); await preview.getByRole('button', { name: 'Отправка', exact: true }).click(); await expect(preview.getByRole('button', { name: 'Отправка', exact: true })).toHaveAttribute('aria-current', 'step');
+    await fixture.getByRole('combobox', { name: 'Статус Steps', exact: true }).click(); await page.getByRole('option', { name: 'error', exact: true }).click(); await expect(preview.locator('.ant-steps-item-error')).toHaveCount(1); await fixture.getByRole('checkbox', { name: 'Выбор шага в Steps', exact: true }).uncheck(); await expect(preview.getByRole('button')).toHaveCount(0); await expect(fixture.getByRole('status', { name: 'Результат примера Steps', exact: true })).toHaveText('Этап: 0. Состояние: editing.');
+  });
+
+  test('keeps the workflow within a 320px viewport through submission and Result', async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 320, height: 800 }); const fixture = page.locator('#steps');
+    await expect(fixture.getByRole('list', { name: 'Этапы заявки', exact: true })).toHaveClass(/ant-steps-vertical/);
+    const initialPageWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    await fixture.getByRole('button', { name: 'Проверить данные заявки', exact: true }).click(); await fixture.getByRole('button', { name: 'К отправке заявки', exact: true }).click(); await fixture.getByRole('button', { name: 'Отправить многошаговую заявку', exact: true }).click(); await expect(fixture.getByRole('heading', { name: 'Заявка по шагам отправлена', exact: true })).toBeVisible();
+    const bounds = await fixture.evaluate(node => ({ right: node.getBoundingClientRect().right, width: node.clientWidth, scroll: node.scrollWidth }));
+    expect(bounds.right).toBeLessThanOrEqual(320); expect(bounds.scroll).toBeLessThanOrEqual(bounds.width); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(initialPageWidth);
+    await fixture.screenshot({ path: testInfo.outputPath('steps-example-mobile.png') });
+  });
+});
+
 test.describe('Result showcase', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/ant-design#result'); });
 
@@ -1112,6 +1164,12 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders Steps and the initial form before hydration without starting a workflow', async ({ page }) => {
+    await page.goto('/ant-design#steps'); const fixture = page.locator('#steps'); const steps = fixture.getByRole('list', { name: 'Этапы заявки', exact: true });
+    await expect(steps.getByRole('button', { name: 'Данные', exact: true })).toHaveAttribute('aria-current', 'step'); await expect(steps.getByRole('button', { name: 'Проверка', exact: true })).toBeDisabled(); await expect(steps.locator('[aria-live], [role="status"]')).toHaveCount(0);
+    await expect(fixture.getByRole('textbox', { name: 'Имя в многошаговой заявке' })).toHaveValue('Анна'); await expect(fixture.getByRole('status', { name: 'Результат примера Steps', exact: true })).toHaveText('Этап: 0. Состояние: editing.');
+  });
 
   test('renders Result, its native actions and an idle form before hydration', async ({ page }) => {
     const response = await page.goto('/ant-design#result'); expect(response?.status()).toBe(200);
