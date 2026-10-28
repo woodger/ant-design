@@ -4,12 +4,19 @@
   import { formatStatisticTime } from './statistic-timer.engine';
   import { createStatisticTimerModel } from './statistic-timer.model.svelte';
   import type { StatisticTimerProps } from './statistic-timer.types';
+  import type { StatisticValue } from './statistic.types';
 
   let { type, value, format = 'HH:mm:ss', onChange, onFinish, formatter: _formatter, valueRender: _valueRender, nativeElement = $bindable(), ...rest }: StatisticTimerProps = $props();
   let request = $derived({ value, type });
   const model = createStatisticTimerModel(() => request, () => ({ onChange, onFinish }));
-  let display = $derived(model.now === undefined ? '-' : formatStatisticTime(Math.max(type === 'countdown'
-    ? new Date(value as string | number).getTime() - model.now : model.now - new Date(value as string | number).getTime(), 0), format));
+
+  function formatValue(formatValue: StatisticValue) {
+    if (model.now === undefined) return '-';
+
+    const target = new Date(formatValue).getTime();
+    const now = Date.now();
+    return formatStatisticTime(Math.max(type === 'countdown' ? target - now : now - target, 0), format);
+  }
 
   $effect(() => {
     const current = request;
@@ -20,4 +27,4 @@
   });
 </script>
 
-<Statistic {...rest} {value} formatter={() => display} bind:nativeElement />
+<Statistic {...rest} {value} formatter={formatValue} bind:nativeElement />

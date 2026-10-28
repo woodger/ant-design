@@ -241,6 +241,8 @@ Statistic, включая loading и semantic slots, передаются пок
 и valueRender заменяются встроенным выводом времени, как в upstream.
 
 Value — timestamp в ms либо строка, которую принимает new Date(value).
+При пропущенном value отображение использует default=0 самого Statistic,
+но callbacks получают NaN от исходной отсутствующей цели, как в upstream.
 SSR и первый hydration render выводят `-` без часов и callbacks. После mount
 таймер отображает разницу с Date.now(), обновляясь через setInterval(1000/60).
 Format по умолчанию HH:mm:ss; Y/M/D/H/m/s/S обозначают фиксированные единицы

@@ -2027,7 +2027,7 @@
             "src/lib/components/ant-design/statistic-timer.ssr.test.ts",
             "e2e/statistic-timer.spec.ts"
           ],
-          "note": "Отдельные Svelte-экспорты StatisticTimer/StatisticCountdown. SSR выводит -, время форматируется фиксированными единицами эталона; onChange получает знаковый остаток, onFinish только после deadline. React deprecation console warning Countdown не воспроизводится."
+          "note": "Отдельные Svelte-экспорты StatisticTimer/StatisticCountdown. SSR выводит -, время форматируется фиксированными единицами эталона; onChange получает знаковый остаток, onFinish только после deadline. При отсутствующем value отображение использует default=0 из Statistic, callbacks — исходную цель и NaN. React deprecation console warning Countdown не воспроизводится."
         },
         {
           "id": "global-config",

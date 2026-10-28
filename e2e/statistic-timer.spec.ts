@@ -59,3 +59,11 @@ test('StatisticTimer gallery starts and completes a user-triggered countdown', a
   await page.clock.runFor(11000);
   await expect(section.getByRole('status')).toHaveText('Отсчёт завершён');
 });
+
+test('StatisticTimer preserves the Statistic default value separately from the raw callback target', async ({ page }) => {
+  await page.getByRole('button', { name: 'Omit timer target', exact: true }).click();
+  await expect(page.locator('#fixture-timer .ant-statistic-content-value')).toHaveText('00:00:00');
+  await page.clock.runFor(100);
+  await expect(page.getByRole('status', { name: 'Timer latest', exact: true })).toHaveText('NaN');
+  await expect(page.getByRole('status', { name: 'Timer finishes', exact: true })).toHaveText('0');
+});

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { StatisticTimer, StatisticCountdown, type StatisticTimerType } from '../../src/lib/components/ant-design';
 
-  let target = $state(Date.now() + 10000);
+  let target = $state<number | undefined>(Date.now() + 10000);
   let type = $state<StatisticTimerType>('countdown');
   let format = $state('HH:mm:ss');
   let alias = $state(false);
@@ -21,6 +21,7 @@
   <label><input type="checkbox" bind:checked={alias} /> Countdown alias</label>
   <label><input type="checkbox" bind:checked={mounted} /> Mount timer</label>
   <button type="button" onclick={() => { target = Date.now() + 10000; }}>Restart timer</button>
+  <button type="button" onclick={() => { target = undefined; }}>Omit timer target</button>
   <button type="button">Before timer</button>
   {#if mounted}
     {#if alias}<StatisticCountdown id="fixture-timer" title="Remaining" value={target} {format} onChange={changed} onFinish={() => { finishes++; }} bind:nativeElement />
