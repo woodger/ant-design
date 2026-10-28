@@ -9,6 +9,11 @@
 
 ### Added
 
+- AvatarGroup: типизированные items с ключами, общие size/shape, перекрытие,
+  max.count и нативная кнопка +N с ленивым списком в Popover. Добавлены локаль,
+  темы/compact/RTL, восстановление фокуса, unit/SSR/Chromium-проверки и галерея
+  добавления/удаления/перестановки участников. Avatar сохраняет ошибку изображения
+  при перестановке с тем же src/srcSet; Popover игнорирует blur после destroy.
 - Avatar: изображения с src/srcSet, icon/children fallback, onError, circle/square,
   размеры из контекста или числовой size, gap и автоматическая подгонка текста.
   Добавлены стили Ant Design 6.6.8, устойчивое доступное имя, темы/compact/RTL,

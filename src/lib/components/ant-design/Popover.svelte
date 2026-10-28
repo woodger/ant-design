@@ -186,10 +186,15 @@
     if (event.relatedTarget instanceof Node && popup?.contains(event.relatedTarget)) return;
 
     popupFocused = false;
-    if (closing || !shown || event.relatedTarget instanceof Node && host?.contains(event.relatedTarget)) return;
+    function closeIfOutside() {
+      if (!active || !host?.isConnected || !popup?.isConnected || closing || !shown || event.relatedTarget instanceof Node && host?.contains(event.relatedTarget)) return;
 
-    clicked = false;
-    if (!wanted()) request(false);
+      clicked = false;
+      if (!wanted()) request(false);
+    }
+    // При remove() браузер отправляет blur до отсоединения DOM и cleanup Svelte.
+    if (event.relatedTarget === null) queueMicrotask(closeIfOutside);
+    else closeIfOutside();
   }
 
   function dismiss(reason: 'escape' | 'outside' | 'trigger') {

@@ -40,7 +40,8 @@
         table: { ...parent.locale.table, ...locale?.table },
         inputNumber: { ...parent.locale.inputNumber, ...locale?.inputNumber },
         steps: { ...parent.locale.steps, ...locale?.steps },
-        badge: { ...parent.locale.badge, ...locale?.badge }
+        badge: { ...parent.locale.badge, ...locale?.badge },
+        avatarGroup: { ...parent.locale.avatarGroup, ...locale?.avatarGroup }
       };
     }
   };

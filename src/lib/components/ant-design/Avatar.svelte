@@ -8,7 +8,9 @@
   let { src, srcSet, alt, crossOrigin, draggable, shape = 'circle', size, gap = 4, icon, children, onError, id, title, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, 'aria-hidden': ariaHidden = false, class: className = '', style }: AvatarProps = $props();
   const config = useConfig();
   let host = $state<HTMLSpanElement>();
-  let source = $derived({ src, srcSet });
+  let sourceSrc = $derived(src);
+  let sourceSet = $derived(srcSet);
+  let source = $derived({ src: sourceSrc, srcSet: sourceSet });
   let failed = $state.raw<typeof source>();
   let hasImage = $derived(Boolean(source.src) && failed !== source);
   let resolvedSize = $derived(resolveAvatarSize(size, config.componentSize));

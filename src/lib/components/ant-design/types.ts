@@ -26,7 +26,10 @@ export interface Locale {
   empty?: Partial<EmptyLocale>;
   steps?: Partial<StepsLocale>;
   badge?: Partial<BadgeLocale>;
+  avatarGroup?: Partial<AvatarGroupLocale>;
 }
+
+export interface AvatarGroupLocale { label: string; hiddenLabel: string; overflow: string; }
 
 export interface BadgeLocale { count: string; dot: string; success: string; processing: string; default: string; error: string; warning: string; }
 
@@ -85,6 +88,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  avatarGroup: { label: 'Участники', hiddenLabel: 'Скрытые участники', overflow: 'Ещё участников' },
   badge: { count: 'Количество', dot: 'Есть обновления', success: 'Успешно', processing: 'Выполняется', default: 'Обычный статус', error: 'Ошибка', warning: 'Предупреждение' },
   steps: { label: 'Этапы', wait: 'Ожидается', process: 'Выполняется', finish: 'Завершён', error: 'Ошибка' },
   empty: { description: 'Нет данных' },
@@ -135,6 +139,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  avatarGroup: { label: 'Members', hiddenLabel: 'Hidden members', overflow: 'More members' },
   badge: { count: 'Count', dot: 'Updates available', success: 'Success', processing: 'Processing', default: 'Default status', error: 'Error', warning: 'Warning' },
   steps: { label: 'Steps', wait: 'Waiting', process: 'In progress', finish: 'Finished', error: 'Error' },
   empty: { description: 'No data' },

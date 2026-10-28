@@ -1,5 +1,44 @@
 import { test, expect } from './test';
 
+test.describe('AvatarGroup showcase', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/ant-design#avatar-group'); });
+
+  test('shows three members and discloses two full names through its overflow button', async ({ page }, testInfo) => {
+    const fixture = page.locator('#avatar-group'); const group = fixture.locator('#showcase-avatar-group'); await expect(group).toHaveAccessibleName('Команда проекта'); await expect(group.locator(':scope > .ant-avatar')).toHaveCount(3); await expect(group.getByRole('button')).toHaveAccessibleName('Ещё участников: 2'); await group.getByRole('button').click();
+    const popup = page.getByRole('dialog', { name: 'Скрытые участники', exact: true }); await expect(popup).toBeFocused(); await expect(popup.locator('.ant-avatar-group-name')).toHaveText(['Елена Соколова', 'Игорь Волков']); await popup.screenshot({ path: testInfo.outputPath('avatar-group-hidden-light.png') }); await page.keyboard.press('Escape'); await expect(group.getByRole('button')).toBeFocused();
+  });
+
+  test('adds normalized members with Enter and rejects an empty name without losing input focus', async ({ page }) => {
+    const fixture = page.locator('#avatar-group'); const input = fixture.getByRole('textbox', { name: 'Новый участник AvatarGroup', exact: true }); await input.fill('  алёна   Смирнова  '); await input.press('Enter'); await expect(input).toHaveValue(''); await expect(input).toBeFocused(); await expect(fixture.getByRole('list', { name: 'Управление командой AvatarGroup', exact: true }).getByRole('listitem')).toHaveCount(6); await expect(fixture.locator('#showcase-avatar-group').getByRole('button')).toHaveAccessibleName('Ещё участников: 3');
+    await input.press('Enter'); await expect(input).toHaveAccessibleDescription('Введите имя участника.'); await expect(input).toHaveAttribute('aria-invalid', 'true'); await expect(input).toBeFocused();
+  });
+
+  test('reorders keyed members and restores focus when the move button reaches a boundary', async ({ page }) => {
+    const fixture = page.locator('#avatar-group'); const group = fixture.locator('#showcase-avatar-group'); const anna = group.getByRole('img', { name: 'Анна Новикова', exact: true }); const original = await anna.elementHandle(); await fixture.getByRole('button', { name: 'Выше Дмитрий Орлов', exact: true }).click(); await expect(group.locator(':scope > .ant-avatar').first()).toHaveAccessibleName('Дмитрий Орлов'); await expect(fixture.getByRole('button', { name: 'Удалить Дмитрий Орлов', exact: true })).toBeFocused(); expect(await anna.evaluate((node, previous) => node === previous, original)).toBe(true);
+    await fixture.getByRole('button', { name: 'Ниже Дмитрий Орлов', exact: true }).click(); await expect(fixture.getByRole('button', { name: 'Ниже Дмитрий Орлов', exact: true })).toBeFocused(); await expect(group.locator(':scope > .ant-avatar').first()).toHaveAccessibleName('Анна Новикова');
+  });
+
+  test('removes every member with reachable focus and resets the initial roster', async ({ page }) => {
+    const fixture = page.locator('#avatar-group'); const list = fixture.getByRole('list', { name: 'Управление командой AvatarGroup', exact: true });
+    for (let remaining = 5; remaining > 0; remaining--) { await list.getByRole('button', { name: /^Удалить / }).first().click(); await expect(list.getByRole('listitem')).toHaveCount(remaining - 1); if (remaining > 1) await expect(list.getByRole('button', { name: /^Удалить / }).first()).toBeFocused(); }
+    await expect(fixture.getByRole('textbox', { name: 'Новый участник AvatarGroup', exact: true })).toBeFocused(); await expect(fixture.locator('#showcase-avatar-group').getByRole('button')).toHaveCount(0); await fixture.getByRole('button', { name: 'Сбросить команду AvatarGroup', exact: true }).click(); await expect(list.getByRole('listitem')).toHaveCount(5); await expect(fixture.locator('#showcase-avatar-group').getByRole('button')).toHaveAccessibleName('Ещё участников: 2');
+  });
+
+  test('changes the limit shape and numeric size while preserving an outside input focus choice', async ({ page }) => {
+    const fixture = page.locator('#avatar-group'); const group = fixture.locator('#showcase-avatar-group'); await group.getByRole('button').click(); const limit = fixture.getByRole('spinbutton', { name: 'Лимит AvatarGroup', exact: true }); await limit.fill('0'); await expect(limit).toBeFocused(); await expect(group.getByRole('button')).toHaveCount(0); await expect(group.locator(':scope > .ant-avatar')).toHaveCount(5); await limit.fill('1'); await expect(group.getByRole('button')).toHaveAttribute('aria-expanded', 'false');
+    await fixture.getByRole('combobox', { name: 'Форма AvatarGroup', exact: true }).click(); await page.getByRole('option', { name: 'square', exact: true }).click(); await fixture.getByRole('combobox', { name: 'Размер AvatarGroup', exact: true }).click(); await page.getByRole('option', { name: 'custom', exact: true }).click(); await fixture.getByRole('spinbutton', { name: 'Числовой размер AvatarGroup', exact: true }).fill('56'); await expect(group.locator(':scope > .ant-avatar').first()).toHaveCSS('width', '56px'); await expect(group.locator(':scope > .ant-avatar').first()).toHaveClass(/ant-avatar-square/);
+  });
+
+  test('renders the dark group and its hidden roster with theme-colored borders', async ({ page }, testInfo) => {
+    await page.getByRole('button', { name: '◐ Тёмная тема', exact: true }).click(); const group = page.locator('#showcase-avatar-group'); await expect(group.locator(':scope > .ant-avatar').first()).toHaveCSS('border-color', 'rgb(20, 20, 20)'); await group.getByRole('button').click(); const popup = page.getByRole('dialog', { name: 'Скрытые участники', exact: true }); await expect(popup.getByRole('listitem')).toHaveCount(2); await popup.screenshot({ path: testInfo.outputPath('avatar-group-hidden-dark.png') });
+  });
+
+  test('fits long member names actions and a fully visible group on a 320px viewport', async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 320, height: 800 }); const fixture = page.locator('#avatar-group'); const initialWidth = await page.evaluate(() => document.documentElement.scrollWidth); const name = 'LongUnbrokenParticipantName'.repeat(8); await fixture.getByRole('textbox', { name: 'Новый участник AvatarGroup', exact: true }).fill(name); await fixture.getByRole('button', { name: 'Добавить участника AvatarGroup', exact: true }).click(); await fixture.locator('#showcase-avatar-group').getByRole('button').click(); const popup = page.getByRole('dialog', { name: 'Скрытые участники', exact: true }); await expect(popup.locator('.ant-avatar-group-name').last()).toHaveText(name); const box = await popup.boundingBox(); expect(box!.x).toBeGreaterThanOrEqual(0); expect(box!.x + box!.width).toBeLessThanOrEqual(320); await popup.screenshot({ path: testInfo.outputPath('avatar-group-hidden-mobile.png') }); await page.keyboard.press('Escape'); await fixture.getByRole('spinbutton', { name: 'Лимит AvatarGroup', exact: true }).fill('0');
+    const bounds = await fixture.evaluate(node => ({ right: node.getBoundingClientRect().right, width: node.clientWidth, scroll: node.scrollWidth })); expect(bounds.right).toBeLessThanOrEqual(320); expect(bounds.scroll).toBeLessThanOrEqual(bounds.width + 1); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(initialWidth); await fixture.screenshot({ path: testInfo.outputPath('avatar-group-example-mobile.png') });
+  });
+});
+
 test.describe('Avatar showcase', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/ant-design#avatar'); });
 
@@ -1314,6 +1353,10 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders AvatarGroup members and its lazy overflow before hydration', async ({ page }) => {
+    await page.goto('/ant-design#avatar-group'); const fixture = page.locator('#avatar-group'); const group = fixture.locator('#showcase-avatar-group'); await expect(group.locator(':scope > .ant-avatar')).toHaveCount(3); await expect(group.getByRole('button')).toHaveAccessibleName('Ещё участников: 2'); await expect(group.locator('.ant-avatar-group-list')).toHaveCount(0); await expect(fixture.getByRole('list', { name: 'Управление командой AvatarGroup', exact: true }).getByRole('listitem')).toHaveCount(5); await expect(group.locator('[aria-live], [role="status"]')).toHaveCount(0);
+  });
 
   test('renders Avatar initials names and participant badges before hydration', async ({ page }) => {
     await page.goto('/ant-design#avatar'); const fixture = page.locator('#avatar'); const preview = fixture.locator('#showcase-avatar-preview'); await expect(preview).toHaveAccessibleName('Анна Новикова'); await expect(preview.locator('.ant-avatar-string')).toHaveText('АН'); await expect(preview.locator('.ant-avatar-string')).toBeVisible(); await expect(fixture.getByRole('list', { name: 'Участники Avatar', exact: true }).getByRole('listitem')).toHaveCount(3); await expect(fixture.locator('.ant-badge-count')).toHaveText(['3', '1']); await expect(fixture.locator('#avatar-example-errors')).toContainText(': 0.'); await expect(fixture.locator('.ant-avatar[aria-live], .ant-avatar[tabindex]')).toHaveCount(0); await expect(page.getByRole('dialog', { name: 'Профиль участника Avatar', exact: true })).toHaveCount(0);

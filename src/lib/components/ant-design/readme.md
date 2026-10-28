@@ -7,7 +7,7 @@
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Badge, Avatar, Form и FormItem.
+Tag, CheckableTag, Badge, Avatar, AvatarGroup, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -100,6 +100,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | CheckableTag | Управляемый checked/onChange, нативная toggle-кнопка, aria-pressed, disabled и snippets |
 | Badge | Числовой счётчик, overflow/showZero/dot, статусы/preset цвета, string/Snippet text, размеры, offset и доступное полное значение |
 | Avatar | Изображение, icon/children fallback, circle/square, именованные и числовые размеры, подгонка текста и доступное имя |
+| AvatarGroup | Типизированные items, стабильные ключи, общие размеры/форма, перекрытие, max.count и скрытые участники в Popover |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1765,9 +1766,78 @@ Drawer. Выбор фото/инициалов/ошибочного источн
 профиля; сброс восстанавливает участников и не меняет предпросмотр. Пример
 использует локальные data URL без внешней сети и persistence.
 
-AvatarProps, AvatarShape и AvatarSize экспортируются через index.ts. Avatar.Group,
-размеры по breakpoint, src Snippet, Image-интеграция, semantic classNames/styles
+AvatarProps, AvatarShape и AvatarSize экспортируются через index.ts.
+Размеры по breakpoint, src Snippet, Image-интеграция, semantic classNames/styles
 и prefixCls/rootClassName в первую версию не входят.
+
+## AvatarGroup
+
+```svelte
+<script lang="ts">
+  import { AvatarGroup, type AvatarGroupItem } from '$lib/components/ant-design';
+
+  const members: AvatarGroupItem[] = [
+    { key: 'anna', label: 'Анна Новикова', text: 'АН', src: '/anna.jpg' },
+    { key: 'dmitry', label: 'Дмитрий Орлов', text: 'ДО' },
+    { key: 'vera', label: 'Вера Смирнова', text: 'ВС', size: 'small' }
+  ];
+</script>
+
+<AvatarGroup items={members} size="large" max={{ count: 2 }}
+  aria-label="Команда проекта" />
+```
+
+AvatarGroup — отдельный Svelte export для Avatar.Group. Items принимает readonly
+массив AvatarGroupItem с обязательными key и label. Key — строка или число;
+первый повтор ключа сохраняется, следующие исключаются до применения лимита.
+Число 0 и строка '0' различаются. Порядок владельца сохраняется, входной массив
+и элементы не изменяются. Внутри видимой части и открытого списка элементы
+сохраняют DOM и состояние Avatar при перестановке по key.
+
+Item поддерживает props Avatar и необязательный text для строковых инициалов.
+Children Snippet имеет приоритет над text; затем действуют правила Avatar:
+изображение → icon → содержимое. Label даёт Avatar полное имя по умолчанию
+через alt; явные alt/ARIA props сохраняются. Size/shape элемента переопределяют
+значения группы, затем используются defaults Avatar/ConfigProvider. Строковые
+и числовые размеры, fallback и подгонка текста работают как у Avatar.
+
+Max.count ограничивает число видимых участников, а кнопка +N добавляется
+отдельно: count=2 при пяти участниках даёт два Avatar и +3. Без лимита, при 0,
+отрицательном или неконечном значении видны все. Положительная дробь усекается
+до целого, но не ниже 1. При лимите не меньше числа уникальных участников
+кнопка отсутствует. Max.style задаёт style Avatar внутри кнопки +N.
+
+Max.popover принимает trigger, placement, arrow, autoAdjustOverflow и задержки
+mouseEnterDelay/mouseLeaveDelay существующего Popover. По умолчанию используются
+hover/click и top: нативная кнопка открывается кликом, Enter/Space или наведением.
+Для клавиатуры при собственном trigger используйте click или focus. Popover
+показывает именованный список скрытых участников с полными label; аватары
+в этом списке декоративные. Они создаются только при открытии и удаляются при
+закрытии. Переход элемента между видимой частью и Popover создаёт новый Avatar.
+
+Корень — именованная группа, собственных остановок Tab и live-region у неё нет.
+Кнопка +N имеет type=button, доступное имя с полным количеством и ARIA-связь с
+Popover после mount. Escape возвращает фокус кнопке. Если лимит/список убирает
+кнопку или группа удалена, фокус восстанавливается на доступном соседнем control
+в текущем dialog или документе. Явный выбор фокуса владельцем сохраняется.
+Повторное появление overflow создаёт закрытый Popover. Кнопка раскрытия
+не блокируется через componentDisabled, поскольку показывает информацию.
+
+Подписи группы, списка и кнопки берутся из locale.avatarGroup с частичным
+наследованием. Aria-label/aria-labelledby переопределяют имя группы,
+aria-describedby описывает корень; id/class/style также относятся к корню.
+Группа наследует темы, compact и RTL, сохраняет логическое перекрытие 8 px,
+подбирает обводку под фон темы и переносит аватары на узком экране.
+Нативный Popover требует Popover API; собственных анимаций группа не добавляет.
+
+Галерея `/ant-design#avatar-group` показывает добавление, удаление, перестановку,
+лимит, размеры и форму команды. Имена выводятся обычными bindings; пустое имя
+не добавляется. Новые и сброшенные участники получают свежие ключи. Фокус
+сохраняется при перестановке и переходит к соседу после удаления. Внешней сети
+и persistence нет. Экспортируются AvatarGroupProps, AvatarGroupItem,
+AvatarGroupKey, AvatarGroupMax и AvatarGroupLocale. Responsive-размеры по
+breakpoint, произвольные компоненты вместо Avatar и устаревшие maxCount/
+maxStyle/maxPopoverPlacement/maxPopoverTrigger в эту версию не входят.
 
 ## Select
 
@@ -2638,6 +2708,8 @@ Badge сохраняет интерактивные children при измене
 владельца. Автоматических объявлений и дополнительных остановок Tab нет.
 Avatar сохраняет полное имя при fallback и подгонке текста. Без имени он
 декоративный; icon/children inert и не добавляют controls в порядок Tab.
+AvatarGroup раскрывает скрытых участников нативной кнопкой в именованный
+Popover. Удаление overflow/группы сохраняет доступный фокус и выбор владельца.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2823,6 +2895,12 @@ ResizeObserver, нативную кнопку владельца, темы/compa
 Галерея проверяет начальное ошибочное изображение из SSR, профили участников,
 сохранение/сброс, узкий экран и рендеринг до гидратации; модель — изоляцию и
 обновление только выбранного участника.
+AvatarGroup проверяется на ключи/лимиты и SSR без скрытых изображений и таймеров.
+Chromium проверяет Enter/Space/Escape, hover/focus/click, ленивое содержимое,
+сохранение DOM/ошибки изображения при перестановке, удаление overflow/unmount,
+восстановление и выбор фокуса, наследование размеров/локали, темы/RTL и перенос.
+Галерея проверяет управление командой, границы перемещения, reset, мобильный
+Popover и SSR; модель — нормализацию имён, Unicode-инициалы и свежие ключи.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2963,6 +3041,13 @@ antStatusProcessing из того же архива. Селекторы Radio/Sp
 версию источника изображения и нативные listeners с cleanup; avatar.dom.ts
 подгоняет текст через ResizeObserver без React/@rc-component зависимостей.
 Существующая MIT-лицензия сохранена; новые зависимости и сторонние иконки не добавлены.
+[vendor/avatar-group.css](./vendor/avatar-group.css) содержит три исходных правила
+Avatar.Group из того же архива: display, обводку и перекрытие. Declarations
+сохранены. AvatarGroup.svelte адаптирует перенос и фон обводки; отдельный
+AvatarGroupOverflow.svelte использует существующий Popover и ленивый список
+с полными именами. Восстановление фокуса использует feedback.dom.ts.
+Avatar сохраняет версию src/srcSet при обновлении spread props с теми же
+значениями, Popover игнорирует blur после destroy. Новые зависимости не добавлены.
 Пять filled-иконок в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

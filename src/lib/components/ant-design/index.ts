@@ -25,6 +25,7 @@ export { default as Tag } from './Tag.svelte';
 export { default as CheckableTag } from './CheckableTag.svelte';
 export { default as Badge } from './Badge.svelte';
 export { default as Avatar } from './Avatar.svelte';
+export { default as AvatarGroup } from './AvatarGroup.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';
 export { default as Radio } from './Radio.svelte';
@@ -66,6 +67,8 @@ export type { TagProps, TagColor, TagPresetColor, TagStatusColor, TagVariant, Ch
 export type { BadgeProps, BadgeStatus, BadgeColor, BadgeSize, BadgeText, BadgeContext } from './badge.types';
 export type { BadgeLocale } from './types';
 export type { AvatarProps, AvatarShape, AvatarSize } from './avatar.types';
+export type { AvatarGroupProps, AvatarGroupItem, AvatarGroupKey, AvatarGroupMax } from './avatar-group.types';
+export type { AvatarGroupLocale } from './types';
 export type { EmptyLocale } from './types';
 export type { CheckboxProps } from './Checkbox.svelte';
 export type { CheckboxGroupProps, CheckboxGroupOption, CheckboxGroupValue } from './checkbox-group.types';

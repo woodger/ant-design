@@ -27,6 +27,7 @@
   import TagExample from './TagExample.svelte';
   import BadgeExample from './BadgeExample.svelte';
   import AvatarExample from './AvatarExample.svelte';
+  import AvatarGroupExample from './AvatarGroupExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -64,7 +65,8 @@
     ['steps', 'Steps'],
     ['tag', 'Tag / CheckableTag'],
     ['badge', 'Badge'],
-    ['avatar', 'Avatar']
+    ['avatar', 'Avatar'],
+    ['avatar-group', 'AvatarGroup']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -176,7 +178,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">36 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">37 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -476,6 +478,12 @@
           <div class="section-heading"><h2>Avatar</h2></div>
           <p class="section-description">Изображения, иконки и инициалы с подгонкой текста. Участники с Badge и карточками в Drawer.</p>
           <div class="panel"><AvatarExample /></div>
+        </section>
+
+        <section id="avatar-group">
+          <div class="section-heading"><h2>AvatarGroup</h2></div>
+          <p class="section-description">Команда проекта, лимит аватаров и скрытые участники в Popover.</p>
+          <div class="panel"><AvatarGroupExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>
