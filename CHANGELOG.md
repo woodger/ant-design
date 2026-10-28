@@ -7,6 +7,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Production-страницы подключают локальный SVG favicon; браузер больше не
+  запрашивает отсутствующий /favicon.ico при открытии галереи.
+
 ### Added
 
 - Divider: horizontal/vertical, подпись string/number/Snippet, titlePlacement,
