@@ -7,7 +7,7 @@
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Form и FormItem.
+Tag, CheckableTag, Badge, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -98,6 +98,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Steps | Управляемые этапы, статусы, snippets, нативные кнопки, horizontal/vertical, medium/small, локаль, темы и восстановление фокуса |
 | Tag | Статусные/preset цвета, filled/outlined/solid, snippets, отменяемое закрытие, disabled и восстановление фокуса |
 | CheckableTag | Управляемый checked/onChange, нативная toggle-кнопка, aria-pressed, disabled и snippets |
+| Badge | Числовой счётчик, overflow/showZero/dot, статусы/preset цвета, string/Snippet text, размеры, offset и доступное полное значение |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1636,6 +1637,72 @@ aria-label/aria-labelledby/aria-describedby относятся к кнопке. 
 CheckableTagGroup, drag-and-drop, внешней анимации, semantic classNames/styles,
 prefixCls/rootClassName и устаревших bordered/closable/color-inverse aliases.
 
+## Badge
+
+```svelte
+<script lang="ts">
+  import { Badge, Button } from '$lib/components/ant-design';
+
+  let unread = $state(120);
+</script>
+
+<Badge count={unread}>
+  {#snippet children({ descriptionId })}
+    <Button aria-describedby={descriptionId}>Уведомления</Button>
+  {/snippet}
+</Badge>
+<Badge count={0} showZero size="small" />
+<Badge status="processing" text="Сервис работает" />
+```
+
+Badge принимает числовой count и необязательный children Snippet. Без children
+индикатор остаётся в потоке. По умолчанию overflowCount=99, showZero=false,
+dot=false и size=medium; размер не наследуется от componentSize. Значение выше
+предела отображается как `99+`. Конечные отрицательные и дробные числа сохраняются;
+NaN/Infinity считаются отсутствующим count. Отрицательный или нечисловой предел
+заменяется на 99; конечный неотрицательный overflowCount, включая 0, допустим.
+Входные значения владельца компонент не изменяет.
+
+Нулевой count скрыт, пока не включён showZero. Как в Ant Design 6.6.8,
+dot с count=0 скрыт, а с showZero отображается число 0; без count dot виден.
+Самостоятельный status виден и без count, и при скрытом нуле. При наличии
+children для статусной точки нужен dot или отображаемый count/text. Видимый
+числовой count имеет приоритет над оформлением status. Строка text='0' участвует
+в правиле нуля; Snippet считается содержимым независимо от его результата.
+
+Поддерживаются success, processing, default, error, warning и 13 preset цветов:
+blue, purple, cyan, green, magenta, pink, red, orange, yellow, volcano, geekblue,
+lime, gold. Text принимает строку или Snippet; preset color имеет приоритет над
+цветом status. Offset — readonly-пара чисел [x, y]: y задаёт margin-top,
+положительный x сдвигает от логического конца наружу, в RTL направление зеркально.
+Неконечная координата заменяется на 0 независимо от второй координаты.
+Компонент наследует тему и RTL; compact сохраняет собственные размеры Badge.
+
+Визуальный индикатор скрыт от screen reader. Рядом расположен обычный скрытый
+текст с полным значением, в том числе при `99+` и dot. Children получает
+BadgeContext с нормализованным count и descriptionId, которым владелец может
+описать кнопку, ссылку или другой control. При скрытии индикатора descriptionId
+становится undefined. Children остаётся в DOM при изменении count: его фокус,
+состояние и нативные события сохраняются. Сам Badge не создаёт остановок Tab,
+live-region или автоматических объявлений. Aria-label/aria-labelledby именуют
+необязательную группу; aria-describedby относится к корню. Подписи полного
+значения/статусов переводятся через locale.badge с частичным наследованием.
+Title по умолчанию содержит полный count; false/null убирают нативную подсказку,
+строка заменяет её. Class/style относятся к корню, offset — к индикатору;
+для самостоятельного статуса offset применяется к корню, как в исходнике.
+
+Галерея `/ant-design#badge` показывает варианты и локальный список уведомлений
+в Drawer. Непрочитанное количество вычисляется из сообщений. Чтение сохраняет
+записи; фокус переходит на прочитанное сообщение или список после «Прочитать все».
+После закрытия Drawer фокус возвращается к прежней кнопке даже при count=0.
+Сброс создаёт исходные сообщения с новыми ключами. Сеть и persistence отсутствуют.
+
+В первой версии нет Ribbon, строкового/Snippet count, произвольных CSS-цветов,
+анимации прокрутки цифр, появления/исчезновения, semantic classNames/styles,
+prefixCls/rootClassName и устаревших aliases. Processing использует исходную
+CSS-пульсацию, которая отключается при reduced motion. Экспортируются BadgeProps,
+BadgeStatus, BadgeColor, BadgeSize, BadgeText, BadgeContext и BadgeLocale.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2500,6 +2567,9 @@ Tag использует обычный текст и описанную нат�
 отменить действие; удаление сохраняет доступный фокус. CheckableTag — управляемая
 toggle-кнопка с aria-pressed и нативной клавиатурой. Оба компонента скрывают
 декоративные иконки и не создают собственных live-region.
+Badge сохраняет интерактивные children при изменениях и скрытии индикатора.
+Полное значение доступно обычным текстом; descriptionId связывает его с control
+владельца. Автоматических объявлений и дополнительных остановок Tab нет.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2673,6 +2743,11 @@ Tag/CheckableTag проверяются на SSR snippets, ARIA, disabled, со�
 Галерея проверяет добавление/дубликаты/защиту/удаление и повторное создание меток,
 фильтры таблицы, сохранение фокуса, reset и SSR. Модель проверяет нормализацию,
 стабильность и обновление key, повторное удаление и изоляцию экземпляров.
+Badge проверяется на границы счётчика, ноль/dot, приоритет статусов, offsets и SSR.
+Chromium проверяет полные описания, отсутствие live-region, стабильность DOM/фокуса,
+нативную отправку формы, палитры, locale/темы/RTL/reduced motion и узкий экран.
+Галерея проверяет Drawer, чтение без удаления, overflow, reset и SSR;
+модель — вычисление количества, повторное чтение, новые ключи и изоляцию экземпляров.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2800,6 +2875,12 @@ steps.dom.ts восстанавливает фокус шагов и испол�
 и восстановление фокуса через feedback.dom.ts. Listener закрытия использует
 Svelte attachment с cleanup. Используется существующий Icon close; новые
 зависимости, иконки и лицензии не добавлены.
+[vendor/badge.css](./vendor/badge.css) содержит 52 правила Badge и keyframes
+antStatusProcessing из того же архива. Селекторы Radio/Space, ссылок и анимации
+цифр/появления исключены; корни ограничены :where(.ant-badge-css-var), declarations
+сохранены. Badge.svelte добавляет standalone-позиционирование без ScrollNumber,
+описания, логические offsets, обводку под фон темы и reduced motion.
+Новые зависимости, иконки и лицензии не добавлены.
 Пять filled-иконок в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

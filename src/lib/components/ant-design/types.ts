@@ -25,7 +25,10 @@ export interface Locale {
   skeleton?: Partial<SkeletonLocale>;
   empty?: Partial<EmptyLocale>;
   steps?: Partial<StepsLocale>;
+  badge?: Partial<BadgeLocale>;
 }
+
+export interface BadgeLocale { count: string; dot: string; success: string; processing: string; default: string; error: string; warning: string; }
 
 export interface StepsLocale { label: string; wait: string; process: string; finish: string; error: string; }
 
@@ -82,6 +85,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  badge: { count: 'Количество', dot: 'Есть обновления', success: 'Успешно', processing: 'Выполняется', default: 'Обычный статус', error: 'Ошибка', warning: 'Предупреждение' },
   steps: { label: 'Этапы', wait: 'Ожидается', process: 'Выполняется', finish: 'Завершён', error: 'Ошибка' },
   empty: { description: 'Нет данных' },
   skeleton: { loadingText: 'Загрузка…' },
@@ -131,6 +135,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  badge: { count: 'Count', dot: 'Updates available', success: 'Success', processing: 'Processing', default: 'Default status', error: 'Error', warning: 'Warning' },
   steps: { label: 'Steps', wait: 'Waiting', process: 'In progress', finish: 'Finished', error: 'Error' },
   empty: { description: 'No data' },
   skeleton: { loadingText: 'Loading…' },

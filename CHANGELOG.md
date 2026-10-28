@@ -9,6 +9,11 @@
 
 ### Added
 
+- Badge: числовой count, overflow/showZero/dot, пять статусов, 13 preset цветов,
+  string/Snippet text, medium/small, offset и полное доступное значение.
+  Добавлены стили Ant Design 6.6.8, локаль, темы/compact/RTL/reduced motion,
+  unit/SSR/Chromium-проверки и галерея уведомлений с Drawer. Количество вычисляется
+  из сообщений; чтение сохраняет записи, фокус и исходную кнопку открытия.
 - Tag и CheckableTag: preset/status цвета, filled/outlined/solid, snippets,
   отменяемый onClose, disabled, нативные кнопки и восстановление фокуса.
   Добавлены стили Ant Design 6.6.8, темы/compact/RTL/reduced motion, SSR и

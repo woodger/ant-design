@@ -1,0 +1,59 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Badge count/dot/status и preset colors; исключены scrolling/zoom и интеграции с Radio/Space.
+ * Корни ограничены :where(.ant-badge-css-var).
+ * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-badge:where(.ant-badge-css-var){font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-badge:where(.ant-badge-css-var)::before,.ant-badge:where(.ant-badge-css-var)::after{box-sizing:border-box;}
+.ant-badge:where(.ant-badge-css-var) [class^="ant-badge"],.ant-badge:where(.ant-badge-css-var) [class*=" ant-badge"]{box-sizing:border-box;}
+.ant-badge:where(.ant-badge-css-var) [class^="ant-badge"]::before,.ant-badge:where(.ant-badge-css-var) [class*=" ant-badge"]::before,.ant-badge:where(.ant-badge-css-var) [class^="ant-badge"]::after,.ant-badge:where(.ant-badge-css-var) [class*=" ant-badge"]::after{box-sizing:border-box;}
+.ant-badge:where(.ant-badge-css-var){box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:1;list-style:none;font-family:var(--ant-font-family);position:relative;display:inline-block;width:fit-content;}
+.ant-badge:where(.ant-badge-css-var) .ant-badge-count{display:inline-flex;justify-content:center;z-index:var(--ant-badge-indicator-z-index);min-width:var(--ant-badge-indicator-height);height:var(--ant-badge-indicator-height);color:var(--ant-color-text-light-solid);font-weight:var(--ant-badge-text-font-weight);font-size:var(--ant-badge-text-font-size);line-height:var(--ant-badge-indicator-height);white-space:nowrap;text-align:center;background:var(--ant-color-error);border-radius:calc(var(--ant-badge-indicator-height) / 2);box-shadow:0 0 0 var(--ant-line-width) var(--ant-color-border-bg);transition:background-color var(--ant-motion-duration-mid);}
+.ant-badge:where(.ant-badge-css-var) .ant-badge-count-sm{min-width:var(--ant-badge-indicator-height-sm);height:var(--ant-badge-indicator-height-sm);font-size:var(--ant-badge-text-font-size-sm);line-height:var(--ant-badge-indicator-height-sm);border-radius:calc(var(--ant-badge-indicator-height-sm) / 2);}
+.ant-badge:where(.ant-badge-css-var) .ant-badge-multiple-words{padding-inline:var(--ant-badge-padding-inline);}
+.ant-badge:where(.ant-badge-css-var) .ant-badge-multiple-words bdi{unicode-bidi:plaintext;}
+.ant-badge:where(.ant-badge-css-var) .ant-badge-dot{z-index:var(--ant-badge-indicator-z-index);width:var(--ant-badge-dot-size);min-width:var(--ant-badge-dot-size);height:var(--ant-badge-dot-size);background:var(--ant-color-error);border-radius:100%;box-shadow:0 0 0 var(--ant-line-width) var(--ant-color-border-bg);}
+.ant-badge:where(.ant-badge-css-var) .ant-badge-count,.ant-badge:where(.ant-badge-css-var) .ant-badge-dot{position:absolute;top:0;inset-inline-end:0;transform:translate(50%, -50%);transform-origin:100% 0%;}
+.ant-badge:where(.ant-badge-css-var) .ant-badge-count.anticon-spin,.ant-badge:where(.ant-badge-css-var) .ant-badge-dot.anticon-spin{animation-name:antBadgeLoadingCircle;animation-duration:1s;animation-iteration-count:infinite;animation-timing-function:linear;}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status{line-height:inherit;vertical-align:baseline;}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-dot{position:relative;top:-1px;display:inline-block;width:var(--ant-badge-status-size);height:var(--ant-badge-status-size);vertical-align:middle;border-radius:50%;}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-success{background-color:var(--ant-color-success);}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-processing{overflow:visible;color:var(--ant-color-info-text-hover);background-color:var(--ant-color-info);border-color:currentcolor;}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-processing::after{position:absolute;top:0;inset-inline-start:0;width:100%;height:100%;border-width:var(--ant-line-width);border-style:solid;border-color:inherit;border-radius:50%;animation-name:antStatusProcessing;animation-duration:1.2s;animation-iteration-count:infinite;animation-timing-function:ease-in-out;content:"";}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-default{background-color:var(--ant-color-text-placeholder);}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-error{background-color:var(--ant-color-error);}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-warning{background-color:var(--ant-color-warning);}
+.ant-badge:where(.ant-badge-css-var).ant-badge-status .ant-badge-status-text{margin-inline-start:var(--ant-margin-xs);color:var(--ant-color-text);font-size:var(--ant-font-size);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-blue{background:var(--ant-blue-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-blue:not(.ant-badge-count){color:var(--ant-blue-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-purple{background:var(--ant-purple-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-purple:not(.ant-badge-count){color:var(--ant-purple-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-cyan{background:var(--ant-cyan-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-cyan:not(.ant-badge-count){color:var(--ant-cyan-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-green{background:var(--ant-green-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-green:not(.ant-badge-count){color:var(--ant-green-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-magenta{background:var(--ant-magenta-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-magenta:not(.ant-badge-count){color:var(--ant-magenta-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-pink{background:var(--ant-pink-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-pink:not(.ant-badge-count){color:var(--ant-pink-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-red{background:var(--ant-red-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-red:not(.ant-badge-count){color:var(--ant-red-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-orange{background:var(--ant-orange-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-orange:not(.ant-badge-count){color:var(--ant-orange-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-yellow{background:var(--ant-yellow-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-yellow:not(.ant-badge-count){color:var(--ant-yellow-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-volcano{background:var(--ant-volcano-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-volcano:not(.ant-badge-count){color:var(--ant-volcano-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-geekblue{background:var(--ant-geekblue-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-geekblue:not(.ant-badge-count){color:var(--ant-geekblue-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-lime{background:var(--ant-lime-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-lime:not(.ant-badge-count){color:var(--ant-lime-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-gold{background:var(--ant-gold-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge:where(.ant-badge-css-var) .ant-badge-color-gold:not(.ant-badge-count){color:var(--ant-gold-6);}
+.ant-badge:where(.ant-badge-css-var).ant-badge-not-a-wrapper:not(.ant-badge-status){vertical-align:middle;}
+.ant-badge:where(.ant-badge-css-var).ant-badge-not-a-wrapper .ant-badge-count{transform:none;}
+.ant-badge-rtl{direction:rtl;}
+.ant-badge-rtl .ant-badge-count,.ant-badge-rtl .ant-badge-dot{transform:translate(-50%, -50%);}
+.ant-badge-css-var{--ant-badge-indicator-z-index:auto;--ant-badge-indicator-height:20px;--ant-badge-indicator-height-sm:14px;--ant-badge-dot-size:6px;--ant-badge-text-font-size:12px;--ant-badge-text-font-size-sm:12px;--ant-badge-text-font-weight:normal;--ant-badge-status-size:6px;--ant-badge-padding-inline:8px;}
+@keyframes antStatusProcessing{0%{transform:scale(0.8);opacity:0.5;}100%{transform:scale(2.4);opacity:0;}}

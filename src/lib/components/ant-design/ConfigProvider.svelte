@@ -39,7 +39,8 @@
         pagination: { ...parent.locale.pagination, ...locale?.pagination },
         table: { ...parent.locale.table, ...locale?.table },
         inputNumber: { ...parent.locale.inputNumber, ...locale?.inputNumber },
-        steps: { ...parent.locale.steps, ...locale?.steps }
+        steps: { ...parent.locale.steps, ...locale?.steps },
+        badge: { ...parent.locale.badge, ...locale?.badge }
       };
     }
   };

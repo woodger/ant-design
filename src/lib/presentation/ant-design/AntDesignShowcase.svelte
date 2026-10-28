@@ -25,6 +25,7 @@
   import ResultExample from './ResultExample.svelte';
   import StepsExample from './StepsExample.svelte';
   import TagExample from './TagExample.svelte';
+  import BadgeExample from './BadgeExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -60,7 +61,8 @@
     ['empty', 'Empty'],
     ['result', 'Result'],
     ['steps', 'Steps'],
-    ['tag', 'Tag / CheckableTag']
+    ['tag', 'Tag / CheckableTag'],
+    ['badge', 'Badge']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -172,7 +174,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">34 компонента</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">35 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -460,6 +462,12 @@
           <div class="section-heading"><h2>Tag / CheckableTag</h2></div>
           <p class="section-description">Метки статусов и категорий, отменяемое закрытие и выбор фильтров таблицы.</p>
           <div class="panel"><TagExample /></div>
+        </section>
+
+        <section id="badge">
+          <div class="section-heading"><h2>Badge</h2></div>
+          <p class="section-description">Счётчики и статусы, полное доступное значение и список уведомлений с отметкой о прочтении.</p>
+          <div class="panel"><BadgeExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

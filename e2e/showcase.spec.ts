@@ -1,5 +1,60 @@
 import { test, expect } from './test';
 
+test.describe('Badge showcase', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/ant-design#badge'); });
+
+  test('updates preview overflow size and offsets independently of unread messages', async ({ page }, testInfo) => {
+    const fixture = page.locator('#badge'); const preview = fixture.locator('#showcase-badge-preview');
+    await fixture.getByRole('spinbutton', { name: 'Количество Badge', exact: true }).fill('120'); await expect(preview.locator('sup')).toHaveText('99+'); await expect(preview.getByRole('button')).toHaveAccessibleDescription('Количество: 120');
+    await fixture.getByRole('combobox', { name: 'Размер Badge', exact: true }).click(); await page.getByRole('option', { name: 'small', exact: true }).click(); await expect(preview.locator('sup')).toHaveCSS('height', '14px');
+    await fixture.getByRole('spinbutton', { name: 'Смещение Badge X', exact: true }).fill('12'); await expect(preview.locator('sup')).toHaveCSS('inset-inline-end', '-12px');
+    await preview.getByRole('button').click(); await expect(fixture.getByRole('status', { name: 'Нажатия в примере Badge', exact: true })).toHaveText('Нажатий: 1.'); await expect(fixture.getByRole('button', { name: 'Открыть уведомления Badge', exact: true })).toHaveAccessibleDescription('Количество: 2');
+    await fixture.screenshot({ path: testInfo.outputPath('badge-example-light.png') });
+  });
+
+  test('switches preview dot zero standalone and rich status text', async ({ page }) => {
+    const fixture = page.locator('#badge'); const preview = fixture.locator('#showcase-badge-preview'); const mode = fixture.getByRole('combobox', { name: 'Режим Badge', exact: true });
+    await mode.click(); await page.getByRole('option', { name: 'Точка', exact: true }).click(); await expect(preview.locator('sup')).toHaveClass(/ant-badge-dot/);
+    await fixture.getByRole('spinbutton', { name: 'Количество Badge', exact: true }).fill('0'); await expect(preview.locator('sup')).toHaveCount(0); await fixture.getByRole('checkbox', { name: 'Показывать ноль Badge', exact: true }).check(); await expect(preview.locator('sup')).toHaveText('0');
+    await fixture.getByRole('checkbox', { name: 'Отдельный Badge', exact: true }).check(); await expect(preview.getByRole('button')).toHaveCount(0);
+    await mode.click(); await page.getByRole('option', { name: 'Статус', exact: true }).click(); await fixture.getByRole('textbox', { name: 'Текст статуса Badge', exact: true }).fill('Сервис готов'); await fixture.getByRole('checkbox', { name: 'Snippet статуса Badge', exact: true }).check(); await expect(preview.locator('strong')).toHaveText('Сервис готов'); await expect(preview.locator('.ant-badge-status-dot')).toBeVisible();
+  });
+
+  test('marks messages read retains records and restores the same opener after zero hides the counter', async ({ page }) => {
+    const opener = page.locator('#badge').getByRole('button', { name: 'Открыть уведомления Badge', exact: true }); const original = await opener.elementHandle(); await opener.click();
+    const dialog = page.getByRole('dialog', { name: 'Уведомления Badge', exact: true }); const list = dialog.getByRole('region', { name: 'Список уведомлений Badge', exact: true }); const message = list.getByRole('listitem').filter({ has: page.getByRole('heading', { name: 'Релиз подготовлен', exact: true }) });
+    await message.getByRole('button', { name: 'Прочитать «Релиз подготовлен»', exact: true }).click(); await expect(message).toBeFocused(); await expect(message.getByRole('button')).toBeDisabled(); await expect(list.getByText('Непрочитанных: 1.', { exact: true })).toBeVisible();
+    await dialog.getByRole('button', { name: 'Прочитать все уведомления', exact: true }).click(); await expect(list).toBeFocused(); await expect(list.getByRole('listitem')).toHaveCount(3); await expect(list.getByRole('button', { disabled: true })).toHaveCount(3); await expect(page.locator('#showcase-badge-inbox sup')).toHaveCount(0);
+    await page.keyboard.press('Escape'); await expect(opener).toBeFocused(); expect(await opener.evaluate((node, old) => node === old, original)).toBe(true); await expect(opener).not.toHaveAttribute('aria-describedby');
+    await opener.click(); await expect(list.getByText('Непрочитанных: 0.', { exact: true })).toBeVisible(); await expect(dialog.getByRole('button', { name: 'Прочитать все уведомления', exact: true })).toBeDisabled();
+  });
+
+  test('derives an abbreviated unread count from the full message collection', async ({ page }) => {
+    const fixture = page.locator('#badge'); const opener = fixture.getByRole('button', { name: 'Открыть уведомления Badge', exact: true }); await fixture.getByRole('button', { name: 'Добавить 100 уведомлений', exact: true }).click();
+    await expect(fixture.locator('#showcase-badge-inbox sup')).toHaveText('99+'); await expect(opener).toHaveAccessibleDescription('Количество: 102'); await expect(fixture.getByText('Непрочитанных: 102. Всего сообщений: 103.', { exact: true })).toBeVisible(); await opener.click();
+    const dialog = page.getByRole('dialog', { name: 'Уведомления Badge', exact: true }); const list = dialog.getByRole('region', { name: 'Список уведомлений Badge', exact: true }); await expect(list.getByRole('listitem')).toHaveCount(103); await dialog.getByRole('button', { name: 'Прочитать все уведомления', exact: true }).click(); await expect(list).toBeFocused(); await expect(list.getByRole('listitem')).toHaveCount(103);
+    await dialog.getByRole('button', { name: 'Добавить уведомление в Drawer', exact: true }).click(); await expect(list.getByText('Непрочитанных: 1.', { exact: true })).toBeVisible(); await expect(list.getByRole('listitem')).toHaveCount(104); await page.keyboard.press('Escape'); await expect(opener).toHaveAccessibleDescription('Количество: 1');
+  });
+
+  test('updates dot notifications and resets inbox without resetting preview settings', async ({ page }) => {
+    const fixture = page.locator('#badge'); const counter = fixture.locator('#showcase-badge-inbox'); await fixture.getByRole('checkbox', { name: 'Точка вместо числа уведомлений', exact: true }).check(); await expect(counter.locator('sup')).toHaveClass(/ant-badge-dot/);
+    await fixture.getByRole('spinbutton', { name: 'Количество Badge', exact: true }).fill('42'); await fixture.getByRole('button', { name: 'Открыть уведомления Badge', exact: true }).click(); const dialog = page.getByRole('dialog', { name: 'Уведомления Badge', exact: true }); await dialog.getByRole('button', { name: 'Прочитать все уведомления', exact: true }).click(); await expect(counter.locator('sup')).toHaveCount(0); await page.keyboard.press('Escape');
+    await fixture.getByRole('button', { name: 'Новое уведомление', exact: true }).click(); await expect(counter.locator('sup')).toHaveClass(/ant-badge-dot/); await expect(counter.getByRole('button')).toHaveAccessibleDescription('Количество: 1');
+    await fixture.getByRole('button', { name: 'Сбросить пример Badge', exact: true }).click(); await expect(fixture.getByText('Непрочитанных: 2. Всего сообщений: 3.', { exact: true })).toBeVisible(); await expect(fixture.locator('#showcase-badge-preview sup')).toHaveText('42'); await expect(counter.getByRole('button')).toHaveAccessibleDescription('Количество: 2');
+  });
+
+  test('renders a dark inbox with reachable message actions', async ({ page }, testInfo) => {
+    await page.getByRole('button', { name: '◐ Тёмная тема', exact: true }).click(); await page.locator('#badge').getByRole('button', { name: 'Открыть уведомления Badge', exact: true }).click(); const dialog = page.getByRole('dialog', { name: 'Уведомления Badge', exact: true });
+    await expect(dialog.locator('.ant-drawer-section')).toHaveCSS('background-color', 'rgb(31, 31, 31)'); await expect(dialog.getByRole('button', { name: 'Прочитать «Нужна проверка»', exact: true })).toBeEnabled(); await dialog.screenshot({ path: testInfo.outputPath('badge-inbox-dark.png') });
+  });
+
+  test('fits preview controls and inbox actions on a 320px viewport', async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 320, height: 800 }); const fixture = page.locator('#badge'); const initialWidth = await page.evaluate(() => document.documentElement.scrollWidth); await fixture.getByRole('button', { name: 'Добавить 100 уведомлений', exact: true }).click();
+    const bounds = await fixture.evaluate(node => ({ right: node.getBoundingClientRect().right, width: node.clientWidth, scroll: node.scrollWidth })); expect(bounds.right).toBeLessThanOrEqual(320); expect(bounds.scroll).toBeLessThanOrEqual(bounds.width + 1); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(initialWidth); await fixture.screenshot({ path: testInfo.outputPath('badge-example-mobile.png') });
+    await fixture.getByRole('button', { name: 'Сбросить пример Badge', exact: true }).click(); await fixture.getByRole('button', { name: 'Открыть уведомления Badge', exact: true }).click(); const dialog = page.getByRole('dialog', { name: 'Уведомления Badge', exact: true }); await expect(dialog.getByRole('button', { name: 'Прочитать «Релиз подготовлен»', exact: true })).toBeVisible(); await dialog.screenshot({ path: testInfo.outputPath('badge-inbox-mobile.png') });
+  });
+});
+
 test.describe('Tag showcase', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/ant-design#tag'); });
 
@@ -1214,6 +1269,11 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders Badge counts descriptions and passive statuses before hydration', async ({ page }) => {
+    await page.goto('/ant-design#badge'); const fixture = page.locator('#badge'); await expect(fixture.locator('#showcase-badge-preview sup')).toHaveText('5'); await expect(fixture.getByRole('button', { name: 'Кнопка с Badge', exact: true })).toHaveAccessibleDescription('Количество: 5'); await expect(fixture.getByRole('button', { name: 'Открыть уведомления Badge', exact: true })).toHaveAccessibleDescription('Количество: 2');
+    await expect(fixture.getByText('Непрочитанных: 2. Всего сообщений: 3.', { exact: true })).toBeVisible(); await expect(fixture.locator('.examples .ant-badge-status-dot')).toHaveCount(5); await expect(fixture.locator('.ant-badge[aria-live], .ant-badge[role="status"]')).toHaveCount(0); await expect(page.getByRole('dialog', { name: 'Уведомления Badge', exact: true })).toHaveCount(0);
+  });
 
   test('renders Tag labels toggle states and table statuses before hydration', async ({ page }) => {
     await page.goto('/ant-design#tag'); const fixture = page.locator('#tag'); await expect(fixture.getByRole('button', { name: 'Закрыть метку предпросмотра', exact: true })).toBeVisible(); await expect(fixture.getByRole('group', { name: 'Метки проекта', exact: true }).locator('.ant-tag')).toHaveCount(3);
