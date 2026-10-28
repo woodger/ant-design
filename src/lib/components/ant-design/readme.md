@@ -8,7 +8,7 @@ Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
-StatisticTimer, StatisticCountdown, Form и FormItem.
+StatisticTimer, StatisticCountdown, Segmented, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -106,6 +106,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Flex | Прямые дети, направления, align/justify, wrap, gap/flex, нативный component и nativeElement |
 | Statistic | Числа/строки, precision без округления, разделители, formatter, snippets, semantic slots и loading |
 | StatisticTimer / StatisticCountdown | Отсчёт времени вверх/вниз, формат, callbacks, SSR-placeholder и отмена интервалов |
+| Segmented | Типизированный одиночный выбор, native radio, стрелки, размеры, block/round, snippets и semantic slots |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -260,6 +261,48 @@ Format по умолчанию HH:mm:ss; Y/M/D/H/m/s/S обозначают фи
 отменённого или заменённого запуска игнорируются. Невалидная дата сохраняет
 поведение upstream (NaN в форматировании/callback, без автоматического завершения).
 Bind:nativeElement даёт корневой div Statistic. Фикстура — `?fixture=statistic-timer`.
+
+## Segmented
+
+```svelte
+<Segmented options={['День', 'Неделя', 'Месяц']} bind:value={period} />
+```
+
+Options — строки/числа или объекты value/label/icon/title/disabled/class.
+Значения должны быть уникальными; число 0 и строка "0" различаются. Label —
+строка, число или Snippet; icon — Snippet. Для icon-only задавайте title либо
+aria-label option. Title по умолчанию берётся из scalar label без icon,
+как в Ant Design. ClassNames/styles поддерживают root/item/label/icon, объект
+либо callback ({ props }); styles — CSS-строки. Style перекрывает styles.root.
+
+Value поддерживает binding, defaultValue читается при создании; без него выбран
+первый option, даже disabled. Внешняя смена value не вызывает onChange(value).
+Удаление выбранного option не исправляет значение; восстановление option
+возвращает checked. Size наследует ConfigProvider, orientation имеет приоритет
+над vertical; block и shape=round повторяют оформление эталона. Disabled влияет
+на все radio, option.disabled — на один. Как Ant Design 6.6.8, Segmented не
+наследует ConfigProvider.componentDisabled; передавайте disabled явно.
+
+Внутри radiogroup — нативные label/input[type=radio]/div label. Name общий
+для inputs и уникален между экземплярами по умолчанию. Корень имеет tabindex=0,
+если не disabled; native Tab также достигает выбранного radio. Стрелки циклически
+выбирают enabled options в порядке массива независимо от RTL и направления.
+Смена по стрелке подавляет второе нативное переключение и переводит фокус
+на выбранный radio. Bind:nativeElement даёт корневой div.
+
+Сохраняется upstream-контракт FormData: у radio нет value-атрибута, поэтому
+выбранный enabled option отправляет "on" под name. Типизированное значение
+получайте через binding/onChange. Native reset не меняет модель и не вызывает
+onChange; checked после reset приводится к текущему value. Интеграция с FormItem
+и сериализация option.value не добавляются скрыто.
+
+Галерея — `/ant-design#segmented`, фикстура — `?fixture=segmented`.
+Рецепт segmented воспроизводит 38 правил vendor/segmented.css; цвета адаптированы
+к существующим темам, размеры используют токены controls. Изучена зависимость
+@rc-component/segmented 1.4.0 (commit 8cbec0b3a0a4097b683a55b39b565ea1e249b47f),
+её npm-архив сверяется по опубликованному SHA-512 и хранится только в .upstream.
+Анимированный thumb, option.tooltip, prefixCls и глобальный component config
+пока отсутствуют; реестр отмечает семейство частично перенесённым.
 
 ## InputNumber
 

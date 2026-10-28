@@ -29,6 +29,8 @@ export { default as AvatarGroup } from './AvatarGroup.svelte';
 export { default as Divider } from './Divider.svelte';
 export { default as Flex } from './Flex.svelte';
 export { default as Statistic } from './Statistic.svelte';
+export { default as Segmented } from './Segmented.svelte';
+export type { SegmentedProps, SegmentedValue, SegmentedOption, SegmentedSemanticSlots } from './segmented.types';
 export { default as StatisticTimer } from './StatisticTimer.svelte';
 export { default as StatisticCountdown } from './StatisticCountdown.svelte';
 export type { StatisticTimerProps, StatisticCountdownProps, StatisticTimerType } from './statistic-timer.types';

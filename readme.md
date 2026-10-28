@@ -93,6 +93,7 @@ Divider, направления, подписи, варианты линий, р
 Flex, направления, выравнивание, перенос строк, интервалы и нативный порядок фокуса,
 Statistic, точное строковое форматирование, snippets, semantic slots и загрузку,
 StatisticTimer/StatisticCountdown, формат времени, callbacks и отмену интервалов,
+Segmented, типизированный выбор, native radio, клавиатуру, размеры и темы,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

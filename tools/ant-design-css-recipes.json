@@ -126,5 +126,26 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Statistic: header/title/content/value/prefix/suffix и loading Skeleton.\n * Корни ограничены :where(.ant-statistic-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "segmented",
+    "output": "src/lib/components/ant-design/vendor/segmented.css",
+    "expectedRules": 38,
+    "include": [
+      "\\.ant-segmented(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-segmented",
+        "replacement": ".ant-segmented-css-var"
+      },
+      {
+        "pattern": "\\.ant-segmented(?![-\\w])",
+        "replacement": ".ant-segmented:where(.ant-segmented-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Segmented: размеры, направления, состояния и thumb; все 38 правил компонента.\n * Корни ограничены :where(.ant-segmented-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

@@ -19,6 +19,9 @@
 
 ### Added
 
+- Segmented: типизированные options/value, defaultValue/onChange, native radio,
+  клавиатура, размеры, block/round, semantic slots, темы и RTL. Добавлены CSS-рецепт,
+  unit/SSR/Chromium, отдельная фикстура и галерея; thumb motion и tooltip пока отсутствуют.
 - StatisticTimer и совместимый StatisticCountdown: countup/countdown, формат
   длительности, onChange/onFinish, стабильный SSR-placeholder, cleanup и защита
   от поздних callbacks. Добавлены unit/SSR/Chromium, отдельная фикстура и запуск

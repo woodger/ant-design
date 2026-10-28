@@ -1907,25 +1907,100 @@
       "id": "segmented",
       "name": "Segmented",
       "category": "data-display",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Поэтапный перенос Segmented 6.6.8: выбор и семантика, затем геометрия thumb.",
       "upstreamPath": "components/segmented",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Segmented",
+          "local": [
+            "Segmented"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/segmented",
+          "range": "~1.4.0",
+          "referenceVersion": "1.4.0"
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "fixtures": [
+        "segmented"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Segmented.svelte",
+        "src/lib/components/ant-design/segmented.types.ts",
+        "src/lib/components/ant-design/segmented.engine.ts",
+        "src/lib/components/ant-design/readme.md",
+        "src/lib/presentation/ant-design/SegmentedExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "selection",
+          "title": "Типизированные options/value/defaultValue, disabled и onChange",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/segmented.engine.test.ts",
+            "src/lib/components/ant-design/segmented.ssr.test.ts",
+            "e2e/segmented.spec.ts"
+          ],
+          "note": "Начальное значение — первый option, включая disabled; удалённый/отсутствующий value не исправляется. Native radio без value сохраняет FormData=on, как rc-segmented 1.4.0. ConfigProvider.componentDisabled не применяется, как в upstream."
+        },
+        {
+          "id": "layout",
+          "title": "Направления, размеры, block/round, snippets и semantic slots",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/segmented.ssr.test.ts",
+            "e2e/segmented.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "Реактивные размеры/темы/RTL; стили слотами root/item/label/icon передаются CSS-строками."
+        },
+        {
+          "id": "keyboard",
+          "title": "Native radio, стрелки, имена групп, SSR и nativeElement",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/segmented.engine.test.ts",
+            "src/lib/components/ant-design/segmented.ssr.test.ts",
+            "e2e/segmented.spec.ts"
+          ],
+          "note": "Циклические стрелки в порядке options; native reset не меняет модель выбора, DOM синхронизируется с ней без onChange."
+        },
+        {
+          "id": "thumb",
+          "title": "Движение индикатора при смене значения",
+          "state": "missing",
           "requiredForV1": true,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Выбранный item имеет штатное оформление; анимированный thumb — следующий отдельный этап."
+        },
+        {
+          "id": "tooltip",
+          "title": "Tooltip отдельных options",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Tooltip не включён в первый этап; title и доступное имя icon-only options доступны."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls и глобальный component config/tokens",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Сохраняются текущие Svelte-соглашения ConfigProvider; пользовательские настройки доступны через style/semantic slots."
         }
       ]
     },

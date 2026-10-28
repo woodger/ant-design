@@ -208,5 +208,10 @@
     "id": "statistic-timer",
     "module": "./StatisticTimerFixtures.svelte",
     "root": "statistic-timer-fixture"
+  },
+  {
+    "id": "segmented",
+    "module": "./SegmentedFixtures.svelte",
+    "root": "segmented-fixture"
   }
 ]

@@ -38,6 +38,7 @@
   import FlexFixtures from './FlexFixtures.svelte';
   import StatisticFixtures from './StatisticFixtures.svelte';
   import StatisticTimerFixtures from './StatisticTimerFixtures.svelte';
+  import SegmentedFixtures from './SegmentedFixtures.svelte';
 
   const controls = createControls();
 </script>
@@ -97,6 +98,7 @@
     <FlexFixtures />
     <StatisticFixtures />
     <StatisticTimerFixtures />
+    <SegmentedFixtures />
 
     <BasicFixtures kind="form" {controls} />
 
