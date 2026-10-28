@@ -147,5 +147,26 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Segmented: размеры, направления, состояния и thumb; все 38 правил компонента.\n * Корни ограничены :where(.ant-segmented-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "grid",
+    "output": "src/lib/components/ant-design/vendor/grid.css",
+    "expectedRules": 1043,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-(?:row|col)(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-(?:row|col)",
+        "replacement": ".ant-grid-css-var"
+      },
+      {
+        "pattern": "\\.ant-(row|col)(?![-\\w])",
+        "replacement": ".ant-$1:where(.ant-grid-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Grid Row/Col: 24 колонки, xs–xxxl, responsive flex и логические отступы.\n * Сохранены media scopes 576/768/992/1200/1600/1920px; исключены чужие интеграции.\n * Корни ограничены :where(.ant-grid-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

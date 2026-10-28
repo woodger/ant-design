@@ -8,7 +8,7 @@ Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
-StatisticTimer, StatisticCountdown, Segmented, Form и FormItem.
+StatisticTimer, StatisticCountdown, Segmented, Row, Col, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -107,6 +107,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Statistic | Числа/строки, precision без округления, разделители, formatter, snippets, semantic slots и loading |
 | StatisticTimer / StatisticCountdown | Отсчёт времени вверх/вниз, формат, callbacks, SSR-placeholder и отмена интервалов |
 | Segmented | Типизированный одиночный выбор, native radio, стрелки, размеры, block/round, snippets и semantic slots |
+| Row / Col | 24 колонки, responsive span/offset/order/push/pull/flex, gutter, align/justify и вложенные контексты |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -316,6 +317,55 @@ children. Поддержаны hover/focus/Escape, в том числе для d
 label остаётся flex-item для block и измерений thumb. Пользовательский tooltip.style
 может переопределить display; это меняет компоновку по явному выбору владельца.
 PrefixCls и глобальный component config пока отсутствуют.
+
+## Grid: Row, Col и breakpoints
+
+```svelte
+<Row gutter={[16, 8]}>
+  <Col xs={24} md={12}>Первая колонка</Col>
+  <Col xs={24} md={12}>Вторая колонка</Col>
+</Row>
+```
+
+Row/Col сохраняют нативные div и 24-колоночные CSS-классы Ant Design. Span=0
+скрывает колонку, order/offset/push/pull задают порядок и логическое смещение.
+Responsive props xs/sm/md/lg/xl/xxl/xxxl принимают число или объект ColSize.
+Span в объекте и базовый span также принимают строку; строковый shorthand
+breakpoint, например md="12", игнорируется как в реализации Col эталона.
+ColSize поддерживает span/order/offset/push/pull/flex, включая нулевые значения
+для сброса responsive свойств. Базовые order/offset/push/pull=0 не добавляют класс.
+
+Row.gutter — число в px, CSS-строка, responsive map чисел либо пара [horizontal,
+vertical]. Горизонтальный интервал даёт отрицательный margin-inline у Row и
+половину padding-inline у Col; вертикальный использует row-gap. Вложенный Row
+создаёт независимый контекст. Wrap=false добавляет nowrap; Col с flex также
+получает min-width:0. Flex=number даёт n n auto, auto — 1 1 auto, строка с px/em/
+rem/% — 0 0 размер, остальные строки передаются как CSS shorthand. Row.style
+перекрывает рассчитанные margin/gap, Col.style — padding/flex; responsive flex
+CSS-переменные записываются после style, как в upstream.
+
+Align=top/middle/bottom/stretch и justify=start/end/center/space-around/
+space-between/space-evenly принимают responsive maps. Breakpoints: xs<576,
+sm≥576, md≥768, lg≥992, xl≥1200, xxl≥1600, xxxl≥1920. В CSS Col класс xs —
+базовый без media query, а Row выбирает xs-map только при фактическом совпадении
+xs. Побеждает наибольший активный breakpoint с заданным значением.
+
+При SSR Row не выбирает responsive align/justify, но gutter при неизвестной
+ширине выбирает наибольший заданный breakpoint (поведение useGutter эталона).
+После mount media queries обновляют Row; Col адаптируется CSS без JS/hydration.
+CreateBreakpoint заменяет React Grid.useBreakpoint явной Svelte-моделью:
+`const breakpoint = createBreakpoint();` и
+`$effect(() => breakpoint.connect(window));`. Реактивное breakpoint.screens
+при SSR равно {}, подключение публикует карту семи MediaQueryList, cleanup
+удаляет listeners и игнорирует запоздалые события. Breakpoint.connected сообщает
+наличие подключения; повторный connect завершает предыдущее.
+
+Оба компонента поддерживают class/style, нативные атрибуты/события,
+bind:nativeElement и RTL без изменения DOM-порядка. Галерея — `/ant-design#grid`,
+фикстура — `?fixture=grid`. Рецепт grid извлекает 1043 правила с исходными media
+scopes и без keyframes. Unit/SSR/Chromium проверяют gutters, вложенность, ширины,
+границы media, нулевые reset-значения, CSS units, RTL и cleanup.
+PrefixCls и пользовательские breakpoint/theme tokens пока не поддержаны.
 
 ## InputNumber
 

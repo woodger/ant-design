@@ -302,25 +302,97 @@
       "id": "grid",
       "name": "Grid",
       "category": "layout",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "24-колоночная Grid как основа адаптивных компонентов; Row/Col и управляемая модель breakpoints.",
       "upstreamPath": "components/grid",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Row",
+          "local": [
+            "Row"
+          ]
+        },
+        {
+          "upstream": "Col",
+          "local": [
+            "Col"
+          ]
+        },
+        {
+          "upstream": "Grid.useBreakpoint",
+          "local": [
+            "createBreakpoint"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "grid"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Row.svelte",
+        "src/lib/components/ant-design/Col.svelte",
+        "src/lib/components/ant-design/grid.types.ts",
+        "src/lib/components/ant-design/grid.engine.ts",
+        "src/lib/components/ant-design/readme.md",
+        "src/lib/presentation/ant-design/GridExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "layout",
+          "title": "24 колонки, span/order/offset/push/pull, flex и вложенные Row",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/grid.engine.test.ts",
+            "src/lib/components/ant-design/grid.ssr.test.ts",
+            "e2e/grid.spec.ts"
+          ],
+          "note": "Числовой/CSS gutter, логические отступы, wrap=false, flex=0 и span=0; style сохраняет upstream-приоритет."
+        },
+        {
+          "id": "responsive",
+          "title": "Xs/sm/md/lg/xl/xxl/xxxl, responsive gutter/align/justify/flex",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/grid.engine.test.ts",
+            "e2e/grid.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "Семь штатных breakpoints, включая xxxl=1920. CSS Col xs действует как default; Row xs-map совпадает только при ширине <576."
+        },
+        {
+          "id": "breakpoint",
+          "title": "Реактивная карта breakpoints с SSR и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/grid-breakpoint.test.ts",
+            "src/lib/components/ant-design/grid.ssr.test.ts",
+            "e2e/grid.spec.ts"
+          ],
+          "note": "CreateBreakpoint — Svelte-модель с screens и connect(window), возвращающим cleanup. SSR screens={}; внутренний Row до подключения использует null, как upstream."
+        },
+        {
+          "id": "global-config",
+          "title": "Пользовательские breakpoint/theme tokens и prefixCls",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "CSS-рецепт закрепляет default media thresholds; глобальный configurable token engine переносится отдельно."
         }
       ]
     },

@@ -19,6 +19,9 @@
 
 ### Added
 
+- Grid Row/Col: 24 колонки, responsive props xs–xxxl, CSS/числовые gutter,
+  align/justify, flex и вложенные контексты. Добавлены createBreakpoint с cleanup,
+  воспроизводимый CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.
 - Segmented: типизированные options/value, defaultValue/onChange, native radio,
   клавиатура, размеры, block/round, semantic slots, темы и RTL. Добавлены thumb
   через Web Animations API с отменой/resize/reduced motion и option.tooltip через

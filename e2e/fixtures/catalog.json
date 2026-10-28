@@ -213,5 +213,10 @@
     "id": "segmented",
     "module": "./SegmentedFixtures.svelte",
     "root": "segmented-fixture"
+  },
+  {
+    "id": "grid",
+    "module": "./GridFixtures.svelte",
+    "root": "grid-fixture"
   }
 ]

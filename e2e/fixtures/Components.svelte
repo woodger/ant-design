@@ -39,6 +39,7 @@
   import StatisticFixtures from './StatisticFixtures.svelte';
   import StatisticTimerFixtures from './StatisticTimerFixtures.svelte';
   import SegmentedFixtures from './SegmentedFixtures.svelte';
+  import GridFixtures from './GridFixtures.svelte';
 
   const controls = createControls();
 </script>
@@ -99,6 +100,7 @@
     <StatisticFixtures />
     <StatisticTimerFixtures />
     <SegmentedFixtures />
+    <GridFixtures />
 
     <BasicFixtures kind="form" {controls} />
 
