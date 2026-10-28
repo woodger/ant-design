@@ -6,7 +6,7 @@
 Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Form и FormItem.
+MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -92,6 +92,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Progress | Line/circle, управляемый percent, статусы, размеры, цвета, форматирование, ARIA, темы/RTL/reduced motion и SSR |
 | Spin | Standalone и сохранённые children, spinning/delay, три размера, description/indicator snippets, блокировка busy-контента и восстановление фокуса |
 | Skeleton | Каркас первой загрузки, avatar/title/paragraph, размеры и ширины, active/round, замена children, доступный статус и фокус |
+| Empty | Пустое состояние, default/simple SVG, image/description snippets, действия, локаль, темы и восстановление фокуса |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -1339,6 +1340,81 @@ Ru/en-тексты — «Загрузка…»/«Loading…»; отсутств�
 В первой версии нет отдельных SkeletonAvatar/Button/Input/Image/Node,
 semantic classNames/styles, prefixCls и устаревшего size=default.
 
+## Empty
+
+```svelte
+<script lang="ts">
+  import { Button, Empty } from '$lib/components/ant-design';
+
+  let hasRecords = $state(false);
+</script>
+
+<Button onclick={() => { hasRecords = false; }}>Очистить список</Button>
+{#if hasRecords}
+  <p>Первый участник создан.</p>
+{:else}
+  <Empty image="simple" description="Участников пока нет.">
+    <Button type="primary" onclick={() => { hasRecords = true; }}>Создать участника</Button>
+  </Empty>
+{/if}
+```
+
+Empty показывает отсутствие данных и предлагает действие через Snippet children.
+Данными, фильтром и результатом действия управляет владелец; компонент не
+выполняет запросов и не создаёт таймеров.
+
+Image принимает default (по умолчанию), simple, собственный Snippet или false.
+False удаляет изображение вместе с контейнером. Встроенные иллюстрации — SVG
+Ant Design 6.6.8. Их цвета используют текущие CSS-токены; SVG-паттерны совмещают
+полупрозрачный fill с colorBgContainer, сохраняя непрозрачную заливку при
+перекрытии частей. Идентификаторы уникальны для каждого экземпляра и стабильны
+между SSR и гидратацией. URL картинки передавайте через нативный img внутри
+Snippet. Контейнер изображения декоративный: aria-hidden и inert исключают
+его содержимое из accessibility tree, Tab и взаимодействий.
+
+Description принимает строку, Snippet или false. Undefined использует
+Locale.empty.description: ruRU — «Нет данных», enUS — «No data»; отсутствующие
+поля используют ruRU. False и пустая строка убирают описание без fallback.
+Строки экранируются. Generic locale.emptyText для Select и других компонентов
+сохраняет прежний смысл и значения.
+
+Children выводится в footer с обычными controls и Tab-навигацией. Изменение
+image/description не пересоздаёт сохранённые действия. Без явного aria-label
+или aria-labelledby корень остаётся обычным div; с ними — именованная group.
+Id/class/style и aria-describedby относятся к корню. Empty не создаёт live-region,
+не добавляет остановку Tab и не переносит фокус при показе. Объявление результата
+операции и выбор конкретного control после неё остаются у владельца.
+
+При удалении сфокусированного действия внутри сохранённого Empty фокус
+переходит к доступному control внутри него, затем к соседу снаружи. При удалении
+всего Empty используются сохранённые соседи текущего dialog/документа: сначала
+следующий, затем предыдущий, затем сам dialog. Проверка после tick сохраняет
+фокус, уже выбранный владельцем. Выбор снаружи также сохраняется. Ресурсы
+focusin/MutationObserver освобождаются при unmount; SSR не обращается к DOM.
+Escape остаётся у содержащего Modal/Drawer.
+
+Компонент наследует темы, compact и RTL из ConfigProvider. Высота изображения
+default — 2.5 controlHeightLG, simple — controlHeightLG; compact уменьшает их
+с 100/40 до 90/36px. Изображения ограничены контейнером, длинное описание
+переносится, действия footer переходят на следующую строку. Встроенной анимации
+нет; reduced motion не требует таймеров или переходов. ConfigProvider.disabled
+не скрывает описание и иллюстрацию; disabled controls задаёт их владелец.
+
+Table использует simple Empty в прежней единственной ячейке пустой строки.
+Colspan и нативная семантика таблицы сохранены. Description получает
+Locale.table.emptyText, включая существующие переопределения. Snippet empty
+имеет приоритет; во время loading оба варианта пустого состояния не выводятся.
+
+Галерея `/ant-design#empty` настраивает изображение, описание и действия.
+Пример списка создаёт первую запись, показывает пустой результат поиска,
+восстанавливает записи при сбросе фильтра и очищает список. Владелец выбирает
+стабильный region таблицы после создания/сброса поиска и поле имени после очистки.
+
+В первой версии нет глобального ConfigProvider.renderEmpty, интеграции с Select,
+semantic classNames/styles, prefixCls/rootClassName и устаревшего imageStyle.
+React-константам PRESENTED_IMAGE_DEFAULT/SIMPLE соответствуют строковые значения
+image. Собственный image Snippet отвечает за свои ресурсы и анимацию.
+
 ## Select
 
 Без mode компонент сохраняет одиночный выбор и скалярный value. В
@@ -2189,6 +2265,9 @@ Spin объявляет отдельный status и немедленно бло
 Skeleton заменяет children декоративным каркасом и объявляет отдельный status.
 Фокус из удаляемого содержимого остаётся на постоянной группе; после загрузки
 Tab входит в новые controls. Автоматического фокуса в новые children нет.
+Empty использует декоративное inert-изображение и обычные controls footer.
+Live-region и автофокус отсутствуют; удаление сфокусированных действий
+восстанавливает доступный фокус и сохраняет выбор владельца.
 
 Pagination использует nav со списком нативных кнопок и `aria-current="page"`.
 Tab перемещает фокус, Enter и Space выбирают страницу; недоступные переходы
@@ -2334,6 +2413,13 @@ Skeleton проверяется на расчёт конфигураций, ну
 Tab, выбор снаружи, unmount, Modal/Drawer, темы/локаль/RTL/reduced motion и
 мобильные ограничения. Галерея проверяет первую загрузку, обновление через Spin
 с сохранением DOM и черновика, ошибку/retry, отмену, сброс и SSR до гидратации.
+Empty проверяется на SSR default/simple, скрытые части, escaping, snippets,
+footer и локальные ссылки SVG-паттернов. Chromium проверяет уникальность ID,
+геометрию, локаль/темы/compact/RTL, inert custom image, сохранение действий,
+unmount и замену controls, выбор владельца, Modal/Drawer и мобильный перенос.
+Галерея проверяет создание первой записи, пустой поиск, сброс фильтра,
+очистку и SSR до гидратации. Проверки Table защищают colspan, точное имя
+пустой ячейки, локальные переводы, приоритет empty snippet и loading.
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
@@ -2431,6 +2517,15 @@ Skeleton.svelte использует декоративный div для title, 
 skeleton.engine.ts рассчитывает конфигурацию; skeleton.dom.ts сохраняет фокус
 при замене children. Theme.css связывает градиент с fill-токенами темы.
 Новые иконки и лицензии не добавлены.
+[vendor/empty.css](./vendor/empty.css) содержит 13 правил default/simple из того
+же архива. Корневые селекторы ограничены :where(.ant-empty-css-var); small исключён.
+Empty.svelte адаптирует snippets, локаль, inert-изображение, перенос текста и footer.
+EmptyImage.svelte переносит геометрию es/empty/empty.js и es/empty/simple.js:
+paths, ellipse, circle, viewBox и transforms сохранены, декоративный SVG не
+дублирует описание через title. Native SVG patterns заменяют getAsSolidColor,
+накладывая fill-токен на colorBgContainer с уникальными $props.id().
+empty.dom.ts управляет focusin/MutationObserver и восстановлением после tick.
+SVG включены в исходники и покрываются существующей MIT-лицензией Ant Design.
 Четыре filled-иконки в [status-icons.ts](./status-icons.ts) скопированы из
 [Ant Design Icons](https://github.com/ant-design/ant-design-icons/tree/7f2516ac91226d2b41f93b35cb5197c8d94f7189/packages/icons-svg/svg/filled)
 и подключены к существующему Icon.svelte с сохранением outline-иконок.

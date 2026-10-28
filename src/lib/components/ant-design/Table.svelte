@@ -11,6 +11,7 @@
   import Pagination from './Pagination.svelte';
   import TableFilter from './TableFilter.svelte';
   import Spin from './Spin.svelte';
+  import Empty from './Empty.svelte';
 
   let {
     mode = 'client',
@@ -341,7 +342,7 @@
                 <tr class="ant-table-expanded-row"><td class="ant-table-cell" colspan={columns.length + dataOffset}><div class="expanded-content" id={expansionId(row.key)}>{@render expandable.expandedRowRender(row.record, index)}</div></td></tr>
               {/if}
             {:else}
-              <tr class="ant-table-placeholder"><td class="ant-table-cell" colspan={columns.length + dataOffset}>{#if !loading}{#if empty}{@render empty()}{:else}{strings.emptyText}{/if}{:else}&nbsp;{/if}</td></tr>
+              <tr class="ant-table-placeholder"><td class="ant-table-cell" colspan={columns.length + dataOffset}>{#if !loading}{#if empty}{@render empty()}{:else}<Empty image="simple" description={strings.emptyText} />{/if}{:else}&nbsp;{/if}</td></tr>
             {/each}
           </tbody>
         </table>

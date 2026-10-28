@@ -23,7 +23,10 @@ export interface Locale {
   progress?: Partial<ProgressLocale>;
   spin?: Partial<SpinLocale>;
   skeleton?: Partial<SkeletonLocale>;
+  empty?: Partial<EmptyLocale>;
 }
+
+export interface EmptyLocale { description: string; }
 
 export interface SkeletonLocale { loadingText: string; }
 
@@ -76,6 +79,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  empty: { description: 'Нет данных' },
   skeleton: { loadingText: 'Загрузка…' },
   spin: { loadingText: 'Загрузка…' },
   progress: { label: 'Ход выполнения', successText: 'Завершено', exceptionText: 'Ошибка' },
@@ -123,6 +127,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  empty: { description: 'No data' },
   skeleton: { loadingText: 'Loading…' },
   spin: { loadingText: 'Loading…' },
   progress: { label: 'Progress', successText: 'Completed', exceptionText: 'Failed' },

@@ -73,14 +73,26 @@ describe('Table server rendering', () => {
 
     expect(body).toContain('colspan="3"');
     expect(body).toContain('Нет данных');
+    expect(body).toContain('ant-empty-normal');
+    expect(body).toContain('viewBox="0 0 64 41"');
+    expect(body).not.toContain('aria-live');
+  });
+
+  it('preserves the custom empty snippet instead of rendering the default Empty', () => {
+    const empty = createRawSnippet(() => ({ render: () => '<a href="#create">Create a person</a>' }));
+    const { body } = render(Table<RecordRow>, { props: { columns, dataSource: [], empty } });
+
+    expect(body).toContain('<a href="#create">Create a person</a>'); expect(body).not.toContain('ant-empty-image'); expect(body).not.toContain('Нет данных');
   });
 
   it('renders loading as busy and disables managed controls before hydration', () => {
-    const { body } = render(Table<RecordRow>, { props: { columns, dataSource: [], rowSelection: true, loading: true } });
+    const empty = createRawSnippet(() => { throw new Error('Empty content must not render during loading'); });
+    const { body } = render(Table<RecordRow>, { props: { columns, dataSource: [], rowSelection: true, loading: true, empty } });
 
     expect(body).toContain('aria-busy="true"');
     expect(body).toContain('Загрузка данных…');
     expect(body).not.toContain('Нет данных');
+    expect(body).not.toContain('ant-empty-image');
     expect(body).toMatch(/<button[^>]*disabled/);
   });
 

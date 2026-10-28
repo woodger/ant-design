@@ -9,6 +9,11 @@
 
 ### Added
 
+- Empty: default/simple SVG, image/description snippets, скрытые части,
+  действия и восстановление фокуса при удалении. Добавлены стили Ant Design
+  6.6.8, локаль, темы/compact/RTL, SSR и галерея создания первой записи,
+  пустого поиска и сброса фильтра. Table использует simple Empty с сохранением
+  colspan, переводов, приоритета empty snippet и loading; добавлены SSR/Chromium-проверки.
 - Skeleton: loading/active/round, конфигурации avatar/title/paragraph,
   ширины и число строк, замена children, доступный статус и парковка фокуса.
   Добавлены стили Ant Design 6.6.8, темы/compact/RTL/reduced motion, SSR,

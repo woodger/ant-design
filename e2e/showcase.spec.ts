@@ -1,5 +1,51 @@
 import { test, expect } from './test';
 
+test.describe('Empty showcase', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/ant-design#empty'); });
+
+  test('creates the first record through Empty and keeps focus on the stable table region', async ({ page }, testInfo) => {
+    const fixture = page.locator('#empty'); const table = fixture.getByRole('table', { name: 'Участники примера Empty', exact: true });
+    await expect(table.getByRole('cell', { name: 'Участников пока нет. Создать первого участника', exact: true })).toBeVisible();
+    await fixture.screenshot({ path: testInfo.outputPath('empty-example.png') });
+    await fixture.getByRole('textbox', { name: 'Имя нового участника', exact: true }).fill('Мария');
+    await table.getByRole('button', { name: 'Создать первого участника', exact: true }).click();
+    await expect(table.getByRole('cell', { name: 'Мария', exact: true })).toBeVisible(); await expect(table.locator('.ant-empty')).toHaveCount(0);
+    await expect(fixture.getByRole('region', { name: 'Участники примера Empty', exact: true })).toBeFocused();
+    await expect(fixture.getByRole('status', { name: 'Результат примера Empty', exact: true })).toHaveText('Участников: 1. Показано: 1. Действий: 0.');
+  });
+
+  test('shows an empty search result and restores the original records through the reset action', async ({ page }) => {
+    const fixture = page.locator('#empty'); const table = fixture.getByRole('table', { name: 'Участники примера Empty', exact: true });
+    await table.getByRole('button', { name: 'Создать первого участника', exact: true }).click();
+    await fixture.getByRole('textbox', { name: 'Поиск в примере Empty', exact: true }).fill('Missing');
+    await expect(table.getByText('По вашему запросу ничего не найдено.', { exact: true })).toBeVisible();
+    await table.getByRole('button', { name: 'Сбросить поиск участников', exact: true }).click();
+    await expect(fixture.getByRole('textbox', { name: 'Поиск в примере Empty', exact: true })).toHaveValue('');
+    await expect(table.getByRole('cell', { name: 'Анна', exact: true })).toBeVisible(); await expect(fixture.getByRole('region', { name: 'Участники примера Empty', exact: true })).toBeFocused();
+  });
+
+  test('clears records back to Empty and rejects a blank member name', async ({ page }) => {
+    const fixture = page.locator('#empty'); const name = fixture.getByRole('textbox', { name: 'Имя нового участника', exact: true });
+    await name.fill('   '); await expect(fixture.getByRole('button', { name: 'Создать первого участника', exact: true })).toBeDisabled();
+    await expect(fixture.getByRole('button', { name: 'Добавить участника в пример Empty', exact: true })).toBeDisabled();
+    await name.fill('Анна'); await fixture.getByRole('button', { name: 'Создать первого участника', exact: true }).click();
+    await fixture.getByRole('button', { name: 'Очистить список участников', exact: true }).click(); await expect(name).toBeFocused();
+    await expect(fixture.getByRole('button', { name: 'Создать первого участника', exact: true })).toBeVisible();
+    await expect(fixture.getByRole('status', { name: 'Результат примера Empty', exact: true })).toHaveText('Участников: 0. Показано: 0. Действий: 0.');
+  });
+
+  test('changes the image, rich description and footer preview without affecting records', async ({ page }) => {
+    const fixture = page.locator('#empty'); const preview = fixture.locator('.preview');
+    await fixture.getByRole('combobox', { name: 'Иллюстрация Empty', exact: true }).click(); await page.getByRole('option', { name: 'Свой Snippet', exact: true }).click();
+    await expect(preview.locator('svg')).toHaveAttribute('viewBox', '0 0 160 100');
+    await fixture.getByRole('combobox', { name: 'Описание Empty', exact: true }).click(); await page.getByRole('option', { name: 'Snippet', exact: true }).click();
+    await fixture.getByRole('textbox', { name: 'Текст Empty', exact: true }).fill('Пустой проект'); await expect(preview.locator('strong')).toHaveText('Пустой проект');
+    await preview.getByRole('button', { name: 'Попробовать действие Empty', exact: true }).click();
+    await expect(fixture.getByRole('status', { name: 'Результат примера Empty', exact: true })).toHaveText('Участников: 0. Показано: 0. Действий: 1.');
+    await fixture.getByRole('checkbox', { name: 'Действие Empty', exact: true }).uncheck(); await expect(preview.locator('.ant-empty-footer')).toHaveCount(0);
+  });
+});
+
 test.describe('Skeleton showcase', () => {
   test.beforeEach(async ({ page }) => {
     const time = new Date('2026-10-27T12:00:00Z'); await page.clock.install({ time }); await page.clock.pauseAt(time);
@@ -1010,6 +1056,14 @@ test.describe('mobile showcase', () => {
 
 test.describe('server-rendered showcase', () => {
   test.use({ javaScriptEnabled: false });
+
+  test('renders Empty illustrations, footer actions and unique paint IDs before hydration', async ({ page }) => {
+    await page.goto('/ant-design#empty'); const fixture = page.locator('#empty');
+    await expect(fixture.locator('.preview .ant-empty-image svg')).toHaveAttribute('viewBox', '0 0 184 152');
+    await expect(fixture.getByRole('table', { name: 'Участники примера Empty', exact: true }).getByRole('button', { name: 'Создать первого участника', exact: true })).toBeVisible();
+    await expect(fixture.getByRole('status', { name: 'Результат примера Empty', exact: true })).toHaveText('Участников: 0. Показано: 0. Действий: 0.');
+    const ids = await page.locator('pattern[id]').evaluateAll(nodes => nodes.map(node => node.id)); expect(ids.length).toBeGreaterThan(7); expect(new Set(ids).size).toBe(ids.length);
+  });
 
   test('renders a decorative Skeleton preview and idle card before hydration', async ({ page }) => {
     await page.goto('/ant-design#skeleton'); const fixture = page.locator('#skeleton'); const skeleton = fixture.locator('#showcase-skeleton');

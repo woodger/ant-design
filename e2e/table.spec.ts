@@ -143,6 +143,9 @@ test('Table clamps a shrinking collection and restores retained keys without syn
   await expect(page.getByRole('status', { name: 'Table owner' })).toHaveText('4:3:none');
   await page.getByRole('button', { name: 'Empty table data' }).click();
   await expect(table.getByRole('cell', { name: 'Нет данных', exact: true })).toHaveAttribute('colspan', '4');
+  await expect(table.locator('.ant-empty-normal .ant-empty-image svg')).toHaveAttribute('viewBox', '0 0 64 41');
+  await expect(table.locator('.ant-empty')).not.toHaveAttribute('role');
+  await expect(table.locator('.ant-empty')).not.toHaveAttribute('aria-live');
   await expect(table.getByRole('checkbox', { name: 'Выбрать все строки на странице', exact: true })).toBeDisabled();
   await expect(page.getByRole('status', { name: 'Table selected keys' })).toHaveText('[0]');
   await page.getByRole('button', { name: 'Restore table data' }).click();
@@ -231,7 +234,9 @@ test('Table inherits RTL and locale and keeps nested empty text and snippet over
   const second = (await table.getByRole('columnheader', { name: 'Score', exact: true }).boundingBox())!;
   expect(first.x).toBeGreaterThan(second.x);
   await expect(page.getByRole('table', { name: 'Custom empty people', exact: true })).toContainText('Custom empty table');
+  await expect(page.getByRole('table', { name: 'Custom empty people', exact: true }).locator('.ant-empty')).toHaveCount(1);
   await expect(page.getByRole('table', { name: 'Empty snippet people', exact: true }).getByRole('link', { name: 'Create a person' })).toBeVisible();
+  await expect(page.getByRole('table', { name: 'Empty snippet people', exact: true }).locator('.ant-empty')).toHaveCount(0);
 });
 
 test('Table follows theme colors and size settings while keeping selection visible', async ({ page }) => {
