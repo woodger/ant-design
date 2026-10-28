@@ -14,7 +14,7 @@ async function linkedPanel(page: Page, name: string) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=tabs');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures' })).toBeVisible();
 });
 
@@ -315,16 +315,19 @@ for (const placement of ['top', 'bottom', 'start', 'end']) {
       await page.keyboard.press(vertical ? 'ArrowDown' : 'ArrowRight');
       await expect(tab(page, 'Beta')).toBeFocused();
       await page.keyboard.press('Enter');
-      const nav = (await root(page).locator('.ant-tabs-nav').boundingBox())!;
-      const content = (await panel(page, 'Beta').boundingBox())!;
-      const alpha = (await tab(page, 'Alpha').boundingBox())!;
-      const beta = (await tab(page, 'Beta').boundingBox())!;
-      if (vertical) expect(beta.y).toBeGreaterThanOrEqual(alpha.y + alpha.height - 1);
-      else expect(beta.x).toBeGreaterThanOrEqual(alpha.x + alpha.width - 1);
-      if (placement === 'top') expect(nav.y + nav.height).toBeLessThanOrEqual(content.y + 1);
-      if (placement === 'bottom') expect(nav.y).toBeGreaterThanOrEqual(content.y + content.height - 1);
-      if (placement === 'start') expect(nav.x + nav.width).toBeLessThanOrEqual(content.x + 1);
-      if (placement === 'end') expect(nav.x).toBeGreaterThanOrEqual(content.x + content.width - 1);
+      // Card меняет padding через CSS transition; сравниваем завершённый layout.
+      await expect(async () => {
+        const nav = (await root(page).locator('.ant-tabs-nav').boundingBox())!;
+        const content = (await panel(page, 'Beta').boundingBox())!;
+        const alpha = (await tab(page, 'Alpha').boundingBox())!;
+        const beta = (await tab(page, 'Beta').boundingBox())!;
+        if (vertical) expect(beta.y).toBeGreaterThanOrEqual(alpha.y + alpha.height - 1);
+        else expect(beta.x).toBeGreaterThanOrEqual(alpha.x + alpha.width - 1);
+        if (placement === 'top') expect(nav.y + nav.height).toBeLessThanOrEqual(content.y + 1);
+        if (placement === 'bottom') expect(nav.y).toBeGreaterThanOrEqual(content.y + content.height - 1);
+        if (placement === 'start') expect(nav.x + nav.width).toBeLessThanOrEqual(content.x + 1);
+        if (placement === 'end') expect(nav.x).toBeGreaterThanOrEqual(content.x + content.width - 1);
+      }).toPass({ timeout: 5000 });
       const ink = root(page).locator('.ant-tabs-ink-bar');
       if (type === 'card') await expect(ink).toBeHidden();
       else await expect.poll(async () => {

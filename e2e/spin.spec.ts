@@ -12,7 +12,7 @@ const setting = (page: Page, name: string, value: string) => page.getByRole('com
 
 test.beforeEach(async ({ page }) => {
   const time = new Date('2026-10-27T12:00:00Z'); await page.clock.install({ time }); await page.clock.pauseAt(time);
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=spin');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible();
 });
 

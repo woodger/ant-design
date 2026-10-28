@@ -1,4 +1,4 @@
 import { mount } from 'svelte';
-import Components from './Components.svelte';
+import FixtureApp from './FixtureApp.svelte';
 
-mount(Components, { target: document.getElementById('app')! });
+mount(FixtureApp, { target: document.getElementById('app')! });

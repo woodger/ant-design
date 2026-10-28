@@ -24,7 +24,7 @@ async function startDrag(page: Page, input: Locator, fraction: number) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=slider');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures' })).toBeVisible();
 });
 

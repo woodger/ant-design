@@ -14,7 +14,7 @@ async function centered(popup: Locator, anchor: Locator) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=tooltip');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures' })).toBeVisible();
 });
 
@@ -241,6 +241,7 @@ test('Tooltip inherits dark compact RTL themes and disables motion', async ({ pa
 });
 
 test('Slider Tooltip shows the current value and follows the handle through keyboard changes and dragging', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4174?fixture=slider');
   const input = page.getByRole('slider', { name: 'Bound Slider', exact: true });
   const root = input.locator('..');
   const tip = root.getByRole('tooltip');
@@ -288,6 +289,7 @@ test('Slider Tooltip formats values, supports forced visibility and suppresses d
 });
 
 test('Slider Tooltip Escape dismissal preserves focus and numeric callbacks until the next action', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4174?fixture=slider');
   const input = page.getByRole('slider', { name: 'Bound Slider', exact: true });
   const tip = input.locator('..').getByRole('tooltip');
   await input.focus();

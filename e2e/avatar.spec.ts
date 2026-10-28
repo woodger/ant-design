@@ -13,7 +13,7 @@ const loaded = (page: Page) => expect.poll(() => host(page).locator('img').evalu
 const scale = (page: Page) => text(page).evaluate(node => new DOMMatrix(getComputedStyle(node).transform).a);
 const goodSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="#1677ff"/></svg>';
 
-test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
+test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174?fixture=avatar'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
 
 test('Avatar keeps a full accessible name while fitting initials without announcements', async ({ page }, testInfo) => {
   await expect(host(page)).toHaveRole('img'); await expect(host(page)).toHaveAccessibleName('Fixture user'); await expect(host(page)).toHaveAccessibleDescription('Participant profile'); await expect(text(page)).toHaveText('AVATAR'); await expect.poll(() => scale(page)).toBeLessThan(1);

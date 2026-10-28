@@ -19,7 +19,7 @@ async function centered(popup: Locator, anchor: Locator) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=popover');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures' })).toBeVisible();
 });
 
@@ -265,6 +265,7 @@ for (const action of ['F3', 'F5', 'F6']) {
 for (const placement of ['top', 'bottom', 'left', 'right']) {
   test(`Popover positions on the ${placement} and permits its arrow to be hidden`, async ({ page }) => {
     await page.getByRole('combobox', { name: 'Popover placement', exact: true }).selectOption(placement);
+    await trigger(page).evaluate((element) => element.scrollIntoView({ block: 'center', inline: 'center' }));
     await trigger(page).click();
     const popup = card(page);
     await expect(popup).toHaveClass(new RegExp(`ant-popover-placement-${placement}`));

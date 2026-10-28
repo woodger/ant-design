@@ -114,6 +114,8 @@ npm run preview
 
 ## Документация
 
+- [Реестр и инструменты переноса Ant Design](docs/reference/ant-design-porting/readme.md) —
+  покрытие API, воспроизводимое извлечение CSS и отдельные браузерные фикстуры.
 - [Ant Design для Svelte 5](src/lib/components/ant-design/readme.md) — библиотека
   компонентов и отдельный пакет исходников; живые примеры на `/ant-design`.
 - [карта документации](docs/README.md)

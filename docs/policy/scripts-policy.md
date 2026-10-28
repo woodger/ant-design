@@ -9,10 +9,14 @@
 
 - `npm run dev` — Vite development server;
 - `npm run build` — production SvelteKit build;
-- `npm run lint` — Oxlint для `src`, `e2e` и `playwright.config.ts`;
+- `npm run lint` — Oxlint для `src`, `e2e`, `tools` и `playwright.config.ts`;
 - `npm test` — Vitest node contour;
 - `npm run test:e2e` — Playwright Chromium contour;
 - `npm run preview` — локальная проверка build.
+
+Инструменты переноса Ant Design добавляют `antd:registry:check`,
+`antd:registry:report`, `antd:registry:show` и `antd:css`. Их параметры и область
+проверок описаны в [справочнике переноса](../reference/ant-design-porting/readme.md).
 
 Дополнительная type/template проверка выполняется через `svelte-kit sync` и
 `svelte-check`, как указано в корневом readme.

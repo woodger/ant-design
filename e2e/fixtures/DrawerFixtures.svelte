@@ -69,6 +69,8 @@
 {/snippet}
 
 <section id="drawer-fixture" aria-label="Drawer fixture">
+  <label for="drawer-outside-input">Outside Drawer input</label>
+  <Input id="drawer-outside-input" />
   <label>Drawer placement <select bind:value={placement}><option>right</option><option>left</option><option>top</option><option>bottom</option></select></label>
   <label>Drawer size <select bind:value={size}><option value="default">Default</option><option value="large">Large</option><option value="480px">480px</option><option value="50%">50%</option></select></label>
   <label><input type="checkbox" bind:checked={closable} /> Show Drawer close button</label>

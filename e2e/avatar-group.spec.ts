@@ -10,7 +10,7 @@ const number = (page: Page, name: string, value: string) => page.getByRole('spin
 const setting = (page: Page, name: string, value: string) => page.getByRole('combobox', { name: `AvatarGroup ${name}`, exact: true }).selectOption(value);
 const hotkey = (page: Page, key: string) => page.keyboard.press(`Control+Alt+Shift+${key}`);
 
-test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
+test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174?fixture=avatar-group'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
 
 test('AvatarGroup names its visible members and counts overflow separately', async ({ page }, testInfo) => {
   await expect(host(page)).toHaveRole('group'); await expect(host(page)).toHaveAccessibleName('Участники'); await expect(host(page)).toHaveAccessibleDescription('Project members'); await expect(avatars(page)).toHaveCount(2); await expect(avatars(page).first()).toHaveAccessibleName('Анна'); await expect(more(page)).toHaveAccessibleName('Ещё участников: 3'); await expect(more(page)).toHaveAttribute('type', 'button'); await expect(more(page)).toHaveAttribute('aria-haspopup', 'dialog'); await expect(more(page)).toHaveAttribute('aria-expanded', 'false'); await expect(host(page)).not.toHaveAttribute('tabindex'); await expect(host(page).locator('[aria-live], [role="status"]')).toHaveCount(0);

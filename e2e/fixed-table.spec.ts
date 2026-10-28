@@ -35,11 +35,12 @@ async function expectPinnedGeometry(region: Locator) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=table-fixed');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures' })).toBeVisible();
 });
 
 test('ordinary Table preserves page scrolling when fixed layout is not requested', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4174?fixture=table');
   const region = page.locator('#table-fixture').getByRole('region', { name: 'People', exact: true });
   await expect(region).toHaveCSS('overscroll-behavior-y', 'auto');
   await expect(region).toHaveCSS('isolation', 'auto');

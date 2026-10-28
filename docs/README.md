@@ -12,6 +12,8 @@
 
 - [Ant Design для Svelte 5](../src/lib/components/ant-design/readme.md) — компоненты,
   формы, темы и границы первой версии; примеры на `/ant-design`
+- [Инструменты переноса Ant Design](reference/ant-design-porting/readme.md) —
+  реестр покрытия, извлечение CSS и изолированные фикстуры
 - [Политики проекта](policy/index.md) — правила изменения кода, тестов,
   зависимостей, сборки и документации
 

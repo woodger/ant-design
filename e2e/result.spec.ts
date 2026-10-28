@@ -9,7 +9,7 @@ const check = (page: Page, name: string, checked = true) => page.getByRole('chec
 const hotkey = (page: Page, key: string) => page.keyboard.press(`Control+Alt+Shift+${key}`);
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=result');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible();
 });
 

@@ -13,7 +13,7 @@ async function open(page: Page) {
 async function setting(page: Page, name: string, value: string) { await page.getByRole('combobox', { name: `Drawer ${name}`, exact: true }).selectOption(value); }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=drawer');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible();
 });
 
@@ -45,7 +45,7 @@ test('Drawer keeps background controls inert, contains keyboard navigation and r
     await expect.poll(() => dialog(page).evaluate((element) => !element.ownerDocument.hasFocus() || element.contains(element.ownerDocument.activeElement))).toBe(true);
   }
   await dialog(page).getByRole('button', { name: 'Закрыть', exact: true }).focus();
-  await page.locator('#bound-input').evaluate((element) => (element as HTMLInputElement).focus());
+  await page.locator('#drawer-outside-input').evaluate((element) => (element as HTMLInputElement).focus());
   await expect(dialog(page).getByRole('button', { name: 'Закрыть', exact: true })).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(dialog(page)).toBeHidden();

@@ -11,7 +11,7 @@ const output = (page: Page, name: string) => page.getByRole('status', { name: `B
 const hotkey = (page: Page, digit: number) => page.keyboard.press(`Control+Alt+Shift+Digit${digit}`);
 const bounds = (locator: Locator) => locator.evaluate(node => { const rect = node.getBoundingClientRect(); return { x: rect.x + window.scrollX, y: rect.y + window.scrollY, width: rect.width, height: rect.height }; });
 
-test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
+test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174?fixture=badge'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
 
 test('Badge describes the full count without announcements or additional tab stops', async ({ page }, testInfo) => {
   await number(page, 'count', '120'); await expect(indicator(page)).toHaveText('99+'); await expect(target(page)).toHaveAccessibleDescription('Количество: 120');

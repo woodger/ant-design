@@ -9,7 +9,7 @@ const setting = (page: Page, name: string, value: string) => page.getByRole('com
 const hotkey = (page: Page, key: string) => page.keyboard.press(`Control+Alt+Shift+${key}`);
 const changes = (page: Page) => page.getByRole('status', { name: 'Steps changes', exact: true });
 
-test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
+test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174?fixture=steps'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
 
 test('Steps exposes a named ordered list, one current step and passive status descriptions', async ({ page }, testInfo) => {
   await expect(host(page)).toHaveRole('list'); await expect(host(page)).toHaveAccessibleName('Order steps'); await expect(host(page).getByRole('listitem')).toHaveCount(3);

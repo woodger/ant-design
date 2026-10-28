@@ -1,7 +1,7 @@
 import { test, expect } from './test';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=modal');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures' })).toBeVisible();
 });
 
@@ -22,7 +22,7 @@ test('Modal keeps background controls inert and restores focus after Escape and 
   }
 
   await dialog.getByRole('button', { name: 'Закрыть', exact: true }).focus();
-  await page.getByLabel('Bound input', { exact: true }).evaluate((input: HTMLInputElement) => input.focus());
+  await page.getByLabel('Outside modal input', { exact: true }).evaluate((input: HTMLInputElement) => input.focus());
   await expect(dialog.getByRole('button', { name: 'Закрыть', exact: true })).toBeFocused();
   await expect(page.locator('html')).toHaveCSS('overflow', 'hidden');
 

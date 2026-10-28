@@ -1,0 +1,69 @@
+[
+  {
+    "id": "avatar",
+    "output": "src/lib/components/ant-design/vendor/avatar.css",
+    "expectedRules": 16,
+    "include": [
+      "\\.ant-avatar(?![\\w])"
+    ],
+    "exclude": [
+      "ant-avatar-group",
+      "ant-image-img",
+      "\\.anticon"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-avatar-css-var",
+        "replacement": ".ant-avatar-css-var"
+      },
+      {
+        "pattern": "\\.ant-avatar(?![-\\w])",
+        "replacement": ".ant-avatar:where(.ant-avatar-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Avatar image/icon/text; исключены Group и интеграции с Image/anticon.\n * Корни ограничены :where(.ant-avatar-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "avatar-group",
+    "output": "src/lib/components/ant-design/vendor/avatar-group.css",
+    "expectedRules": 3,
+    "include": [
+      "^\\.ant-avatar-group(?:\\s|>|$)"
+    ],
+    "exclude": [],
+    "replacements": [],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Avatar.Group: группа, обводка и перекрытие; список Popover адаптирован в Svelte.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "badge",
+    "output": "src/lib/components/ant-design/vendor/badge.css",
+    "expectedRules": 52,
+    "include": [
+      "\\.ant-badge(?![\\w])"
+    ],
+    "exclude": [
+      "ant-radio",
+      "ant-space",
+      "ant-badge-zoom",
+      "ant-scroll-number",
+      "(^|\\s)a(?=[\\s.:#>+~\\[]|$)"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-badge",
+        "replacement": ".ant-badge-css-var"
+      },
+      {
+        "pattern": "\\.ant-badge(?![-\\w])",
+        "replacement": ".ant-badge:where(.ant-badge-css-var)"
+      }
+    ],
+    "keyframes": [
+      "antStatusProcessing"
+    ],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Badge count/dot/status и preset colors; исключены scrolling/zoom и интеграции с Radio/Space.\n * Корни ограничены :where(.ant-badge-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */",
+    "appendRootKeyframes": true
+  }
+]

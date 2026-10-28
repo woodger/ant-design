@@ -20,7 +20,7 @@ async function pauseExit(page: Page) {
 
 test.beforeEach(async ({ page }) => {
   await page.clock.install();
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=notification');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible();
 });
 

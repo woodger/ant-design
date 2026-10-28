@@ -15,7 +15,7 @@ async function expectRatio(element: Locator, parent: Locator, ratio: number) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=skeleton');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible();
 });
 

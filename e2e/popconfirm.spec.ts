@@ -10,7 +10,7 @@ async function mode(page: Page, value: string) { await page.getByRole('combobox'
 async function finish(page: Page, id: number, success: boolean) { await page.getByRole('button', { name: `${success ? 'Resolve' : 'Reject'} Popconfirm ${id}`, exact: true }).click(); }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:4174');
+  await page.goto('http://127.0.0.1:4174?fixture=popconfirm');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures' })).toBeVisible();
 });
 
@@ -129,6 +129,7 @@ test('Popconfirm renders rich snippets and numeric zero', async ({ page }) => {
 
 test('Popconfirm initializes defaultOpen and accepts external changes without feedback', async ({ page }) => {
   const outside = page.getByRole('button', { name: 'Before Popconfirm', exact: true });
+  await trigger(page).evaluate((element) => element.scrollIntoView({ block: 'center' }));
   await outside.focus();
   await page.keyboard.press('F4');
   await expect(card(page)).toBeVisible();

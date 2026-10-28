@@ -10,7 +10,7 @@ const setting = (page: Page, name: string, value: string) => page.getByRole('com
 const output = (page: Page, name: string) => page.getByRole('status', { name, exact: true });
 const hotkey = (page: Page, digit: number) => page.keyboard.press(`Control+Alt+Shift+Digit${digit}`);
 
-test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
+test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174?fixture=tag'); await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible(); });
 
 test('Tag renders named content with a native described close button and no announcements', async ({ page }, testInfo) => {
   await expect(host(page)).toHaveRole('group'); await expect(host(page)).toHaveAccessibleName('Fixture tag'); await expect(close(page)).toHaveAccessibleName('Закрыть'); await expect(close(page)).toHaveAccessibleDescription('Frontend');

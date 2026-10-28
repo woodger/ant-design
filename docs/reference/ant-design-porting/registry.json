@@ -1,0 +1,2684 @@
+{
+  "schemaVersion": 1,
+  "upstream": {
+    "version": "6.6.8",
+    "revision": "984592267de88fbf9cdaecc96a56629e721c709d",
+    "catalogSource": "Каталог ant.design 6.6.8: 73 позиции, без внешних Pro Components; состав закреплён в этом файле.",
+    "archiveUrl": "https://registry.npmjs.org/antd/-/antd-6.6.8.tgz",
+    "archiveSha256": "8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa"
+  },
+  "supportingExports": [
+    "ruRU",
+    "enUS"
+  ],
+  "components": [
+    {
+      "id": "button",
+      "name": "Button",
+      "category": "general",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/button",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Button",
+          "local": [
+            "Button"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "float-button",
+      "name": "FloatButton",
+      "category": "general",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/float-button",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "icon",
+      "name": "Icon",
+      "category": "general",
+      "scope": "candidate",
+      "scopeReason": "Внешний пакет @ant-design/icons; внутренние служебные иконки уже есть, публичный набор требует отдельного решения.",
+      "upstreamPath": "components/icon",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "typography",
+      "name": "Typography",
+      "category": "general",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/typography",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "divider",
+      "name": "Divider",
+      "category": "layout",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/divider",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "flex",
+      "name": "Flex",
+      "category": "layout",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/flex",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "category": "layout",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/grid",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "layout",
+      "name": "Layout",
+      "category": "layout",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/layout",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "masonry",
+      "name": "Masonry",
+      "category": "layout",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/masonry",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "space",
+      "name": "Space",
+      "category": "layout",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/space",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "splitter",
+      "name": "Splitter",
+      "category": "layout",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/splitter",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "anchor",
+      "name": "Anchor",
+      "category": "navigation",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/anchor",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "breadcrumb",
+      "name": "Breadcrumb",
+      "category": "navigation",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/breadcrumb",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "dropdown",
+      "name": "Dropdown",
+      "category": "navigation",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/dropdown",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Dropdown",
+          "local": [
+            "Dropdown"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "dropdown"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/dropdown.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Вложенные меню",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "menu",
+      "name": "Menu",
+      "category": "navigation",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/menu",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "pagination",
+      "name": "Pagination",
+      "category": "navigation",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/pagination",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Pagination",
+          "local": [
+            "Pagination"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "checkbox-pagination"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/checkbox-pagination.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Simple и quick jumper",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "steps",
+      "name": "Steps",
+      "category": "navigation",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/steps",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Steps",
+          "local": [
+            "Steps"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "steps"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/steps.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Dot/navigation/inline/panel",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "tabs",
+      "name": "Tabs",
+      "category": "navigation",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/tabs",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Tabs",
+          "local": [
+            "Tabs"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "tabs"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/tabs.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Editable-card и меню overflow",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "auto-complete",
+      "name": "AutoComplete",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/auto-complete",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "cascader",
+      "name": "Cascader",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/cascader",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "checkbox",
+      "name": "Checkbox",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/checkbox",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Checkbox",
+          "local": [
+            "Checkbox"
+          ]
+        },
+        {
+          "upstream": "Checkbox.Group",
+          "local": [
+            "CheckboxGroup"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "checkbox-pagination",
+        "checkbox-group"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/checkbox-pagination.spec.ts",
+        "e2e/checkbox-group.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "color-picker",
+      "name": "ColorPicker",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/color-picker",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "date-picker",
+      "name": "DatePicker",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/date-picker",
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/picker",
+          "range": "~1.12.2",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "single",
+          "title": "Выбор одной даты",
+          "state": "missing",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичный DatePicker отсутствует; критерии будущего v1 предварительные."
+        },
+        {
+          "id": "keyboard",
+          "title": "Клавиатура и управление фокусом календаря",
+          "state": "missing",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичный аналог отсутствует."
+        },
+        {
+          "id": "range",
+          "title": "RangePicker",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Отдельный последующий объём."
+        },
+        {
+          "id": "other-api",
+          "title": "Остальные режимы и API",
+          "state": "unreviewed",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Детальный аудит ещё не выполнен."
+        }
+      ]
+    },
+    {
+      "id": "form",
+      "name": "Form",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/form",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Form",
+          "local": [
+            "Form",
+            "createForm",
+            "FormValidationError"
+          ]
+        },
+        {
+          "upstream": "Form.Item",
+          "local": [
+            "FormItem"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "form"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/form.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Form.List и вложенные name paths",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "input",
+      "name": "Input",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/input",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Input",
+          "local": [
+            "Input"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "input"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/input-select.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "input-number",
+      "name": "InputNumber",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/input-number",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "InputNumber",
+          "local": [
+            "InputNumber"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "input-number"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/input-number.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "stringMode, formatter/parser и варианты оформления",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "mentions",
+      "name": "Mentions",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/mentions",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "radio",
+      "name": "Radio",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/radio",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Radio",
+          "local": [
+            "Radio"
+          ]
+        },
+        {
+          "upstream": "Radio.Group",
+          "local": [
+            "RadioGroup"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "radio"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/radio.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "rate",
+      "name": "Rate",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/rate",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "select",
+      "name": "Select",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/select",
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Select",
+          "local": [
+            "Select"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/select",
+          "range": "~1.10.1",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "select",
+        "select-numeric",
+        "select-multiple"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/input-select.spec.ts",
+        "e2e/multiple-select.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "selection",
+          "title": "Одиночный и множественный выбор",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "e2e/input-select.spec.ts",
+            "e2e/multiple-select.spec.ts"
+          ],
+          "note": ""
+        },
+        {
+          "id": "keyboard",
+          "title": "Поиск, очистка, disabled и клавиатура",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "e2e/input-select.spec.ts",
+            "e2e/multiple-select.spec.ts"
+          ],
+          "note": ""
+        },
+        {
+          "id": "forms",
+          "title": "FormData, reset и FormItem",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "e2e/multiple-select.spec.ts",
+            "e2e/form.spec.ts"
+          ],
+          "note": ""
+        },
+        {
+          "id": "tags",
+          "title": "Свободный ввод tags",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Отсутствует в публичном mode."
+        },
+        {
+          "id": "remote-search",
+          "title": "Удалённый поиск",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Отложено в README."
+        },
+        {
+          "id": "virtualization",
+          "title": "Виртуализация options",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "В первой версии отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "slider",
+      "name": "Slider",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/slider",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Slider",
+          "local": [
+            "Slider"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "slider"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/slider.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Range и marks/dots",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "switch",
+      "name": "Switch",
+      "category": "data-entry",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/switch",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Switch",
+          "local": [
+            "Switch"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "switch"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/switch.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "time-picker",
+      "name": "TimePicker",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/time-picker",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "transfer",
+      "name": "Transfer",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/transfer",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "tree-select",
+      "name": "TreeSelect",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/tree-select",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "upload",
+      "name": "Upload",
+      "category": "data-entry",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/upload",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "avatar",
+      "name": "Avatar",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/avatar",
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Avatar",
+          "local": [
+            "Avatar"
+          ]
+        },
+        {
+          "upstream": "Avatar.Group",
+          "local": [
+            "AvatarGroup"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "popover"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/resize-observer",
+          "range": "^1.1.2",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "avatar",
+        "avatar-group"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/avatar.spec.ts",
+        "e2e/avatar-group.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "images",
+          "title": "src/srcSet, ошибка, onError и восстановление",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "e2e/avatar.spec.ts",
+            "src/lib/components/ant-design/readme.md"
+          ],
+          "note": ""
+        },
+        {
+          "id": "geometry",
+          "title": "Размеры, формы, Snippet и подгонка текста",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/avatar.engine.test.ts",
+            "e2e/avatar.spec.ts"
+          ],
+          "note": ""
+        },
+        {
+          "id": "group",
+          "title": "Avatar.Group: ключи, лимит и Popover",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/avatar-group.engine.test.ts",
+            "e2e/avatar-group.spec.ts"
+          ],
+          "note": ""
+        },
+        {
+          "id": "accessibility",
+          "title": "Полное имя, фокус, SSR и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/avatar.ssr.test.ts",
+            "e2e/avatar-group.spec.ts"
+          ],
+          "note": ""
+        },
+        {
+          "id": "responsive",
+          "title": "Размеры по breakpoint",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Отложено после AvatarGroup; в текущем AvatarSize нет карты breakpoint."
+        },
+        {
+          "id": "src-snippet",
+          "title": "src как Snippet",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Src принимает строку; icon/children Snippet поддерживаются."
+        }
+      ]
+    },
+    {
+      "id": "badge",
+      "name": "Badge",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/badge",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Badge",
+          "local": [
+            "Badge"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "badge"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/badge.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Ribbon и произвольный count",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "calendar",
+      "name": "Calendar",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/calendar",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "card",
+      "name": "Card",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/card",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "carousel",
+      "name": "Carousel",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/carousel",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "collapse",
+      "name": "Collapse",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/collapse",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Collapse",
+          "local": [
+            "Collapse"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "collapse"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/collapse.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "descriptions",
+      "name": "Descriptions",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/descriptions",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "empty",
+      "name": "Empty",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/empty",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Empty",
+          "local": [
+            "Empty"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "empty"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/empty.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "image",
+      "name": "Image",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/image",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "list",
+      "name": "List",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Deprecated в каталоге 6.6.8; целесообразность переноса требует решения.",
+      "upstreamPath": "components/list",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "listy",
+      "name": "Listy",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/listy",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "popover",
+      "name": "Popover",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/popover",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Popover",
+          "local": [
+            "Popover"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "popover"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/popover.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Corner placements и порталы",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "qr-code",
+      "name": "QRCode",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/qr-code",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "segmented",
+      "name": "Segmented",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/segmented",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "statistic",
+      "name": "Statistic",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/statistic",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/table",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Table",
+          "local": [
+            "Table"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "table",
+        "table-filters",
+        "table-server",
+        "table-fixed",
+        "table-expandable"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/table.spec.ts",
+        "e2e/table-filter.spec.ts",
+        "e2e/server-table.spec.ts",
+        "e2e/fixed-table.spec.ts",
+        "e2e/expandable-table.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Виртуализация и древовидные данные",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "tag",
+      "name": "Tag",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/tag",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Tag",
+          "local": [
+            "Tag"
+          ]
+        },
+        {
+          "upstream": "Tag.CheckableTag",
+          "local": [
+            "CheckableTag"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "tag"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/tag.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "timeline",
+      "name": "Timeline",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/timeline",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "tooltip",
+      "name": "Tooltip",
+      "category": "data-display",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/tooltip",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Tooltip",
+          "local": [
+            "Tooltip"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "tooltip"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/tooltip.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Corner placements",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "tour",
+      "name": "Tour",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/tour",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "tree",
+      "name": "Tree",
+      "category": "data-display",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/tree",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "alert",
+      "name": "Alert",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/alert",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Alert",
+          "local": [
+            "Alert"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "alert"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/alert.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "drawer",
+      "name": "Drawer",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/drawer",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Drawer",
+          "local": [
+            "Drawer"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "drawer"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/drawer.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Немодальные панели, push и resize",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "message",
+      "name": "Message",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/message",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "message",
+          "local": [
+            "MessageHolder",
+            "createMessage"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "message"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/message.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "modal",
+      "name": "Modal",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/modal",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Modal",
+          "local": [
+            "Modal"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "modal"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/modal.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "notification",
+      "name": "Notification",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/notification",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "notification",
+          "local": [
+            "NotificationHolder",
+            "createNotification"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "notification"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/notification.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "popconfirm",
+      "name": "Popconfirm",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/popconfirm",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Popconfirm",
+          "local": [
+            "Popconfirm"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "popover"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "popconfirm"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/popconfirm.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Hover/contextMenu",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "progress",
+      "name": "Progress",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/progress",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Progress",
+          "local": [
+            "Progress"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "progress"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/progress.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Dashboard, steps и градиенты",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "result",
+      "name": "Result",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/result",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Result",
+          "local": [
+            "Result"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "result"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/result.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        }
+      ]
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/skeleton",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Skeleton",
+          "local": [
+            "Skeleton"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "skeleton"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/skeleton.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Отдельные Skeleton primitives",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "spin",
+      "name": "Spin",
+      "category": "feedback",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/spin",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "Spin",
+          "local": [
+            "Spin"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [
+        "spin"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md",
+        "e2e/spin.spec.ts"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Fullscreen и percent",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "watermark",
+      "name": "Watermark",
+      "category": "feedback",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/watermark",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "affix",
+      "name": "Affix",
+      "category": "other",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/affix",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "app",
+      "name": "App",
+      "category": "other",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/app",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "border-beam",
+      "name": "BorderBeam",
+      "category": "other",
+      "scope": "candidate",
+      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "upstreamPath": "components/border-beam",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    },
+    {
+      "id": "config-provider",
+      "name": "ConfigProvider",
+      "category": "other",
+      "scope": "target",
+      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "upstreamPath": "components/config-provider",
+      "reviewedRevision": null,
+      "exports": [
+        {
+          "upstream": "ConfigProvider",
+          "local": [
+            "ConfigProvider"
+          ]
+        }
+      ],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [
+        "src/lib/components/ant-design/readme.md"
+      ],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "gap-1",
+          "title": "Произвольные токены и алгоритмы тем",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Ограничение зафиксировано в README модуля."
+        }
+      ]
+    },
+    {
+      "id": "util",
+      "name": "Util",
+      "category": "other",
+      "scope": "candidate",
+      "scopeReason": "Служебные React API; требуется решение об эквивалентах Svelte.",
+      "upstreamPath": "components/_util",
+      "reviewedRevision": null,
+      "exports": [],
+      "dependencies": [],
+      "upstreamPackages": [],
+      "priority": "unassigned",
+      "effort": "unknown",
+      "fixtures": [],
+      "evidence": [],
+      "features": [
+        {
+          "id": "core-v1",
+          "title": "Подробный аудит согласованного API v1",
+          "state": "unreviewed",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+        }
+      ]
+    }
+  ]
+}

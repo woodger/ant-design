@@ -7,7 +7,7 @@ const button = (page: Page, name: string) => page.getByRole('button', { name, ex
 async function settled(page: Page) { await expect.poll(() => progress(page).evaluate((node) => node.getAnimations({ subtree: true }).length)).toBe(0); }
 
 test.beforeEach(async ({ page }) => {
-  await page.clock.install(); await page.goto('http://127.0.0.1:4174');
+  await page.clock.install(); await page.goto('http://127.0.0.1:4174?fixture=progress');
   await expect(page.getByRole('heading', { name: 'Component browser fixtures', exact: true })).toBeVisible();
 });
 

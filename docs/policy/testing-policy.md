@@ -18,7 +18,8 @@
 `npm test` запускает Vitest:
 
 - environment: `node`;
-- include: `src/**/*.{test,spec}.{js,ts}`;
+- include: `src/**/*.{test,spec}.{js,ts}` и `tools/**/*.{test,spec}.mjs` для
+  проверок инструментов реестра и извлечения CSS;
 - assertions обязательны через `expect.requireAssertions`;
 - реальная сеть и внешняя infrastructure не используются.
 
