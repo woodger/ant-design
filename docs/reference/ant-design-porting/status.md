@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **40**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **42**.
 Есть публичная реализация у **35** семейств; отсутствует у **38**.
-Проверенный объём v1 покрыт у **4**; требуется аудит у **30**; частично покрыт у **1**.
+Проверенный объём v1 покрыт у **5**; требуется аудит у **30**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -64,7 +64,7 @@ Candidate означает запись каталога, для которой 
 | [Popover](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/popover) | data-display | target | Popover | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Corner placements и порталы (missing) |
 | [QRCode](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/qr-code) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Segmented](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/segmented) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
-| [Statistic](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/statistic) | data-display | target | Statistic | Частично покрыт v1 | Statistic.Timer и deprecated Countdown (missing); Произвольные component tokens, prefixCls и component config (missing) |
+| [Statistic](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/statistic) | data-display | target | Statistic, StatisticTimer, StatisticCountdown | Согласованный v1 покрыт | Произвольные component tokens, prefixCls и component config (missing) |
 | [Table](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/table) | data-display | target | Table | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Виртуализация и древовидные данные (missing) |
 | [Tag](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/tag) | data-display | target | Tag, CheckableTag | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
 | [Timeline](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/timeline) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |

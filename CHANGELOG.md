@@ -17,6 +17,10 @@
 
 ### Added
 
+- StatisticTimer и совместимый StatisticCountdown: countup/countdown, формат
+  длительности, onChange/onFinish, стабильный SSR-placeholder, cleanup и защита
+  от поздних callbacks. Добавлены unit/SSR/Chromium, отдельная фикстура и запуск
+  отсчёта в галерее; реестр отмечает покрытый основной объём семейства Statistic.
 - Statistic: строковое форматирование чисел с precision без округления,
   разделителями и formatter, title/prefix/suffix snippets, valueRender,
   semantic slots и loading через Skeleton. Добавлены CSS-рецепт, unit/SSR/Chromium,

@@ -203,5 +203,10 @@
     "id": "statistic",
     "module": "./StatisticFixtures.svelte",
     "root": "statistic-fixture"
+  },
+  {
+    "id": "statistic-timer",
+    "module": "./StatisticTimerFixtures.svelte",
+    "root": "statistic-timer-fixture"
   }
 ]

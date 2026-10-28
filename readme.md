@@ -92,6 +92,7 @@ AvatarGroup, лимит аватаров, раскрытие скрытых уч
 Divider, направления, подписи, варианты линий, размеры и semantic slots,
 Flex, направления, выравнивание, перенос строк, интервалы и нативный порядок фокуса,
 Statistic, точное строковое форматирование, snippets, semantic slots и загрузку,
+StatisticTimer/StatisticCountdown, формат времени, callbacks и отмену интервалов,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

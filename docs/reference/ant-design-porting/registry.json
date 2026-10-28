@@ -1943,6 +1943,18 @@
           "local": [
             "Statistic"
           ]
+        },
+        {
+          "upstream": "Statistic.Timer",
+          "local": [
+            "StatisticTimer"
+          ]
+        },
+        {
+          "upstream": "Statistic.Countdown",
+          "local": [
+            "StatisticCountdown"
+          ]
         }
       ],
       "dependencies": [
@@ -1959,7 +1971,8 @@
       "priority": "p2",
       "effort": "M",
       "fixtures": [
-        "statistic"
+        "statistic",
+        "statistic-timer"
       ],
       "evidence": [
         "src/lib/components/ant-design/Statistic.svelte",
@@ -2007,10 +2020,14 @@
         {
           "id": "timer",
           "title": "Statistic.Timer и deprecated Countdown",
-          "state": "missing",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Следующий отдельный этап семейства: направление, формат времени, callbacks и cleanup таймеров."
+          "evidence": [
+            "src/lib/components/ant-design/statistic-timer.test.ts",
+            "src/lib/components/ant-design/statistic-timer.ssr.test.ts",
+            "e2e/statistic-timer.spec.ts"
+          ],
+          "note": "Отдельные Svelte-экспорты StatisticTimer/StatisticCountdown. SSR выводит -, время форматируется фиксированными единицами эталона; onChange получает знаковый остаток, onFinish только после deadline. React deprecation console warning Countdown не воспроизводится."
         },
         {
           "id": "global-config",

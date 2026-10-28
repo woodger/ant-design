@@ -7,7 +7,8 @@
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic, Form и FormItem.
+Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
+StatisticTimer, StatisticCountdown, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -104,6 +105,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Divider | Направления, подпись, titlePlacement, варианты линий, размеры, semantic slots и nativeElement |
 | Flex | Прямые дети, направления, align/justify, wrap, gap/flex, нативный component и nativeElement |
 | Statistic | Числа/строки, precision без округления, разделители, formatter, snippets, semantic slots и loading |
+| StatisticTimer / StatisticCountdown | Отсчёт времени вверх/вниз, формат, callbacks, SSR-placeholder и отмена интервалов |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -230,8 +232,32 @@ formatter и valueRender скрытого значения не вызывают
 Пример — `/ant-design#statistic`, фикстура — `?fixture=statistic`. Unit/SSR/Chromium
 проверяют форматирование, loading, snippets, semantic styles, темы, RTL и фокус.
 Рецепт statistic воспроизводит 14 правил vendor/statistic.css из закреплённого
-архива. Timer/Countdown, prefixCls и глобальный component config пока отсутствуют;
-семейство остаётся частично перенесённым в реестре.
+архива. PrefixCls и глобальный component config пока отсутствуют.
+
+StatisticTimer и StatisticCountdown — отдельные Svelte-экспорты для upstream
+Statistic.Timer и deprecated Statistic.Countdown. Timer требует type=countdown/countup;
+Countdown фиксирует countdown без deprecation warning в консоли. Остальные props
+Statistic, включая loading и semantic slots, передаются показателю, но formatter
+и valueRender заменяются встроенным выводом времени, как в upstream.
+
+Value — timestamp в ms либо строка, которую принимает new Date(value).
+SSR и первый hydration render выводят `-` без часов и callbacks. После mount
+таймер отображает разницу с Date.now(), обновляясь через setInterval(1000/60).
+Format по умолчанию HH:mm:ss; Y/M/D/H/m/s/S обозначают фиксированные единицы
+365 дней/30 дней/день/час/минута/секунда/ms. Повтор токена дополняет нулями,
+текст в квадратных скобках сохраняется буквально. Это формат длительности,
+не календарный formatter и не полный API dayjs. Пропущенные крупные единицы
+накапливаются в следующей: HH может превышать 24.
+
+Отображаемая разница ограничена нулём, onChange(number) получает исходную
+знаковую разницу на каждом тике. Countdown вызывает onFinish один раз на первом
+тике строго после цели и останавливается; на точном равенстве времени не завершает
+интервал. Countup не вызывает onFinish. При смене value/type интервал перезапускается,
+смена format/callbacks не требует перезапуска. Loading скрывает значение, сохраняя
+работу таймера. При удалении компонента интервал очищается; поздние callbacks
+отменённого или заменённого запуска игнорируются. Невалидная дата сохраняет
+поведение upstream (NaN в форматировании/callback, без автоматического завершения).
+Bind:nativeElement даёт корневой div Statistic. Фикстура — `?fixture=statistic-timer`.
 
 ## InputNumber
 

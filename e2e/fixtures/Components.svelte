@@ -37,6 +37,7 @@
   import DividerFixtures from './DividerFixtures.svelte';
   import FlexFixtures from './FlexFixtures.svelte';
   import StatisticFixtures from './StatisticFixtures.svelte';
+  import StatisticTimerFixtures from './StatisticTimerFixtures.svelte';
 
   const controls = createControls();
 </script>
@@ -95,6 +96,7 @@
     <DividerFixtures />
     <FlexFixtures />
     <StatisticFixtures />
+    <StatisticTimerFixtures />
 
     <BasicFixtures kind="form" {controls} />
 
