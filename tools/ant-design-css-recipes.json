@@ -65,5 +65,28 @@
     ],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Badge count/dot/status и preset colors; исключены scrolling/zoom и интеграции с Radio/Space.\n * Корни ограничены :where(.ant-badge-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */",
     "appendRootKeyframes": true
+  },
+  {
+    "id": "divider",
+    "output": "src/lib/components/ant-design/vendor/divider.css",
+    "expectedRules": 33,
+    "include": [
+      "\\.ant-divider(?![\\w])"
+    ],
+    "exclude": [
+      "ant-color-picker"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-divider",
+        "replacement": ".ant-divider-css-var"
+      },
+      {
+        "pattern": "\\.ant-divider(?![-\\w])",
+        "replacement": ".ant-divider:where(.ant-divider-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Divider: horizontal/vertical, подпись, размеры и варианты линий; исключена интеграция ColorPicker.\n * Корни ограничены :where(.ant-divider-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

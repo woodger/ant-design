@@ -28,6 +28,7 @@
   import BadgeExample from './BadgeExample.svelte';
   import AvatarExample from './AvatarExample.svelte';
   import AvatarGroupExample from './AvatarGroupExample.svelte';
+  import DividerExample from './DividerExample.svelte';
 
   const demo = createShowcase();
   const navigation = [
@@ -66,7 +67,8 @@
     ['tag', 'Tag / CheckableTag'],
     ['badge', 'Badge'],
     ['avatar', 'Avatar'],
-    ['avatar-group', 'AvatarGroup']
+    ['avatar-group', 'AvatarGroup'],
+    ['divider', 'Divider']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -484,6 +486,12 @@
           <div class="section-heading"><h2>AvatarGroup</h2></div>
           <p class="section-description">Команда проекта, лимит аватаров и скрытые участники в Popover.</p>
           <div class="panel"><AvatarGroupExample /></div>
+        </section>
+
+        <section id="divider">
+          <div class="section-heading"><h2>Divider</h2></div>
+          <p class="section-description">Горизонтальные разделы с подписью и вертикальные разделители текста.</p>
+          <div class="panel"><DividerExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>

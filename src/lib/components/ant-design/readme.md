@@ -7,7 +7,7 @@
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Badge, Avatar, AvatarGroup, Form и FormItem.
+Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -113,6 +113,47 @@ Select возвращает `undefined`, множественного — `[]`; 
 Button `type` задаёт оформление, `htmlType` задаёт нативный тип кнопки и по
 умолчанию равен `button`. Вариант `link` остаётся кнопкой действия; для навигации
 используйте нативную ссылку. Кнопка loading недоступна для повторного нажатия.
+
+## Divider
+
+```svelte
+<Divider titlePlacement="start" variant="dashed">Раздел проекта</Divider>
+<Divider orientation="vertical" />
+```
+
+Divider сохраняет структуру Ant Design 6.6.8: корневой div с role=separator,
+две rail и inner-text для горизонтальной подписи. Children принимает строку,
+число или Snippet; 0 отображается, null/false/пустая строка дают линию без подписи.
+Переданный Snippet считается подписью, даже если он выводит пустое содержимое.
+Вертикальный Divider не монтирует подпись. Aria-orientation отражает направление;
+компонент не добавляет tabindex и не меняет фокус.
+
+Orientation=horizontal/vertical имеет приоритет над boolean vertical, затем
+используется deprecated type. Для совместимости orientation также принимает
+старые значения размещения подписи; titlePlacement имеет над ними приоритет.
+Start/end зависят от RTL, left/right сохраняют физическую сторону, default=center.
+Deprecated orientationMargin действует только у start/end и переводит число
+или строку из цифр в px. Styles.content может переопределить этот отступ.
+
+Variant=solid/dashed/dotted, dashed alias и plain повторяют классы эталона.
+Size=small/medium/large наследуется от ConfigProvider; middle — совместимый alias
+medium. Без подписи large имеет отступ 24px, medium — 16px, small — 8px;
+с подписью large использует 16px, как upstream. Размеры действуют горизонтально.
+Темы, compact, RTL и componentDisabled не скрывают разделитель.
+
+Class/style и нативные атрибуты/события передаются корню. Bind:nativeElement
+даёт HTMLDivElement после mount. RootClassName добавляет корневой класс.
+ClassNames/styles принимают объект со слотами root/rail/content либо callback
+({ props }) с нормализованными orientation/titlePlacement/size. Значения styles —
+CSS-строки, как style остальных Svelte-компонентов. Root style имеет приоритет
+над styles.root; без подписи styles.rail также применяется к корню.
+
+Пример доступен на `/ant-design#divider`, изолированная фикстура — `?fixture=divider`.
+SSR и Chromium-проверки покрывают aliases, ноль, snippets, варианты, размеры,
+semantic slots, геометрию размещения, темы, RTL и узкий экран.
+Произвольные component tokens, prefixCls и component config пока не поддержаны.
+Vendor/divider.css содержит 33 правила из закреплённого архива; рецепт divider
+исключает интеграцию ColorPicker и воспроизводится через `npm run antd:css`.
 
 ## InputNumber
 

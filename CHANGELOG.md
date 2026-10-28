@@ -9,6 +9,10 @@
 
 ### Added
 
+- Divider: horizontal/vertical, подпись string/number/Snippet, titlePlacement,
+  RTL, размеры, plain, dashed/dotted и совместимые aliases. Добавлены semantic
+  slots, bind:nativeElement, воспроизводимый CSS-рецепт, SSR/Chromium-проверки,
+  изолированная фикстура и пример галереи.
 - Инструменты переноса Ant Design: версионируемый реестр 73 семейств со сводкой
   покрытия, проверкой ссылок/экспортов и пилотными аудитами Avatar/Select/DatePicker;
   извлечение Avatar/AvatarGroup/Badge CSS из закреплённого npm-архива с проверкой

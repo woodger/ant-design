@@ -188,5 +188,10 @@
     "id": "avatar-group",
     "module": "./AvatarGroupFixtures.svelte",
     "root": "avatar-group-fixture"
+  },
+  {
+    "id": "divider",
+    "module": "./DividerFixtures.svelte",
+    "root": "divider-fixture"
   }
 ]

@@ -131,25 +131,80 @@
       "id": "divider",
       "name": "Divider",
       "category": "layout",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Перенос Divider 6.6.8 с сохранением структуры rail/content и существующих Svelte-соглашений.",
       "upstreamPath": "components/divider",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Divider",
+          "local": [
+            "Divider"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p2",
+      "effort": "S",
+      "fixtures": [
+        "divider"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Divider.svelte",
+        "src/lib/components/ant-design/divider.types.ts",
+        "src/lib/components/ant-design/readme.md",
+        "src/lib/presentation/ant-design/DividerExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "layout",
+          "title": "Направление, titlePlacement, RTL и aliases type/vertical/orientationMargin",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/divider.ssr.test.ts",
+            "e2e/divider.spec.ts"
+          ],
+          "note": "Приоритет orientation → vertical → type; left/right физические, start/end логические."
+        },
+        {
+          "id": "appearance",
+          "title": "Размеры, plain, dashed/variant, темы и semantic slots",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "e2e/divider.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "ClassNames/styles поддерживают объект и callback; CSS-стили передаются строками по соглашению Svelte-библиотеки."
+        },
+        {
+          "id": "rendering",
+          "title": "SSR, подпись string/number/Snippet, separator и nativeElement",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/divider.ssr.test.ts",
+            "e2e/divider.spec.ts"
+          ],
+          "note": "0 сохраняется, пустые scalar children не создают подпись; переданный пустой Snippet считается наличием подписи без попытки вызвать его для проверки."
+        },
+        {
+          "id": "global-config",
+          "title": "Произвольные component tokens, prefixCls и component config",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Глобальное расширение ConfigProvider требует отдельного этапа; CSS-переменные можно переопределять через style."
         }
       ]
     },

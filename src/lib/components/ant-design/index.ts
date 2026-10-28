@@ -26,6 +26,8 @@ export { default as CheckableTag } from './CheckableTag.svelte';
 export { default as Badge } from './Badge.svelte';
 export { default as Avatar } from './Avatar.svelte';
 export { default as AvatarGroup } from './AvatarGroup.svelte';
+export { default as Divider } from './Divider.svelte';
+export type { DividerProps, DividerOrientation, DividerTitlePlacement, DividerSize, DividerSemanticSlots, DividerSemanticInfo } from './divider.types';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as CheckboxGroup } from './CheckboxGroup.svelte';
 export { default as Radio } from './Radio.svelte';
