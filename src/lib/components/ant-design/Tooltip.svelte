@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NoCompactStyle from './NoCompactStyle.svelte';
   import { onDestroy, untrack } from 'svelte';
   import { getTooltipDelay } from './tooltip.engine';
   import type { TooltipProps, TooltipTrigger } from './tooltip.types';
@@ -109,4 +110,4 @@
 </style>
 
 <span bind:this={host} role="presentation" class={['ant-tooltip-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onfocusin={handleFocus} onfocusout={handleBlur}>{@render children()}</span>
-<TooltipPopup title={text} open={visible} {anchor} describe={anchor} trigger={host} {placement} {arrow} {autoAdjustOverflow} onDismiss={dismiss} onHoverChange={handlePopupHover} />
+<NoCompactStyle><TooltipPopup title={text} open={visible} {anchor} describe={anchor} trigger={host} {placement} {arrow} {autoAdjustOverflow} onDismiss={dismiss} onHoverChange={handlePopupHover} /></NoCompactStyle>

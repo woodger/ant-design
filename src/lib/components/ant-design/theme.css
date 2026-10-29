@@ -36,6 +36,13 @@
   --ant-margin-xxl: var(--ant-size-xxl);
 }
 
+/* Select сохраняет внешний container; compact-геометрия принадлежит ему. */
+.ant-select-compact-item { border-radius: var(--ant-border-radius); }
+.ant-select-compact-item.ant-select-lg { border-radius: var(--ant-border-radius-lg); }
+.ant-select-compact-item.ant-select-sm { border-radius: var(--ant-border-radius-sm); }
+.ant-select-compact-item:focus-within:not(:hover) { z-index: 3; }
+.ant-select-compact-item.ant-select-disabled { z-index: 0; }
+
 .ant-breadcrumb-css-var {
   --ant-breadcrumb-item-color: var(--ant-color-text-description);
   --ant-breadcrumb-last-item-color: var(--ant-color-text);

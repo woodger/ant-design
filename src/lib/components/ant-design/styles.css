@@ -31,6 +31,9 @@
 @import './vendor/card.css';
 @import './vendor/breadcrumb.css';
 @import './vendor/space.css';
+@import './vendor/space-compact.css';
+@import './vendor/space-addon.css';
+@import './vendor/input-number-compact.css';
 @import './vendor/radio.css';
 @import './vendor/switch.css';
 @import './theme.css';

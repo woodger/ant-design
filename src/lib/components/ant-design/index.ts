@@ -1,3 +1,6 @@
+export { default as SpaceCompact } from './SpaceCompact.svelte';
+export { default as SpaceAddon } from './SpaceAddon.svelte';
+export type { SpaceCompactProps, SpaceCompactSize, SpaceAddonProps } from './space-compact.types';
 export { default as Space } from './Space.svelte';
 export type { SpaceProps, SpaceItem, SpaceContent, SpaceOrientation, SpaceSize, SpaceSlots } from './space.types';
 export { default as Breadcrumb } from './Breadcrumb.svelte';

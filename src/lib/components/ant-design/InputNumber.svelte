@@ -2,6 +2,8 @@
   import { onDestroy, untrack } from 'svelte';
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { useConfig } from './config-context';
+  import { useCompact } from './space-compact-context';
+  import { compactClasses } from './space-compact.engine';
   import { useForm, useFormField } from './form-context';
   import { commitInputNumber, formatInputNumber, isInputNumberInRange, normalizeInputNumber, parseInputNumber, resolveInputNumberOptions, stepInputNumber } from './input-number.engine';
   import { ruRU, type ComponentSize } from './types';
@@ -50,6 +52,7 @@
   }: InputNumberProps = $props();
 
   const config = useConfig();
+  const compact = useCompact();
   const form = useForm();
   const field = useFormField();
   const generatedId = $props.id();
@@ -61,7 +64,8 @@
   let resolvedValue = $derived(normalizeInputNumber(value === undefined ? initialDefault : value));
   let options = $derived(resolveInputNumberOptions({ min, max, step, precision }));
   let resolvedPrecision = $derived(options.precision);
-  let resolvedSize = $derived(size ?? config.componentSize);
+  let resolvedSize = $derived(size ?? compact?.size ?? config.componentSize);
+  let compactItemClasses = $derived(compactClasses('ant-input-number', config.direction, compact));
   let resolvedStatus = $derived(status ?? field?.status);
   let resolvedDisabled = $derived(disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled);
   let controlId = $derived(id ?? field?.id ?? `ant-input-number-${generatedId}`);
@@ -219,6 +223,7 @@
     outOfRange && 'ant-input-number-out-of-range',
     config.direction === 'rtl' && 'ant-input-number-rtl',
     (!controls || resolvedDisabled || readonly) && 'ant-input-number-without-controls',
+    compactItemClasses,
     className
   ]}
 >

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NoCompactStyle from './NoCompactStyle.svelte';
   import { onDestroy, untrack } from 'svelte';
   import Icon from './Icon.svelte';
   import { useConfig } from './config-context';
@@ -95,6 +96,7 @@
   @media (prefers-reduced-motion: reduce) { .ant-drawer-close { transition: none; } }
 </style>
 
+<NoCompactStyle>
 <dialog bind:this={dialog} id={rootId} class={['ant-drawer ant-drawer-css-var ant-svelte-drawer', `ant-drawer-${placement}`, config.direction === 'rtl' && 'ant-drawer-rtl', className]} {style} style:--ant-svelte-drawer-size={getDrawerSize(size)} dir={config.direction} aria-modal="true" aria-label={ariaLabel} aria-labelledby={ariaLabelledby ?? (ariaLabel === undefined && title !== undefined ? titleId : undefined)} aria-describedby={ariaDescribedby} oncancel={handleCancel} onclose={handleClose} onpointerdown={(event) => { backdropPointer = event.button === 0 && isBackdrop(event) ? event.pointerId : undefined; }} onpointerup={handlePointerUp} onpointercancel={() => { backdropPointer = undefined; }}>
   <div class={['ant-drawer-mask', mask?.blur && 'ant-drawer-mask-blur']} aria-hidden="true"></div>
   <div class="ant-drawer-content-wrapper">
@@ -115,3 +117,4 @@
     {/if}
   </div>
 </dialog>
+</NoCompactStyle>

@@ -44,6 +44,7 @@
   import CardFixtures from './CardFixtures.svelte';
   import BreadcrumbFixtures from './BreadcrumbFixtures.svelte';
   import ThemeFixtures from './ThemeFixtures.svelte';
+  import SpaceCompactFixtures from './SpaceCompactFixtures.svelte';
   import SpaceFixtures from './SpaceFixtures.svelte';
   import LayoutFixtures from './LayoutFixtures.svelte';
 
@@ -109,6 +110,7 @@
     <GridFixtures />
     <LayoutFixtures />
     <SpaceFixtures />
+    <SpaceCompactFixtures />
     <ThemeFixtures />
     <BreadcrumbFixtures />
     <CardFixtures />

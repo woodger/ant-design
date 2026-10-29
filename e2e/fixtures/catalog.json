@@ -248,5 +248,10 @@
     "id": "space",
     "module": "./SpaceFixtures.svelte",
     "root": "space-fixture"
+  },
+  {
+    "id": "space-compact",
+    "module": "./SpaceCompactFixtures.svelte",
+    "root": "space-compact-fixture"
   }
 ]

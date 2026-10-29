@@ -271,5 +271,56 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Space: orientation, align, gaps, empty wrappers и Badge; без Compact/Addon.\n * Без typography reset; корни ограничены :where(.ant-space-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "space-compact",
+    "output": "src/lib/components/ant-design/vendor/space-compact.css",
+    "expectedRules": 4,
+    "include": [
+      "^\\.ant-space-compact(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.ant-space-compact(?![-\\w])",
+        "replacement": ".ant-space-compact:where(.ant-space-compact-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Space.Compact: block, vertical и RTL; без typography reset.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "space-addon",
+    "output": "src/lib/components/ant-design/vendor/space-addon.css",
+    "expectedRules": 29,
+    "include": [
+      "\\.ant-space-addon(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.ant-space-addon(?![-\\w])",
+        "replacement": ".ant-space-addon:where(.ant-space-addon-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Space.Addon: variants/status, размеры, compact borders и z-index.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "input-number-compact",
+    "output": "src/lib/components/ant-design/vendor/input-number-compact.css",
+    "expectedRules": 8,
+    "include": [
+      "\\.ant-input-number-compact(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.ant-input-number-compact-item(?![-\\w])",
+        "replacement": ".ant-input-number-compact-item:where(.ant-input-number-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * InputNumber: compact margins, z-index и логические углы.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

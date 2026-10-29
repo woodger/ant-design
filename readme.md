@@ -101,6 +101,7 @@ Card/Grid/Meta, загрузка/фокус, вкладки и двусторо�
 Breadcrumb, path/params, разделители и нативная навигация через меню,
 compact spacing tokens, вложенные overrides и геометрию Card/Flex/Divider,
 Space, независимые gaps, wrappers/разделители, keyed DOM и фокус,
+SpaceCompact/Addon, стыки рамок, вложенные размеры и изоляцию Popup-контекста,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

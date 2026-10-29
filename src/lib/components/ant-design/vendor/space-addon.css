@@ -1,0 +1,34 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * Space.Addon: variants/status, размеры, compact borders и z-index.
+ * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-space-addon:where(.ant-space-addon-css-var){font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-space-addon:where(.ant-space-addon-css-var)::before,.ant-space-addon:where(.ant-space-addon-css-var)::after{box-sizing:border-box;}
+.ant-space-addon:where(.ant-space-addon-css-var) [class^="ant-space-addon"],.ant-space-addon:where(.ant-space-addon-css-var) [class*=" ant-space-addon"]{box-sizing:border-box;}
+.ant-space-addon:where(.ant-space-addon-css-var) [class^="ant-space-addon"]::before,.ant-space-addon:where(.ant-space-addon-css-var) [class*=" ant-space-addon"]::before,.ant-space-addon:where(.ant-space-addon-css-var) [class^="ant-space-addon"]::after,.ant-space-addon:where(.ant-space-addon-css-var) [class*=" ant-space-addon"]::after{box-sizing:border-box;}
+.ant-space-addon:where(.ant-space-addon-css-var){box-sizing:border-box;margin:0;padding:0;color:var(--ant-color-text);font-size:var(--ant-font-size);line-height:var(--ant-line-height);list-style:none;font-family:var(--ant-font-family);display:inline-flex;align-items:center;gap:0;white-space:nowrap;padding-inline:var(--ant-padding-sm);border-width:var(--ant-line-width);border-style:var(--ant-line-type);border-radius:var(--ant-border-radius);--ant-space-addon-addon-border-color:var(--ant-color-border);--ant-space-addon-addon-background:var(--ant-color-bg-container-disabled);--ant-space-addon-addon-border-color-outlined:var(--ant-color-border);--ant-space-addon-addon-background-filled:var(--ant-color-bg-container-disabled);border-color:var(--ant-space-addon-addon-border-color);background:var(--ant-space-addon-addon-background);}
+.ant-space-addon:where(.ant-space-addon-css-var):hover{z-index:0;}
+.ant-space-addon:where(.ant-space-addon-css-var).ant-space-addon-disabled{color:var(--ant-color-text-disabled);}
+.ant-space-addon-large{font-size:var(--ant-font-size-lg);border-radius:var(--ant-border-radius-lg);}
+.ant-space-addon-small{padding-inline:var(--ant-padding-xs);border-radius:var(--ant-border-radius-sm);font-size:var(--ant-font-size-sm);}
+.ant-space-addon-compact-last-item{border-end-start-radius:0;border-start-start-radius:0;}
+.ant-space-addon-compact-first-item{border-end-end-radius:0;border-start-end-radius:0;}
+.ant-space-addon-compact-item:not(:first-child):not(:last-child){border-radius:0;}
+.ant-space-addon-compact-item:not(:last-child){border-inline-end-width:0;}
+.ant-space-addon-compact-item:not(:first-child){border-inline-start-width:0;}
+.ant-space-addon-variant-outlined{--ant-space-addon-addon-border-color:var(--ant-space-addon-addon-border-color-outlined);}
+.ant-space-addon-variant-filled{--ant-space-addon-addon-border-color:transparent;--ant-space-addon-addon-background:var(--ant-space-addon-addon-background-filled);}
+.ant-space-addon-variant-filled.ant-space-addon-disabled{--ant-space-addon-addon-border-color:var(--ant-color-border);--ant-space-addon-addon-background:var(--ant-color-bg-container-disabled);}
+.ant-space-addon-variant-borderless{border:none;background:transparent;}
+.ant-space-addon-variant-underlined{border:none;background:transparent;}
+.ant-space-addon-status-error{--ant-space-addon-addon-border-color-outlined:var(--ant-color-error);--ant-space-addon-addon-background-filled:var(--ant-color-error-bg);color:var(--ant-color-error);}
+.ant-space-addon-status-warning{--ant-space-addon-addon-border-color-outlined:var(--ant-color-warning);--ant-space-addon-addon-background-filled:var(--ant-color-warning-bg);color:var(--ant-color-warning);}
+.ant-space-addon-compact-item:not(.ant-space-addon-compact-last-item){margin-inline-end:calc(var(--ant-line-width) * -1);}
+.ant-space-addon-compact-item:not(.ant-space-addon-status-success){z-index:2;}
+.ant-space-addon-compact-item:active{z-index:3;}
+.ant-space-addon-compact-item:hover{z-index:4;}
+.ant-space-addon-compact-item[disabled]{z-index:0;}
+.ant-space-addon-compact-item:not(.ant-space-addon-compact-first-item):not(.ant-space-addon-compact-last-item){border-radius:0;}
+.ant-space-addon-compact-item:not(.ant-space-addon-compact-last-item).ant-space-addon-compact-first-item,.ant-space-addon-compact-item:not(.ant-space-addon-compact-last-item).ant-space-addon-compact-first-item.ant-space-addon-sm,.ant-space-addon-compact-item:not(.ant-space-addon-compact-last-item).ant-space-addon-compact-first-item.ant-space-addon-lg{border-start-end-radius:0;border-end-end-radius:0;}
+.ant-space-addon-compact-item:not(.ant-space-addon-compact-first-item).ant-space-addon-compact-last-item,.ant-space-addon-compact-item:not(.ant-space-addon-compact-first-item).ant-space-addon-compact-last-item.ant-space-addon-sm,.ant-space-addon-compact-item:not(.ant-space-addon-compact-first-item).ant-space-addon-compact-last-item.ant-space-addon-lg{border-start-start-radius:0;border-end-start-radius:0;}

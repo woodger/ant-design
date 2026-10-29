@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NoCompactStyle from './NoCompactStyle.svelte';
   import { onDestroy, untrack } from 'svelte';
   import { useConfig } from './config-context';
   import { connectPopup } from './popup.dom';
@@ -227,6 +228,7 @@
 </style>
 
 <span bind:this={host} role="presentation" class={['ant-popover-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onfocusin={handleFocus} onfocusout={handleBlur} onclick={handleClick}>{@render children()}</span>
+<NoCompactStyle>
 <div bind:this={popup} {id} role="dialog" popover="manual" hidden tabindex="-1" dir={config.direction} aria-label={ariaLabel} aria-labelledby={!ariaLabel ? ariaLabelledby ?? (hasTitle ? titleId : undefined) : undefined} aria-describedby={ariaDescribedby} aria-busy={ariaBusy} class={['ant-popover', popupClass, `ant-popover-placement-${shown ? actualPlacement : placement}`, config.direction === 'rtl' && 'ant-popover-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') handlePopupHover(true); }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => { popupFocused = true; cancelPending(); }} onfocusout={handlePopupBlur}>
   {#if arrow}<div class="ant-popover-arrow" aria-hidden="true"></div>{/if}
   <div class="ant-popover-container">
@@ -234,3 +236,4 @@
     {#if hasBody}<div class="ant-popover-content">{#if typeof content === 'function'}{@render content()}{:else}{content}{/if}</div>{/if}
   </div>
 </div>
+</NoCompactStyle>

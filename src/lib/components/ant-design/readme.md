@@ -10,7 +10,7 @@ MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Step
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
 StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
 LayoutContent, LayoutFooter, LayoutSider, Descriptions, Card, CardGrid, CardMeta,
-Breadcrumb, Space, Form и FormItem.
+Breadcrumb, Space, SpaceCompact, SpaceAddon, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -114,7 +114,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Descriptions | Таблица read-only полей, responsive column/span/filled, horizontal/vertical, bordered и semantic slots |
 | Card / CardGrid / CardMeta | Header/cover/body/actions, loading, grid, tabs, metadata, semantic slots и варианты оформления |
 | Breadcrumb | Items/routes, params, separator items, custom Snippet renderer, меню и native navigation |
-| Space | Отдельные wrappers, независимые gaps, orientation/align/wrap, keyed items и separator/split |
+| Space / SpaceCompact / SpaceAddon | Wrappers/gaps/separators, компактные стыки controls, размеры, вложенность и addon variants/status |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -601,9 +601,47 @@ ClassNames/styles root/item/separator принимают объект либо c
 тему/RTL. Галерея — `/ant-design#space`, фикстура — `?fixture=space`. Unit/SSR/
 Chromium проверяют gaps, пустые значения, keyed DOM/фокус и production hydration.
 Рецепт space извлекает 16 правил без Compact/Addon, reset и keyframes.
-SpaceCompact/SpaceAddon ещё не экспортированы; реестр отмечает семейство
-частичным. PrefixCls и глобальный space component config/tokens также остаются
-в полном объёме миграции.
+PrefixCls и глобальный space component config/tokens остаются в полном объёме
+миграции.
+
+### SpaceCompact и SpaceAddon
+
+SpaceCompact соответствует Space.Compact: тот же items/children Snippet API,
+один div без дополнительных item wrappers. Каждый item задаёт отдельный context
+для первого/последнего элемента и размера. Для нескольких controls используйте
+items; один children Snippet представляет одну позицию, как компонент React,
+вернувший несколько узлов. Null/undefined/boolean удаляются из позиций, пустая
+строка и 0 сохраняются, как rc-component/util.toArray без keepEmpty.
+
+Size=small/medium/middle/large, по умолчанию явно заданный componentSize;
+приоритет control.size → Compact.size → ConfigProvider.componentSize. Block
+включает width=100% и display=flex, иначе inline-flex. Orientation/vertical/
+legacy direction следуют приоритету Space. Нативные attrs, class/rootClassName/
+style и bind:nativeElement относятся к root. Подключены Button, Input,
+InputNumber и Select. Горизонтальные стыки используют логические углы и
+перекрытие на lineWidth; vertical compact-стыки поддержаны для Button, как
+в исходнике. Select сохраняет существующий внешний container: его радиусы
+наследует внутренняя рамка. Keyed DOM и фокус сохраняются при перестановке.
+
+Вложенный Compact получает крайние flags с учётом положения во внешней группе;
+его собственный size снова разрешается из props/ConfigProvider, а не из размера
+родительского Compact. Это соответствует Compact.tsx 6.6.8. Контекст остаётся
+на Popup triggers, но сбрасывается внутри Modal/Drawer и содержимого Tooltip/
+Popover/Dropdown. Общие ConfigProvider/Form contexts при этом не меняются.
+
+SpaceAddon соответствует Space.Addon, использует div и children Snippet.
+Variant=outlined/filled/borderless/underlined, default=outlined;
+status=error/warning меняет границу/фон/текст. Disabled задаёт только внешний
+вид: не наследуется из componentDisabled автоматически и не отключает children.
+Размер берётся только из Compact context; вне Compact componentSize не меняет
+Addon. Поддержаны нативные attrs, class/style и bind:nativeElement.
+
+Фикстура — `?fixture=space-compact`, пример — `/ant-design#space`. Unit/SSR/
+Chromium проверяют размеры, границы/RTL, вложенность, фокус, Popup isolation,
+variants/status/disabled и hydration. Рецепты space-compact/space-addon/
+input-number-compact извлекают 4/29/8 правил без keyframes. Compact-адаптеры
+AutoComplete, Cascader, pickers, TreeSelect и Input.Search остаются до переноса
+этих публичных API; отсутствие этих controls отдельно отмечено в реестре.
 
 ## InputNumber
 

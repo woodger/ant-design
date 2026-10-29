@@ -1,6 +1,8 @@
 <script lang="ts" generics="Value extends string | number = string, Mode extends 'multiple' | undefined = undefined">
   import { untrack } from 'svelte';
   import { useConfig } from './config-context';
+  import { useCompact } from './space-compact-context';
+  import { compactClasses } from './space-compact.engine';
   import { useFormField } from './form-context';
   import { filterOptions, getEnabledIndex, getSelectValues } from './select.engine';
   import { ruRU, type SelectOption } from './types';
@@ -32,6 +34,7 @@
   }: SelectProps<Value, Mode> = $props();
 
   const config = useConfig();
+  const compact = useCompact();
   const field = useFormField();
   const generatedId = $props.id();
   const initialDefault = untrack(() => Array.isArray(defaultValue) ? [...defaultValue] : defaultValue);
@@ -63,7 +66,8 @@
   });
   let resolvedDisabled = $derived(disabled ?? field?.disabled ?? config.componentDisabled);
   let resolvedStatus = $derived(status ?? field?.status);
-  let resolvedSize = $derived(size ?? config.componentSize);
+  let resolvedSize = $derived(size ?? compact?.size ?? config.componentSize);
+  let compactItemClasses = $derived(compactClasses('ant-select', config.direction, compact));
   let expanded = $derived(isOpen && !resolvedDisabled);
 
   $effect(() => {
@@ -305,11 +309,12 @@
   .ant-select-selection-item-remove { flex: none; padding: 0; border: 0; background: transparent; }
   .ant-select-selection-item-remove:focus-visible { outline: 2px solid var(--ant-color-primary); outline-offset: 1px; }
   .ant-select-selection-item-disabled { color: var(--ant-select-multiple-item-color-disabled); }
+  .container.ant-select-compact-item > .ant-select { border-radius: inherit; }
 </style>
 
 <svelte:document onpointerdown={handleOutside} onreset={handleReset} />
 
-<div class={`container ant-select-css-var ${className}`} bind:this={container} {style}>
+<div class={['container ant-select-css-var', compactItemClasses, compact && resolvedSize === 'large' && 'ant-select-lg', compact && resolvedSize === 'small' && 'ant-select-sm', compact && expanded && 'ant-select-focused', compact && resolvedDisabled && 'ant-select-disabled', className]} bind:this={container} {style}>
   <div
     role="presentation"
     onpointerdown={handlePointerDown}

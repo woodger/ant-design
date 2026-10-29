@@ -1,0 +1,13 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * InputNumber: compact margins, z-index и логические углы.
+ * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-last-item){margin-inline-end:calc(var(--ant-line-width) * -1);}
+.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-status-success){z-index:2;}
+.ant-input-number-compact-item:where(.ant-input-number-css-var):focus,.ant-input-number-compact-item:where(.ant-input-number-css-var):active{z-index:3;}
+.ant-input-number-compact-item:where(.ant-input-number-css-var):hover{z-index:4;}
+.ant-input-number-compact-item:where(.ant-input-number-css-var)[disabled]{z-index:0;}
+.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-first-item):not(.ant-input-number-compact-last-item){border-radius:0;}
+.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-last-item).ant-input-number-compact-first-item,.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-last-item).ant-input-number-compact-first-item.ant-input-number-sm,.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-last-item).ant-input-number-compact-first-item.ant-input-number-lg{border-start-end-radius:0;border-end-end-radius:0;}
+.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-first-item).ant-input-number-compact-last-item,.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-first-item).ant-input-number-compact-last-item.ant-input-number-sm,.ant-input-number-compact-item:where(.ant-input-number-css-var):not(.ant-input-number-compact-first-item).ant-input-number-compact-last-item.ant-input-number-lg{border-start-start-radius:0;border-end-start-radius:0;}

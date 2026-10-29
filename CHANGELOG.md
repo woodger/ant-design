@@ -24,9 +24,10 @@
 
 ### Added
 
-- Space core: keyed items со Snippet, orientation/align/wrap, preset/числовые
-  gaps, separator/split и semantic styles. Добавлены CSS-рецепт и проверки
-  DOM/фокуса; семейство остаётся частичным до переноса Compact/Addon.
+- Space/Compact/Addon: keyed items со Snippet, orientation/align/wrap, gaps,
+  separator/split, компактные стыки и размеры controls, вложенность, addon
+  variants/status и изоляция Popup-контекста. Добавлены CSS-рецепты и проверки
+  DOM/фокуса, RTL и production-галереи.
 - Breadcrumb: items/legacy routes, path/params, разделители, Snippet itemRender,
   semantic styles, темы/RTL и меню. Dropdown получил нативные href/target/rel
   items с Enter/Space, disabled и отменой навигации. Добавлены CSS-рецепт и проверки.

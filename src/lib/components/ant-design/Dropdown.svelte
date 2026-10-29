@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NoCompactStyle from './NoCompactStyle.svelte';
   import { onDestroy, untrack } from 'svelte';
   import { useConfig } from './config-context';
   import { useForm } from './form-context';
@@ -278,6 +279,7 @@
 </style>
 
 <span bind:this={host} id={triggerId} role="presentation" class={['ant-dropdown-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onclick={handleClick} onkeydown={handleTriggerKeydown}>{@render children()}</span>
+<NoCompactStyle>
 <div bind:this={popup} id={`${menuId}-popup`} popover="manual" role="presentation" hidden dir={config.direction} class={['ant-dropdown', 'ant-dropdown-css-var', `ant-dropdown-placement-${shown ? actualPlacement : requestedPlacement}`, config.direction === 'rtl' && 'ant-dropdown-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') handlePopupHover(true); }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => { menuFocused = true; cancelPending(); }} onfocusout={handleFocusout}>
   {#if arrow}<span class="ant-dropdown-arrow" aria-hidden="true"></span>{/if}
   <ul bind:this={list} id={menuId} role="menu" tabindex="-1" aria-label={ariaLabel} aria-labelledby={ariaLabel ? undefined : triggerId} class="ant-dropdown-menu ant-dropdown-menu-root ant-dropdown-menu-vertical" onkeydown={handleMenuKeydown}>
@@ -292,3 +294,4 @@
     {:else}<li role="none" class="ant-dropdown-menu-empty">{config.locale.emptyText}</li>{/each}
   </ul>
 </div>
+</NoCompactStyle>

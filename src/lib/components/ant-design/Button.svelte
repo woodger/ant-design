@@ -2,6 +2,8 @@
   import type { Snippet } from 'svelte';
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import { useConfig } from './config-context';
+  import { useCompact } from './space-compact-context';
+  import { compactClasses } from './space-compact.engine';
   import { useForm } from './form-context';
   import type { ComponentSize } from './types';
   import Icon from './Icon.svelte';
@@ -35,8 +37,10 @@
   }: ButtonProps = $props();
 
   const config = useConfig();
+  const compact = useCompact();
   const form = useForm();
-  let resolvedSize = $derived(size ?? config.componentSize);
+  let resolvedSize = $derived(size ?? compact?.size ?? config.componentSize);
+  let compactItemClasses = $derived(compactClasses('ant-btn', config.direction, compact));
   let variant = $derived(type === 'primary' ? 'solid' : type === 'default' ? 'outlined' : type);
   let color = $derived(danger ? 'dangerous' : type === 'primary' || type === 'link' ? 'primary' : 'default');
 </script>
@@ -58,6 +62,7 @@
     block && 'ant-btn-block',
     shape !== 'default' && `ant-btn-${shape}`,
     !children && 'ant-btn-icon-only',
+    compactItemClasses,
     className
   ]}
 >

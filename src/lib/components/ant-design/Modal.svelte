@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NoCompactStyle from './NoCompactStyle.svelte';
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
   import { useConfig } from './config-context';
@@ -114,6 +115,7 @@
   .ant-modal-close { display: flex; align-items: center; justify-content: center; }
 </style>
 
+<NoCompactStyle>
 <dialog
   bind:this={dialog}
   class={`ant-svelte-dialog ant-modal-css-var ${className}`}
@@ -148,3 +150,4 @@
     </div>
   </div>
 </dialog>
+</NoCompactStyle>

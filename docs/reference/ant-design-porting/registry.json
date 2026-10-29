@@ -19,7 +19,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/button",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Button",
@@ -29,7 +29,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -46,6 +47,17 @@
           "requiredForV1": true,
           "evidence": [],
           "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "compact-context",
+          "title": "Размеры и классы Space.Compact",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -555,6 +567,18 @@
           "local": [
             "Space"
           ]
+        },
+        {
+          "upstream": "Space.Compact",
+          "local": [
+            "SpaceCompact"
+          ]
+        },
+        {
+          "upstream": "Space.Addon",
+          "local": [
+            "SpaceAddon"
+          ]
         }
       ],
       "dependencies": [
@@ -575,13 +599,16 @@
       "priority": "p1",
       "effort": "M",
       "fixtures": [
-        "space"
+        "space",
+        "space-compact"
       ],
       "evidence": [
         "src/lib/components/ant-design/Space.svelte",
         "src/lib/components/ant-design/space.test.ts",
         "e2e/space.spec.ts",
-        "src/lib/presentation/ant-design/SpaceExample.svelte"
+        "src/lib/presentation/ant-design/SpaceExample.svelte",
+        "src/lib/components/ant-design/SpaceCompact.svelte",
+        "src/lib/components/ant-design/SpaceAddon.svelte"
       ],
       "features": [
         {
@@ -609,18 +636,25 @@
         {
           "id": "compact",
           "title": "Space.Compact и контекст размеров/границ",
-          "state": "missing",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Следующий логический этап; необходимы адаптеры Button/Input/InputNumber/Select и изоляция popup content."
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.engine.test.ts",
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Items/Snippet, размеры и крайние элементы, вложенность, block/vertical/RTL. Подключены существующие Button/Input/InputNumber/Select; Popup content изолирован. Внешний container Select сохранён."
         },
         {
           "id": "addon",
           "title": "Space.Addon",
-          "state": "missing",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Переносится вместе с Compact: variants/status, compact size и соединение границ."
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Outlined/filled/borderless/underlined, error/warning, explicit disabled appearance и compact size; disabled не отключает children и не наследуется автоматически."
         },
         {
           "id": "global-config",
@@ -629,6 +663,14 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Произвольный component config/tokens ещё не перенесён; публичный Space core не означает завершение семейства."
+        },
+        {
+          "id": "remaining-controls",
+          "title": "Compact-адаптеры ещё не перенесённых controls",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "AutoComplete, Cascader, DatePicker/RangePicker/TimePicker, TreeSelect и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API."
         }
       ]
     },
@@ -792,7 +834,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -832,6 +875,17 @@
             "e2e/dropdown.spec.ts"
           ],
           "note": "Существующие commands сохраняют button; links используют a role=menuitem с Enter/Space и disabled без href. Основной подробный аудит Dropdown ещё не завершён."
+        },
+        {
+          "id": "compact-isolation",
+          "title": "Изоляция Space.Compact внутри popup content",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -1268,7 +1322,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/input",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Input",
@@ -1278,7 +1332,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -1298,6 +1353,17 @@
           "requiredForV1": true,
           "evidence": [],
           "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "compact-context",
+          "title": "Размеры и классы Space.Compact",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -1308,7 +1374,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/input-number",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "InputNumber",
@@ -1318,7 +1384,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -1346,6 +1413,17 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "compact-context",
+          "title": "Размеры и классы Space.Compact",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -1464,7 +1542,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [
         {
@@ -1542,6 +1621,17 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "В первой версии отсутствует."
+        },
+        {
+          "id": "compact-context",
+          "title": "Размеры и классы Space.Compact",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -2294,7 +2384,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/popover",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Popover",
@@ -2304,7 +2394,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -2332,6 +2423,17 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "compact-isolation",
+          "title": "Изоляция Space.Compact внутри popup content",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -2714,7 +2816,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/tooltip",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Tooltip",
@@ -2724,7 +2826,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -2752,6 +2855,17 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "compact-isolation",
+          "title": "Изоляция Space.Compact внутри popup content",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -2854,7 +2968,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/drawer",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Drawer",
@@ -2864,7 +2978,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -2892,6 +3007,17 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "compact-isolation",
+          "title": "Изоляция Space.Compact внутри popup content",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },
@@ -2943,7 +3069,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/modal",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Modal",
@@ -2953,7 +3079,8 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "space"
       ],
       "upstreamPackages": [],
       "priority": "unassigned",
@@ -2973,6 +3100,17 @@
           "requiredForV1": true,
           "evidence": [],
           "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+        },
+        {
+          "id": "compact-isolation",
+          "title": "Изоляция Space.Compact внутри popup content",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/space-compact.ssr.test.ts",
+            "e2e/space-compact.spec.ts"
+          ],
+          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
       ]
     },

@@ -2,6 +2,8 @@
   import { untrack } from 'svelte';
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { useConfig } from './config-context';
+  import { useCompact } from './space-compact-context';
+  import { compactClasses } from './space-compact.engine';
   import { useFormField } from './form-context';
   import type { ComponentSize } from './types';
 
@@ -33,10 +35,12 @@
   }: InputProps = $props();
 
   const config = useConfig();
+  const compact = useCompact();
   const field = useFormField();
   const initialDefault = untrack(() => defaultValue);
   let useDefault = $state(true);
-  let resolvedSize = $derived(size ?? config.componentSize);
+  let resolvedSize = $derived(size ?? compact?.size ?? config.componentSize);
+  let compactItemClasses = $derived(compactClasses('ant-input', config.direction, compact));
   let resolvedStatus = $derived(status ?? field?.status);
 
   function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
@@ -70,6 +74,7 @@
     resolvedSize === 'large' && 'ant-input-lg',
     resolvedSize === 'small' && 'ant-input-sm',
     resolvedStatus && `ant-input-status-${resolvedStatus}`,
+    compactItemClasses,
     className
   ]}
 />
