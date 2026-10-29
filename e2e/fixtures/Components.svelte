@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AutoCompleteFixtures from './AutoCompleteFixtures.svelte';
   import { ConfigProvider, enUS } from '../../src/lib/components/ant-design';
   import MenuFixtures from './MenuFixtures.svelte';
   import TreeSelectFixtures from './TreeSelectFixtures.svelte';
@@ -78,6 +79,7 @@
     <label><input type="checkbox" bind:checked={controls.rtl} /> Right to left</label>
     <label><input type="checkbox" bind:checked={controls.english} /> English locale</label>
 
+    <AutoCompleteFixtures />
     <MenuFixtures />
     <TreeSelectFixtures />
     <TreeFixtures />

@@ -324,5 +324,10 @@
     "id": "menu",
     "module": "./MenuFixtures.svelte",
     "root": "menu-fixture"
+  },
+  {
+    "id": "auto-complete",
+    "module": "./AutoCompleteFixtures.svelte",
+    "root": "auto-complete-fixture"
   }
 ]

@@ -1,3 +1,5 @@
+export { default as AutoComplete } from './AutoComplete.svelte';
+export type { AutoCompleteProps, AutoCompleteItem, AutoCompleteOption, AutoCompleteGroup, AutoCompleteSearchConfig, AutoCompleteInput } from './auto-complete.types';
 export { default as Menu } from './Menu.svelte';
 export type { MenuProps, MenuItemType, MenuItem, MenuSubMenu, MenuGroup, MenuDivider, MenuMode, MenuTheme, MenuContent, MenuClickInfo, MenuSelectInfo } from './menu.types';
 export { default as TreeSelect } from './TreeSelect.svelte';

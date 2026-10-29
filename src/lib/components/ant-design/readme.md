@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -83,6 +83,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
+| AutoComplete | Свободный текст, options/groups, поиск, keyboard backfill, custom input и controlled popup |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
 | CheckboxGroup | Типизированный массив выбранных значений, options, disabled, нативные checkbox, FormData, reset и интеграция с FormItem |
@@ -3258,6 +3259,75 @@ aria-describedby описывает корень; id/class/style также от
 AvatarGroupKey, AvatarGroupMax и AvatarGroupLocale. Responsive-размеры по
 breakpoint, произвольные компоненты вместо Avatar и устаревшие maxCount/
 maxStyle/maxPopoverPlacement/maxPopoverTrigger в эту версию не входят.
+
+## AutoComplete
+
+Первый этап следует Ant Design 6.6.8 и @rc-component/select 1.10.1 (~1.10.1).
+Combobox-логика находится в AutoComplete и его engine; существующие single/multiple
+контракты Select сохранены. Как upstream, оформление переиспользует CSS Select
+из vendor/antd.css; отдельного upstream style-модуля AutoComplete нет.
+[MIT-лицензия rc-select](./vendor/LICENSE.rc-select) включена в пакет.
+
+```svelte
+<script lang="ts">
+  import { AutoComplete } from '$lib/components/ant-design';
+  let value = $state('');
+  let search = $state('');
+  let options = $derived(search ? [{ value: `${search}@example.com` }] : []);
+</script>
+<AutoComplete {value} {options} allowClear backfill
+  onChange={next => { value = next ?? ''; }}
+  onSearch={next => { search = next; }} aria-label="Email" />
+```
+
+Value/defaultValue — произвольная строка; совпадение с options не требуется.
+Выбор показывает option.value, label — string/number/Snippet только в списке.
+Options также принимает группы `{label, options}`; disabled пункты пропускаются.
+OnChange(value,option) вызывается при изменении ввода/выборе, onSelect(value,option)
+при каждом выборе, onSearch(text) при поисковом вводе, но не при выборе пункта.
+Для свободного значения второй аргумент onChange — пустой объект, при очистке
+списка значений — undefined; React option.props wrapper не переносится.
+
+FilterOption по умолчанию false, как runtime combobox rc-select. True фильтрует
+value без учёта регистра, без trim/Unicode folding. Совпавшая группа сохраняет
+всех детей; иначе проверяются дети. Predicate получает исходный option/group.
+ShowSearch object объединяет filterOption/onSearch с прежними top-level props.
+Загрузку данных, debounce и защиту от старых ответов выполняет потребитель.
+
+Open/defaultOpen задают controlled/uncontrolled popup. Без options и непустого
+notFoundContent popup скрыт даже при open=true. SSR оставляет его закрытым до
+mount, как rc-select useOpen. PopupMatchSelectWidth — boolean/число, listHeight
+по умолчанию 256; onPopupScroll передаёт native scroll event. Поверхность — native
+popover с сохранением фокуса input, outside/Escape и cleanup.
+
+Стрелки обходят доступные options, Enter/Tab выбирают активный пункт; IME Enter
+не выбирает. Backfill меняет только видимый текст до подтверждения. По runtime
+rc-select defaultActiveFirstOption=false, хотя таблица Ant Design указывает true;
+для непустого текста отдельно активируется первое prefix match. Home/End остаются
+у нативного input. AllowClear поддерживает boolean/{clearIcon}. Для непустого
+текста rc-select выполняет два пути: onClear, change(undefined), change(''),
+search(''); этот порядок сохранён. Обработчик controlled value обычно нормализует
+undefined в пустую строку. OnInputKeyDown, onFocus/onBlur и focus/blur доступны.
+
+Custom input задаётся `children(control)` Snippet:
+
+```svelte
+<AutoComplete options={[{ value: 'example' }]} aria-label="Подсказки">
+  {#snippet children(control)}
+    <textarea {...control.attributes} use:control.register rows="3"></textarea>
+  {/snippet}
+</AutoComplete>
+```
+
+Attributes/register связывают value, ARIA, события и native ref; собственные
+class/style/rows сохраняются. InputElement и nativeElement доступны через bind.
+Native name/required/disabled/readonly, FormItem/status/reset, размеры, variants,
+Compact, темы и RTL поддержаны. Галерея `/ant-design#auto-complete`, фикстура
+`?fixture=auto-complete`. При custom input его native constraints задаются на нём.
+
+Virtual/scrollTo, fieldNames, optionRender/popupRender, prefix/searchIcon,
+полный semantic/config/token API и legacy dataSource/Option/deprecated dropdown
+aliases пока отсутствуют. Generic numeric/object values не входят в первый этап.
 
 ## Select
 

@@ -27,6 +27,11 @@
 
 ### Added
 
+- AutoComplete: свободный ввод и options/groups, controlled/default value/open,
+  исходные change/search/select, keyboard/backfill, custom input/textarea Snippet
+  и native popup. Добавлены галерея, фикстура, unit/SSR/browser и реестр;
+  публичные режимы Select сохранены.
+
 - Menu: items/группы/разделители/подменю, controlled/default selected/open keys,
   single/multiple и исходные callbacks, horizontal/vertical/inline, native links,
   клавиатура, Sider collapse, темы/RTL/Compact и native popup. Добавлены

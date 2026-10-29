@@ -1420,25 +1420,84 @@
       "id": "auto-complete",
       "name": "AutoComplete",
       "category": "data-entry",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первый этап AutoComplete по Ant Design 6.6.8 / rc-select 1.10.1: свободный ввод, options/groups, callbacks, controlled value/open, keyboard/backfill и custom input Snippet.",
       "upstreamPath": "components/auto-complete",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "AutoComplete",
+          "local": [
+            "AutoComplete"
+          ]
+        }
+      ],
+      "dependencies": [
+        "select",
+        "config-provider",
+        "form",
+        "space"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/select",
+          "range": "~1.10.1",
+          "referenceVersion": "1.10.1"
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "auto-complete"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/AutoComplete.svelte",
+        "src/lib/components/ant-design/auto-complete.engine.test.ts",
+        "src/lib/components/ant-design/auto-complete.ssr.test.ts",
+        "e2e/auto-complete.spec.ts",
+        "src/lib/presentation/ant-design/AutoCompleteExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Свободный ввод, options/groups и исходные change/search/select callbacks",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/auto-complete.engine.test.ts",
+            "e2e/auto-complete.spec.ts"
+          ],
+          "note": "String value/defaultValue, controlled/default open, groups и rich Snippet labels. Filter по умолчанию false, true фильтрует value без trim/accent folding; group match сохраняет всех детей. OnChange(value,option), onSearch только search-путь, onSelect только выбор. Clear сохраняет последовательность rc-select: onClear, change(undefined), затем change('')/search('') для непустого текста."
+        },
+        {
+          "id": "keyboard-input",
+          "title": "Keyboard/backfill, disabled, custom native input/textarea и refs",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/auto-complete.ssr.test.ts",
+            "e2e/auto-complete.spec.ts"
+          ],
+          "note": "Combobox с произвольным текстом, disabled/group skip, ArrowUp/Down, Enter/Tab выбор, Escape; IME Enter не выбирает. Backfill меняет preview без change/search. DefaultActiveFirstOption=false по runtime rc-select, prefix match активируется отдельно. Custom input задаётся children(control) Snippet с attributes/register; focus/blur/nativeElement/inputElement. Публичные режимы старого Select сохранены."
+        },
+        {
+          "id": "contexts-popup",
+          "title": "Native popup/SSR, Form, темы/Compact/RTL и очистка ресурсов",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/auto-complete.ssr.test.ts",
+            "e2e/auto-complete.spec.ts"
+          ],
+          "note": "Без options и notFoundContent popup скрыт даже при open=true; SSR всегда закрыт как rc-select useOpen. Native popover сохраняет фокус input, popupMatchSelectWidth/listHeight/onPopupScroll, outside/Escape и cleanup. Native FormData, FormItem/required/status/reset и disabled, размеры/variants, themes/RTL/Compact. CSS Select переиспользуется из vendor/antd.css, как upstream AutoComplete."
+        },
+        {
+          "id": "extended-api",
+          "title": "Virtual, fieldNames, render hooks, semantic/config API и legacy aliases",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Нет virtualization/scrollTo, fieldNames, optionRender/popupRender, prefix/searchIcon customization, полного semantic classNames/styles и ConfigProvider.select/token engine. Legacy dataSource/Option children/deprecated dropdown aliases и React option.props wrappers не перенесены. Поддерживается string value; React generic numeric/object значения за пределами первого этапа."
         }
       ]
     },
