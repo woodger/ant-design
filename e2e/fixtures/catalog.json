@@ -268,5 +268,10 @@
     "id": "steps-variants",
     "module": "./StepsVariantsFixtures.svelte",
     "root": "steps-variants-fixture"
+  },
+  {
+    "id": "timeline",
+    "module": "./TimelineFixtures.svelte",
+    "root": "timeline-fixture"
   }
 ]

@@ -6,7 +6,7 @@
   import { stepsDataHasContent } from './steps-data.engine';
   import type { StepsDataContent } from './steps-data.engine';
   import type { StepItemViewProps } from './steps-expanded.types';
-  let { item, index, status, active, blocked, nextStatus, rootId, statusText, classes, slots, dot, panel, inline, percent, iconRender, progressDotRender, ellipsis, sourceKey, onChoose }: StepItemViewProps = $props();
+  let { item, index, status, active, blocked, nextStatus, rootId, statusText, composed, classes, slots, dot, panel, inline, percent, iconRender, progressDotRender, ellipsis, sourceKey, onChoose }: StepItemViewProps = $props();
   const style = (root: string | undefined, local: string | undefined) => [root, local].filter(Boolean).join(';');
   let localClasses = $derived(item.classNames ?? {});
   let localStyles = $derived(item.styles ?? {});
@@ -53,8 +53,8 @@
   </StepIcon>
 {/snippet}
 {#snippet title()}
-  {#if stepsDataHasContent(item.title)}<span class={['ant-steps-item-title', classes.itemTitle, localClasses.title]} style={style(slots.itemTitle, localStyles.title)}>{@render value(item.title)}</span>{/if}
-  {#if stepsDataHasContent(item.subTitle)}<span class={['ant-steps-item-subtitle', classes.itemSubtitle, localClasses.subtitle]} style={style(slots.itemSubtitle, localStyles.subtitle)} title={typeof item.subTitle === 'string' ? item.subTitle : undefined}>{@render value(item.subTitle)}</span>{/if}
+  {#if stepsDataHasContent(item.title)}<svelte:element this={composed ? 'div' : 'span'} class={['ant-steps-item-title', classes.itemTitle, localClasses.title]} style={style(slots.itemTitle, localStyles.title)}>{@render value(item.title)}</svelte:element>{/if}
+  {#if stepsDataHasContent(item.subTitle)}<svelte:element this={composed ? 'div' : 'span'} class={['ant-steps-item-subtitle', classes.itemSubtitle, localClasses.subtitle]} style={style(slots.itemSubtitle, localStyles.subtitle)} title={typeof item.subTitle === 'string' ? item.subTitle : undefined}>{@render value(item.subTitle)}</svelte:element>{/if}
 {/snippet}
 {#snippet tooltipContent()}{@render value(item.content)}{/snippet}
 {#snippet wrapper()}
@@ -67,14 +67,14 @@
         {#if onChoose}<button type="button" class="ant-steps-item-trigger" data-steps-key={item.key} disabled={blocked} aria-current={active ? 'step' : undefined} aria-describedby={[statusId, item.content ? contentId : undefined].filter(Boolean).join(' ')} onclick={onChoose}>{@render title()}</button>{:else}{@render title()}{/if}
         {#if nextStatus}<span class={['ant-steps-item-rail', `ant-steps-item-rail-${nextStatus}`, classes.itemRail, localClasses.rail]} style={style(slots.itemRail, localStyles.rail)} aria-hidden="true"></span>{/if}
       </div>
-      <span class="ant-steps-item-status" id={statusId}>{statusText}</span>
-      {#if item.content || stepsDataHasContent(item.content) && typeof item.content !== 'string'}<div class={['ant-steps-item-content', classes.itemContent, localClasses.content]} id={contentId} style={style(slots.itemContent, localStyles.content)}>{@render value(item.content)}</div>{/if}
+      {#if statusText}<span class="ant-steps-item-status" id={statusId}>{statusText}</span>{/if}
+      {#if item.content || stepsDataHasContent(item.content) && typeof item.content !== 'string'}<div class={['ant-steps-item-content', classes.itemContent, localClasses.content]} id={composed ? undefined : contentId} style={style(slots.itemContent, localStyles.content)}>{@render value(item.content)}</div>{/if}
     </div>
   </div>
 {/snippet}
 
 <li class={['ant-steps-item', `ant-steps-item-${status}`, active && 'ant-steps-item-active', blocked && 'ant-steps-item-disabled', (item.icon || ellipsis) && 'ant-steps-item-custom', ellipsis && 'ant-steps-item-ellipsis', onChoose && !blocked && 'ant-steps-item-clickable', !stepsDataHasContent(item.title) && !stepsDataHasContent(item.subTitle) && 'ant-steps-item-empty-header', item.class, classes.item, localClasses.root]}
-  style={[slots.item, localStyles.root, item.style].filter(Boolean).join(';')} aria-current={!onChoose && active ? 'step' : undefined} data-steps-key={item.key}>
+  style={[slots.item, localStyles.root, item.style].filter(Boolean).join(';')} aria-current={!composed && !onChoose && active ? 'step' : undefined} data-steps-key={item.key}>
   {#if inline && item.content}<Tooltip title={tooltipContent}>{@render wrapper()}</Tooltip>{:else}{@render wrapper()}{/if}
   {#if panel}<svg aria-hidden="true" class="ant-steps-panel-arrow" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M 0 0 L 100 50 L 0 100" /></svg>{/if}
 </li>

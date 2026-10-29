@@ -1,3 +1,5 @@
+export { default as Timeline } from './Timeline.svelte';
+export type { TimelineProps, TimelineItem, TimelineContent, TimelineMode, TimelinePlacement, TimelinePosition, TimelineSlots } from './timeline.types';
 export { default as Anchor } from './Anchor.svelte';
 export { default as AnchorLink } from './AnchorLink.svelte';
 export type { AnchorProps, AnchorLinkProps, AnchorItem, AnchorDirection, AnchorContainer, AnchorContent, AnchorSlots } from './anchor.types';

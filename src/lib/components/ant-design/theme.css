@@ -43,6 +43,13 @@
 .ant-select-compact-item:focus-within:not(:hover) { z-index: 3; }
 .ant-select-compact-item.ant-select-disabled { z-index: 0; }
 
+.ant-timeline-css-var {
+  --ant-timeline-tail-color: var(--ant-color-split);
+  --ant-timeline-tail-width: var(--ant-line-width-bold);
+  --ant-timeline-dot-border-width: var(--ant-line-width-bold);
+  --ant-timeline-item-padding-bottom: calc(var(--ant-padding) * 1.25);
+}
+
 .ant-breadcrumb-css-var {
   --ant-breadcrumb-item-color: var(--ant-color-text-description);
   --ant-breadcrumb-last-item-color: var(--ant-color-text);

@@ -2899,25 +2899,93 @@
       "id": "timeline",
       "name": "Timeline",
       "category": "data-display",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: Timeline поверх общих Steps, сохраняя порядок и source geometry.",
       "upstreamPath": "components/timeline",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Timeline",
+          "local": [
+            "Timeline"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "steps"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/steps",
+          "range": "~1.2.3",
+          "referenceVersion": "1.2.3"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@ant-design/icons",
+          "range": "^6.3.4",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "timeline"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Timeline.svelte",
+        "src/lib/components/ant-design/timeline.engine.test.ts",
+        "src/lib/components/ant-design/timeline.ssr.test.ts",
+        "e2e/timeline.spec.ts",
+        "src/lib/presentation/ant-design/TimelineExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Items, mode/placement, pending/loading и reverse",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/timeline.engine.test.ts",
+            "src/lib/components/ant-design/timeline.ssr.test.ts",
+            "e2e/timeline.spec.ts"
+          ],
+          "note": "Nullish legacy aliases, truthy pending, alternate before reverse, railFollowPrevStatus. React Timeline.Item был JSX sugar без собственного runtime; используется items."
+        },
+        {
+          "id": "presentation",
+          "title": "Colors, titleSpan, orientation и semantic styles",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/timeline.ssr.test.ts",
+            "e2e/timeline.spec.ts"
+          ],
+          "note": "Все 43 CSS-правила поверх Steps dot, source priority titleSpan, темы/RTL. Horizontal сохраняет исходное responsive xs=576 поведение."
+        },
+        {
+          "id": "ssr-native",
+          "title": "Пассивный native list, SSR и сохранение keyed контента/фокуса",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/timeline.ssr.test.ts",
+            "e2e/timeline.spec.ts"
+          ],
+          "note": "Ol/li без искусственного current/status; блоковые title/content Snippets, фокус поля при reverse и owned-focus recovery при удалении."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls и глобальный timeline config/tokens",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Фиксированные CSS vars наследуют общую тему; произвольный component config и prefix ещё не перенесены."
         }
       ]
     },

@@ -24,6 +24,10 @@
 
 ### Added
 
+- Timeline: items, mode/placement, pending/loading/reverse, colors, titleSpan,
+  horizontal и semantic styles поверх общих Steps. Сохранены passive ol/li,
+  SSR, native content и keyed focus; добавлены CSS-рецепт, проверки и галерея.
+
 - Steps: dot/inline/navigation/panel, outlined, initial/maxCount/percent/ellipsis,
   semantic slots, item callbacks, iconRender и legacy aliases. Базовый API,
   нативные кнопки и фокус сохранены. Tooltip поддерживает Snippet title для

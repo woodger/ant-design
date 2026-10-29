@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useStepsComposition } from './steps-composition-context';
   import { useConfig } from './config-context';
   import StepItem from './StepItem.svelte';
   import { connectStepsFocus } from './steps.dom';
@@ -13,6 +14,7 @@
     type, variant = 'filled', titlePlacement, labelPlacement, progressDot, percent, maxCount, ellipsis, offset = 0, iconRender, classNames, styles, rootClassName = '',
     id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, class: className = '', style, nativeElement = $bindable(), ...rest }: StepsProps = $props();
   const config = useConfig();
+  const composition = useStepsComposition();
   const generatedId = $props.id();
   let mobile = $state(false);
   let rootId = $derived(id ?? `ant-steps-${generatedId}`);
@@ -31,7 +33,7 @@
 
   $effect(() => {
     if (!responsive || orientation === 'vertical' || !orientation && direction === 'vertical' || layout.type === 'panel') return;
-    const media = window.matchMedia('(max-width: 531.98px)');
+    const media = window.matchMedia(composition?.timeline ? '(max-width: 575.98px)' : '(max-width: 531.98px)');
     const update = () => { mobile = media.matches; };
     update(); media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
@@ -51,12 +53,12 @@
   @media (prefers-reduced-motion: reduce) { .ant-steps :global(*) { transition: none; animation: none; } }
 </style>
 
-<ol {...rest} bind:this={nativeElement} id={rootId} role="list" aria-label={ariaLabel ?? (ariaLabelledby ? undefined : strings.label)} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction}
+<ol {...rest} bind:this={nativeElement} id={composition?.timeline ? id : rootId} role="list" aria-label={ariaLabel ?? (ariaLabelledby || composition?.timeline ? undefined : strings.label)} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction}
   class={['ant-steps ant-steps-css-var', `ant-steps-${variant}`, `ant-steps-title-${layout.titlePlacement}`, layout.vertical ? 'ant-steps-vertical' : 'ant-steps-horizontal', small && 'ant-steps-small', layout.type && layout.type !== 'dot' && `ant-steps-${layout.type}`, layout.dot && 'ant-steps-dot', ellipsis && 'ant-steps-ellipsis', display.collapsed && 'ant-steps-max-count', actualPercent !== undefined && 'ant-steps-with-progress', config.direction === 'rtl' && 'ant-steps-rtl', className, rootClassName, classes.root]}
   style={[`--ant-cmp-steps-items-offset:${offset}`, slots.root, style].filter(Boolean).join(';')}>
   {#each displayed as step, index (step.key)}
     <StepItem item={step.item} index={step.originIndex >= 0 ? initial + step.originIndex : index} status={statuses[index]} active={index === display.current}
-      blocked={(disabled ?? config.componentDisabled) || Boolean(step.item.disabled)} nextStatus={statuses[index + 1]} {rootId} statusText={strings[statuses[index]]} {classes} {slots}
+      blocked={(disabled ?? config.componentDisabled) || Boolean(step.item.disabled)} nextStatus={index < displayed.length - 1 ? composition?.railFollowPrevStatus ? statuses[index] : statuses[index + 1] : undefined} {rootId} statusText={composition?.timeline ? undefined : strings[statuses[index]]} composed={composition?.timeline} {classes} {slots}
       dot={layout.dot} panel={layout.type === 'panel'} inline={layout.type === 'inline'} percent={actualPercent} {iconRender} progressDotRender={layout.type === 'dot' && typeof progressDot === 'function' ? progressDot : undefined}
       ellipsis={step.originIndex < 0} sourceKey={step.item.originalKey ?? (display.collapsed && step.originIndex >= 0 ? step.originIndex : undefined)} onChoose={onChange || step.item.onClick ? event => choose(event, step.item, initial + step.originIndex) : undefined} />
   {/each}

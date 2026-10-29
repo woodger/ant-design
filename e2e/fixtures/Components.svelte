@@ -46,6 +46,7 @@
   import ThemeFixtures from './ThemeFixtures.svelte';
   import SpaceCompactFixtures from './SpaceCompactFixtures.svelte';
   import StepsVariantsFixtures from './StepsVariantsFixtures.svelte';
+  import TimelineFixtures from './TimelineFixtures.svelte';
   import AnchorFixtures from './AnchorFixtures.svelte';
   import AffixFixtures from './AffixFixtures.svelte';
   import SpaceFixtures from './SpaceFixtures.svelte';
@@ -113,6 +114,7 @@
     <GridFixtures />
     <LayoutFixtures />
     <StepsVariantsFixtures />
+    <TimelineFixtures />
     <AnchorFixtures />
     <AffixFixtures />
     <SpaceFixtures />

@@ -20,7 +20,8 @@ export interface StepItemViewProps {
   blocked: boolean;
   nextStatus?: StepsStatus;
   rootId: string;
-  statusText: string;
+  statusText?: string;
+  composed?: boolean;
   classes: StepsSemanticSlots;
   slots: StepsSemanticSlots;
   dot?: boolean;

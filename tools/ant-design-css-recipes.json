@@ -389,5 +389,26 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Steps: все варианты, maxCount и progress.\n * Корни ограничены :where(.ant-steps-css-var); role-button selectors адаптированы\n * к классу интерактивного шага с нативной кнопкой.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "timeline",
+    "output": "src/lib/components/ant-design/vendor/timeline.css",
+    "expectedRules": 43,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-timeline(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-timeline",
+        "replacement": ".ant-timeline-css-var"
+      },
+      {
+        "pattern": "\\.ant-timeline(?![-\\w])",
+        "replacement": ".ant-timeline:where(.ant-timeline-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Timeline: все правила, оформление поверх Steps dot.\n * Корни ограничены :where(.ant-timeline-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]
