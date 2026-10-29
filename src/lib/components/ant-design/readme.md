@@ -567,6 +567,69 @@ Unit/SSR/Chromium покрывают маршруты, параметры, ра�
 правило без keyframes. PrefixCls и глобальный component config/tokens остаются
 в полном объёме миграции.
 
+## Anchor / AnchorLink
+
+`Anchor` содержит `items` с key/href/title/target/class, вложенными children,
+replace и targetOffset; title принимает текст, число или Snippet. В horizontal
+вложенные items не монтируются. Legacy-композиция использует `AnchorLink` и
+children Snippet; массив items имеет приоритет. `items={undefined}` возвращает children
+как адаптация optional prop Svelte; пустой массив скрывает children. Ссылки остаются
+нативными a: Tab и Enter работают без дополнительного keyboard engine.
+
+```svelte
+<Anchor affix={false} showInkInFixed items={[
+  { key: 'intro', href: '#intro', title: 'Введение' },
+  { key: 'api', href: '#api', title: 'API', targetOffset: 48 }
+]} />
+```
+
+По умолчанию Affix включён; `affix` принимает false/true или дополнительные
+Affix props без offsetTop/target/children. getContainer возвращает окно
+(по умолчанию) или HTMLElement и используется для scroll и Affix. `offsetTop`
+задаёт закрепление; `targetOffset` переопределяет scroll offset, per-link
+`targetOffset` имеет высший приоритет, включая 0. `bounds` по умолчанию 5px.
+Выбирается наиболее близкий к границе уже достигнутый раздел; порядок items
+не заменяет сравнение координат. Raw fragment после # не декодируется, пробелы
+сохраняются; используется исходное регулярное выражение Ant Design.
+
+`onClick(event,{title,href})` вызывается перед scroll. preventDefault отменяет
+только изменение URL; выбор и анимация всё равно выполняются как в upstream.
+Внутренние href используют history.pushState/replaceState (без :target эффекта),
+HTTP(S) сохраняют нативный переход, при replace — location.replace.
+Item.replace переопределяет общий replace; legacy AnchorLink принимает свой prop.
+`getCurrentAnchor(rawHref)` меняет визуальное выделение; onChange получает
+исходный href. Повторная прокрутка с тем же mapped highlight не дублирует callback,
+выбор другой raw ссылки сохраняет callback даже при одинаковом highlight.
+
+Прокрутка использует исходную cubic easing длительностью 450ms. Во время
+анимации scroll tracking приостановлен; повторный выбор той же ссылки не
+перезапускает анимацию, другая ссылка отменяет предыдущую. Удаление компонента
+снимает scroll listener и отменяет RAF. SSR не читает getContainer/DOM,
+не выбирает active link и не закрепляет контент. Фокус остаётся на ссылке.
+
+`classNames`/`styles` — объект либо функция от {props}, слоты root/item/itemTitle/
+indicator. Style корня имеет приоритет над styles.root; class/rootClassName и
+bind:nativeElement относятся к wrapper. `showInkInFixed` сохраняет исходный
+класс ant-anchor-fixed при false/affix=false. Тема и RTL наследуются; horizontal
+indicator использует offsetLeft/clientWidth и раскрывает активную ссылку
+в scrollable ancestors как upstream.
+
+Для раскрытия ссылки сохранён framework-independent compute-scroll-into-view
+3.0.2 (git 0c45c0afce9650b8cc96dd23ea8efdc90cbd32fe), удовлетворяющий ^3.0.2
+делегата scroll-into-view-if-needed 3.1.0 (git
+8ac397fc9119014eae13069615b16ef4e45b3d9f). Исходник находится в vendor,
+единственное изменение алгоритмического файла — удаление неиспользуемого
+catch binding; MIT-лицензии обоих пакетов сохранены рядом. Обёртка ограничена
+опциями Anchor (if-needed/nearest и scroll margins); npm-зависимости не добавлены.
+Сохранено ограничение делегата 3.0.2: отрицательный scrollLeft RTL-контейнера
+не поддерживается при автоматическом раскрытии; нативная ручная прокрутка,
+выбор и геометрия indicator доступны.
+Глобальные component config/tokens, getTargetContainer и prefixCls ещё не перенесены.
+
+Фикстура — `?fixture=anchor`, пример — `/ant-design#anchor`. Unit/SSR/Chromium
+проверяют приоритеты offsets, callbacks/history, анимацию/cleanup, nested/legacy,
+RTL/indicator и production hydration. CSS-рецепт anchor содержит 22 правила.
+
 ## Affix
 
 `Affix` закрепляет содержимое относительно окна либо DOM-контейнера `target`.

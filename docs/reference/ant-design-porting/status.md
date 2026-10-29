@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **59**.
-Есть публичная реализация у **43** семейств; отсутствует у **30**.
-Проверенный объём v1 покрыт у **13**; требуется аудит у **30**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **61**.
+Есть публичная реализация у **44** семейств; отсутствует у **29**.
+Проверенный объём v1 покрыт у **14**; требуется аудит у **30**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -25,7 +25,7 @@ Candidate означает запись каталога, для которой 
 | [Masonry](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/masonry) | layout | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Space](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/space) | layout | target | Space, SpaceCompact, SpaceAddon | Согласованный v1 покрыт | PrefixCls и глобальный space component config/tokens (missing); Compact-адаптеры ещё не перенесённых controls (missing) |
 | [Splitter](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/splitter) | layout | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
-| [Anchor](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/anchor) | navigation | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Anchor](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/anchor) | navigation | target | Anchor, AnchorLink | Согласованный v1 покрыт | PrefixCls и глобальный anchor/getTargetContainer config (missing) |
 | [Breadcrumb](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/breadcrumb) | navigation | target | Breadcrumb | Согласованный v1 покрыт | PrefixCls, глобальный component config/tokens и полный Menu API (missing) |
 | [Dropdown](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/dropdown) | navigation | target | Dropdown | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Вложенные меню (missing) |
 | [Menu](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/menu) | navigation | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |

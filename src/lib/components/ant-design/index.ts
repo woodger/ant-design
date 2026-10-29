@@ -1,3 +1,6 @@
+export { default as Anchor } from './Anchor.svelte';
+export { default as AnchorLink } from './AnchorLink.svelte';
+export type { AnchorProps, AnchorLinkProps, AnchorItem, AnchorDirection, AnchorContainer, AnchorContent, AnchorSlots } from './anchor.types';
 export { default as Affix } from './Affix.svelte';
 export type { AffixProps, AffixTarget, AffixUpdatePosition } from './affix.types';
 export { default as SpaceCompact } from './SpaceCompact.svelte';

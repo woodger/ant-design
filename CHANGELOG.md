@@ -24,6 +24,10 @@
 
 ### Added
 
+- Anchor/AnchorLink: вложенные items, horizontal, Affix, scroll tracking, offsets,
+  highlight mapping, push/replace history и отменяемая cubic-анимация. Добавлены
+  semantic styles, CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.
+
 - Affix: top/bottom, window/custom target, onChange, updatePosition/cancel,
   ResizeObserver и cleanup. Сохранены SSR, нативный контент и геометрия upstream;
   добавлены CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.

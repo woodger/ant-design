@@ -704,25 +704,85 @@
       "id": "anchor",
       "name": "Anchor",
       "category": "navigation",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: Anchor items/Link, отслеживание scroll и интеграция с Affix.",
       "upstreamPath": "components/anchor",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Anchor",
+          "local": [
+            "Anchor"
+          ]
+        },
+        {
+          "upstream": "Anchor.Link",
+          "local": [
+            "AnchorLink"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "affix"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "scroll-into-view-if-needed",
+          "range": "^3.1.0",
+          "referenceVersion": "3.1.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "anchor"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Anchor.svelte",
+        "src/lib/components/ant-design/AnchorLink.svelte",
+        "src/lib/components/ant-design/anchor.engine.test.ts",
+        "src/lib/components/ant-design/anchor.dom.test.ts",
+        "src/lib/components/ant-design/anchor.ssr.test.ts",
+        "e2e/anchor.spec.ts",
+        "src/lib/presentation/ant-design/AnchorExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Items/Link, вложенность, scroll tracking и history",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/anchor.engine.test.ts",
+            "src/lib/components/ant-design/anchor.dom.test.ts",
+            "e2e/anchor.spec.ts"
+          ],
+          "note": "Нативные ссылки, raw fragment regexp, 450ms cubic scroll, offset приоритеты, mapped highlight с raw callbacks и отмена анимации. Horizontal скрывает вложенность."
+        },
+        {
+          "id": "presentation",
+          "title": "Affix, indicator, semantic styles, SSR/RTL",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/anchor.ssr.test.ts",
+            "e2e/anchor.spec.ts"
+          ],
+          "note": "Affix включён по умолчанию; стили root уступают style. Indicator использует offset/client geometry и делегированный compute-scroll-into-view 3.0.2 под MIT."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls и глобальный anchor/getTargetContainer config",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Component config/tokens/prefix отсутствуют; getContainer задаётся prop."
         }
       ]
     },

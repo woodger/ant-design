@@ -258,5 +258,10 @@
     "id": "affix",
     "module": "./AffixFixtures.svelte",
     "root": "affix-fixture"
+  },
+  {
+    "id": "anchor",
+    "module": "./AnchorFixtures.svelte",
+    "root": "anchor-fixture"
   }
 ]
