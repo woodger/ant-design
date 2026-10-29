@@ -339,5 +339,10 @@
     "id": "image",
     "module": "./ImageFixtures.svelte",
     "root": "image-fixture"
+  },
+  {
+    "id": "image-preview-group",
+    "module": "./ImageGroupFixtures.svelte",
+    "root": "image-group-fixture"
   }
 ]

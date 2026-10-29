@@ -138,7 +138,7 @@ test('Image handles real touch pinch zoom and restores temporary underscale on t
   await session.detach();
 });
 
-test('Image gallery hydrates, previews on a narrow viewport and respects RTL and reduced motion', async ({ page }) => {
+test('Image gallery hydrates and previews on a narrow viewport with reduced motion', async ({ page }) => {
   await page.goto('/ant-design#image'); const section = page.locator('#image'); await page.setViewportSize({ width: 375, height: 812 }); await page.emulateMedia({ reducedMotion: 'reduce' });
   await section.getByRole('button', { name: 'Пейзаж для просмотра', exact: true }).click(); const dialog = page.getByRole('dialog', { name: 'Пейзаж для просмотра', exact: true }); await expect(dialog).toBeVisible();
   const image = dialog.getByRole('img'); await expect(image).toHaveCSS('transition-duration', '0s'); const bounds = (await image.boundingBox())!; expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.x + bounds.width).toBeLessThanOrEqual(375);

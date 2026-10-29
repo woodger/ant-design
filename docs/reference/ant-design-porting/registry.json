@@ -3070,7 +3070,7 @@
       "name": "Image",
       "category": "data-display",
       "scope": "target",
-      "scopeReason": "Первый этап Image по Ant Design 6.6.8 / rc-image 1.10.0: загрузка/fallback/placeholder и одиночный preview с transform, focus и pointer/touch. PreviewGroup — следующий самостоятельный этап.",
+      "scopeReason": "Image/PreviewGroup по Ant Design 6.6.8 / rc-image 1.10.0: загрузка/fallback/placeholder, transforms/focus/pointer/touch, registration/items и controlled current/open. Расширения и motion отмечены отдельно.",
       "upstreamPath": "components/image",
       "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
@@ -3078,6 +3078,12 @@
           "upstream": "Image",
           "local": [
             "Image"
+          ]
+        },
+        {
+          "upstream": "Image.PreviewGroup",
+          "local": [
+            "ImagePreviewGroup"
           ]
         }
       ],
@@ -3095,14 +3101,20 @@
       "priority": "p1",
       "effort": "L",
       "fixtures": [
-        "image"
+        "image",
+        "image-preview-group"
       ],
       "evidence": [
         "src/lib/components/ant-design/Image.svelte",
         "src/lib/components/ant-design/image-preview.engine.test.ts",
         "src/lib/components/ant-design/image.ssr.test.ts",
         "e2e/image.spec.ts",
-        "src/lib/presentation/ant-design/ImageExample.svelte"
+        "src/lib/presentation/ant-design/ImageExample.svelte",
+        "src/lib/components/ant-design/ImagePreviewGroup.svelte",
+        "src/lib/components/ant-design/image-preview-group.engine.test.ts",
+        "src/lib/components/ant-design/image-preview-group.ssr.test.ts",
+        "e2e/image-preview-group.spec.ts",
+        "src/lib/presentation/ant-design/ImageGroupExample.svelte"
       ],
       "features": [
         {
@@ -3141,10 +3153,14 @@
         {
           "id": "preview-group",
           "title": "Image.PreviewGroup, items/registration, current/navigation и group callbacks",
-          "state": "missing",
-          "requiredForV1": false,
-          "evidence": [],
-          "note": "Запланирован следующий самостоятельный этап этой задачи поверх общего ImagePreview; пока публичного ImagePreviewGroup нет."
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/image-preview-group.engine.test.ts",
+            "src/lib/components/ant-design/image-preview-group.ssr.test.ts",
+            "e2e/image-preview-group.spec.ts"
+          ],
+          "note": "Stable registration order, canPreview filtering и отдельные ids для равных src. Явные items (включая []) имеют приоритет и сопоставляются по src. Current/open controlled/uncontrolled, prev/next/physical arrows, one-based countRender и source callbacks. Thumbnail не вызывает onChange; onOpenChange при thumbnail opening получает snapshot прежнего current. Owner current не clamp при удалении items; group preview=false снимает config, но сохраняет source child-triggered opening. Навигация сбрасывает transform без перехода; внешняя смена current сохраняет его."
         },
         {
           "id": "extended-api",

@@ -16,15 +16,17 @@
   const context = useConfig();
   let dialog = $state<HTMLDialogElement>(); let element = $state<HTMLImageElement>(); let mounted = $state(false);
   let transform = $state.raw(initialImageTransform()); let moving = $state(false); let failed = $state(false);
-  let source = $derived(failed && fallback ? fallback : image.url);
+  let originalSource = $derived(image.url);
+  let source = $derived(failed && fallback ? fallback : originalSource);
   let focusTrap = $derived(preview.focusTrap !== false);
   let mask = $derived(typeof preview.mask === 'object' ? preview.mask.enabled !== false : preview.mask !== false);
   let maskClosable = $derived(typeof preview.mask === 'object' ? preview.mask.closable !== false : true);
   let min = $derived(preview.minScale ?? 1); let max = $derived(preview.maxScale ?? 50);
+  let switchFrame = 0; let switchId = 0; let switching = $state(false);
   let frame = 0; let queue: ImageTransform[] = []; let alive = true; let opener: HTMLElement | undefined; let previousOpen = false; let releaseLayer: (() => void) | undefined;
   $effect(() => { if (open) mounted = true; });
   $effect(() => {
-    const source = image.url;
+    const source = originalSource;
     if (!dialog) return;
     failed = false;
     return checkImageSource(source, dialog.ownerDocument, () => { failed = true; });
@@ -45,7 +47,7 @@
         root.close(); if (trap) root.showModal(); else root.show(); root.focus({ preventScroll: true });
       } else if (!next && root.open) {
         root.close(); releaseLayer?.(); releaseLayer = undefined;
-        cancelFrame(); reset('close'); moving = false;
+        cancelFrame(); stopSwitch(); reset('close'); moving = false;
         if (opener?.isConnected) opener.focus({ preventScroll: true });
         opener = undefined; previousOpen = false;
         preview.afterOpenChange?.(false);
@@ -73,7 +75,7 @@
     return () => view.removeEventListener('keydown', keydown);
   });
   onDestroy(() => {
-    alive = false; cancelFrame(); releaseLayer?.();
+    alive = false; cancelFrame(); stopSwitch(); releaseLayer?.();
     if (dialog?.open) dialog.close();
     if (previousOpen && opener?.isConnected) opener.focus({ preventScroll: true });
   });
@@ -99,10 +101,19 @@
     const viewport = { width: element.ownerDocument.documentElement.clientWidth, height: element.ownerDocument.defaultView!.innerHeight };
     update(zoomImage(transform, ratio, element, viewport, min, max, center, touch), action);
   }
+  function stopSwitch() { switchId++; if (switchFrame) cancelAnimationFrame(switchFrame); switchFrame = 0; switching = false; }
   function activate(offset: number) {
-    const next = current + offset;
+    const before = current; const next = before + offset;
     if (next < 0 || next >= count) return;
-    cancelFrame(); reset(offset < 0 ? 'prev' : 'next'); onChange?.(next, current);
+    stopSwitch(); switching = true; const id = switchId;
+    cancelFrame(); reset(offset < 0 ? 'prev' : 'next'); onChange?.(next, before);
+    void tick().then(() => {
+      if (!alive || !open || id !== switchId) return;
+      switchFrame = requestAnimationFrame(() => {
+        if (!alive || id !== switchId) return;
+        switchFrame = requestAnimationFrame(() => { switchFrame = 0; if (alive && id === switchId) switching = false; });
+      });
+    });
   }
   let info = $derived<ImagePreviewRenderInfo>({
     transform, current, total: count, image,
@@ -127,8 +138,8 @@
 </style>
 
 {#snippet defaultImage()}
-  {#key source}<img {...imageAttributes} bind:this={element} src={source || undefined} alt={image.alt ?? ''} draggable="false" class={['ant-image-preview-img', moving && 'moving']}
-    style={`transform:translate3d(${transform.x}px,${transform.y}px,0) scale3d(${transform.flipX ? '-' : ''}${transform.scale},${transform.flipY ? '-' : ''}${transform.scale},1) rotate(${transform.rotate}deg);`}
+  {#key source}<img {...imageAttributes} bind:this={element} src={source || undefined} alt={image.alt} draggable="false" class={['ant-image-preview-img', moving && 'moving']}
+    style={`transform:translate3d(${transform.x}px,${transform.y}px,0) scale3d(${transform.flipX ? '-' : ''}${transform.scale},${transform.flipY ? '-' : ''}${transform.scale},1) rotate(${transform.rotate}deg);${switching ? 'transition-duration:0s;' : ''}`}
     onerror={event => { if (event.currentTarget === element) failed = true; }} />{/key}
 {/snippet}
 {#snippet defaultActions()}

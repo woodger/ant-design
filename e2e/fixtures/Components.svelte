@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ImageGroupFixtures from './ImageGroupFixtures.svelte';
   import ImageFixtures from './ImageFixtures.svelte';
   import MentionsFixtures from './MentionsFixtures.svelte';
   import AutoCompleteFixtures from './AutoCompleteFixtures.svelte';
@@ -81,6 +82,7 @@
     <label><input type="checkbox" bind:checked={controls.rtl} /> Right to left</label>
     <label><input type="checkbox" bind:checked={controls.english} /> English locale</label>
 
+    <ImageGroupFixtures />
     <ImageFixtures />
     <MentionsFixtures />
     <AutoCompleteFixtures />

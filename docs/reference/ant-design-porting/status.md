@@ -5,7 +5,7 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **77**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **78**.
 Есть публичная реализация у **54** семейств; отсутствует у **19**.
 Проверенный объём v1 покрыт у **26**; требуется аудит у **28**; частично покрыт у **0**.
 
@@ -58,7 +58,7 @@ Candidate означает запись каталога, для которой 
 | [Collapse](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/collapse) | data-display | target | Collapse | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
 | [Descriptions](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/descriptions) | data-display | target | Descriptions | Согласованный v1 покрыт | PrefixCls, пользовательские breakpoint/token и глобальный component config (missing) |
 | [Empty](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/empty) | data-display | target | Empty | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
-| [Image](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/image) | data-display | target | Image | Согласованный v1 покрыт | Image.PreviewGroup, items/registration, current/navigation и group callbacks (missing); Progress placeholder, полный semantic/config/icons API, container и motion (missing) |
+| [Image](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/image) | data-display | target | Image, ImagePreviewGroup | Согласованный v1 покрыт | Progress placeholder, полный semantic/config/icons API, container и motion (missing) |
 | [List](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/list) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Listy](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/listy) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Popover](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/popover) | data-display | target | Popover | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Corner placements и порталы (missing) |

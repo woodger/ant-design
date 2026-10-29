@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, Mentions, Image, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, Mentions, Image, ImagePreviewGroup, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -83,7 +83,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
-| Image | Native img/fallback/placeholder и preview с zoom/rotate/flip/drag/touch, mask и focus |
+| Image / ImagePreviewGroup | Native img/fallback/placeholder, preview transforms/focus и групповая навигация по images/items |
 | Mentions | Prefix/split, поиск и вставка у каретки, loading, autoSize и native popup |
 | AutoComplete | Свободный текст, options/groups, поиск, keyboard backfill, custom input и controlled popup |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
@@ -3267,8 +3267,8 @@ maxStyle/maxPopoverPlacement/maxPopoverTrigger в эту версию не вх�
 Первый этап следует Ant Design 6.6.8 / @rc-component/image 1.10.0 (~1.10.0).
 [MIT-лицензия rc-image](./vendor/LICENSE.rc-image) сохранена; React runtime не
 устанавливается. Геометрия перенесена в image-preview.engine.ts, browser
-listeners/probes — в соответствующие DOM-модули. PreviewGroup переносится следующим
-отдельным этапом поверх общего ImagePreview.
+listeners/probes — в соответствующие DOM-модули. ImagePreviewGroup использует тот же
+ImagePreview для групповой навигации.
 
 ```svelte
 <script lang="ts">
@@ -3334,6 +3334,68 @@ Ant Design Icons SVG 4.6.0 с существующей MIT-лицензией. �
 Placeholder progress/render, полный semantic classNames/styles, ConfigProvider.image/
 token engine/prefixCls, getContainer, icons/React info.icons wrappers, deprecated
 aliases и исходные fade/appear/leave/mousePosition motion пока отсутствуют.
+
+## ImagePreviewGroup (Image.PreviewGroup)
+
+ImagePreviewGroup соответствует React Image.PreviewGroup, отдельный Svelte export
+относится к тому же семейству Image. Он предоставляет контекст дочерним Image и
+общий viewer; своей DOM-обёртки вокруг children нет.
+
+```svelte
+<script lang="ts">
+  import { Image, ImagePreviewGroup } from '$lib/components/ant-design';
+</script>
+<ImagePreviewGroup>
+  <Image src="/first.jpg" alt="Первое изображение" width={160} />
+  <Image src="/second.jpg" alt="Второе изображение" width={160} />
+</ImagePreviewGroup>
+```
+
+Без items список строится из зарегистрированных дочерних Image с preview=true.
+Порядок соответствует созданию/регистрации, сохраняется при keyed DOM reorder;
+обновление src не переставляет элемент. Одинаковые src различаются по id.
+Image.preview=false исключает thumbnail из этого списка. Preview.src дочернего
+Image регистрируется вместо thumbnail src; его собственный preview config и
+onOpenChange не управляют групповым viewer.
+
+Items принимает строки URL или объекты с src/alt и shared native image attrs.
+Явный массив, включая пустой, имеет приоритет над регистрациями. При открытии
+thumbnail ищется первое совпадение preview src, при отсутствии совпадения индекс 0.
+Изображения items не создают thumbnails автоматически. Fallback группы применяется
+к viewer; индивидуальный Image.fallback в registration data не входит.
+
+Preview config поддерживает open/onOpenChange, current/onChange, countRender и
+общие настройки viewer/transforms/render Snippets. Current — zero-based; по
+умолчанию 0. Prev/next и физические Left/Right меняют индекс в пределах списка;
+в RTL порядок индексов клавиатуры не меняется, иконки/логическое положение
+переключателей адаптируются. OnChange(next,previous) относится к навигации;
+thumbnail напрямую задаёт внутренний индекс и не вызывает onChange. Controlled
+current остаётся у владельца. Navigation фиксирует previous до вызова callbacks,
+даже если onTransform изменил props владельца.
+
+OnOpenChange(open,{current}) вызывается при пользовательском изменении видимости.
+Сохранена особенность rc-image 1.10.0: при открытии thumbnail callback получает
+snapshot прежнего current, а viewer использует индекс нажатого изображения.
+Внешняя смена open сама не вызывает этот callback. После закрытия программное
+открытие uncontrolled current начинает с 0; новое открытие thumbnail сохраняет
+его выбранный индекс. Внешнее изменение controlled current сохраняет transform,
+пользовательская навигация сбрасывает его без scale transition.
+
+CountRender(current,total) получает one-based current. Render info для
+imageRender/actionsRender содержит zero-based current, total и actions;
+info.actions.onActive(offset) принимает относительное смещение, как runtime
+rc-image, а не абсолютный индекс. Refs/DOM и управление фокусом относятся к общему
+viewer. После закрытия фокус возвращается thumbnail, открывшему группу.
+
+Удаление images/items обновляет список, не ограничивая owner current автоматически:
+владелец отвечает за допустимый индекс. Даже при пустом списке viewer можно закрыть.
+Ещё одна особенность rc-image 1.10.0 сохранена: preview=false у Group снимает
+настройки, но само по себе не отключает открытие из дочернего Image; отключение
+конкретного thumbnail задаётся Image.preview=false.
+
+Fixture — `?fixture=image-preview-group`, галерея — `/ant-design#image`.
+SSR рендерит children без DOM registration и открытого viewer. Ограничения semantic/
+config/container/icons и исходных motion общие с Image и перечислены выше.
 
 ## Mentions
 
