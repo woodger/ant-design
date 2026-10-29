@@ -6,6 +6,19 @@
   color-scheme: light;
 }
 
+.ant-descriptions-css-var {
+  --ant-descriptions-label-bg: var(--ant-color-fill-quaternary);
+  --ant-descriptions-label-color: var(--ant-color-text-tertiary);
+  --ant-descriptions-title-color: var(--ant-color-text);
+  --ant-descriptions-title-margin-bottom: calc(var(--ant-font-size-sm) * var(--ant-line-height-sm));
+  --ant-descriptions-item-padding-bottom: var(--ant-padding);
+  --ant-descriptions-item-padding-end: var(--ant-padding);
+  --ant-descriptions-colon-margin-right: var(--ant-margin-xs);
+  --ant-descriptions-colon-margin-left: calc(var(--ant-margin-xxs) / 2);
+  --ant-descriptions-content-color: var(--ant-color-text);
+  --ant-descriptions-extra-color: var(--ant-color-text);
+}
+
 .ant-layout.ant-layout-css-var,
 .ant-layout-sider.ant-layout-css-var {
   --ant-layout-body-bg: var(--ant-color-bg-layout);

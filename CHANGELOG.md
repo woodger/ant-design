@@ -19,6 +19,9 @@
 
 ### Added
 
+- Descriptions: items/Snippet, responsive column/span/filled, таблицы обоих
+  направлений, bordered, semantic styles с исходным приоритетом, темы и RTL.
+  Добавлены CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.
 - Layout/Header/Content/Footer/Sider: нативные секции, вложенные контексты,
   hasSider/SSR CSS fallback, collapsed/zero-width, accessible trigger и responsive
   callbacks с cleanup. Добавлены темы/locale, CSS-рецепт, unit/SSR/Chromium и галерея.

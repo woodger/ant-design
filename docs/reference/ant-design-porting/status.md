@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **50**.
-Есть публичная реализация у **38** семейств; отсутствует у **35**.
-Проверенный объём v1 покрыт у **8**; требуется аудит у **30**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **51**.
+Есть публичная реализация у **39** семейств; отсутствует у **34**.
+Проверенный объём v1 покрыт у **9**; требуется аудит у **30**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -56,7 +56,7 @@ Candidate означает запись каталога, для которой 
 | [Card](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/card) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Carousel](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/carousel) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Collapse](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/collapse) | data-display | target | Collapse | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
-| [Descriptions](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/descriptions) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Descriptions](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/descriptions) | data-display | target | Descriptions | Согласованный v1 покрыт | PrefixCls, пользовательские breakpoint/token и глобальный component config (missing) |
 | [Empty](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/empty) | data-display | target | Empty | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
 | [Image](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/image) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [List](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/list) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |

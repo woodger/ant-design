@@ -1854,25 +1854,81 @@
       "id": "descriptions",
       "name": "Descriptions",
       "category": "data-display",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: таблица описаний поверх готовых Grid breakpoints; React JSX sugar заменён items со Snippet.",
       "upstreamPath": "components/descriptions",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Descriptions",
+          "local": [
+            "Descriptions"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "grid"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "descriptions"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/descriptions.test.ts",
+        "src/lib/components/ant-design/descriptions.ssr.test.ts",
+        "e2e/descriptions.spec.ts",
+        "src/lib/presentation/ant-design/DescriptionsExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "layout",
+          "title": "Items, таблица, horizontal/vertical, bordered и нулевые значения",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/descriptions.ssr.test.ts",
+            "e2e/descriptions.spec.ts"
+          ],
+          "note": "Нативные table/tbody/tr/th/td; label/children/title/extra принимают text/number/Snippet. React Descriptions.Item не исполнялся в upstream: вместо JSX sugar используется items."
+        },
+        {
+          "id": "responsive",
+          "title": "Responsive column/span, filled и завершение строк",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/descriptions.test.ts",
+            "e2e/descriptions.spec.ts"
+          ],
+          "note": "Порядок xxxl→xs, fallback 3 при SSR, 1/2/3/4 по viewport; clipping span и растяжение последней ячейки как useRow."
+        },
+        {
+          "id": "appearance",
+          "title": "Размеры, RTL, темы и semantic slots",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/descriptions.ssr.test.ts",
+            "e2e/descriptions.spec.ts"
+          ],
+          "note": "Без явного componentSize размер large; middle остаётся локальным alias medium. Label/content styles на ячейках bordered, item-level приоритет сохранён; вложенные таблицы изолированы."
+        },
+        {
+          "id": "global-configuration",
+          "title": "PrefixCls, пользовательские breakpoint/token и глобальный component config",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Остаётся в полном объёме миграции после основного семейства; v1-ready не означает полный API React."
         }
       ]
     },

@@ -223,5 +223,10 @@
     "id": "layout",
     "module": "./LayoutFixtures.svelte",
     "root": "layout-fixture"
+  },
+  {
+    "id": "descriptions",
+    "module": "./DescriptionsFixtures.svelte",
+    "root": "descriptions-fixture"
   }
 ]

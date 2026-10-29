@@ -1,3 +1,5 @@
+export { default as Descriptions } from './Descriptions.svelte';
+export type { DescriptionsProps, DescriptionsItem, DescriptionsContent, DescriptionsSlots, DescriptionsCellSlots } from './descriptions.types';
 export { default as ConfigProvider } from './ConfigProvider.svelte';
 export { default as Button } from './Button.svelte';
 export { default as Input } from './Input.svelte';

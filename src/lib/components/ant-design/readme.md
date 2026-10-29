@@ -9,7 +9,7 @@ Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
 StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
-LayoutContent, LayoutFooter, LayoutSider, Form и FormItem.
+LayoutContent, LayoutFooter, LayoutSider, Descriptions, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -110,6 +110,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Segmented | Типизированный одиночный выбор, native radio, стрелки, размеры, block/round, snippets и semantic slots |
 | Row / Col | 24 колонки, responsive span/offset/order/push/pull/flex, gutter, align/justify и вложенные контексты |
 | Layout / LayoutHeader / LayoutContent / LayoutFooter / LayoutSider | Нативная структура, hasSider, collapse/trigger, responsive sidebar, темы и RTL |
+| Descriptions | Таблица read-only полей, responsive column/span/filled, horizontal/vertical, bordered и semantic slots |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -416,6 +417,48 @@ expand/collapse, с expandLabel/collapseLabel override. Reduced motion откл�
 Chromium покрывают структуру, SSR без JS, callbacks, размеры, breakpoint/cleanup,
 фокус, locale и темы. Рецепт layout извлекает 35 правил, включая Menu-интеграции.
 PrefixCls и глобальный component config/tokens пока не поддержаны.
+
+## Descriptions
+
+Descriptions отображает items: массив { key?, label?, children?, span? }.
+Label/children/title/extra принимают string, number или Snippet; 0 отображается,
+пустые значения не создают соответствующий wrapper. React Descriptions.Item
+служит только JSX sugar; в Svelte используется items без предварительного
+исполнения snippets. Корень — div, затем view/table/tbody/tr и нативные th/td;
+bind:nativeElement возвращает div, нативные attrs передаются корню.
+
+Column — число либо responsive map xs–xxxl; по умолчанию xs=1, sm=2,
+md/lg/xl/xxl=3, xxxl=4. Пользовательская map проверяется от большего активного
+breakpoint к меньшему; затем используется default map. При SSR screens={}
+и column=3; media подключаются после mount и очищаются при unmount.
+Span — число, responsive map либо filled. Переполнение ограничивается остатком
+строки; последняя ячейка неполной строки растягивается на свободные колонки.
+Filled завершает текущую строку и занимает оставшуюся часть. Входные items не
+мутируются. Как в upstream, responsive перестройка строк может пересоздать
+содержимое ячейки, переместившейся между строками; state таких controls храните
+снаружи в модели.
+
+Layout=horizontal по умолчанию; vertical создаёт отдельные строки labels/content.
+Bordered=false, colon=true. В horizontal bordered label получает th/span=1,
+content — td/span=2*span-1; vertical сохраняет span на обеих строках. Colon
+управляет псевдоэлементом label только без рамки. Без явного size/componentSize
+используется размер large; medium/middle и small уменьшают отступы, default —
+legacy alias без отдельного класса. ComponentDisabled не меняет read-only поля.
+
+ClassNames/styles поддерживают root/header/title/extra/label/content, объект
+либо callback ({ props }) с разрешёнными column/items/size. У items есть
+class/style, classNames/styles.label/content и legacy labelStyle/contentStyle.
+Приоритет label/content: root legacy style → root semantic style → item legacy
+style → item semantic style. В bordered эти стили относятся к th/td и перекрывают
+item.style; без рамки — к внутренним span. Style корня идёт после styles.root.
+Вложенные таблицы сохраняют собственные bordered/size и не получают row-стили
+внешней таблицы. Темы/RTL наследуются через ConfigProvider.
+
+Галерея — `/ant-design#descriptions`, фикстура — `?fixture=descriptions`.
+Unit/SSR/Chromium проверяют раскладку, media, приоритет стилей и вложенность.
+Рецепт descriptions извлекает 40 правил без keyframes, включая две интеграции
+Table expanded-row. PrefixCls, произвольные breakpoint/theme tokens и глобальный
+component config пока не поддержаны и остаются в полном объёме миграции.
 
 ## InputNumber
 
