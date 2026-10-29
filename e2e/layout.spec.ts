@@ -84,5 +84,18 @@ test('Layout paints its sidebar in the correct SSR direction before hydration an
   await page.goto('/ant-design#layout');
   const section = page.locator('#layout');
   await section.getByRole('button', { name: 'Свернуть меню', exact: true }).click();
-  await expect(section.locator('.ant-layout-sider')).toHaveCSS('width', '80px');
+  await expect(section.locator('.ant-layout-sider')).toHaveCSS('width', '0px');
+});
+
+test('Layout gallery collapses its sidebar on narrow viewports and retains an external control', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/ant-design#layout');
+  const section = page.locator('#layout');
+  await expect(section.locator('.ant-layout-sider')).toHaveCSS('width', '0px');
+  const button = section.getByRole('button', { name: 'Развернуть меню', exact: true });
+  await expect(button).toBeVisible();
+  const bounds = (await button.boundingBox())!;
+  expect(bounds.x + bounds.width).toBeLessThanOrEqual(320);
+  await page.setViewportSize({ width: 1000, height: 900 });
+  await expect(section.locator('.ant-layout-sider')).toHaveCSS('width', '200px');
 });

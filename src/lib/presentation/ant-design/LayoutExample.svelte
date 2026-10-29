@@ -4,7 +4,7 @@
 </script>
 
 <Layout style="min-height:240px">
-  <LayoutSider theme="light" bind:collapsed trigger={null}>
+  <LayoutSider theme="light" bind:collapsed trigger={null} breakpoint="md" collapsedWidth={0}>
     <nav aria-label="Разделы примера Layout"><a href="#layout">Обзор</a>{#if !collapsed}<p>Планирование и задачи</p>{/if}</nav>
   </LayoutSider>
   <Layout>
