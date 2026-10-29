@@ -3017,6 +3017,11 @@ ConfigProvider принимает `theme={{ mode, primary, compact }}`, где `
 отдельном control.
 
 Тёмная тема и компактный режим реализованы локальными CSS-переопределениями.
+Spacing использует size map 6.6.8: compact size/SM=8, XS/XXS=4, LG/MD=16,
+MS=12, XL=32, XXL=48px с padding/margin/content aliases. Каждый provider
+разрешает aliases в собственном scope; явный compact=false восстанавливает
+обычные интервалы, inline CSS variables сохраняют приоритет. Проверки геометрии
+Card/Flex/Divider и вложенных provider — `e2e/theme.spec.ts`, `?fixture=theme`.
 Произвольные seed tokens, component tokens и алгоритмы тем оригинального
 ConfigProvider пока не перенесены.
 

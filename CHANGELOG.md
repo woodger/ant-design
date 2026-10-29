@@ -9,6 +9,9 @@
 
 ### Fixed
 
+- Compact spacing использует закреплённую size map Ant Design для padding,
+  margin и content aliases; вложенный compact=false восстанавливает обычные
+  интервалы, inline overrides сохраняются.
 - Пример Layout автоматически скрывает боковую панель ниже md, сохраняя внешний
   переключатель доступным в узком viewport.
 - StatisticTimer сохраняет различие upstream между default=0 при форматировании

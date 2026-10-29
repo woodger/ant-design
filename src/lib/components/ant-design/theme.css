@@ -4,6 +4,36 @@
   font-size: var(--ant-font-size);
   line-height: var(--ant-line-height);
   color-scheme: light;
+  --ant-size-xxl: 48px;
+  --ant-size-xl: 32px;
+  --ant-size-lg: 24px;
+  --ant-size-md: 20px;
+  --ant-size-ms: 16px;
+  --ant-size: 16px;
+  --ant-size-sm: 12px;
+  --ant-size-xs: 8px;
+  --ant-size-xxs: 4px;
+  --ant-padding-xxs: var(--ant-size-xxs);
+  --ant-padding-xs: var(--ant-size-xs);
+  --ant-padding-sm: var(--ant-size-sm);
+  --ant-padding: var(--ant-size);
+  --ant-padding-md: var(--ant-size-md);
+  --ant-padding-lg: var(--ant-size-lg);
+  --ant-padding-xl: var(--ant-size-xl);
+  --ant-padding-content-horizontal-lg: var(--ant-size-lg);
+  --ant-padding-content-vertical-lg: var(--ant-size-ms);
+  --ant-padding-content-horizontal: var(--ant-size-ms);
+  --ant-padding-content-vertical: var(--ant-size-sm);
+  --ant-padding-content-horizontal-sm: var(--ant-size);
+  --ant-padding-content-vertical-sm: var(--ant-size-xs);
+  --ant-margin-xxs: var(--ant-size-xxs);
+  --ant-margin-xs: var(--ant-size-xs);
+  --ant-margin-sm: var(--ant-size-sm);
+  --ant-margin: var(--ant-size);
+  --ant-margin-md: var(--ant-size-md);
+  --ant-margin-lg: var(--ant-size-lg);
+  --ant-margin-xl: var(--ant-size-xl);
+  --ant-margin-xxl: var(--ant-size-xxl);
 }
 
 .ant-breadcrumb-css-var {
@@ -143,6 +173,12 @@
 }
 
 .ant-svelte-theme[data-ant-compact] {
+  --ant-size-lg: 16px;
+  --ant-size-md: 16px;
+  --ant-size-ms: 12px;
+  --ant-size: 8px;
+  --ant-size-sm: 8px;
+  --ant-size-xs: 4px;
   --ant-control-height: 28px;
   --ant-control-height-sm: 20px;
   --ant-control-height-lg: 36px;

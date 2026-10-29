@@ -238,5 +238,10 @@
     "id": "breadcrumb",
     "module": "./BreadcrumbFixtures.svelte",
     "root": "breadcrumb-fixture"
+  },
+  {
+    "id": "theme",
+    "module": "./ThemeFixtures.svelte",
+    "root": "theme-fixture"
   }
 ]

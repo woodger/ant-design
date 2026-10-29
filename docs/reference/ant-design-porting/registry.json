@@ -3296,7 +3296,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/config-provider",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "ConfigProvider",
@@ -3309,7 +3309,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
+      "fixtures": [
+        "theme"
+      ],
       "evidence": [
         "src/lib/components/ant-design/readme.md"
       ],
@@ -3329,6 +3331,17 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "compact-spacing",
+          "title": "Compact size map и padding/margin/content aliases",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/theme.css",
+            "e2e/theme.spec.ts"
+          ],
+          "note": "Закреплённые default/compact size maps, локальное разрешение aliases во вложенных provider, explicit compact=false и inline token override. Полный token engine и остальные compact-map tokens ещё требуют аудита."
         }
       ]
     },
