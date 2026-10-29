@@ -1,3 +1,6 @@
+export { default as Mentions } from './Mentions.svelte';
+export { getMentions } from './mentions.engine';
+export type { MentionsProps, MentionsOption, MentionsConfig, MentionsEntity } from './mentions.types';
 export { default as AutoComplete } from './AutoComplete.svelte';
 export type { AutoCompleteProps, AutoCompleteItem, AutoCompleteOption, AutoCompleteGroup, AutoCompleteSearchConfig, AutoCompleteInput } from './auto-complete.types';
 export { default as Menu } from './Menu.svelte';

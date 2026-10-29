@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => { await page.goto('http://127.0.0.1:4174?fix
 
 test('AutoComplete accepts free input without local filtering and selects the option value rather than its label', async ({ page }) => {
   await input(page).fill('unmatched');
+  await expect.poll(async () => { const bottom = await input(page).evaluate(el => el.closest('.auto-complete')!.getBoundingClientRect().bottom); return Math.abs((await popup(page).boundingBox())!.y - bottom - 4); }).toBeLessThan(1);
   await expect(page.getByLabel('Completion value', { exact: true })).toHaveText('"unmatched"');
   await popup(page).getByRole('option', { name: 'Alpha label', exact: true }).click();
   await expect(input(page)).toHaveValue('alpha');

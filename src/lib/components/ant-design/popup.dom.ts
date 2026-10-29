@@ -13,6 +13,7 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
   maxWidth?: string;
   align?: 'left' | 'right' | 'top' | 'bottom';
   matchAnchorWidth?: boolean;
+  gap?: number;
   onVisibilityChange?: (visible: boolean) => void;
 }): () => void {
   const document = anchor.ownerDocument;
@@ -62,7 +63,7 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
     }
 
     const bounds = popup.getBoundingClientRect();
-    const position = getTooltipPosition(rect, bounds, viewport, options.placement, options.autoAdjustOverflow, options.align);
+    const position = getTooltipPosition(rect, bounds, viewport, options.placement, options.autoAdjustOverflow, options.align, options.gap);
     const signature = `${position.left}:${position.top}:${position.arrowX}:${position.arrowY}:${position.placement}`;
 
     if (signature !== lastPosition) {

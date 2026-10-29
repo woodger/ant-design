@@ -1952,25 +1952,99 @@
       "id": "mentions",
       "name": "Mentions",
       "category": "data-entry",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первый этап Mentions по Ant Design 6.6.8 / rc-mentions 1.12.0: prefix/split, поиск и вставка у каретки, callbacks/loading, autoSize, native popup и контексты.",
       "upstreamPath": "components/mentions",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Mentions",
+          "local": [
+            "Mentions"
+          ]
+        },
+        {
+          "upstream": "Mentions.getMentions",
+          "local": [
+            "getMentions"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "form",
+        "space"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/mentions",
+          "range": "~1.12.0",
+          "referenceVersion": "1.12.0"
+        },
+        {
+          "name": "@rc-component/input",
+          "range": "~1.3.1",
+          "referenceVersion": "1.3.1"
+        },
+        {
+          "name": "@rc-component/menu",
+          "range": "~1.5.0",
+          "referenceVersion": "1.5.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "L",
+      "fixtures": [
+        "mentions"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Mentions.svelte",
+        "src/lib/components/ant-design/mentions.engine.test.ts",
+        "src/lib/components/ant-design/mentions.ssr.test.ts",
+        "e2e/mentions.spec.ts",
+        "src/lib/presentation/ant-design/MentionsExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Controlled/default text, prefix/split, поиск, выбор и getMentions",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/mentions.engine.test.ts",
+            "e2e/mentions.spec.ts"
+          ],
+          "note": "Исходные lastIndex/validateSearch/replaceWithMeasure: несколько префиксов, literal split, case-insensitive suffix deduplication и сохранение хвоста. OnChange до onSelect, onSearch(text,prefix) по keyup, filter predicate/bypass и rich labels. Helper getMentions соответствует статическому React методу. Native offsets остаются UTF-16."
+        },
+        {
+          "id": "keyboard-measure",
+          "title": "Клавиатура/IME, каретка, многострочное измерение и autoSize",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/mentions.engine.test.ts",
+            "e2e/mentions.spec.ts"
+          ],
+          "note": "Up/Down пропускают disabled, Enter выбирает, Escape закрывает, IME Enter не выбирает. Popup следует позиции префикса при wrap/scroll, top/bottom/RTL и source gap=4; общий popup gap по умолчанию сохранён. AutoSize/minRows/maxRows по rc-input, ResizeObserver/onResize и cleanup shadow/frames/blur timer. Фокус остаётся в textarea; listbox/option — native Svelte-адаптация исходного DropdownMenu на rc-menu."
+        },
+        {
+          "id": "contexts-async",
+          "title": "Loading/empty/clear, Form/native attrs, темы/SSR и refs",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/mentions.ssr.test.ts",
+            "e2e/mentions.spec.ts"
+          ],
+          "note": "Loading заменяет выдачу disabled spinner и блокирует Enter; options меняет владелец, запроса внутри нет. AllowClear/disabled/custom icon, readonly/disabled, FormItem/status/native FormData/reset, размеры/variants, locale/themes/compact density/RTL. NativeElement/textarea/focus/blur; 102 CSS-правила с воспроизводимым рецептом. SSR не измеряет DOM и не ставит таймеры."
+        },
+        {
+          "id": "extended-api",
+          "title": "Полный semantic/config API, popupRender/container, legacy Option и motion",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Нет popupRender/getPopupContainer, semantic classNames/styles/feedback suffix, ConfigProvider.mentions/token engine/prefixCls и legacy Mentions.Option children. Native listbox не предоставляет расширенный React Menu/ref API; callbacks получают исходные option data без React-generated key suffix. Rc-trigger motion не переносится этим этапом."
         }
       ]
     },

@@ -25,6 +25,7 @@
   import ResultExample from './ResultExample.svelte';
   import StepsVariantsExample from './StepsVariantsExample.svelte';
   import ButtonFeaturesExample from './ButtonFeaturesExample.svelte';
+  import MentionsExample from './MentionsExample.svelte';
   import AutoCompleteExample from './AutoCompleteExample.svelte';
   import MenuExample from './MenuExample.svelte';
   import TreeSelectExample from './TreeSelectExample.svelte';
@@ -72,6 +73,7 @@
     ['tree-select', 'TreeSelect'],
     ['menu', 'Menu'],
     ['auto-complete', 'AutoComplete'],
+    ['mentions', 'Mentions'],
     ['checkbox', 'Checkbox'],
     ['radio', 'Radio / RadioGroup'],
     ['switch', 'Switch'],
@@ -226,7 +228,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">75 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">76 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -588,6 +590,8 @@
           <p class="section-description">Навигационный путь с параметрами, разделителями и меню разделов.</p>
           <div class="panel"><BreadcrumbExample /></div>
         </section>
+
+        <section id="mentions"><div class="section-heading"><h2>Mentions</h2></div><div class="panel"><MentionsExample /></div></section>
 
         <section id="auto-complete"><div class="section-heading"><h2>AutoComplete</h2></div><div class="panel"><AutoCompleteExample /></div></section>
 

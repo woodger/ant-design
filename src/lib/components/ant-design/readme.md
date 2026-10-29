@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, Mentions, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -83,6 +83,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
+| Mentions | Prefix/split, поиск и вставка у каретки, loading, autoSize и native popup |
 | AutoComplete | Свободный текст, options/groups, поиск, keyboard backfill, custom input и controlled popup |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
 | Checkbox | Checked/defaultChecked, смешанное состояние, нативные события и FormData, интеграция с FormItem |
@@ -3259,6 +3260,74 @@ aria-describedby описывает корень; id/class/style также от
 AvatarGroupKey, AvatarGroupMax и AvatarGroupLocale. Responsive-размеры по
 breakpoint, произвольные компоненты вместо Avatar и устаревшие maxCount/
 maxStyle/maxPopoverPlacement/maxPopoverTrigger в эту версию не входят.
+
+## Mentions
+
+Первый этап следует Ant Design 6.6.8 / @rc-component/mentions 1.12.0 (~1.12.0).
+Правила поиска/замены перенесены в mentions.engine.ts, autoSize следует
+calculateNodeHeight из @rc-component/input 1.3.1. Лицензии
+[rc-mentions](./vendor/LICENSE.rc-mentions) и [rc-input](./vendor/LICENSE.rc-input)
+включены в пакет; React runtime не устанавливается.
+
+```svelte
+<script lang="ts">
+  import { Mentions, getMentions } from '$lib/components/ant-design';
+  let value = $state('');
+</script>
+<Mentions {value} options={[{ value: 'alice', label: 'Alice' }]}
+  onChange={next => { value = next; }} allowClear
+  autoSize={{ minRows: 2, maxRows: 5 }} aria-label="Комментарий" />
+<p>{getMentions(value).map(item => item.value).join(', ')}</p>
+```
+
+Value/defaultValue — полная строка textarea. Prefix по умолчанию '@', принимает
+строку/массив; split по умолчанию один пробел. При поиске выбирается последнее
+вхождение префикса перед selectionStart; при равных позициях сохраняется порядок
+массива prefix. Default validateSearch проверяет только literal split, без
+дополнительной обработки переносов строк. FilterOption ищет по option.value без
+учёта регистра; false отключает фильтрацию, predicate получает исходный option.
+Options содержит value, label string/number/Snippet, key/disabled/class/style.
+
+Поиск запускается по keyup, как rc-mentions. Программная смена value сама его не
+запускает. OnSearch(text,prefix) позволяет владельцу обновить options/loading;
+сетевых запросов внутри нет. Loading показывает disabled spinner вместо выдачи
+и блокирует выбор Enter. NotFoundContent заменяет локализованное пустое состояние.
+
+Выбор вставляет prefix+value+split у каретки, добавляет split перед токеном при
+необходимости, убирает совпадающий хвост без учёта регистра и сохраняет остальной
+текст. OnChange(nextText) вызывается до onSelect(option,prefix), затем после DOM
+update восстанавливаются focus/selection. Native selection offsets — UTF-16.
+Callback получает исходный option data без React key suffix. Отдельный экспорт
+getMentions(value,{prefix,split}) соответствует Mentions.getMentions: извлекает
+непустые токены в начале разделённых split частей, без собственной разметки.
+
+Up/Down обходят доступные options, Enter выбирает, Escape закрывает. IME Enter
+не выбирает. OnPressEnter работает при закрытых подсказках; onKeyDown/onKeyUp и
+нативные onkeydown/onkeyup доступны. OnFocus/onBlur учитывают переход в popup;
+отложенный blur очищается при unmount. Readonly/disabled сохраняют native поведение.
+
+Popup выравнивается после префикса и следует переносам/прокрутке textarea.
+Placement top/bottom, RTL и viewport adjustment поддержаны; source gap=4 px.
+Native popover сохраняет фокус textarea; textarea/listbox/option и
+aria-activedescendant заменяют React DropdownMenu на rc-menu. Mirror скрыт от
+accessibility tree. Общий popup-механизм сохраняет прежний default gap для остальных
+компонентов; AutoComplete использует исходные 4 px, как SelectTrigger.
+
+AutoSize принимает boolean/{minRows,maxRows}, измеряет содержимое с теми же
+font/padding/box-sizing, что и textarea. Shadow node, ResizeObserver, frames и
+listeners удаляются при unmount. OnResize получает {width,height}. Это API Mentions;
+существующий TextArea этим этапом не расширяется. Rows по умолчанию 1.
+
+AllowClear — boolean/{clearIcon,disabled}; очистка вызывает change(''), затем
+onClear. Size/status/variant, native name/required/maxlength, FormItem/validation/
+reset, Form/ConfigProvider disabled, locale/themes/compact density/RTL поддержаны.
+Focus/blur, bind:nativeElement и bind:textarea предоставляют native refs.
+CSS-рецепт mentions извлекает 102 правила. Галерея `/ant-design#mentions`,
+фикстура `?fixture=mentions`; SSR не измеряет DOM и не ставит таймеры.
+
+PopupRender/getPopupContainer, semantic classNames/styles, feedback suffix,
+полный ConfigProvider.mentions/token API, prefixCls, legacy Option children и
+исходные rc-trigger motion пока отсутствуют.
 
 ## AutoComplete
 

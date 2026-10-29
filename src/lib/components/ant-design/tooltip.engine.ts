@@ -19,8 +19,7 @@ export function getTooltipDelay(seconds: number | undefined, fallback = 0.1): nu
   return Math.min(2_147_483_647, Math.max(0, typeof seconds === 'number' && Number.isFinite(seconds) ? seconds : fallback) * 1000);
 }
 
-export function getTooltipPosition(anchor: TooltipRect, popup: { width: number; height: number }, viewport: TooltipRect, placement: TooltipPlacement, autoAdjustOverflow = true, align?: 'left' | 'right' | 'top' | 'bottom'): TooltipPosition {
-  const gap = 8;
+export function getTooltipPosition(anchor: TooltipRect, popup: { width: number; height: number }, viewport: TooltipRect, placement: TooltipPlacement, autoAdjustOverflow = true, align?: 'left' | 'right' | 'top' | 'bottom', gap = 8): TooltipPosition {
   const padding = 8;
   const opposite: Record<TooltipPlacement, TooltipPlacement> = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
   const space = {

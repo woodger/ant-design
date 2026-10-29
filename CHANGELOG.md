@@ -27,6 +27,11 @@
 
 ### Added
 
+- Mentions: prefix/split, поиск и исходная вставка у каретки, rich options/loading,
+  callbacks, getMentions, autoSize/resize, native popup, формы и темы. Добавлены
+  CSS-рецепт, галерея, фикстура и unit/SSR/browser. Общий popup допускает source
+  gap для текстовых подсказок, сохраняя прежние defaults остальных компонентов.
+
 - AutoComplete: свободный ввод и options/groups, controlled/default value/open,
   исходные change/search/select, keyboard/backfill, custom input/textarea Snippet
   и native popup. Добавлены галерея, фикстура, unit/SSR/browser и реестр;

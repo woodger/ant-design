@@ -82,6 +82,16 @@ describe('Tooltip positioning', () => {
   });
 });
 
+describe('Text suggestion spacing', () => {
+  it('uses the requested source gap and preserves the default spacing for existing popups', () => {
+    const anchor = { x: 100, y: 100, width: 40, height: 20 };
+    const popup = { width: 80, height: 50 };
+    const viewport = { x: 0, y: 0, width: 600, height: 400 };
+    expect(getTooltipPosition(anchor, popup, viewport, 'bottom', true, 'left', 4).top).toBe(124);
+    expect(getTooltipPosition(anchor, popup, viewport, 'bottom', true, 'left').top).toBe(128);
+  });
+});
+
 describe('Tooltip delays', () => {
   it('converts seconds to milliseconds and preserves zero and fractional delays', () => {
     expect(getTooltipDelay(undefined)).toBe(100);

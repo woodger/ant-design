@@ -492,3 +492,24 @@
   --ant-menu-icon-margin-inline-end: calc(var(--ant-control-height-sm) - var(--ant-font-size));
   --ant-menu-item-width: calc(100% - var(--ant-menu-item-margin-inline) * 2);
 }
+
+.ant-mentions-css-var {
+  --ant-mentions-padding-block: max(0px, calc((var(--ant-control-height) - var(--ant-font-size) * var(--ant-line-height)) / 2 - var(--ant-line-width)));
+  --ant-mentions-padding-block-sm: max(0px, calc((var(--ant-control-height-sm) - var(--ant-font-size) * var(--ant-line-height)) / 2 - var(--ant-line-width)));
+  --ant-mentions-padding-block-lg: max(0px, calc((var(--ant-control-height-lg) - var(--ant-font-size-lg) * var(--ant-line-height-lg)) / 2 - var(--ant-line-width)));
+  --ant-mentions-padding-inline: calc(var(--ant-padding-sm) - var(--ant-line-width));
+  --ant-mentions-padding-inline-sm: calc(var(--ant-padding-xs) - var(--ant-line-width));
+  --ant-mentions-padding-inline-lg: calc(var(--ant-padding-sm) - var(--ant-line-width));
+  --ant-mentions-input-font-size: var(--ant-font-size);
+  --ant-mentions-input-font-size-sm: var(--ant-font-size);
+  --ant-mentions-input-font-size-lg: var(--ant-font-size-lg);
+  --ant-mentions-active-border-color: var(--ant-color-primary);
+  --ant-mentions-hover-border-color: var(--ant-color-primary-hover);
+  --ant-mentions-hover-bg: var(--ant-color-bg-container);
+  --ant-mentions-active-bg: var(--ant-color-bg-container);
+  --ant-mentions-addon-bg: var(--ant-color-fill-quaternary);
+  --ant-mentions-active-shadow: 0 0 0 2px color-mix(in srgb, var(--ant-color-primary) 15%, transparent);
+  --ant-mentions-error-active-shadow: 0 0 0 2px color-mix(in srgb, var(--ant-color-error) 6%, transparent);
+  --ant-mentions-warning-active-shadow: 0 0 0 2px color-mix(in srgb, var(--ant-color-warning) 6%, transparent);
+  --ant-mentions-item-padding-vertical: max(0px, calc((var(--ant-control-height) - var(--ant-font-size) * var(--ant-line-height)) / 2));
+}

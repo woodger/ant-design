@@ -329,5 +329,10 @@
     "id": "auto-complete",
     "module": "./AutoCompleteFixtures.svelte",
     "root": "auto-complete-fixture"
+  },
+  {
+    "id": "mentions",
+    "module": "./MentionsFixtures.svelte",
+    "root": "mentions-fixture"
   }
 ]

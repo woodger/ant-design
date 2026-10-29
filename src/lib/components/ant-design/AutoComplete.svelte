@@ -68,7 +68,7 @@
   $effect(() => {
     if (!visible || !popup || !nativeElement) return;
     return connectPopup(popup, nativeElement, {
-      placement: 'bottom', align: config.direction === 'rtl' ? 'right' : 'left', autoAdjustOverflow: true,
+      placement: 'bottom', gap: 4, align: config.direction === 'rtl' ? 'right' : 'left', autoAdjustOverflow: true,
       maxWidth: '100vw', matchAnchorWidth: popupMatchSelectWidth !== false, onPlacement: () => {},
       onVisibilityChange: next => { shown = next; }, onDismiss: () => requestOpen(false)
     });
