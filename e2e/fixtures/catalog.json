@@ -284,5 +284,10 @@
     "module": "./FloatButtonFixtures.svelte",
     "root": "float-button-fixture",
     "kind": "float-button"
+  },
+  {
+    "id": "textarea",
+    "module": "./TextAreaFixtures.svelte",
+    "root": "textarea-fixture"
   }
 ]

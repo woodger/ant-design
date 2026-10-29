@@ -1,3 +1,5 @@
+export { default as TextArea } from './TextArea.svelte';
+export type { TextAreaProps } from './textarea.types';
 export { default as FloatButton } from './FloatButton.svelte';
 export { default as FloatButtonGroup } from './FloatButtonGroup.svelte';
 export { default as FloatButtonBackTop } from './FloatButtonBackTop.svelte';

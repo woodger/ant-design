@@ -27,6 +27,10 @@
 
 ### Added
 
+- TextArea: native multiline input, bindings, constraints, selection ref, IME-aware
+  Enter, FormItem/status/RTL и размеры. Добавлены изолированная фикстура, галерея,
+  SSR/browser-проверки; зафиксирована очередь проектных приоритетов переноса.
+
 - FloatButton/Group/BackTop: native actions, Badge/Tooltip, click/hover/controlled
   меню, physical placements, scroll targets и progress. Добавлены CSS-рецепт,
   unit/SSR/Chromium, изолированная фикстура и пример галереи. Semantic callbacks

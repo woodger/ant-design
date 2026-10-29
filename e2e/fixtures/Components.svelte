@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ConfigProvider, enUS } from '../../src/lib/components/ant-design';
+  import TextAreaFixtures from './TextAreaFixtures.svelte';
   import BasicFixtures from './BasicFixtures.svelte';
   import { createControls } from './controls.model.svelte';
   import CheckboxPagination from './CheckboxPagination.svelte';
@@ -70,6 +71,7 @@
     <label><input type="checkbox" bind:checked={controls.rtl} /> Right to left</label>
     <label><input type="checkbox" bind:checked={controls.english} /> English locale</label>
 
+    <TextAreaFixtures />
     <BasicFixtures kind="input" {controls} />
 
     <BasicFixtures kind="select" {controls} />

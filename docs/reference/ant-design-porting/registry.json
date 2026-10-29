@@ -1598,21 +1598,38 @@
           "local": [
             "Input"
           ]
+        },
+        {
+          "upstream": "Input.TextArea",
+          "local": [
+            "TextArea"
+          ]
         }
       ],
       "dependencies": [
         "config-provider",
         "space"
       ],
-      "upstreamPackages": [],
-      "priority": "unassigned",
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/input",
+          "range": "~1.3.1",
+          "referenceVersion": "1.3.1"
+        }
+      ],
+      "priority": "p1",
       "effort": "unknown",
       "fixtures": [
-        "input"
+        "input",
+        "textarea"
       ],
       "evidence": [
         "src/lib/components/ant-design/readme.md",
-        "e2e/input-select.spec.ts"
+        "e2e/input-select.spec.ts",
+        "src/lib/components/ant-design/TextArea.svelte",
+        "src/lib/components/ant-design/textarea.ssr.test.ts",
+        "e2e/textarea.spec.ts",
+        "src/lib/presentation/ant-design/TextAreaExample.svelte"
       ],
       "features": [
         {
@@ -1633,6 +1650,25 @@
             "e2e/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
+        },
+        {
+          "id": "textarea-native",
+          "title": "TextArea: минимальный native API по проектному приоритету",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/textarea.ssr.test.ts",
+            "e2e/textarea.spec.ts"
+          ],
+          "note": "Bind:value/defaultValue, native rows/maxlength/required/disabled/readonly/name и события, FormItem, native selection ref, onPressEnter с IME guard, sizes/Compact/RTL. Отдельный экспорт TextArea заменяет React Input.TextArea."
+        },
+        {
+          "id": "textarea-extended",
+          "title": "TextArea autoSize, clear/count, variants, semantic slots и textArea config",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Отложено за пределы выбранного минимального native объёма. Общий аудит Input остаётся unreviewed."
         }
       ]
     },

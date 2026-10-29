@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -74,6 +74,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Button / ButtonGroup | Native button/href, color/variant/ghost, loading delay/icon, semantic slots, config, Group и Compact |
 | FloatButton / FloatButtonGroup / FloatButtonBackTop | Плавающие native actions, Badge/Tooltip, меню групп и возврат с прогрессом прокрутки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
+| TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
@@ -2320,6 +2321,42 @@ useBreakpoint версии 6.6.8 использует xs), componentDisabled и 
 Новые сценарии находятся в ?fixture=steps-variants и втором примере #steps;
 unit/SSR/Chromium проверяют layouts, collapse/index mapping, render Snippets,
 rich tooltip и доступность процента.
+
+## TextArea (Input.TextArea)
+
+Отдельный экспорт TextArea соответствует React Input.TextArea. Минимальный объём
+включает bind:value/string, defaultValue, name, rows, cols, maxlength, minlength,
+required, disabled, readonly, placeholder, autocomplete и остальные native
+атрибуты textarea. Значение не обрезается программно до maxlength: как upstream,
+ограничение применяется браузером при пользовательском вводе, но управляемое
+значение может превышать его. DefaultValue фиксируется при создании, value имеет
+приоритет; после редактирования value=undefined очищает поле, как у местного Input.
+
+OnValueChange получает строку на каждом input, затем вызывается native oninput.
+Onchange остаётся native change (при завершении редактирования), onselect,
+onbeforeinput, composition и keyboard events передаются textarea. OnPressEnter
+вызывается перед onkeydown, кроме Enter с isComposing=true; стандартная вставка
+переноса строки сохраняется, если callback не вызвал preventDefault().
+Bind:nativeElement даёт HTMLTextAreaElement для focus/blur/select/setSelectionRange
+и чтения selectionStart/selectionEnd/selectionDirection.
+
+Size и status=error|warning, Compact, RTL, темы, Form/FormItem disabled, name/id,
+required, aria-invalid и описания ошибок наследуются из существующих контекстов.
+Явные props имеют приоритет. Form.resetFields восстанавливает привязанное поле
+через модель формы. Поле остаётся одним native textarea без wrapper.
+
+```svelte
+<script lang="ts">
+  import { TextArea } from '$lib/components/ant-design';
+  let description = $state('');
+</script>
+<label for="description">Описание</label>
+<TextArea id="description" name="description" rows={4} maxlength={2000} required bind:value={description} />
+```
+
+AutoSize, allowClear, showCount/count, произвольные variants, semantic slots и
+ConfigProvider.textArea пока не перенесены. Стили native textarea уже присутствуют
+в закреплённом vendor/antd.css; новые зависимости и CSS overrides не добавлены.
 
 ## FloatButton, FloatButtonGroup и FloatButtonBackTop
 
