@@ -1,3 +1,4 @@
+import type { UploadLocale } from './upload.types';
 import type { DatePickerLocale } from './date-picker.types';
 import { datePickerEnUS, datePickerRuRU } from './date-picker.locale';
 export type ComponentSize = 'small' | 'middle' | 'large';
@@ -9,6 +10,7 @@ export interface ThemeConfig {
 }
 
 export interface Locale {
+  upload?: UploadLocale;
   datePicker?: DatePickerLocale;
   okText: string;
   cancelText: string;
@@ -94,6 +96,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  upload: { uploading: 'Загрузка...', removeFile: 'Удалить файл', uploadError: 'При загрузке произошла ошибка', previewFile: 'Предпросмотр файла', downloadFile: 'Загрузить файл' },
   datePicker: datePickerRuRU,
   layout: { expand: 'Развернуть боковую панель', collapse: 'Свернуть боковую панель' },
   avatarGroup: { label: 'Участники', hiddenLabel: 'Скрытые участники', overflow: 'Ещё участников' },
@@ -147,6 +150,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  upload: { uploading: 'Uploading...', removeFile: 'Remove file', uploadError: 'Upload error', previewFile: 'Preview file', downloadFile: 'Download file' },
   datePicker: datePickerEnUS,
   layout: { expand: 'Expand sidebar', collapse: 'Collapse sidebar' },
   avatarGroup: { label: 'Members', hiddenLabel: 'Hidden members', overflow: 'More members' },

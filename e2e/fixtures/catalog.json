@@ -304,5 +304,10 @@
     "id": "range-picker",
     "module": "./RangePickerFixtures.svelte",
     "root": "range-picker-fixture"
+  },
+  {
+    "id": "upload",
+    "module": "./UploadFixtures.svelte",
+    "root": "upload-fixture"
   }
 ]

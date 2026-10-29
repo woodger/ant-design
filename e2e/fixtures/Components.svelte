@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ConfigProvider, enUS } from '../../src/lib/components/ant-design';
+  import UploadFixtures from './UploadFixtures.svelte';
   import RangePickerFixtures from './RangePickerFixtures.svelte';
   import DatePickerFixtures from './DatePickerFixtures.svelte';
   import RemoteSelectFixtures from './RemoteSelectFixtures.svelte';
@@ -74,6 +75,7 @@
     <label><input type="checkbox" bind:checked={controls.rtl} /> Right to left</label>
     <label><input type="checkbox" bind:checked={controls.english} /> English locale</label>
 
+    <UploadFixtures />
     <RangePickerFixtures />
     <DatePickerFixtures />
     <RemoteSelectFixtures />

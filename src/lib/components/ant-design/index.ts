@@ -1,3 +1,7 @@
+export { default as Upload } from './Upload.svelte';
+export { default as UploadDragger } from './UploadDragger.svelte';
+export { UPLOAD_LIST_IGNORE } from './upload.engine';
+export type { UploadProps, UploadDraggerProps, UploadFile, UploadRcFile, UploadFileStatus, UploadChangeParam, UploadLocale, UploadListOptions, UploadRequestOptions, UploadRequestHandler, UploadRequest } from './upload.types';
 export { default as RangePicker } from './RangePicker.svelte';
 export type { RangePickerProps, RangePickerValue, RangePickerInputValue, RangePickerPart, RangePickerInfo, RangePickerTimeConfig, RangePickerPreset } from './range-picker.types';
 export { default as DatePicker } from './DatePicker.svelte';

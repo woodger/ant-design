@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **69**.
-Есть публичная реализация у **47** семейств; отсутствует у **26**.
-Проверенный объём v1 покрыт у **19**; требуется аудит у **28**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **71**.
+Есть публичная реализация у **48** семейств; отсутствует у **25**.
+Проверенный объём v1 покрыт у **20**; требуется аудит у **28**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -49,7 +49,7 @@ Candidate означает запись каталога, для которой 
 | [TimePicker](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/time-picker) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Transfer](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/transfer) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [TreeSelect](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/tree-select) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
-| [Upload](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/upload) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Upload](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/upload) | data-entry | target | Upload, UploadDragger | Согласованный v1 покрыт | Directory/paste, render hooks, semantic slots и полный config/token API (missing); Исходные анимации списка и collapse lifecycle (missing) |
 | [Avatar](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/avatar) | data-display | target | Avatar, AvatarGroup | Согласованный v1 покрыт | Размеры по breakpoint (missing); src как Snippet (missing) |
 | [Badge](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/badge) | data-display | target | Badge | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Ribbon и произвольный count (missing) |
 | [Calendar](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/calendar) | data-display | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |

@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, Upload, UploadDragger, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -77,6 +77,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | DatePicker | Single Dayjs date/datetime, input/calendar/time, confirmation, clear, ограничения, locale и native формы |
 | RangePicker | Пара Dayjs, связанные календари, время и подтверждение границ, allowEmpty/disabled, presets и hover |
+| Upload / UploadDragger | Выбор/drop, controlled list, beforeUpload, XHR/customRequest, статусы и удаление |
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
@@ -2462,6 +2463,89 @@ Form/нативная отправка и UTC в разных browser zones. О�
 mask, render hooks, полный semantic/config/motion/container API остаются пробелами
 семейства; наличие RangePicker не означает полного покрытия React DatePicker.
 
+## Upload / UploadDragger
+
+Upload переносит Ant Design 6.6.8 и AjaxUploader/request из @rc-component/upload
+1.1.1. UploadDragger соответствует Upload.Dragger; UPLOAD_LIST_IGNORE — отдельный
+экспорт аналога Upload.LIST_IGNORE. React и rc-upload runtime не устанавливаются.
+Лицензия rc-upload сохранена в vendor/LICENSE.rc-upload; CSS-рецепт извлекает
+82 правила из закреплённого antd.css, исключая неиспользуемые motion selectors.
+Иконки взяты из закреплённого @ant-design/icons-svg 4.6.0 с существующей лицензией.
+
+```svelte
+<script lang="ts">
+  import { Upload, Button, UPLOAD_LIST_IGNORE, type UploadFile } from '$lib/components/ant-design';
+  let files = $state.raw<UploadFile[]>([]);
+</script>
+<Upload fileList={files} multiple action="/api/upload" name="attachment"
+  beforeUpload={file => file.size > 10_000_000 ? UPLOAD_LIST_IGNORE : true}
+  onChange={info => { files = info.fileList; }}>
+  <Button>Выбрать файлы</Button>
+</Upload>
+```
+
+FileList — controlled prop с onChange; defaultFileList задаёт внутренний список.
+Элемент UploadFile имеет стабильный uid, name, optional status/percent/url/thumbUrl,
+originFileObj/response/error/xhr. Статусы — uploading/done/error/removed. API типов
+параметризован типом ответа: UploadProps<T>, UploadFile<T>, UploadRequestOptions<T>.
+Передавайте uid для каждого элемента списка. Callback onChange({file,fileList,event?})
+предлагает полный новый список; владелец может отклонить изменение. Progress/success/error
+файла, уже исключённого владельцем из списка, не вызывают onChange.
+
+BeforeUpload(file,batch) может быть асинхронным. Возврат false или rejected promise
+останавливает отправку, но сохраняет файл без uploading-статуса. UPLOAD_LIST_IGNORE
+исключает его и из списка. Blob/File заменяет отправляемое содержимое с исходным
+uid; action/data получают исходный файл. Batch стартует после обработки всех
+beforeUpload/action/data. Для совместимости с upstream onChange.file при false —
+нативный File с uid, а элемент fileList содержит originFileObj; тип callback отражает
+это различие. MaxCount=1 сохраняет последний файл; большее значение — первые N.
+MaxCount ограничивает список и callbacks, но сам по себе не отменяет запросы.
+
+Стандартный транспорт использует XHR и multipart FormData: name='file', method='post',
+action='' по умолчанию; data может быть объектом или async callback, массивы
+добавляются как key[]. Поддержаны headers/withCredentials и async action. Заголовок
+X-Requested-With=XMLHttpRequest можно отключить значением null. 2xx означает успех,
+JSON-ответ разбирается; HTTP/network errors передаются в состояние файла.
+CustomRequest(options,{defaultRequest}) получает file/action/data/name как filename,
+method/headers/withCredentials и onProgress/onSuccess/onError. Он может вызвать
+предоставленный defaultRequest и вернуть {abort()}. Bind:this.abort(file|uid) либо
+abort() отменяет активные запросы; unmount отменяет их автоматически.
+
+Ручной запуск устроен как в upstream: beforeUpload={() => false}, контролируемый
+список и отдельная кнопка потребителя, которая отправляет originFileObj через
+свой транспорт и обновляет fileList. Компонент не добавляет прикладных endpoints,
+очередей или нового метода submit. Галерея показывает локальную демонстрацию
+такого сценария без сетевой отправки файлов.
+
+OnRemove может вернуть false/Promise<false> для запрета удаления; после разрешения
+запрос отменяется, onChange получает status='removed'. Preview/download доступны
+через onPreview/onDownload; без callbacks ссылки открывают url. Disabled скрывает
+remove по умолчанию и блокирует его даже при showRemoveIcon=true; preview/download
+остаются доступны как в upstream. ShowUploadList принимает false или объект
+showRemoveIcon/showDownloadIcon/showPreviewIcon (boolean либо predicate), extra —
+Snippet<[UploadFile]>. ListType: text, picture, picture-card, picture-circle;
+previewFile/isImageUrl настраивают thumbnail. По умолчанию thumbnails повторяют
+исходный 200px canvas preview, включая GIF/SVG. Progress появляется через 300 ms.
+
+UploadDragger принимает height и по умолчанию hasControlInside=false: его trigger
+имеет role=button и открывает chooser клавиатурой. Обычный Upload по умолчанию
+ожидает native control внутри children snippet; локальный disabled нужно передавать
+и этому control. Form.disabled и ConfigProvider.componentDisabled наследуются компонентом;
+явный disabled перекрывает контекст.
+OpenFileDialogOnClick=false оставляет drop без открытия chooser. Multiple/accept/capture
+передаются скрытому native input; native выбор обычно фильтрует сам браузер, drop
+использует accept. Поддержан accept={format,filter:'native'|predicate}. В rc-upload
+1.1.1 single drop выбирает первый исходный файл, не применяя accept-фильтр;
+это поведение сохранено. Input сбрасывается после выбора для повторного файла.
+Id удаляется при disabled/отсутствии children, чтобы label не открывал диалог.
+Bind:nativeElement/inputElement дают DOM-элементы, без запуска транспорта при SSR.
+
+Locale/upload из ConfigProvider, собственный locale, RU/EN, RTL и theme variables
+поддержаны. Directory/pastable, itemRender/iconRender/custom action icons,
+progress customization, linkProps, полный ref/config/semantic API и исходные
+appear/exit/collapse анимации остаются отдельными пробелами реестра. Данный этап
+не заявляет полного покрытия React Upload.
+
 ## TextArea (Input.TextArea)
 
 Отдельный экспорт TextArea соответствует React Input.TextArea. Минимальный объём
@@ -4013,7 +4097,7 @@ Popover и SSR; модель — нормализацию имён, Unicode-ин
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
 расширенные режимы DatePicker,
-Tree/TreeSelect, Upload, Select tags, Form.List, вложенные name paths,
+Tree/TreeSelect, расширения Upload, Select tags, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.
 

@@ -423,3 +423,9 @@
   --ant-date-picker-without-time-cell-height: calc(var(--ant-control-height-lg) * 1.65);
   --ant-date-picker-z-index-popup: calc(var(--ant-z-index-popup-base) + 50);
 }
+
+.ant-upload-css-var {
+  --ant-color-fill-alter: var(--ant-color-fill-quaternary);
+  --ant-upload-actions-color: var(--ant-color-icon, var(--ant-color-text-description));
+  --ant-upload-picture-card-size: calc(var(--ant-control-height-lg) * 2.55);
+}

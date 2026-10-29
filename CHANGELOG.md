@@ -27,6 +27,11 @@
 
 ### Added
 
+- Upload/UploadDragger: controlled/default списки, beforeUpload/LIST_IGNORE,
+  ручной сценарий, XHR multipart и customRequest, drop/accept, статусы, preview
+  и удаление с veto/abort. Перенесены исходные CSS/icons/thumbnail, добавлены
+  галерея, изолированная фикстура и unit/SSR/browser-проверки.
+
 - RangePicker date/datetime с парой Dayjs, связанными календарями, исходной
   машиной подтверждения и переходов фокуса, ограничениями/from, allowEmpty,
   presets/hover и Form. Добавлены галерея, отдельная фикстура и проверки

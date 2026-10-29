@@ -9,7 +9,8 @@
   },
   "supportingExports": [
     "ruRU",
-    "enUS"
+    "enUS",
+    "UPLOAD_LIST_IGNORE"
   ],
   "components": [
     {
@@ -2207,25 +2208,111 @@
       "id": "upload",
       "name": "Upload",
       "category": "data-entry",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первый этап Upload/Dragger по Ant Design 6.6.8: списки, beforeUpload, ручной сценарий, XHR/customRequest, drop и доступность; расширения и motion перечислены отдельно.",
       "upstreamPath": "components/upload",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Upload",
+          "local": [
+            "Upload"
+          ]
+        },
+        {
+          "upstream": "Upload.Dragger",
+          "local": [
+            "UploadDragger"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "button",
+        "progress",
+        "tooltip",
+        "form"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/upload",
+          "range": "~1.1.1",
+          "referenceVersion": "1.1.1"
+        },
+        {
+          "name": "@ant-design/icons",
+          "range": "^6.3.4",
+          "referenceVersion": "6.3.4"
+        }
+      ],
+      "priority": "p1",
+      "effort": "L",
+      "fixtures": [
+        "upload"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Upload.svelte",
+        "src/lib/components/ant-design/UploadDragger.svelte",
+        "src/lib/components/ant-design/upload-controller.engine.test.ts",
+        "src/lib/components/ant-design/upload.engine.test.ts",
+        "src/lib/components/ant-design/upload-request.dom.test.ts",
+        "src/lib/components/ant-design/upload.ssr.test.ts",
+        "e2e/upload.spec.ts",
+        "src/lib/presentation/ant-design/UploadExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Выбор, controlled/default списки, статусы, maxCount и удаление",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/upload-controller.engine.test.ts",
+            "src/lib/components/ant-design/upload.engine.test.ts",
+            "src/lib/components/ant-design/upload-request.dom.test.ts",
+            "src/lib/components/ant-design/upload.ssr.test.ts",
+            "e2e/upload.spec.ts"
+          ],
+          "note": "Stable uid, batch start после async beforeUpload, false/rejection оставляют файл без uploading; UPLOAD_LIST_IGNORE исключает файл. Async onRemove veto, abort и фильтрация callbacks для удалённых владельцем файлов. Native file input сбрасывается для повторного выбора."
+        },
+        {
+          "id": "transport",
+          "title": "XHR multipart, customRequest и ручной сценарий",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/upload-controller.engine.test.ts",
+            "src/lib/components/ant-design/upload-request.dom.test.ts",
+            "e2e/upload.spec.ts"
+          ],
+          "note": "Async action/data, method/headers/withCredentials, progress/success/error; customRequest(options,{defaultRequest}). beforeUpload=false оставляет ручную отправку потребителю как upstream. MaxCount ограничивает список, не транспорт. Удаление/unmount abort активных запросов; browser/file APIs только в lifecycle."
+        },
+        {
+          "id": "presentation",
+          "title": "Dragger, списки text/picture/card/circle, preview/download, SSR и контексты",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/upload.ssr.test.ts",
+            "e2e/upload.spec.ts"
+          ],
+          "note": "Children snippet, hasControlInside, keyboard chooser, multiple drop/accept, ShowUploadList flags/extra, исходные icons и thumbnail canvas. RU/EN, RTL, темы и disabled из ConfigProvider/Form. 82 CSS-правила из закреплённого архива; неиспользуемые React motion selectors исключены."
+        },
+        {
+          "id": "extended-api",
+          "title": "Directory/paste, render hooks, semantic slots и полный config/token API",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Directory traversal/pastable, itemRender/iconRender/custom action icons, progress customization, prefixCls, linkProps, ConfigProvider.upload и semantic classNames/styles не перенесены. Ref даёт abort и nativeElement/inputElement; полный rc-upload ref/internal lifecycle API отсутствует."
+        },
+        {
+          "id": "motion",
+          "title": "Исходные анимации списка и collapse lifecycle",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Удаление списка выполняется без CSSMotion exit/appear/collapse. Задержка progress 300 ms и вращение loading с reduced motion перенесены."
         }
       ]
     },
