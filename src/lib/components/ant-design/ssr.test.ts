@@ -14,7 +14,7 @@ describe('Ant Design server rendering', () => {
     const labels = [...body.matchAll(/<label[^>]*for="([^"]+)"/g)];
 
     expect(body).toContain('Ant Design для Svelte');
-    expect(body).toContain('68 компонентов');
+    expect(body).toContain('69 компонентов');
     expect(body).toContain('padding-inline:8px');
     expect(body).toContain('role="combobox"');
     expect(body).toContain('aria-expanded="false"');

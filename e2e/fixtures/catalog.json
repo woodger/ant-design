@@ -299,5 +299,10 @@
     "id": "date-picker",
     "module": "./DatePickerFixtures.svelte",
     "root": "date-picker-fixture"
+  },
+  {
+    "id": "range-picker",
+    "module": "./RangePickerFixtures.svelte",
+    "root": "range-picker-fixture"
   }
 ]

@@ -1,3 +1,5 @@
+export { default as RangePicker } from './RangePicker.svelte';
+export type { RangePickerProps, RangePickerValue, RangePickerInputValue, RangePickerPart, RangePickerInfo, RangePickerTimeConfig, RangePickerPreset } from './range-picker.types';
 export { default as DatePicker } from './DatePicker.svelte';
 export type { DatePickerProps, DatePickerLocale, DatePickerTimeConfig, DatePickerDisabledTime, DatePickerFormat, DatePickerMode } from './date-picker.types';
 export { default as TextArea } from './TextArea.svelte';

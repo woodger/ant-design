@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -76,6 +76,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | FloatButton / FloatButtonGroup / FloatButtonBackTop | Плавающие native actions, Badge/Tooltip, меню групп и возврат с прогрессом прокрутки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | DatePicker | Single Dayjs date/datetime, input/calendar/time, confirmation, clear, ограничения, locale и native формы |
+| RangePicker | Пара Dayjs, связанные календари, время и подтверждение границ, allowEmpty/disabled, presets и hover |
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
@@ -2395,10 +2396,71 @@ popup с возвратом фокуса. Время доступно через
 Поверхность использует существующий native popover lifecycle библиотеки, включая
 изоляцию Compact, закрытие снаружи и поддержку dialog top layer.
 
-RangePicker, остальные picker/multiple modes, generatePicker factory, presets,
+Остальные picker/multiple modes, generatePicker factory, single presets,
 cellRender/panelRender, mask format, hover preview, полный semantic/component config
 и rc-trigger/motion/container API ещё не перенесены. Реестр перечисляет эти пробелы
 отдельно; данный этап не заявляет полноту семейства DatePicker.
+
+## RangePicker (DatePicker.RangePicker)
+
+Отдельный экспорт RangePicker использует общий Day.js adapter, календарь, time
+panel и извлечённый CSS DatePicker. Переходы выбора перенесены из
+useRangeValueChange rc-picker 1.12.2: calendar draft, подтверждённые границы и
+принятое владельцем value хранятся отдельно.
+
+```svelte
+<script lang="ts">
+  import dayjs from 'dayjs';
+  import { RangePicker, type RangePickerValue } from '$lib/components/ant-design';
+  let period = $state<RangePickerValue | null>([dayjs('2026-10-10'), dayjs('2026-10-20')]);
+</script>
+<label for="period-start">Начало</label><label for="period-end">Конец</label>
+<RangePicker id={{start:'period-start',end:'period-end'}} name="period"
+  value={period} onChange={next => { period = next; }} />
+```
+
+Value/defaultValue — пара Dayjs|null|undefined; отсутствующие границы внутри
+нормализуются в null. Value=null очищает обе границы, undefined включает внутреннее
+состояние. OnChange получает пару Dayjs|null либо null при полной очистке.
+Второй аргумент — пара отображаемых строк либо null при полной очистке: это
+фактическое поведение rc-picker 1.12.2, хотя его declaration обещает только tuple.
+OnCalendarChange всегда получает пару значений, пару строк и {range:'start'|'end'}
+для первой изменённой границы. OnOk получает текущую календарную пару после
+подтверждения каждой границы; первое подтверждение ещё не означает onChange.
+
+Date показывает два соседних календаря, showTime — календарь и время активной
+границы. Переход к следующему полю, Tab, Enter, OK, Escape и закрытие снаружи
+различаются как в исходной машине переходов. NeedConfirm по умолчанию включён
+для datetime. Неподтверждённые изменения отменяются; controlled value/open могут
+отклонить предложение компонента. DefaultPickerValue/pickerValue принимают дату
+или пару дат панели; onPickerValueChange сообщает range/source/mode.
+
+Order=true сортирует отправляемую пару, если обе границы доступны. Order=false
+сохраняет позиции. Disabled принимает boolean либо [start,end], allowEmpty —
+boolean либо [start,end]. Очистка сохраняет заблокированную границу. DisabledDate
+получает {type,from}, disabledTime — (date,'start'|'end',{from}); from зависит от
+порядка посещения полей, как в rc-picker. Проверяются границы диапазона:
+запрещённая дата внутри него сама по себе не запрещает диапазон. MinDate/maxDate
+ограничивают выбор и навигацию. Presets принимают пару либо фабрику, previewValue
+по умолчанию 'hover'; false отключает предварительный просмотр. ShowNow/showToday
+по умолчанию выключены для диапазона; явное включение подтверждает текущую границу.
+
+Format, showTime units/steps/defaultOpenValue, inputReadOnly,
+preserveInvalidOnBlur, size/status/variant/Compact, локали, тема и RTL используют
+общие механизмы DatePicker. ShowTime.defaultOpenValue принимает пару дат времени.
+Календарные операции сохраняют режим входного Dayjs; UTC и wire-сериализация не
+навязываются. Native FormData.getAll(name) содержит две отображаемые строки под
+одним name. Form хранит пару объектов Dayjs, копирует tuple при snapshot и
+восстанавливает исходные даты при reset. Id-строка относится к первому полю,
+id={{start,end}} задаёт оба. Bind:nativeElement/startInput/endInput возвращают DOM;
+bind:this даёт focus({index:0|1,preventScroll,cursor}) и blur(). Native onfocus/onblur
+относятся к input; полный semantic event API upstream ещё не перенесён.
+
+Подтверждены SSR без browser APIs, ввод/ошибки/очистка, переходы фокуса,
+подтверждение времени, ограничения/from, nullable границы, controlled rejection,
+Form/нативная отправка и UTC в разных browser zones. Остальные picker modes,
+mask, render hooks, полный semantic/config/motion/container API остаются пробелами
+семейства; наличие RangePicker не означает полного покрытия React DatePicker.
 
 ## TextArea (Input.TextArea)
 
@@ -3950,7 +4012,7 @@ Popover и SSR; модель — нормализацию имён, Unicode-ин
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
-RangePicker и расширенные режимы DatePicker,
+расширенные режимы DatePicker,
 Tree/TreeSelect, Upload, Select tags, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.

@@ -272,3 +272,16 @@ it('stores immutable Dayjs instances without coercion and restores the initial i
   form.setFieldValue('when', null); await form.validateFields().catch(() => {}); expect(form.getFieldError('when')).toHaveLength(1);
   form.resetFields(); expect(form.values.when).toBe(initial); expect(initial.millisecond()).toBe(123); expect(form.getFieldError('when')).toEqual([]);
 });
+
+it('copies range tuples while preserving immutable Dayjs values through submit and reset', async () => {
+  const dayjs = (await import('dayjs')).default;
+  const first = dayjs('2026-10-10T10:20:30.123'); const last = first.add(10, 'day');
+  const initial: [import('dayjs').Dayjs | null, import('dayjs').Dayjs | null] = [first, last];
+  const form = createForm<{ period: typeof initial | null }>({ initialValues: { period: initial } });
+  expect(form.values.period).not.toBe(initial); expect(form.values.period?.[0]).toBe(first);
+  form.setFieldValue('period', [null, last]);
+  let received: typeof initial | null = null;
+  await form.submit(values => { received = values.period; });
+  expect(received).toEqual([null, last]); expect(received).not.toBe(form.values.period); expect(dayjs.isDayjs(received?.[1])).toBe(true);
+  form.resetFields(); expect(form.values.period).toEqual(initial); expect(form.values.period?.[1]).toBe(last); expect(first.millisecond()).toBe(123);
+});

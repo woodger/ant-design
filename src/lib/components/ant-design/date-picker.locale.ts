@@ -2,6 +2,7 @@
 export const datePickerEnUS = {
   "lang": {
     "placeholder": "Select date",
+    "rangePlaceholder": ["Start date", "End date"] as [string, string],
     "yearFormat": "YYYY",
     "dayFormat": "D",
     "cellMeridiemFormat": "A",
@@ -37,6 +38,7 @@ export const datePickerEnUS = {
 export const datePickerRuRU = {
   "lang": {
     "placeholder": "Выберите дату",
+    "rangePlaceholder": ["Начальная дата", "Конечная дата"] as [string, string],
     "yearFormat": "YYYY",
     "dayFormat": "D",
     "cellMeridiemFormat": "A",

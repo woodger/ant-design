@@ -14,6 +14,7 @@
   import DatePickerCalendar from './DatePickerCalendar.svelte';
   import DatePickerTimePanel from './DatePickerTimePanel.svelte';
   import Icon from './Icon.svelte';
+  import PickerCalendarIcon from './PickerCalendarIcon.svelte';
   let { value, defaultValue, showTime = false, format, pickerValue, defaultPickerValue, open, defaultOpen = false, disabledDate, disabledTime, minDate, maxDate,
     needConfirm, allowClear = true, inputReadOnly, preserveInvalidOnBlur = false, showNow = true, showToday = true, size, status, variant = 'outlined', locale,
     onChange, onCalendarChange, onOk, onClear, onPickerValueChange, onOpenChange, onPanelChange, renderExtraFooter, placement = 'bottomLeft', disabled, id, name,
@@ -143,7 +144,7 @@
       disabled={blocked} readonly={readOnly} required={attributes.required ?? field?.required} autocomplete="off" value={text}
       oninput={event => { requestOpen(true); text = event.currentTarget.value; dirty = true; draftSource = 'input'; const parsed = parsePicker(text, actualLocale.locale, formats); if (valid(parsed)) { setDraft(parsed, 'date'); internalPanel = parsed!; } }}
       onclick={() => requestOpen(true)} onkeydown={keyboard} onfocus={event => { focused = true; onfocus?.(event); }} onblur={event => { onblur?.(event); blurWithin(event); }} />
-    <span class="ant-picker-suffix" aria-hidden="true"><svg viewBox="64 64 896 896" width="1em" height="1em" fill="currentColor" focusable="false"><path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z" /></svg></span>
+    <span class="ant-picker-suffix" aria-hidden="true"><PickerCalendarIcon /></span>
   </div>
   {#if allowClear && mergedValue && !blocked}<button type="button" class="ant-picker-clear" aria-label={actualLocale.clear} onpointerdown={event => event.preventDefault()} onclick={() => { commit(null); onClear?.(); requestOpen(false); input?.focus(); }}><Icon name="close-circle-filled" /></button>{/if}
 </div>

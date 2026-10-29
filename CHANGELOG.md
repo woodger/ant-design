@@ -27,11 +27,16 @@
 
 ### Added
 
+- RangePicker date/datetime с парой Dayjs, связанными календарями, исходной
+  машиной подтверждения и переходов фокуса, ограничениями/from, allowEmpty,
+  presets/hover и Form. Добавлены галерея, отдельная фикстура и проверки
+  unit/SSR/Chromium, включая UTC в разных browser zones.
+
 - DatePicker single/date+showTime с Dayjs|null: строгий ввод, календарь, время,
   подтверждение, ограничения, callbacks и локали. Перенесены date adapter и
   исходное выравнивание time steps; добавлены Day.js peer, CSS-рецепт, галерея
-  и проверки SSR/клавиатуры/UTC в разных browser zones. RangePicker и расширенный
-  API остаются отдельными этапами.
+  и проверки SSR/клавиатуры/UTC в разных browser zones. Расширенный
+  API остаётся отдельным этапом.
 
 - Select: controlled remote search, filter bypass/predicate, loading/empty/error
   content и popup scroll callback. Выбранные label/disabled сохраняются при смене

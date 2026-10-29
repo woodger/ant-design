@@ -827,7 +827,7 @@
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "AutoComplete, Cascader, RangePicker/TimePicker, TreeSelect и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API. DatePicker single наследует Compact context."
+          "note": "AutoComplete, Cascader, TimePicker, TreeSelect и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API. DatePicker и RangePicker наследуют Compact context."
         }
       ]
     },
@@ -1477,7 +1477,7 @@
       "name": "DatePicker",
       "category": "data-entry",
       "scope": "target",
-      "scopeReason": "Первая итерация single DatePicker с showTime по контракту Dayjs и исходному rc-picker; RangePicker переносится отдельно.",
+      "scopeReason": "Single DatePicker и RangePicker date/showTime по контракту Dayjs и исходной машине rc-picker; расширенные picker/render/config API отмечены отдельно.",
       "upstreamPath": "components/date-picker",
       "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
@@ -1485,6 +1485,12 @@
           "upstream": "DatePicker",
           "local": [
             "DatePicker"
+          ]
+        },
+        {
+          "upstream": "DatePicker.RangePicker",
+          "local": [
+            "RangePicker"
           ]
         }
       ],
@@ -1512,7 +1518,8 @@
       "priority": "p1",
       "effort": "L",
       "fixtures": [
-        "date-picker"
+        "date-picker",
+        "range-picker"
       ],
       "evidence": [
         "src/lib/components/ant-design/DatePicker.svelte",
@@ -1520,7 +1527,13 @@
         "src/lib/components/ant-design/date-picker.engine.test.ts",
         "src/lib/components/ant-design/date-picker.ssr.test.ts",
         "e2e/date-picker.spec.ts",
-        "src/lib/presentation/ant-design/DatePickerExample.svelte"
+        "src/lib/presentation/ant-design/DatePickerExample.svelte",
+        "src/lib/components/ant-design/RangePicker.svelte",
+        "src/lib/components/ant-design/range-picker-interaction.engine.test.ts",
+        "src/lib/components/ant-design/range-picker.engine.test.ts",
+        "src/lib/components/ant-design/range-picker.ssr.test.ts",
+        "e2e/range-picker.spec.ts",
+        "src/lib/presentation/ant-design/RangePickerExample.svelte"
       ],
       "features": [
         {
@@ -1559,19 +1572,26 @@
         },
         {
           "id": "range",
-          "title": "RangePicker",
-          "state": "missing",
-          "requiredForV1": false,
-          "evidence": [],
-          "note": "Отдельный последующий этап с общим date adapter."
+          "title": "RangePicker date/datetime, границы, подтверждение, presets и hover",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/RangePicker.svelte",
+            "src/lib/components/ant-design/range-picker-interaction.engine.test.ts",
+            "src/lib/components/ant-design/range-picker.engine.test.ts",
+            "src/lib/components/ant-design/range-picker.ssr.test.ts",
+            "e2e/range-picker.spec.ts",
+            "src/lib/presentation/ant-design/RangePickerExample.svelte"
+          ],
+          "note": "Пара Dayjs|null; calendar/submit/committed состояния, исходная useRangeValueChange, order/allowEmpty/disabled, endpoint-only validation и from, confirm/Tab/Escape, контролируемые value/open, native FormData и Form tuples. При полной очистке onChange получает (null,null), как runtime rc-picker. Нет полной поддержки extended API семейства."
         },
         {
           "id": "extended-api",
-          "title": "Другие picker modes, multiple, presets/render hooks, mask и hover preview",
+          "title": "Другие picker modes, multiple, single presets/render hooks, mask и semantic API",
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "Нет публичных week/month/quarter/year picker, multiple, generatePicker factory, presets, cellRender/panelRender, mask format, previewValue и полного набора semantic slots/events."
+          "note": "Нет публичных week/month/quarter/year picker, multiple, generatePicker factory, single presets/previewValue, cellRender/panelRender, mask format и полного набора semantic slots/events. RangePicker presets/previewValue перенесены."
         },
         {
           "id": "global-parity",
@@ -1639,14 +1659,15 @@
         },
         {
           "id": "dayjs-values",
-          "title": "Immutable Dayjs|null без преобразования в строку",
+          "title": "Immutable Dayjs|null и диапазоны без преобразования в строку",
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
             "src/lib/components/ant-design/form.model.test.ts",
-            "e2e/date-picker.spec.ts"
+            "e2e/date-picker.spec.ts",
+            "e2e/range-picker.spec.ts"
           ],
-          "note": "DatePicker хранит объект напрямую; required/null, submit и reset сохраняют класс/исходное значение. Остальной подробный аудит Form и generic object store ещё не завершён."
+          "note": "DatePicker и RangePicker хранят объекты напрямую; required/null, submit и reset сохраняют класс/исходные даты, tuple копируется при snapshot. Остальной подробный аудит Form и generic object store ещё не завершён."
         }
       ]
     },
