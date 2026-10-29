@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RateFixtures from './RateFixtures.svelte';
   import ImageGroupFixtures from './ImageGroupFixtures.svelte';
   import ImageFixtures from './ImageFixtures.svelte';
   import MentionsFixtures from './MentionsFixtures.svelte';
@@ -92,6 +93,7 @@
     <UploadFixtures />
     <RangePickerFixtures />
     <DatePickerFixtures />
+    <RateFixtures />
     <RemoteSelectFixtures />
     <TextAreaFixtures />
     <BasicFixtures kind="input" {controls} />

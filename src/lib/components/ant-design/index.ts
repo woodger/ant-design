@@ -159,3 +159,5 @@ export type { ConfigProviderProps } from './ConfigProvider.svelte';
 export type { FormItemProps } from './FormItem.svelte';
 export type { ValidationRule, FormRules, FieldErrors, FormValue, FormValues } from './validation.engine';
 export { ruRU, enUS, type Locale, type InputNumberLocale, type PaginationLocale, type TableLocale, type ComponentSize, type ThemeConfig, type SelectOption } from './types';
+export { default as Rate } from './Rate.svelte';
+export type { RateProps, RateConfig, RateCharacterInfo } from './rate.types';

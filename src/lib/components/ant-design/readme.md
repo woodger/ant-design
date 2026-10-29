@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, Mentions, Image, ImagePreviewGroup, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Rate, Input, TextArea, AutoComplete, Mentions, Image, ImagePreviewGroup, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -82,6 +82,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | TreeSelect | Single/multiple, labelInValue, check strategies, поиск, loadData и native popup |
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
+| Rate | Value/defaultValue, half/clear, hover, keyboard/RTL, character/tooltips, размеры и focus ref |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
 | Image / ImagePreviewGroup | Native img/fallback/placeholder, preview transforms/focus и групповая навигация по images/items |
 | Mentions | Prefix/split, поиск и вставка у каретки, loading, autoSize и native popup |
@@ -3264,6 +3265,82 @@ aria-describedby описывает корень; id/class/style также от
 AvatarGroupKey, AvatarGroupMax и AvatarGroupLocale. Responsive-размеры по
 breakpoint, произвольные компоненты вместо Avatar и устаревшие maxCount/
 maxStyle/maxPopoverPlacement/maxPopoverTrigger в эту версию не входят.
+
+## Rate
+
+Rate следует Ant Design 6.6.8 и @rc-component/rate 1.0.1 (~1.0.1).
+Изучены wrapper, style, demo, tests и делегированные Rate/Star/util.
+[MIT-лицензия rc-rate](./vendor/LICENSE.rc-rate) включена в пакет;
+React runtime и новые npm dependencies не добавляются.
+
+```svelte
+<script lang="ts">
+  import { Rate } from '$lib/components/ant-design';
+  let value = $state(2.5);
+</script>
+<Rate aria-label="Оценка" {value} allowHalf
+  tooltips={['Очень плохо', 'Плохо', 'Нормально', 'Хорошо', 'Отлично']}
+  onChange={next => { value = next; }} />
+```
+
+Value управляется владельцем через onChange; без value используется внутреннее
+значение с defaultValue=0. Count=5 принимает целое неотрицательное число, как
+new Array(count) в upstream. Значения и fractions владельца не округляются и
+не ограничиваются count. Уменьшение count не меняет value. Native form reset
+не сбрасывает внутренний выбор; собственное поле FormData не создаётся.
+
+AllowHalf=false по умолчанию. При allowHalf половина определяется координатой
+относительно исходного li, с обратной стороной в RTL; точный midpoint даёт полную
+оценку. Hover показывает временный выбор без onChange. OnHoverChange получает
+также undefined при выходе и перед публикацией клика. AllowClear=true очищает
+повторный выбор до 0; этот же hover подавляется до другой позиции/выхода.
+AllowClear=false повторно публикует то же value. Внешняя смена props не вызывает
+callbacks. Смена controlled value на undefined очищает внутренний fallback,
+как useControlledState зависимости; новое нажатие снова задаёт значение.
+
+ArrowLeft/Right изменяют значение на 1 либо 0.5, направление обратное в RTL.
+Фокус при этом не перемещается. Исходная арифметика сохраняется без clamp:
+например, внешнее 4.8 при count=5 и allowHalf=true увеличивается до 5.3.
+OnKeyDown вызывается после изменения; обработанная стрелка получает preventDefault.
+Keyboard=false отключает стрелки; Enter на символе по-прежнему выбирает полное
+значение и предотвращает дублирующий native click. Focus/blur callbacks следуют
+всплывающему изменению фокуса.
+
+Character — строка, число или Snippet<[RateCharacterInfo]>; snippet получает
+index/count, временное отображаемое value, allowHalf/disabled/focused, prefixCls
+и исходные onHover(event,index)/onClick(event,index). Он рендерится в двух слоях
+звезды, как исходный character. CharacterRender —
+Snippet<[Snippet,RateCharacterInfo]> с исходным star snippet; как rest override
+Ant wrapper, он заменяет автоматическую Tooltip composition. Tooltips принимает
+строки или поддерживаемые локальные TooltipProps без children. Tooltip использует
+существующую обёртку с display:contents; отступы между stars сохранены.
+
+Size принимает small/medium/large и совместимое middle, наследует componentSize.
+Disabled наследует общий disabled-контекст, включая Form; явный false имеет
+приоритет. ConfigProvider.rate принимает class/style, локальные class/rootClassName
+добавляются, style накладывается после контекстного. Вложенный явно заданный rate
+config заменяет родительский. Light/dark, compact, RTL и reduced motion реактивны;
+CSS variables --ant-rate-star-color/size/size-sm/size-lg/bg/hover-scale и
+--ant-rate-line-width-focus допускают явный inline override.
+
+Bind:this предоставляет focus()/blur(), которые игнорируются при disabled;
+bind:nativeElement возвращает ul. AutoFocus применяется только после mount,
+SSR не обращается к DOM и не вызывает callbacks. Нативные button type=button
+заменяют исходные div role=radio: дополнительно доступна активация Space, корневая
+ul получает radiogroup и видимый focus. Исходные cumulative aria-checked,
+aria-posinset/setsize и отдельные tab stops сохранены. Декоративные копии символов
+скрыты от accessibility tree; имя кнопки — её one-based номер.
+
+[vendor/rate.css](./vendor/rate.css) содержит все 21 правило из закреплённого
+npm-архива с проверкой SHA-256; рецепт rate адаптирует >div к >button, declarations
+сохранены. Rate.svelte дополняет native reset styles, focus и reduced motion.
+StarFilled SVG взят из Ant Design Icons SVG 4.6.0 с существующей MIT-лицензией.
+Галерея — `/ant-design#rate`, fixture — `?fixture=rate`; unit/SSR и browser
+сценарии проверяют значения, callbacks, геометрию, контексты и cleanup.
+
+PrefixCls и произвольный React theme/token engine пока отсутствуют; namespace
+ant-rate закреплён. Полный upstream Tooltip API ограничен текущим публичным
+Svelte Tooltip. Эти части не считаются покрытыми переносом Rate.
 
 ## Image
 

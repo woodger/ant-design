@@ -344,5 +344,10 @@
     "id": "image-preview-group",
     "module": "./ImageGroupFixtures.svelte",
     "root": "image-group-fixture"
+  },
+  {
+    "id": "rate",
+    "module": "./RateFixtures.svelte",
+    "root": "rate-fixture"
   }
 ]

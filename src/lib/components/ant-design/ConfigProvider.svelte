@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { FloatButtonConfig, FloatButtonGroupConfig } from './float-button.types';
   import type { ButtonConfig } from './button.types';
+  import type { RateConfig } from './rate.types';
   import type { Snippet } from 'svelte';
   import { provideConfig, useConfig, type ConfigContext } from './config-context';
   import type { ComponentSize, Locale, ThemeConfig } from './types';
@@ -10,6 +11,7 @@
     children: Snippet;
     theme?: ThemeConfig;
     button?: ButtonConfig;
+    rate?: RateConfig;
     floatButton?: FloatButtonConfig;
     floatButtonGroup?: FloatButtonGroupConfig;
     componentSize?: ComponentSize;
@@ -24,6 +26,7 @@
     children,
     theme,
     button,
+    rate,
     floatButton,
     floatButtonGroup,
     componentSize,
@@ -37,6 +40,7 @@
   const parent = useConfig();
   const config: ConfigContext = {
     get button() { return button ?? parent.button; },
+    get rate() { return rate ?? parent.rate; },
     get floatButton() { return floatButton ?? parent.floatButton; },
     get floatButtonGroup() { return floatButtonGroup ?? parent.floatButtonGroup; },
     get componentSize() { return componentSize ?? parent.componentSize; },

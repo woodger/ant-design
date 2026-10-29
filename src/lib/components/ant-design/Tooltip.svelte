@@ -109,5 +109,4 @@
   .ant-tooltip-trigger { display: inline-block; max-width: 100%; vertical-align: middle; }
 </style>
 
-<span bind:this={host} role="presentation" class={['ant-tooltip-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onfocusin={handleFocus} onfocusout={handleBlur}>{@render children()}</span>
-<NoCompactStyle><TooltipPopup title={text} open={visible} {anchor} describe={anchor} trigger={host} {placement} {arrow} {autoAdjustOverflow} onDismiss={dismiss} onHoverChange={handlePopupHover} /></NoCompactStyle>
+<span bind:this={host} role="presentation" class={['ant-tooltip-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onfocusin={handleFocus} onfocusout={handleBlur}>{@render children()}</span><NoCompactStyle><TooltipPopup title={text} open={visible} {anchor} describe={anchor} trigger={host} {placement} {arrow} {autoAdjustOverflow} onDismiss={dismiss} onHoverChange={handlePopupHover} /></NoCompactStyle>

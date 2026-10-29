@@ -1,10 +1,12 @@
 import type { FloatButtonConfig, FloatButtonGroupConfig } from './float-button.types';
 import type { ButtonConfig } from './button.types';
+import type { RateConfig } from './rate.types';
 import { getContext, setContext } from 'svelte';
 import { ruRU, type ComponentSize, type Locale, type ThemeConfig } from './types';
 
 export interface ConfigContext {
   readonly button?: ButtonConfig;
+  readonly rate?: RateConfig;
   readonly floatButton?: FloatButtonConfig;
   readonly floatButtonGroup?: FloatButtonGroupConfig;
   readonly componentSize: ComponentSize;

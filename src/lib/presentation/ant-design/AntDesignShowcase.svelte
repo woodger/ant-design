@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RateExample from './RateExample.svelte';
   import { Button, Checkbox, CheckboxGroup, ConfigProvider, Form, FormItem, Input, Modal, Pagination, Select, Table, type TableColumn } from '$lib/components/ant-design';
   import { createShowcase, type ShowcaseMember } from './showcase.model.svelte';
   import RemoteTableExample from './RemoteTableExample.svelte';
@@ -65,6 +66,7 @@
     ['textarea', 'TextArea'],
     ['input-number', 'InputNumber'],
     ['slider', 'Slider'],
+    ['rate', 'Rate'],
     ['select', 'Select'],
     ['select-multiple', 'Select · multiple'],
     ['select-remote', 'Select · remote'],
@@ -231,7 +233,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">78 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">79 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -287,6 +289,8 @@
           <p class="section-description">Введите количество и цену, измените их стрелками клавиатуры или кнопками поля. Форма проверяет числа и рассчитывает стоимость.</p>
           <div class="panel"><InputNumberExample /></div>
         </section>
+
+        <section id="rate"><div class="section-heading"><h2>Rate</h2></div><div class="panel"><RateExample /></div></section>
 
         <section id="slider">
           <div class="section-heading"><h3>Slider</h3></div>

@@ -34,6 +34,7 @@
   --ant-margin-lg: var(--ant-size-lg);
   --ant-margin-xl: var(--ant-size-xl);
   --ant-margin-xxl: var(--ant-size-xxl);
+  --ant-rate-default-star-color: #fadb14;
 }
 
 /* Select сохраняет внешний container; compact-геометрия принадлежит ему. */
@@ -42,6 +43,15 @@
 .ant-select-compact-item.ant-select-sm { border-radius: var(--ant-border-radius-sm); }
 .ant-select-compact-item:focus-within:not(:hover) { z-index: 3; }
 .ant-select-compact-item.ant-select-disabled { z-index: 0; }
+
+.ant-rate-css-var {
+  --ant-rate-star-color: var(--ant-rate-default-star-color, #fadb14);
+  --ant-rate-line-width-focus: min(var(--ant-line-width-focus), var(--ant-line-width));
+  --ant-rate-star-size: calc(var(--ant-control-height) * 0.625);
+  --ant-rate-star-size-sm: calc(var(--ant-control-height-sm) * 0.625);
+  --ant-rate-star-size-lg: calc(var(--ant-control-height-lg) * 0.625);
+  --ant-rate-star-bg: var(--ant-color-fill-secondary);
+}
 
 .ant-steps-css-var {
   --ant-steps-nav-arrow-color: var(--ant-color-text-disabled);
@@ -119,6 +129,7 @@
 
 .ant-svelte-theme[data-ant-theme='dark'] {
   color-scheme: dark;
+  --ant-rate-default-star-color: #d8bd14;
   --ant-color-text-base: #fff;
   --ant-color-bg-base: #000;
   --ant-color-text: rgba(255, 255, 255, 0.85);

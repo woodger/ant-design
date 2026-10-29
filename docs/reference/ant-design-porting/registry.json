@@ -2098,25 +2098,97 @@
       "id": "rate",
       "name": "Rate",
       "category": "data-entry",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный перенос Rate 6.6.8 / rc-rate 1.0.1: value/half/clear, keyboard/RTL, character/render/tooltips, контексты и focus ref; расширение namespace/token engine отмечено отдельно.",
       "upstreamPath": "components/rate",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Rate",
+          "local": [
+            "Rate"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "tooltip"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/rate",
+          "range": "~1.0.1",
+          "referenceVersion": "1.0.1"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.3.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@ant-design/colors",
+          "range": "^8.0.1",
+          "referenceVersion": "8.0.1"
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "fixtures": [
+        "rate"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Rate.svelte",
+        "src/lib/components/ant-design/rate.types.ts",
+        "src/lib/components/ant-design/rate.engine.ts",
+        "src/lib/components/ant-design/rate.engine.test.ts",
+        "src/lib/components/ant-design/rate.ssr.test.ts",
+        "e2e/rate.spec.ts",
+        "src/lib/presentation/ant-design/RateExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "value",
+          "title": "Controlled/default value, count, half, clear и hover/change callbacks",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/rate.engine.test.ts",
+            "src/lib/components/ant-design/rate.ssr.test.ts",
+            "e2e/rate.spec.ts"
+          ],
+          "note": "Исходный порядок hover(undefined) перед change и suppression очищенного hover; controlled rejection, внешние fractions/count без clamp. Count сохраняет требование new Array(count): целое неотрицательное значение."
+        },
+        {
+          "id": "keyboard",
+          "title": "Клавиатура, RTL hit areas, focus/blur ref, disabled, SSR и native accessibility",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/rate.engine.test.ts",
+            "src/lib/components/ant-design/rate.ssr.test.ts",
+            "e2e/rate.spec.ts"
+          ],
+          "note": "Стрелки изменяют значение без перемещения фокуса, Enter выбирает полный star и работает при keyboard=false. Нативная кнопка добавляет Space; корневая ul получает radiogroup и видимый focus. Как rc-rate, aria-checked кумулятивный. Ручной focus/blur игнорируются при disabled; autoFocus только при mount."
+        },
+        {
+          "id": "appearance",
+          "title": "Character/characterRender Snippets, tooltips, размеры, config, темы и motion",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/rate.ssr.test.ts",
+            "e2e/rate.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "Все 21 CSS-правило Rate, >div заменён на >button; outline и reduced motion дополнены. Tooltips string/local TooltipProps используют существующий Tooltip с сохранёнными отступами; characterRender заменяет tooltip composition, как rest override Ant. ConfigProvider.rate class/style и inherited size/disabled; style владельца выше context."
+        },
+        {
+          "id": "extended-api",
+          "title": "PrefixCls, произвольный token engine и полный upstream Tooltip API",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Namespace ant-rate закреплён статическим CSS. Component tokens доступны как CSS variables; произвольный React theme/token engine пока отсутствует. Tooltips ограничены поддерживаемым публичным Svelte Tooltip API."
         }
       ]
     },

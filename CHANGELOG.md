@@ -9,6 +9,9 @@
 
 ### Fixed
 
+- Tooltip не добавляет внешний whitespace между trigger и popup: Rate с подсказками
+  сохраняет исходную ширину и отступы; публичный Tooltip API сохранён.
+
 - TreeSelect не выбирает удалённый активный узел по Enter и очищает устаревшую
   ARIA-связь после обновления данных. Controlled search восстанавливает ввод из
   searchValue при отказе владельца; удаление тегов отсутствующих узлов сохраняется.
@@ -29,6 +32,10 @@
   запрашивает отсутствующий /favicon.ico при открытии галереи.
 
 ### Added
+
+- Rate: исходные value/half/clear, hover/change callbacks, keyboard/RTL,
+  character/render snippets, tooltips, размеры, config и focus ref. Добавлены
+  полный CSS-рецепт, лицензия rc-rate, unit/SSR/browser, галерея и фикстура.
 
 - ImagePreviewGroup: registration/items, controlled current/open, source callbacks,
   prev/next/keyboard, counter и общий preview. Сохранены порядок изображений и
