@@ -70,7 +70,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Компонент | Поддерживаемое поведение |
 | --- | --- |
 | ConfigProvider | Светлая и тёмная темы, три основных цвета, компактная плотность, размеры, disabled, направление и локаль |
-| Button | Default, primary, dashed, text, link; loading, danger, block, shape; snippets для содержимого и иконки |
+| Button / ButtonGroup | Native button/href, color/variant/ghost, loading delay/icon, semantic slots, config, Group и Compact |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
@@ -125,8 +125,74 @@ Select возвращает `undefined`, множественного — `[]`; 
 `defaultValue`. Для сброса привязанного значения изменяйте состояние владельца.
 
 Button `type` задаёт оформление, `htmlType` задаёт нативный тип кнопки и по
-умолчанию равен `button`. Вариант `link` остаётся кнопкой действия; для навигации
-используйте нативную ссылку. Кнопка loading недоступна для повторного нажатия.
+умолчанию равен `button`. Вариант `link` остаётся кнопкой действия без href;
+при href создаётся нативная ссылка. Кнопка loading недоступна для повторного
+нажатия. Подробности — в разделе Button ниже.
+
+## Button / ButtonGroup
+
+Button сохраняет прежние props и native onclick; добавлены href, color/variant,
+ghost, square shape, iconPlacement (приоритетнее legacy iconPosition),
+classNames/styles и rootClassName. Children/icon принимают Snippet, текст,
+число или boolean; 0 отображается, true создаёт пустой присутствующий контент.
+ButtonProps остаётся интерфейсом native button и доступен по прежнему пути
+Button.svelte; ButtonLinkProps описывает ссылку. Компонент выводит тип currentTarget
+из href: существующий onclick без href получает HTMLButtonElement, с href —
+HTMLAnchorElement. OnClick поддержан как alias; native onclick имеет приоритет.
+Bind:nativeElement возвращает фактический button или a.
+
+```svelte
+<Button color="purple" variant="filled" iconPlacement="end">Действие</Button>
+<Button href="#details">К подробностям</Button>
+<ButtonGroup size="small"><Button>Назад</Button><Button>Вперёд</Button></ButtonGroup>
+```
+
+Полная пара color+variant имеет приоритет над type/danger. Без пары явный type
+либо danger выбирает исходную sugar-map. Отдельный variant=solid выбирает primary;
+неполные остальные пары fallback используют ConfigProvider.button либо default/
+outlined, как в коде Ant Design 6.6.8. Color включает default/primary/danger и
+13 preset colors. Ghost превращает solid в outlined и включает прозрачный фон;
+для text/link ghost не применяется. Square использует обычный border radius без
+дополнительного shape-класса. Block и размеры сохраняют прежнее поведение.
+
+Loading принимает boolean или {delay,icon}. Положительный delay откладывает
+spinner; смена delay/отмена/удаление очищают deadline. Loading.icon имеет приоритет
+над button.loadingIcon. SSR не создаёт timer и не показывает отложенный spinner.
+Согласованный v1 native button во время loading остаётся disabled и aria-busy;
+это сохраняет существующее отличие от React click guard. Для ссылки loading
+отменяет переход через preventDefault; disabled дополнительно убирает href,
+ставит aria-disabled и tabindex=-1. Enabled anchor получает tabindex=0 как upstream.
+Native button сохраняет htmlType/button/submit/reset и form-атрибуты; href не
+превращает type=link в навигацию автоматически. AutoFocus фокусирует при mount.
+
+ClassNames/styles — объект или функция от {props}; слоты root/icon/content.
+Классы объединяются. Стилевые слои: context.styles → context.style(root) →
+local styles → local style(root). ConfigProvider.button задаёт autoInsertSpace,
+shape/color/variant, loadingIcon, class/style и semantic slots. Omitted button
+наследует config; явный объект, включая {}, заменяет его целиком как в upstream.
+FloatButton может пропустить semantic slots этого config через внутренний
+_skipSemantic; обычные пользователи не должны использовать этот prop.
+
+ButtonGroup сохраняет deprecated div-композицию Button.Group. Его size имеет
+приоритет над ConfigProvider и уступает Compact и явному size кнопки. Вложенная
+группа без size возвращает fallback ConfigProvider, а не размер внешней группы.
+Направление и native Tab-порядок наследуются; новые role/keyboard shortcuts не
+добавляются. Для новых плотных групп используйте уже существующий SpaceCompact.
+
+AutoInsertSpace по умолчанию true: scalar children из ровно двух символов
+U+4E00–U+9FA5 получают пробел на SSR, если нет icon и variant не text/link.
+Svelte Snippet непрозрачен для SSR; после hydration проверяется единственный
+отрендеренный text/element и применяется исходный HOC-класс letter-spacing.
+Текст и DOM владельца не переписываются; такой Snippet сохраняет textContent без
+ASCII-пробела, в отличие от scalar children. Изменения текста наблюдаются с cleanup.
+Эта адаптация явно учитывается как partial coverage в реестре.
+
+Wave и enter/leave анимация loading icon, prefixCls и произвольные component
+Design Tokens пока отсутствуют; прежний spinner сохранён. Общий механизм тем,
+RTL, Form disabled и Compact остаётся прежним. Фикстура — ?fixture=button;
+расширенный пример — /ant-design#buttons. Unit/SSR/Chromium проверяют приоритеты,
+формы/ссылки, delay/cancel, CJK, nested config, Group/Compact и совместимость
+с Popconfirm. CSS Button уже входит в vendor/antd.css и не дублируется.
 
 ## Divider
 

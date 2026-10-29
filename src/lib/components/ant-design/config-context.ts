@@ -1,7 +1,9 @@
+import type { ButtonConfig } from './button.types';
 import { getContext, setContext } from 'svelte';
 import { ruRU, type ComponentSize, type Locale, type ThemeConfig } from './types';
 
 export interface ConfigContext {
+  readonly button?: ButtonConfig;
   readonly componentSize: ComponentSize;
   // Divider отличает явно заданный размер от общего fallback middle.
   readonly explicitComponentSize?: ComponentSize;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { ButtonConfig } from './button.types';
   import type { Snippet } from 'svelte';
   import { provideConfig, useConfig, type ConfigContext } from './config-context';
   import type { ComponentSize, Locale, ThemeConfig } from './types';
@@ -7,6 +8,7 @@
   export interface ConfigProviderProps {
     children: Snippet;
     theme?: ThemeConfig;
+    button?: ButtonConfig;
     componentSize?: ComponentSize;
     componentDisabled?: boolean;
     direction?: 'ltr' | 'rtl';
@@ -18,6 +20,7 @@
   let {
     children,
     theme,
+    button,
     componentSize,
     componentDisabled,
     direction,
@@ -28,6 +31,7 @@
 
   const parent = useConfig();
   const config: ConfigContext = {
+    get button() { return button ?? parent.button; },
     get componentSize() { return componentSize ?? parent.componentSize; },
     get explicitComponentSize() { return componentSize ?? parent.explicitComponentSize; },
     get componentDisabled() { return componentDisabled ?? parent.componentDisabled; },

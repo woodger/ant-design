@@ -27,6 +27,10 @@
 
 ### Added
 
+- Button/Group: color/variant/ghost, href, semantic slots, icon placement, delayed
+  loading/custom icon, native refs и button config. Сохранены формы, Compact и
+  native disabled loading; добавлены unit/SSR/Chromium, отдельная фикстура и галерея.
+
 - Timeline: items, mode/placement, pending/loading/reverse, colors, titleSpan,
   horizontal и semantic styles поверх общих Steps. Сохранены passive ol/li,
   SSR, native content и keyed focus; добавлены CSS-рецепт, проверки и галерея.

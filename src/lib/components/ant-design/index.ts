@@ -21,6 +21,8 @@ export { default as Descriptions } from './Descriptions.svelte';
 export type { DescriptionsProps, DescriptionsItem, DescriptionsContent, DescriptionsSlots, DescriptionsCellSlots } from './descriptions.types';
 export { default as ConfigProvider } from './ConfigProvider.svelte';
 export { default as Button } from './Button.svelte';
+export { default as ButtonGroup } from './ButtonGroup.svelte';
+export type { ButtonLinkProps, ButtonGroupProps, ButtonConfig, ButtonType, ButtonVariant, ButtonColor, ButtonShape, ButtonContent, ButtonLoading, ButtonSlots, ButtonSemanticProps } from './button.types';
 export { default as Input } from './Input.svelte';
 export { default as InputNumber } from './InputNumber.svelte';
 export { default as Slider } from './Slider.svelte';

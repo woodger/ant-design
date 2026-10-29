@@ -273,5 +273,10 @@
     "id": "timeline",
     "module": "./TimelineFixtures.svelte",
     "root": "timeline-fixture"
+  },
+  {
+    "id": "button",
+    "module": "./ButtonFixtures.svelte",
+    "root": "button-fixture"
   }
 ]

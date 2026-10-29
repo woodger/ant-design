@@ -24,6 +24,7 @@
   import EmptyExample from './EmptyExample.svelte';
   import ResultExample from './ResultExample.svelte';
   import StepsVariantsExample from './StepsVariantsExample.svelte';
+  import ButtonFeaturesExample from './ButtonFeaturesExample.svelte';
   import TimelineExample from './TimelineExample.svelte';
   import StepsExample from './StepsExample.svelte';
   import TagExample from './TagExample.svelte';
@@ -205,7 +206,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">62 компонента</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">63 компонента</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -238,6 +239,7 @@
             <p class="example-label">Состояния</p>
             <div class="row"><Button type="primary" loading>Загрузка</Button><Button disabled>Недоступна</Button><Button danger onclick={() => demo.showAction('Нажата кнопка опасного действия.')}>Удалить</Button><Button type="primary" shape="round" onclick={() => demo.showAction('Нажата скруглённая кнопка.')}>Скруглённая</Button></div>
           </div>
+          <div class="panel"><ButtonFeaturesExample /></div>
           <pre class="code"><code>{buttonExample}</code></pre>
         </section>
 

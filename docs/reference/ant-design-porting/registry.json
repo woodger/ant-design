@@ -17,7 +17,7 @@
       "name": "Button",
       "category": "general",
       "scope": "target",
-      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "scopeReason": "Автономный полный перенос: аудит Button, расширение API и deprecated Group с сохранением native loading v1.",
       "upstreamPath": "components/button",
       "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
@@ -26,38 +26,98 @@
           "local": [
             "Button"
           ]
+        },
+        {
+          "upstream": "Button.Group",
+          "local": [
+            "ButtonGroup"
+          ]
         }
       ],
       "dependencies": [
         "config-provider",
         "space"
       ],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@rc-component/motion",
+          "range": "^1.3.3",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "button"
+      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md"
+        "src/lib/components/ant-design/Button.svelte",
+        "src/lib/components/ant-design/ButtonGroup.svelte",
+        "src/lib/components/ant-design/button.engine.test.ts",
+        "src/lib/components/ant-design/button.ssr.test.ts",
+        "e2e/button.spec.ts",
+        "src/lib/presentation/ant-design/ButtonFeaturesExample.svelte"
       ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Native action/link, type/color/variant, disabled/loading и семантика",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+          "evidence": [
+            "src/lib/components/ant-design/button.engine.test.ts",
+            "src/lib/components/ant-design/button.ssr.test.ts",
+            "e2e/button.spec.ts"
+          ],
+          "note": "Сохранён type=link как action без href и native disabled loading v1; href создаёт a с guard и исходными disabled tabIndex/href. Href выводит anchor-тип callback, прежний ButtonProps остаётся native."
+        },
+        {
+          "id": "source-api",
+          "title": "Ghost, shape, icon placement, loading delay/icon, Group и button config",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/button.engine.test.ts",
+            "src/lib/components/ant-design/button.ssr.test.ts",
+            "e2e/button.spec.ts"
+          ],
+          "note": "Исходный приоритет полных/неполных color+variant, локальных/context semantic слоёв; Group size ниже Compact/explicit. Вложенный явно заданный config заменяет родительский целиком."
         },
         {
           "id": "compact-context",
           "title": "Размеры и классы Space.Compact",
           "state": "supported",
-          "requiredForV1": false,
+          "requiredForV1": true,
           "evidence": [
             "src/lib/components/ant-design/space-compact.ssr.test.ts",
             "e2e/space-compact.spec.ts"
           ],
-          "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
+          "note": "Нативная структура и существующая геометрия Compact сохранены."
+        },
+        {
+          "id": "cjk-snippet",
+          "title": "Автопробел для двух китайских символов",
+          "state": "partial",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/button.engine.test.ts",
+            "src/lib/components/ant-design/button.ssr.test.ts",
+            "e2e/button.spec.ts"
+          ],
+          "note": "Scalar children воспроизводит SSR-пробел. Opaque Snippet использует проверку single rendered node и HOC CSS-spacing после hydration; его textContent не переписывается, SSR не анализирует Snippet."
+        },
+        {
+          "id": "motion-global",
+          "title": "Wave, loading icon enter/leave, prefixCls и произвольные component tokens",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Сохранён прежний мгновенный spinner; задержка loading/cancel уже перенесена. Подробный перенос Wave/motion и общего token/prefix механизма ещё предстоит."
         }
       ]
     },
@@ -3789,6 +3849,17 @@
             "e2e/theme.spec.ts"
           ],
           "note": "Закреплённые default/compact size maps, локальное разрешение aliases во вложенных provider, explicit compact=false и inline token override. Полный token engine и остальные compact-map tokens ещё требуют аудита."
+        },
+        {
+          "id": "button-config",
+          "title": "Button defaults и semantic config",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/button.ssr.test.ts",
+            "e2e/button.spec.ts"
+          ],
+          "note": "Color/variant/shape, loadingIcon, autoInsertSpace и class/style/semantic slots. Omitted наследует, явный объект заменяет целиком как upstream; общий аудит ConfigProvider продолжается."
         }
       ]
     },
