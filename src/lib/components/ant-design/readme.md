@@ -2234,7 +2234,8 @@ MIT-лицензия уже включена в vendor/LICENSE.ant-design-icons.
 ClassNames/styles принимают объект или функцию от {props}; root и item* слоты
 совпадают с upstream. Item classNames/styles используют root/wrapper/icon/section/
 header/title/subtitle/content/rail; локальные слои перекрывают общие, item.style
-перекрывает styles.root. Root style имеет приоритет над styles.root.
+перекрывает styles.root. Root style имеет приоритет над styles.root. Стрелки navigation наследуют
+colorTextDisabled активной темы; прямой --ant-steps-nav-arrow-color имеет приоритет.
 Item.onClick вызывается перед onChange, включая повторный выбор current;
 в disabled оба callback подавлены. Description служит fallback для content.
 

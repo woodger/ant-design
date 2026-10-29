@@ -104,6 +104,17 @@ test('Steps semantic styles, dark compact tokens, RTL and vertical titles remain
   await expect(root.locator('li').first()).toHaveCSS('color', 'rgb(0, 128, 0)');
 });
 
+test('Steps navigation arrows inherit light and dark disabled colors and permit inline token overrides', async ({ page }) => {
+  await page.getByLabel('Steps type', { exact: true }).selectOption('navigation');
+  const root = page.locator('#fixture-steps-variants');
+  const arrow = () => root.locator('li').first().evaluate(node => getComputedStyle(node, '::after').borderTopColor);
+  await expect.poll(arrow).toBe('rgba(0, 0, 0, 0.25)');
+  await page.getByLabel('Dark Steps variants', { exact: true }).check();
+  await expect.poll(arrow).toBe('rgba(255, 255, 255, 0.25)');
+  await root.evaluate(node => node.style.setProperty('--ant-steps-nav-arrow-color', 'rgb(1, 2, 3)'));
+  await expect.poll(arrow).toBe('rgb(1, 2, 3)');
+});
+
 test('Steps variants gallery hydrates selection and navigation without changing the existing wizard', async ({ page }) => {
   await page.goto('/ant-design#steps');
   const section = page.locator('#steps');

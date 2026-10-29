@@ -9,6 +9,9 @@
 
 ### Fixed
 
+- Стрелки Steps navigation наследуют disabled color активной light/dark темы;
+  прямое переопределение CSS-переменной сохраняется.
+
 - Compact spacing использует закреплённую size map Ant Design для padding,
   margin и content aliases; вложенный compact=false восстанавливает обычные
   интервалы, inline overrides сохраняются.

@@ -43,6 +43,10 @@
 .ant-select-compact-item:focus-within:not(:hover) { z-index: 3; }
 .ant-select-compact-item.ant-select-disabled { z-index: 0; }
 
+.ant-steps-css-var {
+  --ant-steps-nav-arrow-color: var(--ant-color-text-disabled);
+}
+
 .ant-timeline-css-var {
   --ant-timeline-tail-color: var(--ant-color-split);
   --ant-timeline-tail-width: var(--ant-line-width-bold);

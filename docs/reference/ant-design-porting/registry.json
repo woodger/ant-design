@@ -1099,7 +1099,7 @@
             "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
             "e2e/steps-variants.spec.ts"
           ],
-          "note": "Native item buttons, rich inline Tooltip, root/item styles, iconRender/progressDot через Snippet и components.Icon. Title/content принимают также число/boolean."
+          "note": "Native item buttons, rich inline Tooltip, root/item styles, iconRender/progressDot через Snippet и components.Icon. Title/content принимают также число/boolean. Navigation arrow наследует colorTextDisabled активной темы с сохранением inline override."
         },
         {
           "id": "collapsed-progress",
