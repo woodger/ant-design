@@ -27,6 +27,11 @@
 
 ### Added
 
+- Tree: treeData, controlled/default раскрытие и выбор, checkable/checkStrictly
+  с исходной conduction, async loadData/loadedKeys, retry, клавиатура и ARIA.
+  Добавлены showLine/icons/title snippets, темы/RTL/Form disabled, галерея,
+  изолированная фикстура и unit/SSR/browser-проверки.
+
 - Upload/UploadDragger: controlled/default списки, beforeUpload/LIST_IGNORE,
   ручной сценарий, XHR multipart и customRequest, drop/accept, статусы, preview
   и удаление с veto/abort. Перенесены исходные CSS/icons/thumbnail, добавлены

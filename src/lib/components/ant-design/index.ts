@@ -1,3 +1,5 @@
+export { default as Tree } from './Tree.svelte';
+export type { TreeProps, TreeDataNode, TreeEventNode, TreeKey, TreeCheckedKeys, TreeCheckInfo } from './tree.types';
 export { default as Upload } from './Upload.svelte';
 export { default as UploadDragger } from './UploadDragger.svelte';
 export { UPLOAD_LIST_IGNORE } from './upload.engine';

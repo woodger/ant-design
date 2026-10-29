@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, Upload, UploadDragger, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, Upload, UploadDragger, Tree, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -78,6 +78,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | DatePicker | Single Dayjs date/datetime, input/calendar/time, confirmation, clear, ограничения, locale и native формы |
 | RangePicker | Пара Dayjs, связанные календари, время и подтверждение границ, allowEmpty/disabled, presets и hover |
 | Upload / UploadDragger | Выбор/drop, controlled list, beforeUpload, XHR/customRequest, статусы и удаление |
+| Tree | TreeData, раскрытие/выбор/отметки, strict/conduction, loadData, клавиатура и showLine |
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
@@ -2463,6 +2464,97 @@ Form/нативная отправка и UTC в разных browser zones. О�
 mask, render hooks, полный semantic/config/motion/container API остаются пробелами
 семейства; наличие RangePicker не означает полного покрытия React DatePicker.
 
+## Tree
+
+Tree переносит Ant Design 6.6.8 и @rc-component/tree 1.4.0. Чистые engines отвечают
+за flatten/родителей, исходную checkbox conduction и async load lifecycle.
+React/rc-tree runtime не устанавливаются; лицензия сохранена в vendor/LICENSE.rc-tree.
+CSS-рецепт извлекает 98 правил из закреплённого antd.css, исключая TreeSelect и
+collapse motion. Иконки соответствуют @ant-design/icons-svg 4.6.0.
+
+```svelte
+<script lang="ts">
+  import { Tree, type TreeKey, type TreeCheckedKeys } from '$lib/components/ant-design';
+  const nodes = [{key:'docs',title:'Документы',children:[{key:'intro',title:'Введение'}]}];
+  let expanded = $state<TreeKey[]>(['docs']);
+  let checked = $state<TreeKey[] | TreeCheckedKeys>([]);
+</script>
+<Tree treeData={nodes} aria-label="Документы" checkable expandedKeys={expanded}
+  checkedKeys={checked} onExpand={keys => { expanded = keys; }}
+  onCheck={keys => { checked = keys; }} />
+```
+
+TreeData — массив узлов со стабильным уникальным key (string/number/bigint), title
+(string/number/Snippet<[TreeDataNode]>) и children. Ключи должны быть уникальны и
+после String(key), как в upstream entity index. Поддержаны disabled,
+disableCheckbox, checkable, selectable, isLeaf, icon и локальные class/style.
+ExpandedKeys/selectedKeys/checkedKeys/loadedKeys — controlled props; default-пары
+инициализируют внутреннее состояние. Владелец может отклонить callback. Массивы
+ключей и treeData обновляются новым значением, как в исходном controlled API.
+
+DefaultExpandParent=true раскрывает родителей начальных expanded keys до disabled
+границы. AutoExpandParent=false по умолчанию; true повторяет раскрытие родителей
+при изменении controlled keys. Чтобы разрешить сворачивание предка при сохранённом
+ключе потомка, отключите autoExpandParent. DefaultExpandAll применяется только
+при инициализации к узлам с детьми; данные, поступившие позже, сами по себе не
+расширяют этот начальный набор.
+
+Выбор строки независим от checkbox. Multiple переключает отдельные ключи без
+обязательного Ctrl и не добавляет range selection. Selectable=false переводит
+клик заголовка на отметку. Node.selectable перекрывает tree selectable. В обычном
+checkable-режиме отметки распространяются вниз и вверх; disabled,
+disableCheckbox и checkable=false останавливают conduction. Disabled-потомки
+не мешают полноте отметки разрешённого родителя. Снятие отметки использует исходный
+fill/clean algorithm; дети, добавленные в отмеченного родителя, получают отметку.
+CheckStrictly=true разрывает связи и onCheck возвращает {checked,halfChecked}.
+Без него onCheck возвращает массив и info.halfCheckedKeys/checkedNodesPositions.
+CheckedKeys в strict режиме принимает также объект с halfChecked.
+
+OnExpand(keys,{expanded,node,nativeEvent}), onSelect(keys,{event,selected,node,
+selectedNodes,nativeEvent}), onCheck(keys,{event,checked,node,checkedNodes,...})
+сохраняют отдельные события. Node включает исходные данные, pos и flags
+expanded/selected/checked/halfChecked/loaded/loading/active. Mouse callback содержит
+нативный event; keyboard callbacks соответствуют внутреннему пути rc-tree и могут
+не иметь nativeEvent. Дополнительно поддержаны onClick/onDoubleClick/onRightClick
+и onActiveChange. Состояние node в callback относится к узлу до действия.
+
+LoadData(node) возвращает PromiseLike. Дети добавляются потребителем в treeData;
+компонент их не выдумывает. Loading дедуплицируется по ключу; pointer switcher ждёт завершения загрузки,
+но клавиатура позволяет свернуть pending-ветку. OnLoad(keys,{event:'load',
+node}) вызывается до внутреннего обновления loadedKeys. При controlled loadedKeys
+владелец принимает новый набор сам. Загрузка запускается и для изначально раскрытой
+видимой незагруженной ветки. Узел с уже имеющимися детьми не загружается повторно;
+isLeaf=true запрещает загрузку, isLeaf=false сохраняет switcher даже у пустой
+загруженной ветки. Rejection снимает loading и сворачивает uncontrolled ветку,
+не вызывая onLoad; повторное раскрытие позволяет retry. После 10 неудачных попыток
+загрузка прекращается, ключ помечается загруженным без успешного onLoad. Отдельного
+onError/публичного error-state в исходном Tree нет: обработка ошибки остаётся в
+loadData потребителя. Результаты после unmount не меняют состояние и callbacks.
+
+Клавиатура использует один tab stop на role=tree и aria-activedescendant. Up/Down
+перемещаются циклически по видимым строкам, Home/End — к краям. Left сворачивает
+либо переходит к родителю, Right раскрывает либо переходит к первому ребёнку;
+эти действия не инвертируются в RTL, как в rc-tree. Enter раскрывает ветку либо
+однократно выбирает/отмечает лист; Space переключает отметку, а без checkable —
+выбор. Disabled-строки остаются в навигации. Disabled блокирует выбор/отметки,
+но switcher допускает раскрытие мышью, как upstream; global disabled отключает
+клавиатурную обработку. Native buttons имеют tabindex=-1; роли treeitem/checkbox
+и level/posinset/setsize отражают логическое дерево. Bind:nativeElement даёт root;
+bind:this предоставляет focus(options)/blur().
+
+BlockNode, showLine и showLine={{showLeafIcon:true}}, showIcon, icon,
+switcherIcon/switcherLoadingIcon, titleRender и filterTreeNode поддержаны.
+Иконки и заголовки задаются snippets с node-аргументом; filterTreeNode подсвечивает
+узел и не удаляет его из дерева. RU/EN подписи switcher берутся из Locale.tree;
+темы, compact, RTL, ConfigProvider/Form disabled наследуют существующие контексты.
+Height ограничивает native scroll viewport; виртуализация пока не применяется.
+SSR рендерит видимые строки без загрузки и browser APIs.
+
+DirectoryTree, drag/drop, virtual/scrollTo, expandAction, fieldNames, полный generic
+node API, TreeNode children API, per-node switcherIcon, showLeafIcon snippet,
+semantic/config/token API и collapse/appear анимации ещё не перенесены. Реестр
+отделяет этот объём от полного React API Tree.
+
 ## Upload / UploadDragger
 
 Upload переносит Ant Design 6.6.8 и AjaxUploader/request из @rc-component/upload
@@ -4097,7 +4189,7 @@ Popover и SSR; модель — нормализацию имён, Unicode-ин
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
 расширенные режимы DatePicker,
-Tree/TreeSelect, расширения Upload, Select tags, Form.List, вложенные name paths,
+TreeSelect и расширения Tree/Upload, Select tags, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.
 

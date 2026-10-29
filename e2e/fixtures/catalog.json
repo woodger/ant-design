@@ -309,5 +309,10 @@
     "id": "upload",
     "module": "./UploadFixtures.svelte",
     "root": "upload-fixture"
+  },
+  {
+    "id": "tree",
+    "module": "./TreeFixtures.svelte",
+    "root": "tree-fixture"
   }
 ]

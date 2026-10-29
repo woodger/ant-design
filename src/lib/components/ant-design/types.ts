@@ -10,6 +10,7 @@ export interface ThemeConfig {
 }
 
 export interface Locale {
+  tree?: { expand?: string; collapse?: string };
   upload?: UploadLocale;
   datePicker?: DatePickerLocale;
   okText: string;
@@ -96,6 +97,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  tree: { expand: 'Развернуть', collapse: 'Свернуть' },
   upload: { uploading: 'Загрузка...', removeFile: 'Удалить файл', uploadError: 'При загрузке произошла ошибка', previewFile: 'Предпросмотр файла', downloadFile: 'Загрузить файл' },
   datePicker: datePickerRuRU,
   layout: { expand: 'Развернуть боковую панель', collapse: 'Свернуть боковую панель' },
@@ -150,6 +152,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  tree: { expand: 'Expand', collapse: 'Collapse' },
   upload: { uploading: 'Uploading...', removeFile: 'Remove file', uploadError: 'Upload error', previewFile: 'Preview file', downloadFile: 'Download file' },
   datePicker: datePickerEnUS,
   layout: { expand: 'Expand sidebar', collapse: 'Collapse sidebar' },

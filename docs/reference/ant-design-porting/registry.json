@@ -3467,25 +3467,98 @@
       "id": "tree",
       "name": "Tree",
       "category": "data-display",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первый этап Tree по Ant Design 6.6.8 и rc-tree 1.4.0: treeData, состояния, conduction, async loading и клавиатура; virtual/drag/DirectoryTree и расширенный API отдельно.",
       "upstreamPath": "components/tree",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Tree",
+          "local": [
+            "Tree"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "form"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/tree",
+          "range": "~1.4.0",
+          "referenceVersion": "1.4.0"
+        },
+        {
+          "name": "@ant-design/icons",
+          "range": "^6.3.4",
+          "referenceVersion": "6.3.4"
+        }
+      ],
+      "priority": "p1",
+      "effort": "L",
+      "fixtures": [
+        "tree"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Tree.svelte",
+        "src/lib/components/ant-design/tree.engine.test.ts",
+        "src/lib/components/ant-design/tree-load.engine.test.ts",
+        "src/lib/components/ant-design/tree.ssr.test.ts",
+        "e2e/tree.spec.ts",
+        "src/lib/presentation/ant-design/TreeExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "TreeData, controlled/default раскрытие, выбор и checkbox conduction",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/tree.engine.test.ts",
+            "src/lib/components/ant-design/tree.ssr.test.ts",
+            "e2e/tree.spec.ts"
+          ],
+          "note": "Stable key, независимые selection/check, multiple, checkStrictly, halfChecked, disabled/disableCheckbox/checkable границы, defaultExpandParent/All и autoExpandParent. Исходный conduct fill/clean и события с исходными узлами/позициями. Дети, добавленные в отмеченного родителя, учитываются повторной conduction."
+        },
+        {
+          "id": "async",
+          "title": "LoadData/loadedKeys, loading, отказ и повтор загрузки",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/tree-load.engine.test.ts",
+            "src/lib/components/ant-design/tree.ssr.test.ts",
+            "e2e/tree.spec.ts"
+          ],
+          "note": "Загрузка при раскрытии/начальном expanded; дедупликация pending, loadedKeys/onLoad, дети принадлежат потребителю. Rejection снимает loading и сворачивает uncontrolled ветку без отдельного onError; повтор до исходного лимита 10. После unmount результаты игнорируются."
+        },
+        {
+          "id": "keyboard",
+          "title": "Клавиатура, native focus/ARIA, темы, RTL, Form disabled и SSR",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/tree.ssr.test.ts",
+            "e2e/tree.spec.ts"
+          ],
+          "note": "Один tree tab stop и aria-activedescendant, логические level/pos/setsize, Up/Down/Home/End, physical Left/Right даже в RTL, Enter/Space. Disabled не исключает строки из навигации и сохраняет pointer expansion switcher. Native buttons вместо React span handlers; showLine/icons/titleRender/filterTreeNode, 98 CSS-правил без TreeSelect/collapse motion."
+        },
+        {
+          "id": "virtual-drag-directory",
+          "title": "Virtual scroll, drag/drop и DirectoryTree",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Сейчас рендерятся все видимые строки, height задаёт native scroll viewport; virtual list/scrollTo и drag/drop, expandAction и DirectoryTree не перенесены."
+        },
+        {
+          "id": "extended-api",
+          "title": "FieldNames, полный generic/ref/semantic/config API и motion",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Нет fieldNames, TreeNode children API, полного generic data API, per-node switcherIcon, showLeafIcon snippet, onMouseEnter/Leave node events, semantic classNames/styles и ConfigProvider.tree/token engine. Ref предоставляет focus/blur и bind:nativeElement. Collapse/appear motion и полный rc-tree ref отдельно."
         }
       ]
     },

@@ -485,5 +485,29 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Upload: text, picture, cards, drag и RTL; motion lifecycle переносится отдельно.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "tree",
+    "output": "src/lib/components/ant-design/vendor/tree.css",
+    "expectedRules": 98,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-tree(?![\\w])"
+    ],
+    "exclude": [
+      "\\.ant-motion-collapse",
+      "^(?:\\.css-var-_R_0_)?\\.ant-tree-select"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-tree(?![-\\w])",
+        "replacement": ".ant-tree-css-var"
+      },
+      {
+        "pattern": "\\.ant-tree(?![-\\w])",
+        "replacement": ".ant-tree:where(.ant-tree-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Tree: базовые nodes/checkbox/line/RTL; collapse motion пока исключён.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]
