@@ -27,7 +27,7 @@ describe('Tooltip server rendering', () => {
   });
 
   it('renders zero as text and permits an empty title', () => {
-    expect(render(Tooltip, { props: { title: 0, children } }).body).toContain('>0</span>');
+    expect(render(Tooltip, { props: { title: 0, children } }).body.replace(/<!--.*?-->/g, '')).toContain('>0</span>');
     expect(render(Tooltip, { props: { title: null, children } }).body).toContain('role="tooltip"');
   });
 

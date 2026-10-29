@@ -16,8 +16,8 @@
   let popupHovered = false;
   let dismissed = false;
   let active = true;
-  let text = $derived(title === undefined || title === null ? '' : String(title));
-  let available = $derived(Boolean(text.trim()));
+  let text = $derived(typeof title === 'function' ? title : title === undefined || title === null ? '' : String(title));
+  let available = $derived(typeof text === 'function' || Boolean(text.trim()));
   let visible = $derived(available && (open ?? initialDefault));
 
   $effect(() => {

@@ -948,7 +948,9 @@ Escape скрывает подсказку, сохраняя фокус и чи�
 </Tooltip>
 ```
 
-Title принимает строку, число или null. Пустая строка, пробелы, undefined и null
+Title принимает строку, число, пассивный Snippet или null. Snippet рендерится
+внутри изолированного popup-контекста; пустоту opaque Snippet компонент не
+определяет заранее. Пустая строка, пробелы, undefined и null
 отключают показ и связь описания; число 0 отображается. Текст экранируется.
 Children — snippet с одним основным DOM-элементом, например Button, Input или
 нативной кнопкой. Этот элемент служит anchor и получает aria-describedby.
@@ -2153,7 +2155,9 @@ Steps показывает этапы процесса. Current управляе
 шага, disabled и внешние обновления не вызывают callback. Без onChange список
 пассивный и не создаёт остановок Tab. Привязка bind:current не используется.
 
-Items имеют обязательные стабильные строковые key и title. При повторении key
+Существующий тип StepsItem сохраняет стабильные строковые key и title.
+StepsDataItem дополнительно принимает необязательные/numeric key и title;
+для отсутствующих ключей используются позиции. При повторении string key
 остаётся первое вхождение; индексы относятся к этому нормализованному списку.
 Пустой список допустим. Конечное current округляется вниз и ограничивается
 диапазоном 0..items.length; NaN/Infinity дают 0. Current=items.length отмечает
@@ -2166,7 +2170,9 @@ items.status имеет приоритет над вычисленным сос�
 выбор и не меняет статус или current. Корневой disabled наследует
 ConfigProvider.componentDisabled; false явно снимает его, сохраняя items.disabled.
 
-Title/subTitle/content принимают string или Snippet; icon — декоративный Snippet.
+Существующий StepsItem принимает string или Snippet в title/subTitle/content;
+новый StepsDataItem также принимает number/boolean/null. Ноль отображается,
+boolean не создаёт текст. Icon может быть текстом, числом или декоративным Snippet.
 Строки экранируются. Заголовок и подзаголовок находятся в нативной кнопке выбора
 и должны содержать только текст/phrasing-разметку без вложенных controls.
 Content находится отдельно и допускает блочную разметку; панели с полями
@@ -2202,10 +2208,49 @@ ConfigProvider. Отсутствующие значения дополняютс
 сохраняют данные; reset/unmount отменяют ожидание и игнорируют поздние результаты.
 Модель отправки общая с примером Result. Сетевых запросов и сохранения в storage нет.
 
-Первая версия использует type=default, variant=filled и titlePlacement=horizontal.
-Dot/navigation/inline/panel, outlined, percent, initial, maxCount, ellipsis,
-iconRender, semantic classNames/styles и устаревшие direction/description/
-labelPlacement/progressDot отложены.
+Type поддерживает default/dot/inline/navigation/panel, variant — filled/outlined.
+Panel всегда горизонтальный. Dot/inline используют вертикальные заголовки в
+горизонтальном списке; navigation сохраняет горизонтальные заголовки. Явный
+orientation имеет приоритет над legacy direction; titlePlacement — над
+labelPlacement. ProgressDot включает dot только без другого явного type.
+Inline скрывает content в строке и показывает его в Tooltip по hover/focus;
+Snippet title сохраняет rich content, Escape закрывает tooltip без смены фокуса.
+Wrapper Tooltip находится внутри li, сохраняя нативную ol/li-семантику.
+
+Initial сдвигает нумерацию, current и onChange в исходное пространство индексов;
+согласованная нормализация current и first-wins keys сохранена. MaxCount>=3
+ограничивает число реальных видимых шагов: первый, последний, текущий и ближайшие
+соседи по исходному приоритету. Разрывы заменяются disabled ellipsis; сами ellipsis
+не входят в maxCount. Номер и callback относятся к исходному item. Status ellipsis
+сохраняет error скрытого диапазона либо finish/wait по current. Ellipsis=true
+отдельно включает CSS-обрезку текста; offset задаёт начальную inline flex-cell.
+
+Percent добавляет SVG progressbar к process-номеру, с исходной формулой dasharray;
+в inline percent игнорируется. Progressbar доступен assistive technology,
+декоративные иконки и стрелки panel скрыты. Новая ellipsis-иконка — точный SVG
+@ant-design/icons-svg 4.6.0 (git 7f2516ac91226d2b41f93b35cb5197c8d94f7189),
+MIT-лицензия уже включена в vendor/LICENSE.ant-design-icons.
+
+ClassNames/styles принимают объект или функцию от {props}; root и item* слоты
+совпадают с upstream. Item classNames/styles используют root/wrapper/icon/section/
+header/title/subtitle/content/rail; локальные слои перекрывают общие, item.style
+перекрывает styles.root. Root style имеет приоритет над styles.root.
+Item.onClick вызывается перед onChange, включая повторный выбор current;
+в disabled оба callback подавлены. Description служит fallback для content.
+
+IconRender — Snippet<[originalIcon, info]>, где info содержит index/active/item/
+components.Icon. Можно отрендерить исходный Snippet или использовать переданный
+Svelte Icon-компонент. Legacy progressDot принимает аналогичный Snippet с
+index/status/title/content/description; iconRender имеет приоритет.
+Bind:nativeElement возвращает ol; rootClassName добавляется к его class.
+
+Сохранены согласованные отличия v1 от React: нативные кнопки внутри именованного
+списка, keyed focus recovery, clamp current, responsive-порог 532px (исходный
+useBreakpoint версии 6.6.8 использует xs), componentDisabled и locale.steps.
+Произвольные prefixCls/component config/tokens и Wave ещё не перенесены.
+Новые сценарии находятся в ?fixture=steps-variants и втором примере #steps;
+unit/SSR/Chromium проверяют layouts, collapse/index mapping, render Snippets,
+rich tooltip и доступность процента.
 
 ## Tag и CheckableTag
 
@@ -3712,13 +3757,14 @@ SVG включены в исходники и покрываются сущес�
 ResultImage.svelte переносит геометрию и цвета es/result/unauthorized.js,
 noFound.js и serverError.js: добавлены viewBox и декоративная семантика,
 удалены SVG title. Новая лицензия для этих SVG не требуется.
-[vendor/steps.css](./vendor/steps.css) содержит 66 правил default/filled Steps
-из того же архива. Из комбинированных селекторов исключены отложенные варианты;
+[vendor/steps.css](./vendor/steps.css) содержит все 147 правил Steps
+из того же архива; воспроизводится рецептом steps. Варианты сохранены;
 корни ограничены :where(.ant-steps-css-var), role-button selectors адаптированы
 к классу интерактивного шага. Declarations сохранены. Steps.svelte адаптирует
 структуру es/steps и нативные кнопки, локаль, responsive и reduced motion;
 steps.dom.ts восстанавливает фокус шагов и использует общий feedback.dom.ts
-при unmount. React/@rc-component зависимости, новые иконки и лицензии не добавлены.
+при unmount. React/@rc-component зависимости не добавлены; ellipsis SVG
+использует существующую MIT-лицензию icons.
 [vendor/tag.css](./vendor/tag.css) содержит 85 правил Tag/CheckableTag из того
 же архива: ссылки, группа и селектор DatePicker исключены; корни ограничены
 :where(.ant-tag-css-var). Declarations сохранены. Tag.svelte и CheckableTag.svelte

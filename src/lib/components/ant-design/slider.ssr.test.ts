@@ -76,7 +76,7 @@ describe('Slider server rendering', () => {
   it('renders formatted tooltip text hidden until hydration and accepts placement and arrow options', () => {
     const { body } = render(Slider, { props: { value: 125, tooltip: { open: true, formatter: (value) => `${value}%`, placement: 'bottom', arrow: false } } });
 
-    expect(body).toContain('>100%</span>');
+    expect(body.replace(/<!--.*?-->/g, '')).toContain('>100%</span>');
     expect(body).toContain('ant-tooltip-placement-bottom');
     expect(body).toMatch(/role="tooltip"[^>]*\shidden(?:[\s=>])/);
     expect(body).not.toContain('class="ant-tooltip-arrow');
@@ -86,7 +86,7 @@ describe('Slider server rendering', () => {
     const format = () => 'Custom value';
 
     expect(render(Slider, { props: { value: 20, disabled: true, tooltip: { formatter: format } } }).body).not.toContain('Custom value');
-    expect(render(Slider, { props: { value: 20, tooltip: { formatter: null } } }).body).not.toContain('>20</span>');
-    expect(render(Slider, { props: { value: 20, tooltip: false } }).body).not.toContain('>20</span>');
+    expect(render(Slider, { props: { value: 20, tooltip: { formatter: null } } }).body.replace(/<!--.*?-->/g, '')).not.toContain('>20</span>');
+    expect(render(Slider, { props: { value: 20, tooltip: false } }).body.replace(/<!--.*?-->/g, '')).not.toContain('>20</span>');
   });
 });

@@ -103,6 +103,7 @@ export type { SkeletonLocale } from './types';
 export type { EmptyProps, EmptyImage, EmptyDescription } from './empty.types';
 export type { ResultProps, ResultStatus, ResultContent } from './result.types';
 export type { StepsProps, StepsItem, StepsStatus, StepsOrientation, StepsSize, StepsContent } from './steps.types';
+export type { StepsDataItem, StepsDataContent, StepsItemSlots, StepsSemanticSlots, StepsType, StepsIconInfo, StepsIconRender, StepsProgressDotRender } from './steps-expanded.types';
 export type { StepsLocale } from './types';
 export type { TagProps, TagColor, TagPresetColor, TagStatusColor, TagVariant, CheckableTagProps } from './tag.types';
 export type { BadgeProps, BadgeStatus, BadgeColor, BadgeSize, BadgeText, BadgeContext } from './badge.types';

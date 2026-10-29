@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { untrack } from 'svelte';
   import { useConfig } from './config-context';
   import { connectTooltipDescription } from './tooltip.dom';
@@ -6,7 +7,7 @@
   import type { TooltipPlacement } from './tooltip.types';
 
   let { title, open, anchor, describe, trigger, placement = 'top', arrow = true, autoAdjustOverflow = true, onDismiss, onHoverChange }: {
-    title: string;
+    title: string | Snippet;
     open: boolean;
     anchor?: Element;
     describe?: Element;
@@ -23,7 +24,7 @@
   const id = `ant-tooltip-${generatedId}`;
   let popup = $state<HTMLSpanElement>();
   let actualPlacement = $state(untrack(() => placement));
-  let available = $derived(Boolean(title.trim()));
+  let available = $derived(typeof title === 'function' || Boolean(title.trim()));
 
   $effect(() => {
     if (describe && available) return connectTooltipDescription(describe, id);
@@ -47,5 +48,5 @@
 
 <span bind:this={popup} {id} role="tooltip" popover="manual" hidden dir={config.direction} class={['ant-tooltip', 'ant-tooltip-css-var', `ant-tooltip-placement-${open ? actualPlacement : placement}`, config.direction === 'rtl' && 'ant-tooltip-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') onHoverChange?.(true); }} onpointerleave={() => onHoverChange?.(false)}>
   {#if arrow}<span class="ant-tooltip-arrow" aria-hidden="true"></span>{/if}
-  <span class="ant-tooltip-container" tabindex="-1">{title}</span>
+  <span class="ant-tooltip-container" tabindex="-1">{#if typeof title === 'function'}{@render title()}{:else}{title}{/if}</span>
 </span>

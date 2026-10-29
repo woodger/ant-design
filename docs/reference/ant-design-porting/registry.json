@@ -1028,9 +1028,9 @@
       "name": "Steps",
       "category": "navigation",
       "scope": "target",
-      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "scopeReason": "Автономный полный перенос: расширение существующих Steps с сохранением нативного v1 API и фокуса.",
       "upstreamPath": "components/steps",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Steps",
@@ -1040,34 +1040,86 @@
         }
       ],
       "dependencies": [
-        "config-provider"
+        "config-provider",
+        "tooltip"
       ],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/steps",
+          "range": "~1.2.3",
+          "referenceVersion": "1.2.3"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@ant-design/icons",
+          "range": "^6.3.4",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
       "fixtures": [
-        "steps"
+        "steps",
+        "steps-variants"
       ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/steps.spec.ts"
+        "src/lib/components/ant-design/Steps.svelte",
+        "src/lib/components/ant-design/steps.engine.test.ts",
+        "src/lib/components/ant-design/steps.ssr.test.ts",
+        "src/lib/components/ant-design/steps-data.engine.test.ts",
+        "src/lib/components/ant-design/steps-display.engine.test.ts",
+        "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
+        "e2e/steps.spec.ts",
+        "e2e/steps-variants.spec.ts"
       ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Базовые этапы, нативный выбор, локализация и focus lifecycle",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Публичная реализация есть; детализация возможностей в реестре ещё не завершена."
+          "evidence": [
+            "src/lib/components/ant-design/steps.engine.test.ts",
+            "src/lib/components/ant-design/steps.ssr.test.ts",
+            "e2e/steps.spec.ts"
+          ],
+          "note": "Сохранён существующий ol/li/button v1, first-wins string keys, clamp current, responsive 532px и componentDisabled; это согласованные адаптации к Svelte."
         },
         {
-          "id": "gap-1",
-          "title": "Dot/navigation/inline/panel",
+          "id": "variants",
+          "title": "Dot/inline/navigation/panel, outlined, semantic slots и legacy aliases",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/steps-data.engine.test.ts",
+            "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
+            "e2e/steps-variants.spec.ts"
+          ],
+          "note": "Native item buttons, rich inline Tooltip, root/item styles, iconRender/progressDot через Snippet и components.Icon. Title/content принимают также число/boolean."
+        },
+        {
+          "id": "collapsed-progress",
+          "title": "Initial, maxCount, percent, ellipsis и offset",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/steps-display.engine.test.ts",
+            "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
+            "e2e/steps-variants.spec.ts"
+          ],
+          "note": "MaxCount считает реальные шаги, исключая ellipses; номера и callbacks относятся к исходному индексу. Percent подавлен для inline."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls, глобальный steps config/tokens и Wave",
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "Ограничение зафиксировано в README модуля."
+          "note": "Существующие theme/RTL/size/locale сохранены; произвольный component config и Wave ещё не перенесены."
         }
       ]
     },
@@ -2926,6 +2978,17 @@
             "e2e/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
+        },
+        {
+          "id": "rich-title",
+          "title": "Snippet title для inline Steps",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
+            "e2e/steps-variants.spec.ts"
+          ],
+          "note": "Пассивный rich content; существующие строки/числа/пустые title и Compact isolation сохранены. Основной подробный аудит Tooltip остаётся отдельным."
         }
       ]
     },

@@ -4,7 +4,7 @@ export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 export type TooltipTrigger = 'hover' | 'focus';
 
 export interface TooltipProps {
-  title?: string | number | null;
+  title?: string | number | null | Snippet;
   children: Snippet;
   open?: boolean | undefined;
   defaultOpen?: boolean;

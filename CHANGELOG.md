@@ -24,6 +24,11 @@
 
 ### Added
 
+- Steps: dot/inline/navigation/panel, outlined, initial/maxCount/percent/ellipsis,
+  semantic slots, item callbacks, iconRender и legacy aliases. Базовый API,
+  нативные кнопки и фокус сохранены. Tooltip поддерживает Snippet title для
+  rich inline content; CSS Steps полностью воспроизводится рецептом.
+
 - Anchor/AnchorLink: вложенные items, horizontal, Affix, scroll tracking, offsets,
   highlight mapping, push/replace history и отменяемая cubic-анимация. Добавлены
   semantic styles, CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.

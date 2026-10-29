@@ -23,6 +23,7 @@
   import SkeletonExample from './SkeletonExample.svelte';
   import EmptyExample from './EmptyExample.svelte';
   import ResultExample from './ResultExample.svelte';
+  import StepsVariantsExample from './StepsVariantsExample.svelte';
   import StepsExample from './StepsExample.svelte';
   import TagExample from './TagExample.svelte';
   import BadgeExample from './BadgeExample.svelte';
@@ -483,7 +484,7 @@
         <section id="steps">
           <div class="section-heading"><h2>Steps</h2></div>
           <p class="section-description">Этапы процесса и многошаговая заявка с проверкой полей, возвратом и повторной отправкой.</p>
-          <div class="panel"><StepsExample /></div>
+          <div class="panel"><StepsExample /><StepsVariantsExample /></div>
         </section>
 
         <section id="tag">

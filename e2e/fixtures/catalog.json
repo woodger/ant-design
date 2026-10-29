@@ -263,5 +263,10 @@
     "id": "anchor",
     "module": "./AnchorFixtures.svelte",
     "root": "anchor-fixture"
+  },
+  {
+    "id": "steps-variants",
+    "module": "./StepsVariantsFixtures.svelte",
+    "root": "steps-variants-fixture"
   }
 ]
