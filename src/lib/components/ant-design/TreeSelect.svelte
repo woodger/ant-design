@@ -41,6 +41,7 @@
   let resolvedSize = $derived(size ?? compact?.size ?? config.componentSize); let resolvedStatus = $derived(status ?? field?.status);
   let controlId = $derived(id ?? field?.id ?? `ant-tree-select-${generated}`);
   let internalOpen = $state(untrack(() => defaultOpen)); let visible = $derived((open ?? internalOpen) && !blocked);
+  let inputValue = $derived(isMultiple || visible && canSearch ? search : treeTitleRender ? '' : text(display[0]?.label));
   let mounted = $state(untrack(() => defaultOpen || open === true)); let shown = $state(false); let focused = $state(false);
   let popup = $state<HTMLDivElement>(); let treeElement = $state<HTMLDivElement>(); let active = $state<TreeKey | null>(null); let activeDescendant = $state<string>();
   let expanded = $state.raw<TreeKey[]>(untrack(() => treeDefaultExpandAll ? index.ordered.filter(entry => entry.children.length).map(entry => entry.key) : expandTreeParents(treeDefaultExpandedKeys, index)));
@@ -69,7 +70,7 @@
     previousOpen = nextOpen; previousSearch = nextSearch;
   });
   $effect(() => {
-    void active; void visible; const root = treeElement;
+    void active; void visible; void filteredIndex; const root = treeElement;
     void tick().then(() => { activeDescendant = visible ? root?.querySelector('[role="tree"]')?.getAttribute('aria-activedescendant') ?? undefined : undefined; });
   });
   $effect(() => {
@@ -87,7 +88,18 @@
   }
   function text(label: TreeSelectLabel | undefined) { return typeof label === 'function' ? '' : label === undefined ? '' : String(label); }
   function requestOpen(next:boolean) { if(next && blocked || next === visible)return; if(next){initializePanel();mounted=true;} internalOpen=next;onOpenChange?.(next); }
-  function searchInput(next:string) { internalSearch=next;searchConfig.onSearch?.(next);requestOpen(true); }
+  function searchInput(next: string) {
+    const input = inputElement;
+    internalSearch = next;
+    searchConfig.onSearch?.(next);
+    requestOpen(true);
+
+    if (searchConfig.searchValue !== undefined && input) {
+      void tick().then(() => {
+        if (input === inputElement && input.isConnected) input.value = inputValue;
+      });
+    }
+  }
   function publish(raw:TreeSelectRawValue[], extra: {triggerValue?:TreeSelectRawValue;selected?:boolean}) {
     const before=items;
     const nextItems=treeSelectLabels(raw.map(value=>({value})),index,treeNodeLabelProp,before);
@@ -99,7 +111,7 @@
     onChange?.((isMultiple?returnValue:returnValue[0]) as ValueType,labeled?null:returnItems.map(item=>item.label!) ,{preValue:before.filter(item=>!item.halfChecked),triggerValue:extra.triggerValue,...checkable?{checked:extra.selected}:{selected:extra.selected}});
   }
   function choose(raw:TreeSelectRawValue, source:'option'|'selection'='option') {
-    const node=index.values.get(raw); if(blocked || source==='option' && (node?.disabled || checkable && (!node || treeCheckDisabled(index.entities.get(String(raw))!.node))))return;
+    const node=index.values.get(raw); if(blocked || source==='option' && (!node || node.disabled || checkable && treeCheckDisabled(index.entities.get(String(raw))!.node)))return;
     const selected=!isMultiple || !checks.checked.includes(raw);
     const next=isMultiple?toggleTreeSelect(raw,selected,items,checks,conduction,index):[raw];
     publish(next,{triggerValue:raw,selected}); if(selected)onSelect?.(raw,node?{...node}:undefined);else onDeselect?.(raw,node?{...node}:undefined);
@@ -152,7 +164,7 @@
   <div class="ant-select-content">
     {#if isMultiple}{#each display as item(item.value)}<span class={['ant-select-selection-item',(blocked||item.disabled)&&'ant-select-selection-item-disabled']} title={text(item.label)}><span class="ant-select-selection-item-content">{@render labelNode(item)}</span>{#if !blocked&&!item.disabled}<button type="button" class="ant-select-selection-item-remove" aria-label={`${config.locale.removeText ?? 'Remove'} ${text(item.label)}`} onpointerdown={event=>event.preventDefault()} onclick={()=>choose(item.value,'selection')}><Icon name="close" /></button>{/if}</span>{/each}
     {:else if (!visible || !canSearch) && (treeTitleRender || typeof display[0]?.label==='function') && display[0]}<span class="single-snippet">{@render labelNode(display[0])}</span>{/if}
-    <input {...attributes} bind:this={inputElement} id={controlId} class="ant-select-input" type="text" role="combobox" aria-haspopup="tree" aria-controls={`${controlId}-list`} aria-expanded={visible} aria-autocomplete={canSearch?'list':'none'} aria-activedescendant={visible?activeDescendant:undefined} aria-invalid={resolvedStatus==='error'||attributes['aria-invalid']||undefined} aria-describedby={[attributes['aria-describedby'],field?.describedBy].filter(Boolean).join(' ')||undefined} aria-required={attributes.required??field?.required} aria-busy={loading||undefined} autocomplete="off" disabled={blocked} readonly={!canSearch} placeholder={display.length?'':placeholder} value={isMultiple||visible&&canSearch?search:treeTitleRender?'':text(display[0]?.label)} oninput={event=>searchInput(event.currentTarget.value)} onclick={()=>requestOpen(true)} onkeydown={keyboard} onfocus={event=>{focused=true;onfocus?.(event);}} onblur={event=>{onblur?.(event);blurWithin(event);}} />
+    <input {...attributes} bind:this={inputElement} id={controlId} class="ant-select-input" type="text" role="combobox" aria-haspopup="tree" aria-controls={`${controlId}-list`} aria-expanded={visible} aria-autocomplete={canSearch?'list':'none'} aria-activedescendant={visible?activeDescendant:undefined} aria-invalid={resolvedStatus==='error'||attributes['aria-invalid']||undefined} aria-describedby={[attributes['aria-describedby'],field?.describedBy].filter(Boolean).join(' ')||undefined} aria-required={attributes.required??field?.required} aria-busy={loading||undefined} autocomplete="off" disabled={blocked} readonly={!canSearch} placeholder={display.length?'':placeholder} value={inputValue} oninput={event=>searchInput(event.currentTarget.value)} onclick={()=>requestOpen(true)} onkeydown={keyboard} onfocus={event=>{focused=true;onfocus?.(event);}} onblur={event=>{onblur?.(event);blurWithin(event);}} />
   </div>
   {#if allowClear&&!blocked&&(display.length||search)}<button type="button" class="clear" aria-label={config.locale.clearText} onpointerdown={event=>event.preventDefault()} onclick={clear}><Icon name="close-circle-filled" /></button>{/if}
   <span class="suffix" aria-hidden="true"><Icon name={loading?'loading':'down'} /></span>

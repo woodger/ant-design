@@ -2593,6 +2593,9 @@ TreeTitleRender принимает snippet с исходным TreeSelectNode и
 Value/defaultValue принимают scalar, массив или {value,label?,halfChecked?}.
 Null очищает; undefined включает внутреннее состояние. Value/open/searchValue —
 controlled props с callbacks, без автоматического переписывания владельца.
+При отказе владельца принять onSearch поле восстанавливается из searchValue.
+Enter игнорирует активный узел, удалённый из treeData; выбранные отсутствующие
+значения по-прежнему можно удалить через теги.
 Multiple включает массивы. TreeCheckable включает checkbox и multiple;
 treeCheckStrictly также включает checkbox/multiple и принудительно labelInValue.
 Параметр типа TreeSelectProps<ValueType> сохраняет конкретный тип callback value;

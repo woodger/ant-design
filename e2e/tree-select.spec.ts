@@ -107,3 +107,71 @@ test('TreeSelect strict half-checked values remain hidden in tags and survive th
 test('TreeSelect defaultExpandAll initializes against data available at the first popup opening',async({page})=>{
   await page.getByRole('button',{name:'Load deferred tree data',exact:true}).click();await page.getByRole('combobox',{name:'Deferred select',exact:true}).click();await expect(page.getByRole('tree',{name:'Deferred select',exact:true}).getByRole('treeitem',{name:'Alpha',exact:true})).toBeVisible();
 });
+
+test('TreeSelect ignores removed active options and permits keyboard selection of current data', async ({ page }) => {
+  const input = control(page);
+  await input.click();
+  await expect(row(page, 'Alpha')).toBeVisible();
+  await expect(input).toHaveAttribute('aria-activedescendant', (await row(page, 'Alpha').getAttribute('id'))!);
+
+  // Обновление данных владельцем не переводит фокус из открытого popup.
+  await page.getByRole('button', { name: 'Replace tree select data', exact: true }).dispatchEvent('click');
+  await expect(row(page, 'Alpha')).toHaveCount(0);
+  await expect(row(page, 'Replacement')).toBeVisible();
+  await input.press('Enter');
+
+  await expect(page.getByLabel('Tree select changes', { exact: true })).toHaveText('[]');
+  await expect(page.getByLabel('Tree select selection events', { exact: true })).toHaveText('[]');
+  await expect(owner(page)).toHaveText('"a"');
+  await expect(input).not.toHaveAttribute('aria-activedescendant');
+  await expect(popup(page)).toBeVisible();
+  await expect(input).toBeFocused();
+
+  await input.press('ArrowDown');
+  await input.press('Enter');
+  await expect(owner(page)).toHaveText('"replacement"');
+  await expect(page.getByLabel('Tree select selection events', { exact: true })).toHaveText('["select:replacement"]');
+  expect(JSON.parse(await page.getByLabel('Tree select changes', { exact: true }).innerText())).toHaveLength(1);
+});
+
+for (const search of ['', 'Alpha']) {
+  test(`TreeSelect preserves controlled search ${JSON.stringify(search)} when changes are rejected`, async ({ page }) => {
+    const input = control(page);
+    if (search) await input.fill(search);
+    await expect(page.getByLabel('Tree select search', { exact: true })).toHaveText(search);
+    await page.getByLabel('Accept tree select search', { exact: true }).uncheck();
+
+    await input.click();
+    await input.fill(search ? 'Beta' : 'Alpha');
+
+    await expect(input).toHaveValue(search);
+    await expect(page.getByLabel('Tree select search', { exact: true })).toHaveText(search);
+    await expect(page.getByLabel('Requested tree searches', { exact: true })).toHaveText(JSON.stringify(search ? ['Alpha', 'Beta'] : ['Alpha']));
+    await expect(row(page, 'Alpha')).toBeVisible();
+    if (search) await expect(row(page, 'Beta')).toHaveCount(0);
+    else await expect(row(page, 'Beta')).toBeVisible();
+
+    await page.getByLabel('Accept tree select search', { exact: true }).check();
+    await input.fill('Beta');
+    await expect(input).toHaveValue('Beta');
+    await expect(page.getByLabel('Tree select search', { exact: true })).toHaveText('Beta');
+    await expect(row(page, 'Beta')).toBeVisible();
+    await expect(row(page, 'Alpha')).toHaveCount(0);
+  });
+}
+
+test('TreeSelect removes missing selected tags while preserving their remaining labels', async ({ page }) => {
+  await page.getByLabel('Tree select multiple', { exact: true }).check();
+  await page.getByLabel('Tree select labeled', { exact: true }).check();
+  await control(page).click();
+  await choose(page, 'Beta');
+  await page.getByRole('button', { name: 'Remove tree select data', exact: true }).click();
+  const remove = control(page).locator('xpath=../..').getByRole('button', { name: 'Удалить Beta', exact: true });
+  await expect(remove).toBeVisible();
+
+  await remove.click();
+
+  expect(JSON.parse(await owner(page).innerText())).toEqual([{ label: 'Alpha', value: 'a' }]);
+  await expect(remove).toHaveCount(0);
+  await expect(page.getByLabel('Tree select selection events', { exact: true })).toHaveText('["select:b","deselect:b"]');
+});
