@@ -19,6 +19,9 @@
 
 ### Added
 
+- Layout/Header/Content/Footer/Sider: нативные секции, вложенные контексты,
+  hasSider/SSR CSS fallback, collapsed/zero-width, accessible trigger и responsive
+  callbacks с cleanup. Добавлены темы/locale, CSS-рецепт, unit/SSR/Chromium и галерея.
 - Grid Row/Col: 24 колонки, responsive props xs–xxxl, CSS/числовые gutter,
   align/justify, flex и вложенные контексты. Добавлены createBreakpoint с cleanup,
   воспроизводимый CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.

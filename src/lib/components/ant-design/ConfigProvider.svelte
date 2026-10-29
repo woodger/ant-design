@@ -42,7 +42,8 @@
         inputNumber: { ...parent.locale.inputNumber, ...locale?.inputNumber },
         steps: { ...parent.locale.steps, ...locale?.steps },
         badge: { ...parent.locale.badge, ...locale?.badge },
-        avatarGroup: { ...parent.locale.avatarGroup, ...locale?.avatarGroup }
+        avatarGroup: { ...parent.locale.avatarGroup, ...locale?.avatarGroup },
+        layout: { ...parent.locale.layout, ...locale?.layout }
       };
     }
   };

@@ -400,25 +400,118 @@
       "id": "layout",
       "name": "Layout",
       "category": "layout",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Layout и четыре нативных секции с Sider; основа дальнейших навигационных компонентов.",
       "upstreamPath": "components/layout",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Layout",
+          "local": [
+            "Layout"
+          ]
+        },
+        {
+          "upstream": "Layout.Header",
+          "local": [
+            "LayoutHeader"
+          ]
+        },
+        {
+          "upstream": "Layout.Content",
+          "local": [
+            "LayoutContent"
+          ]
+        },
+        {
+          "upstream": "Layout.Footer",
+          "local": [
+            "LayoutFooter"
+          ]
+        },
+        {
+          "upstream": "Layout.Sider",
+          "local": [
+            "LayoutSider"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": null
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "layout"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Layout.svelte",
+        "src/lib/components/ant-design/LayoutSider.svelte",
+        "src/lib/components/ant-design/layout.types.ts",
+        "src/lib/components/ant-design/readme.md",
+        "src/lib/presentation/ant-design/LayoutExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "structure",
+          "title": "Layout/Header/Content/Footer, hasSider и вложенные контексты",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/layout.test.ts",
+            "src/lib/components/ant-design/layout.ssr.test.ts",
+            "e2e/layout.spec.ts"
+          ],
+          "note": "Нативные div/header/main/footer/aside. Явный hasSider сохраняет SSR-класс; для непрозрачного Snippet автоматический SSR-layout определяется :has, client registration добавляет класс после mount."
+        },
+        {
+          "id": "sider",
+          "title": "Collapsed/defaultCollapsed, ширины, zero-width, trigger, callbacks и RTL",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/layout.ssr.test.ts",
+            "e2e/layout.spec.ts"
+          ],
+          "note": "Trigger — нативная кнопка; trigger Snippet содержит пассивное содержимое, trigger=null позволяет собственный внешний control. Нулевая ширина делает children inert с переносом фокуса; DOM и черновики сохраняются."
+        },
+        {
+          "id": "responsive",
+          "title": "Breakpoints и cleanup Sider",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/layout.test.ts",
+            "e2e/layout.spec.ts"
+          ],
+          "note": "Сохранён dimensionMaxMap исходника: xxxl=1839.98px, хотя upstream docs указывают 1920. OnBreakpoint вызывается при подписке; responsive collapse не блокирует ручное раскрытие до следующего media change."
+        },
+        {
+          "id": "appearance",
+          "title": "Темы light/dark, compact, semantic slots, локаль и reduced motion",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/layout.ssr.test.ts",
+            "e2e/layout.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "Строковые semantic styles root/body; locale.layout задаёт доступные имена trigger. Default sider theme=dark независим от общего режима."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls и глобальный component config/tokens",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Доступны существующая тема, CSS-переменные и semantic styles. Глобальный token engine переносится отдельно."
         }
       ]
     },

@@ -6,6 +6,27 @@
   color-scheme: light;
 }
 
+.ant-layout.ant-layout-css-var,
+.ant-layout-sider.ant-layout-css-var {
+  --ant-layout-body-bg: var(--ant-color-bg-layout);
+  --ant-layout-footer-bg: var(--ant-color-bg-layout);
+  --ant-layout-header-color: var(--ant-color-text);
+  --ant-layout-header-height: calc(var(--ant-control-height) * 2);
+  --ant-layout-header-padding: 0 calc(var(--ant-control-height-lg) * 1.25);
+  --ant-layout-footer-padding: var(--ant-control-height-sm) calc(var(--ant-control-height-lg) * 1.25);
+  --ant-layout-trigger-height: calc(var(--ant-control-height-lg) + var(--ant-margin-xxs) * 2);
+  --ant-layout-zero-trigger-width: var(--ant-control-height-lg);
+  --ant-layout-zero-trigger-height: var(--ant-control-height-lg);
+  --ant-layout-light-sider-bg: var(--ant-color-bg-container);
+  --ant-layout-light-trigger-bg: var(--ant-color-bg-container);
+  --ant-layout-light-trigger-color: var(--ant-color-text);
+}
+
+/* Snippet непрозрачен для SSR; CSS определяет прямой Sider до client registration. */
+.ant-layout:not([data-ant-has-sider='false']):has(> .ant-layout-sider) { flex-direction: row; }
+.ant-layout:not([data-ant-has-sider='false']):has(> .ant-layout-sider) > .ant-layout,
+.ant-layout:not([data-ant-has-sider='false']):has(> .ant-layout-sider) > .ant-layout-content { width: 0; }
+
 .ant-svelte-theme[data-ant-theme='dark'] {
   color-scheme: dark;
   --ant-color-text-base: #fff;

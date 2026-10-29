@@ -95,6 +95,7 @@ Statistic, точное строковое форматирование, snippet
 StatisticTimer/StatisticCountdown, формат времени, callbacks и отмену интервалов,
 Segmented, типизированный выбор, native radio, клавиатуру, размеры и темы,
 Grid Row/Col, вложенные интервалы, responsive widths и карту breakpoints,
+Layout/Sider, нативные секции, responsive collapse, локаль и сохранение фокуса,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

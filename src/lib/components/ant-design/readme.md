@@ -8,7 +8,8 @@ Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
-StatisticTimer, StatisticCountdown, Segmented, Row, Col, Form и FormItem.
+StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
+LayoutContent, LayoutFooter, LayoutSider, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -108,6 +109,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | StatisticTimer / StatisticCountdown | Отсчёт времени вверх/вниз, формат, callbacks, SSR-placeholder и отмена интервалов |
 | Segmented | Типизированный одиночный выбор, native radio, стрелки, размеры, block/round, snippets и semantic slots |
 | Row / Col | 24 колонки, responsive span/offset/order/push/pull/flex, gutter, align/justify и вложенные контексты |
+| Layout / LayoutHeader / LayoutContent / LayoutFooter / LayoutSider | Нативная структура, hasSider, collapse/trigger, responsive sidebar, темы и RTL |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -366,6 +368,54 @@ bind:nativeElement и RTL без изменения DOM-порядка. Гале
 scopes и без keyframes. Unit/SSR/Chromium проверяют gutters, вложенность, ширины,
 границы media, нулевые reset-значения, CSS units, RTL и cleanup.
 PrefixCls и пользовательские breakpoint/theme tokens пока не поддержаны.
+
+## Layout
+
+Layout, LayoutHeader, LayoutContent, LayoutFooter и LayoutSider соответствуют
+Layout и его секциям Header/Content/Footer/Sider. Они сохраняют div/header/main/
+footer/aside без дополнительных контейнеров. Children — Snippet, нативные props,
+class/rootClassName/style и bind:nativeElement относятся к корню.
+
+Layout.hasSider явно задаёт наличие sidebar; false отключает автоматическое
+определение. На клиенте Sider регистрируется в ближайшем Layout; вложенные
+Layout независимы. Snippet нельзя проинспектировать как React children до SSR,
+поэтому автоматический SSR-ряд определяется CSS :has(> .ant-layout-sider),
+а класс ant-layout-has-sider появляется после mount. Для серверного класса
+передавайте hasSider=true. Это сохраняет геометрию до hydration и не вызывает
+предварительного исполнения children. Явный false отключает CSS fallback.
+
+Sider: width=200, collapsedWidth=80, defaultCollapsed=false, collapsible=false,
+theme=dark. Число или числовая строка ширины получают px, другие CSS-строки
+сохраняются. Calculated flex/max-width/min-width/width перекрывают style, как
+в upstream; semantic styles.root идёт перед style, styles.body — на children.
+ClassNames/styles принимают root/body, объект либо callback ({ props }).
+Collapsed поддерживает binding; onCollapse(next, source) вызывается при клике
+или responsive изменении с source=clickTrigger/responsive. Черновики/DOM children
+сохраняются. Trigger — пассивный string/number/Snippet внутри нативной кнопки;
+null скрывает кнопку. Для собственного интерактивного trigger используйте null
+и внешний control, меняющий bind:collapsed. ReverseArrow меняет стрелку и сторону
+zero-width trigger. CollapsedWidth=0 создаёт специальный переключатель; при
+нулевой фактической ширине children становятся inert, фокус из них переносится
+на trigger либо соседний доступный control. Это Svelte-адаптация доступности;
+React Sider не блокирует невидимые focus targets через inert.
+
+Breakpoint подписывает один MediaQueryList, сообщает начальное/изменённое
+состояние через onBreakpoint и при необходимости вызывает onCollapse. Listener
+очищается при смене breakpoint/unmount, запоздалые события игнорируются.
+Порог берётся из Sider.tsx: xs=479.98, sm=575.98, md=767.98, lg=991.98,
+xl=1199.98, xxl=1599.98, xxxl=1839.98px. Последнее значение отличается от
+таблицы upstream docs (1920); эталоном оставлен код. Ни SSR, ни первый hydration
+render не вычисляют media. Ручное раскрытие ниже порога сохраняется до следующего
+media change. ComponentDisabled не отключает навигационный trigger.
+
+Темы sidebar light/dark независимы от общей темы; light наследует container/text
+токены текущего режима, dark сохраняет #001529. Compact использует меньшие control
+tokens. Trigger поддерживает Enter/Space, aria-expanded/controls и locale.layout
+expand/collapse, с expandLabel/collapseLabel override. Reduced motion отключает
+переходы. Галерея — `/ant-design#layout`, фикстура — `?fixture=layout`; unit/SSR/
+Chromium покрывают структуру, SSR без JS, callbacks, размеры, breakpoint/cleanup,
+фокус, locale и темы. Рецепт layout извлекает 35 правил, включая Menu-интеграции.
+PrefixCls и глобальный component config/tokens пока не поддержаны.
 
 ## InputNumber
 
