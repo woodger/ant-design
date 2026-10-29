@@ -322,5 +322,26 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * InputNumber: compact margins, z-index и логические углы.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "affix",
+    "output": "src/lib/components/ant-design/vendor/affix.css",
+    "expectedRules": 6,
+    "include": [
+      "\\.ant-affix(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-affix",
+        "replacement": ".ant-affix-css-var"
+      },
+      {
+        "pattern": "\\.ant-affix(?![-\\w])",
+        "replacement": ".ant-affix:where(.ant-affix-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Affix: reset, fixed position и z-index; корни ограничены :where(.ant-affix-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

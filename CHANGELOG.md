@@ -24,6 +24,10 @@
 
 ### Added
 
+- Affix: top/bottom, window/custom target, onChange, updatePosition/cancel,
+  ResizeObserver и cleanup. Сохранены SSR, нативный контент и геометрия upstream;
+  добавлены CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.
+
 - Space/Compact/Addon: keyed items со Snippet, orientation/align/wrap, gaps,
   separator/split, компактные стыки и размеры controls, вложенность, addon
   variants/status и изоляция Popup-контекста. Добавлены CSS-рецепты и проверки

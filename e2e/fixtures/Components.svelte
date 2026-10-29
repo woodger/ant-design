@@ -45,6 +45,7 @@
   import BreadcrumbFixtures from './BreadcrumbFixtures.svelte';
   import ThemeFixtures from './ThemeFixtures.svelte';
   import SpaceCompactFixtures from './SpaceCompactFixtures.svelte';
+  import AffixFixtures from './AffixFixtures.svelte';
   import SpaceFixtures from './SpaceFixtures.svelte';
   import LayoutFixtures from './LayoutFixtures.svelte';
 
@@ -109,6 +110,7 @@
     <SegmentedFixtures />
     <GridFixtures />
     <LayoutFixtures />
+    <AffixFixtures />
     <SpaceFixtures />
     <SpaceCompactFixtures />
     <ThemeFixtures />

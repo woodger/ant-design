@@ -1,3 +1,5 @@
+export { default as Affix } from './Affix.svelte';
+export type { AffixProps, AffixTarget, AffixUpdatePosition } from './affix.types';
 export { default as SpaceCompact } from './SpaceCompact.svelte';
 export { default as SpaceAddon } from './SpaceAddon.svelte';
 export type { SpaceCompactProps, SpaceCompactSize, SpaceAddonProps } from './space-compact.types';

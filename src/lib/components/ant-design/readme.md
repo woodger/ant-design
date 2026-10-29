@@ -567,6 +567,54 @@ Unit/SSR/Chromium покрывают маршруты, параметры, ра�
 правило без keyframes. PrefixCls и глобальный component config/tokens остаются
 в полном объёме миграции.
 
+## Affix
+
+`Affix` закрепляет содержимое относительно окна либо DOM-контейнера `target`.
+`offsetTop`/`offsetBottom` — числа в px; без обоих используется top=0. При
+одновременном выполнении обоих условий приоритет у top. Сравнения координат
+округляются как в Ant Design 6.6.8. `onChange(affixed)` вызывается только при
+переходе между fixed и обычным потоком, после начального измерения в браузере.
+
+```svelte
+<script lang="ts">
+  import { Affix, Button } from '$lib/components/ant-design';
+  let container = $state<HTMLDivElement>();
+</script>
+<div bind:this={container} style="height:200px;overflow:auto">
+  <Affix target={() => container ?? null} offsetTop={8}>
+    <Button>Действие</Button>
+  </Affix>
+  <div style="height:600px"></div>
+</div>
+```
+
+`class`/`style` и нативные div-атрибуты относятся к внешнему узлу;
+`rootClassName` применяется к внутреннему узлу только при закреплении.
+`bind:nativeElement` возвращает внешний div. Через `bind:this` доступны
+`updatePosition()` и `updatePosition.cancel()` — отмена очередного принудительного
+измерения; scroll-очередь независима. ResizeObserver следит за внешним узлом
+и непосредственными DOM-детьми контента. Обработчики слушают фактический target
+и снимаются при смене target/удалении; очереди и наблюдатели также очищаются.
+
+SSR не читает target/DOM и оставляет контент в потоке. При закреплении добавляется
+пустой aria-hidden placeholder исходных размеров; контент не клонируется и не
+перемонтируется, поля сохраняют value, focus и участие в FormData. Affix не
+создаёт интерактивной роли и не перехватывает клавиатуру. Типографика, цвета
+и RTL наследуются; z-index фиксированного узла берётся из CSS-переменной.
+
+Сохранены ограничения upstream: горизонтальная прокрутка не компенсируется;
+при custom target слушается сам контейнер, поэтому перемещение контейнера
+внешней прокруткой требует явного updatePosition. Null target или полностью
+нулевой скрытый root сохраняют последнее состояние до следующего измерения.
+Глобальные affix config, prefixCls и ConfigProvider.getTargetContainer пока
+отсутствуют; target задаётся prop. React ref заменён Svelte bind:this,
+children — Snippet без React-клонирования.
+
+Фикстура — `?fixture=affix`, пример — `/ant-design#affix`. Engine/DOM-тесты
+проверяют округление, очереди, смену target и очистку; SSR/Chromium — нативный
+контент, placeholder, размеры, callbacks и hydration. Vendor CSS воспроизводится
+рецептом affix (6 правил) из закреплённого архива.
+
 ## Space
 
 Space добавляет отдельный div.ant-space-item вокруг каждого элемента, а Flex

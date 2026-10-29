@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **58**.
-Есть публичная реализация у **42** семейств; отсутствует у **31**.
-Проверенный объём v1 покрыт у **12**; требуется аудит у **30**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **59**.
+Есть публичная реализация у **43** семейств; отсутствует у **30**.
+Проверенный объём v1 покрыт у **13**; требуется аудит у **30**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -82,7 +82,7 @@ Candidate означает запись каталога, для которой 
 | [Skeleton](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/skeleton) | feedback | target | Skeleton | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Отдельные Skeleton primitives (missing) |
 | [Spin](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/spin) | feedback | target | Spin | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Fullscreen и percent (missing) |
 | [Watermark](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/watermark) | feedback | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
-| [Affix](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/affix) | other | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Affix](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/affix) | other | target | Affix | Согласованный v1 покрыт | PrefixCls и глобальный affix/getTargetContainer config (missing) |
 | [App](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/app) | other | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [BorderBeam](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/border-beam) | other | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [ConfigProvider](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/config-provider) | other | target | ConfigProvider | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Произвольные токены и алгоритмы тем (missing) |

@@ -3418,25 +3418,78 @@
       "id": "affix",
       "name": "Affix",
       "category": "other",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: закрепление контента относительно окна или scroll-контейнера.",
       "upstreamPath": "components/affix",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Affix",
+          "local": [
+            "Affix"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/resize-observer",
+          "range": "^1.1.2",
+          "referenceVersion": "1.1.2"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "affix"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Affix.svelte",
+        "src/lib/components/ant-design/affix.engine.test.ts",
+        "src/lib/components/ant-design/affix.dom.test.ts",
+        "src/lib/components/ant-design/affix.ssr.test.ts",
+        "e2e/affix.spec.ts",
+        "src/lib/presentation/ant-design/AffixExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Top/bottom, target, callbacks и обновление позиции",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/affix.engine.test.ts",
+            "src/lib/components/ant-design/affix.dom.test.ts",
+            "e2e/affix.spec.ts"
+          ],
+          "note": "Сохранены rounding, top priority, null/hidden target и отсутствие горизонтальной компенсации upstream; updatePosition.cancel отменяет отдельную force-очередь."
+        },
+        {
+          "id": "ssr-native",
+          "title": "SSR, нативный контент, размеры и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/affix.ssr.test.ts",
+            "src/lib/components/ant-design/affix.dom.test.ts",
+            "e2e/affix.spec.ts"
+          ],
+          "note": "SSR без чтения target и закрепления; один контентный узел без клонирования controls, placeholder только в fixed-состоянии."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls и глобальный affix/getTargetContainer config",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Глобальные component config и prefix не перенесены. По умолчанию window; альтернативный target задаётся непосредственно prop."
         }
       ]
     },

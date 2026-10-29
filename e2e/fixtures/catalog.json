@@ -253,5 +253,10 @@
     "id": "space-compact",
     "module": "./SpaceCompactFixtures.svelte",
     "root": "space-compact-fixture"
+  },
+  {
+    "id": "affix",
+    "module": "./AffixFixtures.svelte",
+    "root": "affix-fixture"
   }
 ]

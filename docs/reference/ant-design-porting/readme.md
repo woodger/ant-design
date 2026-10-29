@@ -75,7 +75,7 @@ Report детерминированно перезаписывает тольк�
 [Рецепты](../../../tools/ant-design-css-recipes.json) воспроизводят существующие
 vendor/avatar.css, avatar-group.css, badge.css, divider.css, flex.css, statistic.css,
 segmented.css, grid.css, layout.css, descriptions.css, card.css, breadcrumb.css,
-space.css, space-compact.css, space-addon.css и input-number-compact.css.
+space.css, space-compact.css, space-addon.css, input-number-compact.css и affix.css.
 Остальные текущие vendor-файлы
 этим выпуском инструмента не перегенерируются. Новый компонент получает отдельный
 проверенный рецепт: include/exclude для селекторов, replacements, keyframes,
