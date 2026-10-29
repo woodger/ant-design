@@ -10,7 +10,7 @@ MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Step
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
 StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
 LayoutContent, LayoutFooter, LayoutSider, Descriptions, Card, CardGrid, CardMeta,
-Breadcrumb, Form и FormItem.
+Breadcrumb, Space, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -114,6 +114,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Descriptions | Таблица read-only полей, responsive column/span/filled, horizontal/vertical, bordered и semantic slots |
 | Card / CardGrid / CardMeta | Header/cover/body/actions, loading, grid, tabs, metadata, semantic slots и варианты оформления |
 | Breadcrumb | Items/routes, params, separator items, custom Snippet renderer, меню и native navigation |
+| Space | Отдельные wrappers, независимые gaps, orientation/align/wrap, keyed items и separator/split |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -564,6 +565,44 @@ Svelte Dropdown с placement=bottom по умолчанию; dropdownIcon=null/u
 Unit/SSR/Chromium покрывают маршруты, параметры, разделители, шаблон, стили,
 меню, отмену перехода и production hydration. Рецепт breadcrumb извлекает 21
 правило без keyframes. PrefixCls и глобальный component config/tokens остаются
+в полном объёме миграции.
+
+## Space
+
+Space добавляет отдельный div.ant-space-item вокруг каждого элемента, а Flex
+сохраняет children без wrappers. Для нескольких элементов используйте items:
+readonly-массив string/number/Snippet либо { key, children }. Key сохраняет DOM
+и state при перестановке. Children Snippet без items представляет одну группу;
+его содержимое нельзя проинспектировать и разделить как React children.
+Пустой items имеет приоритет над children и не создаёт root. Непустой массив
+из одних пустых значений сохраняет пустой root, как исходник.
+
+Boolean/null/undefined/пустые строки не создают item wrappers, 0 отображается.
+Это учитывает React.Children, который нормализует оба boolean в null перед
+rc-component/util.toArray. Snippet, ничего не отрисовавший, сохраняет wrapper,
+скрытый CSS :empty; как React child component с null, он всё ещё участвует в
+расчёте позиции разделителя. Separator ?? split задаёт span между renderable
+entries, кроме последнего; falsy separator, включая 0, не создаёт span. Такой
+separator не помечается aria-hidden автоматически: Snippet может содержать
+собственный содержательный элемент.
+
+Orientation имеет приоритет над явным vertical, затем legacy direction;
+по умолчанию horizontal. Align=start/end/center/baseline, horizontal по умолчанию
+center, vertical без align использует естественное stretch. Size=small
+независимо от ConfigProvider.componentSize. Поддержаны small/medium/middle/large
+либо число, tuple [horizontal, vertical]. Числовой 0 не создаёт inline gap,
+NaN игнорируется. Wrap добавляет flex-wrap:wrap. Gap/wrap styles идут перед
+styles.root и style: пользовательский inline style перекрывает также числовой
+gap. Presets используют общие padding tokens, включая compact 4/8/16px.
+
+Root — div с нативными attrs, class/rootClassName/style и bind:nativeElement.
+ClassNames/styles root/item/separator принимают объект либо callback ({ props })
+с разрешёнными size/orientation/align. Space не сбрасывает typography и наследует
+тему/RTL. Галерея — `/ant-design#space`, фикстура — `?fixture=space`. Unit/SSR/
+Chromium проверяют gaps, пустые значения, keyed DOM/фокус и production hydration.
+Рецепт space извлекает 16 правил без Compact/Addon, reset и keyframes.
+SpaceCompact/SpaceAddon ещё не экспортированы; реестр отмечает семейство
+частичным. PrefixCls и глобальный space component config/tokens также остаются
 в полном объёме миграции.
 
 ## InputNumber

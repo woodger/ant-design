@@ -1,3 +1,5 @@
+export { default as Space } from './Space.svelte';
+export type { SpaceProps, SpaceItem, SpaceContent, SpaceOrientation, SpaceSize, SpaceSlots } from './space.types';
 export { default as Breadcrumb } from './Breadcrumb.svelte';
 export type { BreadcrumbProps, BreadcrumbItem, BreadcrumbMenuItem, BreadcrumbContent, BreadcrumbSlots } from './breadcrumb.types';
 export { default as Card } from './Card.svelte';

@@ -44,6 +44,7 @@
   import CardFixtures from './CardFixtures.svelte';
   import BreadcrumbFixtures from './BreadcrumbFixtures.svelte';
   import ThemeFixtures from './ThemeFixtures.svelte';
+  import SpaceFixtures from './SpaceFixtures.svelte';
   import LayoutFixtures from './LayoutFixtures.svelte';
 
   const controls = createControls();
@@ -107,6 +108,7 @@
     <SegmentedFixtures />
     <GridFixtures />
     <LayoutFixtures />
+    <SpaceFixtures />
     <ThemeFixtures />
     <BreadcrumbFixtures />
     <CardFixtures />

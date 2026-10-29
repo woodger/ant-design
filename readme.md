@@ -100,6 +100,7 @@ Descriptions, responsive column/span, приоритет стилей ячеек
 Card/Grid/Meta, загрузка/фокус, вкладки и двусторонний extra content,
 Breadcrumb, path/params, разделители и нативная навигация через меню,
 compact spacing tokens, вложенные overrides и геометрию Card/Flex/Divider,
+Space, независимые gaps, wrappers/разделители, keyed DOM и фокус,
 темы, размеры, RTL, локаль, узкий экран, SSR и гидратацию. Browser errors и console warnings/errors
 приводят к ошибке теста. Набор выполняется в Chromium; Vitest остаётся
 отдельным контуром Node unit/SSR-проверок.

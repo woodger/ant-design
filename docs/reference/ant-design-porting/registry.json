@@ -545,25 +545,90 @@
       "id": "space",
       "name": "Space",
       "category": "layout",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: Space core, затем Compact/Addon с контекстом поддержанных controls.",
       "upstreamPath": "components/space",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Space",
+          "local": [
+            "Space"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "react",
+          "range": ">=18.0.0",
+          "referenceVersion": "19.2.5"
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "space"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Space.svelte",
+        "src/lib/components/ant-design/space.test.ts",
+        "e2e/space.spec.ts",
+        "src/lib/presentation/ant-design/SpaceExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "layout",
+          "title": "Orientation/vertical/direction, align, gaps, wrap и semantic styles",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/space.test.ts",
+            "e2e/space.spec.ts"
+          ],
+          "note": "Default small независимо от componentSize; styles/root style перекрывают числовой gap, horizontal align=center. Без typography reset; compact spacing следует общей size map."
+        },
+        {
+          "id": "content",
+          "title": "Keyed items, пустые значения и separator/split",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/space.test.ts",
+            "e2e/space.spec.ts"
+          ],
+          "note": "Items — Svelte-массив text/Snippet либо {key,children}; children Snippet представляет одну группу. React.Children boolean→null сохранён; пустой Snippet имеет скрытый wrapper. Separator=0 falsy, не создаёт span."
+        },
+        {
+          "id": "compact",
+          "title": "Space.Compact и контекст размеров/границ",
+          "state": "missing",
           "requiredForV1": true,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Следующий логический этап; необходимы адаптеры Button/Input/InputNumber/Select и изоляция popup content."
+        },
+        {
+          "id": "addon",
+          "title": "Space.Addon",
+          "state": "missing",
+          "requiredForV1": true,
+          "evidence": [],
+          "note": "Переносится вместе с Compact: variants/status, compact size и соединение границ."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls и глобальный space component config/tokens",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Произвольный component config/tokens ещё не перенесён; публичный Space core не означает завершение семейства."
         }
       ]
     },

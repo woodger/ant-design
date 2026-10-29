@@ -243,5 +243,10 @@
     "id": "theme",
     "module": "./ThemeFixtures.svelte",
     "root": "theme-fixture"
+  },
+  {
+    "id": "space",
+    "module": "./SpaceFixtures.svelte",
+    "root": "space-fixture"
   }
 ]

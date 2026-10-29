@@ -252,5 +252,24 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Breadcrumb: links, separators, overlay, icon alignment, focus и RTL.\n * Корни ограничены :where(.ant-breadcrumb-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "space",
+    "output": "src/lib/components/ant-design/vendor/space.css",
+    "expectedRules": 16,
+    "include": [
+      "^\\.ant-space(?![\\w])"
+    ],
+    "exclude": [
+      "ant-space-(?:compact|addon)"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.ant-space(?![-\\w])",
+        "replacement": ".ant-space:where(.ant-space-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Space: orientation, align, gaps, empty wrappers и Badge; без Compact/Addon.\n * Без typography reset; корни ограничены :where(.ant-space-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

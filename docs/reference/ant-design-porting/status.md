@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **55**.
-Есть публичная реализация у **41** семейств; отсутствует у **32**.
-Проверенный объём v1 покрыт у **11**; требуется аудит у **30**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **56**.
+Есть публичная реализация у **42** семейств; отсутствует у **31**.
+Проверенный объём v1 покрыт у **11**; требуется аудит у **30**; частично покрыт у **1**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -23,7 +23,7 @@ Candidate означает запись каталога, для которой 
 | [Grid](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/grid) | layout | target | Row, Col, createBreakpoint | Согласованный v1 покрыт | Пользовательские breakpoint/theme tokens и prefixCls (missing) |
 | [Layout](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/layout) | layout | target | Layout, LayoutHeader, LayoutContent, LayoutFooter, LayoutSider | Согласованный v1 покрыт | PrefixCls и глобальный component config/tokens (missing) |
 | [Masonry](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/masonry) | layout | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
-| [Space](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/space) | layout | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Space](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/space) | layout | target | Space | Частично покрыт v1 | Space.Compact и контекст размеров/границ (missing); Space.Addon (missing); PrefixCls и глобальный space component config/tokens (missing) |
 | [Splitter](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/splitter) | layout | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Anchor](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/anchor) | navigation | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Breadcrumb](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/breadcrumb) | navigation | target | Breadcrumb | Согласованный v1 покрыт | PrefixCls, глобальный component config/tokens и полный Menu API (missing) |
