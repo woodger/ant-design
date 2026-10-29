@@ -1,3 +1,5 @@
+import type { DatePickerLocale } from './date-picker.types';
+import { datePickerEnUS, datePickerRuRU } from './date-picker.locale';
 export type ComponentSize = 'small' | 'middle' | 'large';
 
 export interface ThemeConfig {
@@ -7,6 +9,7 @@ export interface ThemeConfig {
 }
 
 export interface Locale {
+  datePicker?: DatePickerLocale;
   okText: string;
   cancelText: string;
   closeText: string;
@@ -91,6 +94,7 @@ export interface SelectOption<Value extends string | number = string> {
 }
 
 export const ruRU = {
+  datePicker: datePickerRuRU,
   layout: { expand: 'Развернуть боковую панель', collapse: 'Свернуть боковую панель' },
   avatarGroup: { label: 'Участники', hiddenLabel: 'Скрытые участники', overflow: 'Ещё участников' },
   badge: { count: 'Количество', dot: 'Есть обновления', success: 'Успешно', processing: 'Выполняется', default: 'Обычный статус', error: 'Ошибка', warning: 'Предупреждение' },
@@ -143,6 +147,7 @@ export const ruRU = {
 } satisfies Locale;
 
 export const enUS = {
+  datePicker: datePickerEnUS,
   layout: { expand: 'Expand sidebar', collapse: 'Collapse sidebar' },
   avatarGroup: { label: 'Members', hiddenLabel: 'Hidden members', overflow: 'More members' },
   badge: { count: 'Count', dot: 'Updates available', success: 'Success', processing: 'Processing', default: 'Default status', error: 'Error', warning: 'Warning' },

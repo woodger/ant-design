@@ -25,6 +25,7 @@
   import ResultExample from './ResultExample.svelte';
   import StepsVariantsExample from './StepsVariantsExample.svelte';
   import ButtonFeaturesExample from './ButtonFeaturesExample.svelte';
+  import DatePickerExample from './DatePickerExample.svelte';
   import RemoteSelectExample from './RemoteSelectExample.svelte';
   import TextAreaExample from './TextAreaExample.svelte';
   import FloatButtonExample from './FloatButtonExample.svelte';
@@ -58,6 +59,7 @@
     ['select', 'Select'],
     ['select-multiple', 'Select · multiple'],
     ['select-remote', 'Select · remote'],
+    ['date-picker', 'DatePicker'],
     ['checkbox', 'Checkbox'],
     ['radio', 'Radio / RadioGroup'],
     ['switch', 'Switch'],
@@ -212,7 +214,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">67 компонентов</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">68 компонентов</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -573,6 +575,11 @@
           <div class="section-heading"><h2>Breadcrumb</h2></div>
           <p class="section-description">Навигационный путь с параметрами, разделителями и меню разделов.</p>
           <div class="panel"><BreadcrumbExample /></div>
+        </section>
+
+        <section id="date-picker">
+          <div class="section-heading"><h2>DatePicker</h2></div>
+          <div class="panel"><DatePickerExample /></div>
         </section>
 
         <section id="select-remote">

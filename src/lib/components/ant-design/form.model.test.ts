@@ -259,3 +259,16 @@ describe('createForm', () => {
     expect(form.getFieldError('roles')).toEqual([]);
   });
 });
+
+it('stores immutable Dayjs instances without coercion and restores the initial instance on reset', async () => {
+  const dayjs = (await import('dayjs')).default;
+  const initial = dayjs('2026-10-15T10:20:30.123');
+  const form = createForm<{ when: import('dayjs').Dayjs | null }>({ initialValues: { when: initial }, rules: { when: [{ required: true }] } });
+  expect(form.values.when).toBe(initial);
+  const next = initial.add(1, 'day'); form.setFieldValue('when', next);
+  let received: unknown;
+  const result = await form.submit(values => { received = values.when; });
+  expect(result.status).toBe('success'); expect(received).toBe(next); expect(dayjs.isDayjs(received)).toBe(true);
+  form.setFieldValue('when', null); await form.validateFields().catch(() => {}); expect(form.getFieldError('when')).toHaveLength(1);
+  form.resetFields(); expect(form.values.when).toBe(initial); expect(initial.millisecond()).toBe(123); expect(form.getFieldError('when')).toEqual([]);
+});

@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -61,6 +61,7 @@ npm pack --ignore-scripts
 точка входа — `@local/ant-design-svelte`, а явный импорт стилей —
 `@local/ant-design-svelte/styles.css`. Потребителю нужен сборщик с поддержкой
 Svelte 5, TypeScript и `.svelte.ts`, например Vite с официальным Svelte plugin.
+Day.js должен удовлетворять peer-диапазону ^1.11.11; стенд использует 1.11.23.
 Пакет имеет статус private и не публикуется в npm этим workflow.
 
 ## Компоненты
@@ -74,6 +75,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Button / ButtonGroup | Native button/href, color/variant/ghost, loading delay/icon, semantic slots, config, Group и Compact |
 | FloatButton / FloatButtonGroup / FloatButtonBackTop | Плавающие native actions, Badge/Tooltip, меню групп и возврат с прогрессом прокрутки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
+| DatePicker | Single Dayjs date/datetime, input/calendar/time, confirmation, clear, ограничения, locale и native формы |
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
@@ -2322,6 +2324,82 @@ useBreakpoint версии 6.6.8 использует xs), componentDisabled и 
 unit/SSR/Chromium проверяют layouts, collapse/index mapping, render Snippets,
 rich tooltip и доступность процента.
 
+## DatePicker
+
+DatePicker переносит single date/showTime из Ant Design 6.6.8 и rc-picker 1.12.2.
+Public value — Dayjs или null при очистке; undefined включает внутреннее состояние
+с defaultValue. OnChange(value, dateString) получает объект даты и отображаемую
+строку. Это не контракт ISO/timestamp. Day.js 1.11.23 установлен в стенде; пакет
+компонентов объявляет peer dayjs ^1.11.11 наряду со Svelte. React/rc-picker runtime
+не устанавливаются. CSS-рецепт извлекает 262 правила из
+[закреплённого npm-архива](https://registry.npmjs.org/antd/-/antd-6.6.8.tgz);
+глобальный Calendar CSS исключён, корни DatePicker ограничены собственным marker. Чистый GenerateConfig и Day.js adapter перенесены отдельно;
+лицензия rc-picker сохранена в vendor/LICENSE.rc-picker.
+
+```svelte
+<script lang="ts">
+  import dayjs, { type Dayjs } from 'dayjs';
+  import { DatePicker } from '$lib/components/ant-design';
+  let value = $state<Dayjs | null>(dayjs('2026-10-29T10:30:15'));
+</script>
+<label for="when">Дата и время</label>
+<DatePicker id="when" name="when" {value} showTime onChange={next => { value = next; }} />
+```
+
+Value/open/pickerValue — controlled props с callbacks: владелец может отклонить
+изменение; component сам не переписывает переданный value. Без value/open
+используются defaultValue/defaultOpen и внутреннее состояние. DefaultPickerValue
+задаёт исходный месяц при каждом открытии. Навигация date/month/year/decade
+относится к выбору одной даты; отдельные picker="month" и другие режимы ещё не
+перенесены. NativeElement с bind указывает на root div; bind:this даёт методы
+focus({preventScroll,cursor:'start'|'end'|'all'}) и blur().
+
+Format принимает строку, массив допустимых форматов или display callback; input
+с callback-only format автоматически readonly. По умолчанию дата YYYY-MM-DD,
+showTime — YYYY-MM-DD HH:mm:ss. Разбор строгий: переполнения и неверные високосные
+дни не нормализуются. Невалидный текст не меняет value и при blur восстанавливается;
+preserveInvalidOnBlur сохраняет его. InputReadOnly блокирует текстовый ввод, но
+сохраняет календарь и очистку. AllowClear=true по умолчанию.
+
+ShowTime=true или объект добавляет time columns. Поддержаны format, видимость
+units, шаги, use12Hours, hideDisabledOptions, defaultOpenValue и disabled time
+callbacks. NeedConfirm по умолчанию true для datetime и false для date. Выбор
+с подтверждением меняет draft/onCalendarChange; OK меняет value/onChange и вызывает
+onOk. Escape/внешний клик отменяют неподтверждённый draft. Now использует исходный
+путь preset submit и сразу применяет допустимое текущее время.
+
+Точность повторяет rc-picker: panel selection выравнивает все time units, даже
+скрытые; default millisecondStep=100, ближайшее разрешённое значение слева либо
+первое разрешённое. ShowTime.format задаёт формат time panel; формат input
+задаётся DatePicker.format либо locale.lang.fieldDateTimeFormat, как в upstream.
+Для миллисекундного шага задайте showTime={{millisecondStep:1}}.
+Ручной ввод через format с SSS использует строгий parser и не округляется этим
+panel helper. Адаптер не навязывает timezone: календарные операции сохраняют
+режим входного Dayjs, parser использует обычный dayjs(text,format), getNow учитывает
+подключённый потребителем timezone plugin как upstream. UTC/timezone плагины не
+включаются библиотекой автоматически.
+
+MinDate/maxDate и disabledDate ограничивают календарь; disabledTime возвращает
+запрещённые часы/минуты/секунды/миллисекунды. Size, status, variant, disabled,
+Compact, RTL, тема, locale.lang и ConfigProvider.locale.datePicker наследуют
+существующие контексты. Встроены исходные RU/EN строки. Input использует native
+name/id/required: FormData содержит отображаемый текст, без скрытой ISO-копии.
+FormItem контекст даёт id/name/status/disabled. Form model хранит immutable Dayjs
+напрямую: value={form.values.when}, onChange={next => form.setFieldValue('when', next)}.
+OnFinish получает объект Dayjs, resetFields восстанавливает исходное значение;
+преобразование в wire-формат остаётся у потребителя, как в upstream.
+
+Клавиатура: Enter открывает/применяет корректный ввод, ArrowDown переводит фокус
+в календарь; стрелки/PageUp/PageDown/Home/End перемещаются по grid; Escape закрывает
+popup с возвратом фокуса. Время доступно через native buttons и стрелки в колонках.
+Поверхность использует существующий native popover lifecycle библиотеки, включая
+изоляцию Compact, закрытие снаружи и поддержку dialog top layer.
+
+RangePicker, остальные picker/multiple modes, generatePicker factory, presets,
+cellRender/panelRender, mask format, hover preview, полный semantic/component config
+и rc-trigger/motion/container API ещё не перенесены. Реестр перечисляет эти пробелы
+отдельно; данный этап не заявляет полноту семейства DatePicker.
+
 ## TextArea (Input.TextArea)
 
 Отдельный экспорт TextArea соответствует React Input.TextArea. Минимальный объём
@@ -3571,7 +3649,7 @@ FormItem предоставляет label, status, required, description и об
 Состояние `values` и ошибки предназначены для чтения.
 
 Поддерживаются плоские поля со значениями string, number, boolean, null,
-undefined и массивами string/number/boolean. Правила включают required, min/max, pattern и синхронный либо
+undefined, immutable Dayjs и массивами string/number/boolean. Правила включают required, min/max, pattern и синхронный либо
 асинхронный `validator(value, values)`. Для строк min/max считают Unicode
 code points, для чисел сравнивают значение, для массивов считают элементы.
 Пустой массив считается пустым значением; массивы с 0 или false — непустыми.
@@ -3582,6 +3660,8 @@ Pattern проверяет скалярные значения; для пров�
 Массивы копируются при создании модели, установке полей, в snapshot проверки
 и при каждом reset. Defaults, snapshot и аргументы владельца не разделяют
 изменяемые массивы. Значения модели, включая массивы, изменяйте через setters.
+Dayjs|null также поддержан: immutable экземпляр сохраняется без proxy, coercion
+или сериализации; заменяйте его новым значением через setter.
 
 `validateFields()` возвращает snapshot значений или отклоняется с
 FormValidationError. Ошибка содержит `errors`, `values` и `outOfDate`.
@@ -3870,7 +3950,7 @@ Popover и SSR; модель — нормализацию имён, Unicode-ин
 
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
-DatePicker/RangePicker,
+RangePicker и расширенные режимы DatePicker,
 Tree/TreeSelect, Upload, Select tags, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.

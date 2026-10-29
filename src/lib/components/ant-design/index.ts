@@ -1,3 +1,5 @@
+export { default as DatePicker } from './DatePicker.svelte';
+export type { DatePickerProps, DatePickerLocale, DatePickerTimeConfig, DatePickerDisabledTime, DatePickerFormat, DatePickerMode } from './date-picker.types';
 export { default as TextArea } from './TextArea.svelte';
 export type { TextAreaProps } from './textarea.types';
 export { default as FloatButton } from './FloatButton.svelte';

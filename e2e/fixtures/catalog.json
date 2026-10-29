@@ -294,5 +294,10 @@
     "id": "select-remote",
     "module": "./RemoteSelectFixtures.svelte",
     "root": "remote-select-fixture"
+  },
+  {
+    "id": "date-picker",
+    "module": "./DatePickerFixtures.svelte",
+    "root": "date-picker-fixture"
   }
 ]

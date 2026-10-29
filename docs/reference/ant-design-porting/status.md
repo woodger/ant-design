@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **67**.
-Есть публичная реализация у **46** семейств; отсутствует у **27**.
-Проверенный объём v1 покрыт у **18**; требуется аудит у **28**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **68**.
+Есть публичная реализация у **47** семейств; отсутствует у **26**.
+Проверенный объём v1 покрыт у **19**; требуется аудит у **28**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -36,7 +36,7 @@ Candidate означает запись каталога, для которой 
 | [Cascader](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/cascader) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Checkbox](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/checkbox) | data-entry | target | Checkbox, CheckboxGroup | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
 | [ColorPicker](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/color-picker) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
-| [DatePicker](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/date-picker) | data-entry | candidate | — | Нет публичной реализации | Выбор одной даты (missing); Клавиатура и управление фокусом календаря (missing); RangePicker (missing); Остальные режимы и API (unreviewed) |
+| [DatePicker](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/date-picker) | data-entry | target | DatePicker | Согласованный v1 покрыт | RangePicker (missing); Другие picker modes, multiple, presets/render hooks, mask и hover preview (missing); Глобальный DatePicker component config, prefix/tokens, popup motion/container (missing) |
 | [Form](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/form) | data-entry | target | Form, createForm, FormValidationError, FormItem | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Form.List и вложенные name paths (missing) |
 | [Input](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/input) | data-entry | target | Input, TextArea | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); TextArea autoSize, clear/count, variants, semantic slots и textArea config (missing) |
 | [InputNumber](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/input-number) | data-entry | target | InputNumber | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); stringMode, formatter/parser и варианты оформления (missing) |

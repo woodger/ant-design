@@ -1,4 +1,6 @@
-export type FormValue = string | number | boolean | null | undefined | readonly (string | number | boolean)[];
+import type { Dayjs } from 'dayjs';
+
+export type FormValue = string | number | boolean | null | undefined | Dayjs | readonly (string | number | boolean)[];
 export type FormValues = Record<string, FormValue>;
 export type FieldName<Values> = Extract<keyof Values, string>;
 

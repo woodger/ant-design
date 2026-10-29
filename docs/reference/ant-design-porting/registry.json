@@ -827,7 +827,7 @@
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "AutoComplete, Cascader, DatePicker/RangePicker/TimePicker, TreeSelect и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API."
+          "note": "AutoComplete, Cascader, RangePicker/TimePicker, TreeSelect и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API. DatePicker single наследует Compact context."
         }
       ]
     },
@@ -1476,39 +1476,86 @@
       "id": "date-picker",
       "name": "DatePicker",
       "category": "data-entry",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первая итерация single DatePicker с showTime по контракту Dayjs и исходному rc-picker; RangePicker переносится отдельно.",
       "upstreamPath": "components/date-picker",
       "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
-      "exports": [],
-      "dependencies": [],
+      "exports": [
+        {
+          "upstream": "DatePicker",
+          "local": [
+            "DatePicker"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "space"
+      ],
       "upstreamPackages": [
         {
           "name": "@rc-component/picker",
           "range": "~1.12.2",
-          "referenceVersion": null
+          "referenceVersion": "1.12.2"
+        },
+        {
+          "name": "dayjs",
+          "range": "^1.11.11",
+          "referenceVersion": "1.11.23"
+        },
+        {
+          "name": "@ant-design/icons",
+          "range": "^6.3.4",
+          "referenceVersion": "6.3.4"
         }
       ],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "priority": "p1",
+      "effort": "L",
+      "fixtures": [
+        "date-picker"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/DatePicker.svelte",
+        "src/lib/components/ant-design/date-picker-dayjs.engine.ts",
+        "src/lib/components/ant-design/date-picker.engine.test.ts",
+        "src/lib/components/ant-design/date-picker.ssr.test.ts",
+        "e2e/date-picker.spec.ts",
+        "src/lib/presentation/ant-design/DatePickerExample.svelte"
+      ],
       "features": [
         {
           "id": "single",
-          "title": "Выбор одной даты",
-          "state": "missing",
+          "title": "Single date input/calendar, clear, ограничения и controlled/default value",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Публичный DatePicker отсутствует; критерии будущего v1 предварительные."
+          "evidence": [
+            "src/lib/components/ant-design/date-picker.engine.test.ts",
+            "src/lib/components/ant-design/date-picker.ssr.test.ts",
+            "e2e/date-picker.spec.ts"
+          ],
+          "note": "Dayjs|null, строгий формат/массив форматов, defaultValue, open, pickerValue, onChange(value,dateString), date/month/year/decade навигация панели, min/max/disabledDate, native name. Picker выбора только date; дополнительные picker modes отдельно."
+        },
+        {
+          "id": "datetime",
+          "title": "ShowTime, подтверждение и исходная точность Dayjs",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/date-picker.engine.test.ts",
+            "e2e/date-picker.spec.ts"
+          ],
+          "note": "Никакой принудительной UTC/ISO сериализации. Адаптер сохраняет режим входного Dayjs; parser локальный как rc-picker. Panel selection выравнивает скрытые units с default millisecondStep=100; явный step=1 и ввод SSS поддержаны. Date/time ограничения, Now, needConfirm и draft/cancel."
         },
         {
           "id": "keyboard",
-          "title": "Клавиатура и управление фокусом календаря",
-          "state": "missing",
+          "title": "Клавиатура, native focus, локали, SSR и формы",
+          "state": "supported",
           "requiredForV1": true,
-          "evidence": [],
-          "note": "Публичный аналог отсутствует."
+          "evidence": [
+            "src/lib/components/ant-design/date-picker.ssr.test.ts",
+            "e2e/date-picker.spec.ts"
+          ],
+          "note": "Native combobox/grid buttons и существующая popover surface вместо React portal/trigger. RU/EN, RTL/theme/Compact contexts. Native FormData содержит отображаемую строку, callback — Dayjs; Form хранит immutable Dayjs, валидирует null и восстанавливает объект при reset без изменения контракта DatePicker."
         },
         {
           "id": "range",
@@ -1516,15 +1563,23 @@
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "Отдельный последующий объём."
+          "note": "Отдельный последующий этап с общим date adapter."
         },
         {
-          "id": "other-api",
-          "title": "Остальные режимы и API",
-          "state": "unreviewed",
+          "id": "extended-api",
+          "title": "Другие picker modes, multiple, presets/render hooks, mask и hover preview",
+          "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "Детальный аудит ещё не выполнен."
+          "note": "Нет публичных week/month/quarter/year picker, multiple, generatePicker factory, presets, cellRender/panelRender, mask format, previewValue и полного набора semantic slots/events."
+        },
+        {
+          "id": "global-parity",
+          "title": "Глобальный DatePicker component config, prefix/tokens, popup motion/container",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "262 CSS-правила и локальные theme aliases. Native popover использует существующий lifecycle без полного rc-trigger/motion/getPopupContainer API. Полный пользовательский component config и token engine не перенесены."
         }
       ]
     },
@@ -1533,9 +1588,9 @@
       "name": "Form",
       "category": "data-entry",
       "scope": "target",
-      "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
+      "scopeReason": "Существующий Form; частичный аудит Dayjs value по DatePicker/Form API, общий подробный аудит v1 ещё не завершён.",
       "upstreamPath": "components/form",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Form",
@@ -1581,6 +1636,17 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "dayjs-values",
+          "title": "Immutable Dayjs|null без преобразования в строку",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/form.model.test.ts",
+            "e2e/date-picker.spec.ts"
+          ],
+          "note": "DatePicker хранит объект напрямую; required/null, submit и reset сохраняют класс/исходное значение. Остальной подробный аудит Form и generic object store ещё не завершён."
         }
       ]
     },
