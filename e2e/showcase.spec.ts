@@ -183,7 +183,7 @@ test.describe('Tag showcase', () => {
   });
 
   test('wraps long project labels and filter buttons on a 320px viewport', async ({ page }, testInfo) => {
-    await page.setViewportSize({ width: 320, height: 800 }); const fixture = page.locator('#tag'); const initialWidth = await page.evaluate(() => document.documentElement.scrollWidth); const input = fixture.getByRole('textbox', { name: 'Новая метка проекта', exact: true }); await input.fill('LongUnbrokenProjectLabel'.repeat(8)); await input.press('Enter');
+    await page.setViewportSize({ width: 320, height: 800 }); await expect.poll(() => page.locator('#layout .ant-layout-sider').evaluate(node => node.getBoundingClientRect().width)).toBe(0); const fixture = page.locator('#tag'); const initialWidth = await page.evaluate(() => document.documentElement.scrollWidth); const input = fixture.getByRole('textbox', { name: 'Новая метка проекта', exact: true }); await input.fill('LongUnbrokenProjectLabel'.repeat(8)); await input.press('Enter');
     const bounds = await fixture.evaluate(node => ({ right: node.getBoundingClientRect().right, width: node.clientWidth, scroll: node.scrollWidth })); expect(bounds.right).toBeLessThanOrEqual(320); expect(bounds.scroll).toBeLessThanOrEqual(bounds.width); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(initialWidth);
     await fixture.screenshot({ path: testInfo.outputPath('tag-example-mobile.png') });
   });
