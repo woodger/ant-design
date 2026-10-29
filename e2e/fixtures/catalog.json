@@ -349,5 +349,10 @@
     "id": "rate",
     "module": "./RateFixtures.svelte",
     "root": "rate-fixture"
+  },
+  {
+    "id": "watermark",
+    "module": "./WatermarkFixtures.svelte",
+    "root": "watermark-fixture"
   }
 ]

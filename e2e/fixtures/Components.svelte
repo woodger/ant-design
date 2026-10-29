@@ -1,4 +1,5 @@
 <script lang="ts">
+  import WatermarkFixtures from './WatermarkFixtures.svelte';
   import RateFixtures from './RateFixtures.svelte';
   import ImageGroupFixtures from './ImageGroupFixtures.svelte';
   import ImageFixtures from './ImageFixtures.svelte';
@@ -93,6 +94,7 @@
     <UploadFixtures />
     <RangePickerFixtures />
     <DatePickerFixtures />
+    <WatermarkFixtures />
     <RateFixtures />
     <RemoteSelectFixtures />
     <TextAreaFixtures />

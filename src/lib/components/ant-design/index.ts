@@ -161,3 +161,5 @@ export type { ValidationRule, FormRules, FieldErrors, FormValue, FormValues } fr
 export { ruRU, enUS, type Locale, type InputNumberLocale, type PaginationLocale, type TableLocale, type ComponentSize, type ThemeConfig, type SelectOption } from './types';
 export { default as Rate } from './Rate.svelte';
 export type { RateProps, RateConfig, RateCharacterInfo } from './rate.types';
+export { default as Watermark } from './Watermark.svelte';
+export type { WatermarkProps, WatermarkConfig, WatermarkFont, WatermarkText, WatermarkContent } from './watermark.types';

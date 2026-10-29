@@ -4463,25 +4463,94 @@
       "id": "watermark",
       "name": "Watermark",
       "category": "feedback",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный перенос Watermark 6.6.8: все объявленные props, Canvas clips/text/image, восстановление DOM и наследование в Modal/Drawer; ограничения общего token engine отмечены отдельно.",
       "upstreamPath": "components/watermark",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Watermark",
+          "local": [
+            "Watermark"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "modal",
+        "drawer"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/mutate-observer",
+          "range": "^2.0.1",
+          "referenceVersion": "2.0.1"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "fixtures": [
+        "watermark"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Watermark.svelte",
+        "src/lib/components/ant-design/watermark.dom.ts",
+        "src/lib/components/ant-design/watermark.draw.ts",
+        "src/lib/components/ant-design/watermark-context.ts",
+        "src/lib/components/ant-design/watermark.engine.test.ts",
+        "src/lib/components/ant-design/watermark.draw.test.ts",
+        "src/lib/components/ant-design/watermark.ssr.test.ts",
+        "e2e/watermark.spec.ts",
+        "src/lib/presentation/ant-design/WatermarkExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "canvas",
+          "title": "Text/object/multiline fonts, image/fallback, Canvas rotation/alternate clips и DPR",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/watermark.engine.test.ts",
+            "src/lib/components/ant-design/watermark.draw.test.ts",
+            "src/lib/components/ant-design/watermark.ssr.test.ts",
+            "e2e/watermark.spec.ts"
+          ],
+          "note": "Три Canvas, FontGap=3, fontBoundingBox metrics, source getCanvasFont Number(fontSize), image defaults 120x64 даже для fallback, cache последнего набора. HTMLElement исключён из ключей: смена только image URL при прежних параметрах сохраняет старый PNG, как source."
+        },
+        {
+          "id": "dom",
+          "title": "Offset/gap/zIndex, root styles/config, mutation repair и onRemove",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/watermark.engine.test.ts",
+            "e2e/watermark.spec.ts"
+          ],
+          "note": "Положительный offset сужает слой, отрицательный смещает background; координаты физические в RTL. Observer subtree/childList/style/class, hidden отдельно не наблюдается. Leading RAF throttle без trailing, повторное использование mark node и PNG. OnRemove только при восстановлении удалённого/перемещённого mark; root фиксирует лишь ожидаемые position/overflow."
+        },
+        {
+          "id": "context",
+          "title": "Inherit/context и панели Modal/Drawer, SSR и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/watermark.ssr.test.ts",
+            "e2e/watermark.spec.ts"
+          ],
+          "note": "Modal container и Drawer section регистрируются attachment с cleanup. Inherit=false оставляет родительский контекст; смена inherit пересоздаёт children branch, как Provider в React. SSR без Canvas/observer/Image; callbacks/frames и overlay map очищаются. Незавершённые image requests сохраняют source completion order до unmount; при иной геометрии старый ответ может временно заменить новый PNG, после чего observer может запустить актуальный render. При отсутствии MutationObserver слой рисуется без repair."
+        },
+        {
+          "id": "theme",
+          "title": "Полный общий theme/token engine",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Default fontSizeLG/colorFill/zIndexPopupBase читаются из поддерживаемых CSS tokens, light/dark/compact реактивны. Произвольный React theme algorithm не перенесён; у Watermark нет собственных component CSS/tokens/prefixCls."
         }
       ]
     },

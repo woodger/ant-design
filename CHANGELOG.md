@@ -33,6 +33,10 @@
 
 ### Added
 
+- Watermark: Canvas text/image и построчные fonts, исходные clips/cache/offsets,
+  mutation repair/onRemove, config и наследование в Modal/Drawer. Добавлены
+  unit/SSR/browser, пример и фикстура; исходные ограничения кэша и RAF описаны явно.
+
 - Rate: исходные value/half/clear, hover/change callbacks, keyboard/RTL,
   character/render snippets, tooltips, размеры, config и focus ref. Добавлены
   полный CSS-рецепт, лицензия rc-rate, unit/SSR/browser, галерея и фикстура.

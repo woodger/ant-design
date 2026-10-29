@@ -2,6 +2,7 @@
   import type { FloatButtonConfig, FloatButtonGroupConfig } from './float-button.types';
   import type { ButtonConfig } from './button.types';
   import type { RateConfig } from './rate.types';
+  import type { WatermarkConfig } from './watermark.types';
   import type { Snippet } from 'svelte';
   import { provideConfig, useConfig, type ConfigContext } from './config-context';
   import type { ComponentSize, Locale, ThemeConfig } from './types';
@@ -12,6 +13,7 @@
     theme?: ThemeConfig;
     button?: ButtonConfig;
     rate?: RateConfig;
+    watermark?: WatermarkConfig;
     floatButton?: FloatButtonConfig;
     floatButtonGroup?: FloatButtonGroupConfig;
     componentSize?: ComponentSize;
@@ -27,6 +29,7 @@
     theme,
     button,
     rate,
+    watermark,
     floatButton,
     floatButtonGroup,
     componentSize,
@@ -41,6 +44,7 @@
   const config: ConfigContext = {
     get button() { return button ?? parent.button; },
     get rate() { return rate ?? parent.rate; },
+    get watermark() { return watermark ?? parent.watermark; },
     get floatButton() { return floatButton ?? parent.floatButton; },
     get floatButtonGroup() { return floatButtonGroup ?? parent.floatButtonGroup; },
     get componentSize() { return componentSize ?? parent.componentSize; },
