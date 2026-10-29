@@ -319,5 +319,10 @@
     "id": "tree-select",
     "module": "./TreeSelectFixtures.svelte",
     "root": "tree-select-fixture"
+  },
+  {
+    "id": "menu",
+    "module": "./MenuFixtures.svelte",
+    "root": "menu-fixture"
   }
 ]

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ConfigProvider, enUS } from '../../src/lib/components/ant-design';
+  import MenuFixtures from './MenuFixtures.svelte';
   import TreeSelectFixtures from './TreeSelectFixtures.svelte';
   import TreeFixtures from './TreeFixtures.svelte';
   import UploadFixtures from './UploadFixtures.svelte';
@@ -77,6 +78,7 @@
     <label><input type="checkbox" bind:checked={controls.rtl} /> Right to left</label>
     <label><input type="checkbox" bind:checked={controls.english} /> English locale</label>
 
+    <MenuFixtures />
     <TreeSelectFixtures />
     <TreeFixtures />
     <UploadFixtures />

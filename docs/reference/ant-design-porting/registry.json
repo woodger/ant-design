@@ -1114,25 +1114,91 @@
       "id": "menu",
       "name": "Menu",
       "category": "navigation",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первый этап Menu по Ant Design 6.6.8 и rc-menu 1.5.0: items, выбор, раскрытие, три режима, native links, клавиатура и контексты; overflow/motion и расширения отдельно.",
       "upstreamPath": "components/menu",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Menu",
+          "local": [
+            "Menu"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "layout"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/menu",
+          "range": "~1.5.0",
+          "referenceVersion": "1.5.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "L",
+      "fixtures": [
+        "menu"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Menu.svelte",
+        "src/lib/components/ant-design/menu.engine.test.ts",
+        "src/lib/components/ant-design/menu.ssr.test.ts",
+        "e2e/menu.spec.ts",
+        "src/lib/presentation/ant-design/MenuExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Items, группы/разделители, controlled/default выбор и callbacks",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/menu.engine.test.ts",
+            "src/lib/components/ant-design/menu.ssr.test.ts",
+            "e2e/menu.spec.ts"
+          ],
+          "note": "Single/multiple/selectable, selectedKeys/defaultSelectedKeys, item/parent/root onClick и onSelect/onDeselect. KeyPath идёт от листа к корню без групп; itemData сохраняет исходный numeric key. Повторный single click сохраняет выбранный key и вызывает onDeselect, как rc-menu 1.5.0. String/number/Snippet labels/extra, icons, danger и disabled. Native link Enter активирует callback один раз через native click; legacy React instance info.item не переносится."
+        },
+        {
+          "id": "modes-popup",
+          "title": "Horizontal/vertical/inline, openKeys, hover/click подменю и Sider collapse",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/Menu.svelte",
+            "e2e/menu.spec.ts"
+          ],
+          "note": "Controlled/default openKeys, задержки по runtime rc-menu (open/close 0.1 s), ленивый popup и forceSubMenuRender. Native popover с outside/Escape, RTL и верхним выравниванием боковых подменю. Inline сохраняет descendant keys при закрытии, popup удаляет их. InlineCollapsed/Sider переводит меню в vertical и кэширует uncontrolled inline keys; controlled ключи остаются у владельца. Collapsed labels имеют native title вместо исходного Tooltip."
+        },
+        {
+          "id": "keyboard-contexts",
+          "title": "Клавиатура, native links, SSR, темы/RTL и refs",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/menu.ssr.test.ts",
+            "e2e/menu.spec.ts"
+          ],
+          "note": "Стрелки по режиму/уровню, Home/End, Enter, возврат Escape к родителю popup; disabled пропускается. Заголовки — native button с role=menuitem, Space не раскрывает их, как upstream. Focus предпочитает a[href]; nativeElement/focus/findItem. Light/dark menu theme независимо от алгоритма страницы, primary/compact/RTL, 201 CSS-правило. Menu не наследует Form.disabled/ConfigProvider.componentDisabled, как Ant wrapper."
+        },
+        {
+          "id": "overflow-motion",
+          "title": "Адаптивное horizontal overflow и исходные popup/inline motion",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Нет rc-overflow/overflowedIndicator и автоматического скрытия horizontal items; исходные rc-motion collapse/slide/zoom не перенесены. Обычные CSS transitions сохранены."
+        },
+        {
+          "id": "extended-api",
+          "title": "Полный semantic/config/tokens, render hooks, tooltip и legacy children API",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Нет prefixCls/component config/token engine, semantic classNames/styles, popupRender/getPopupContainer/placements/offset, expandIcon/itemIcon overrides, controlled activeKey/defaultActiveFirst, Menu.Item/SubMenu/ItemGroup/Divider children wrappers и полного Tooltip API collapsed items. Standalone Menu не меняет существующий Dropdown menu contract; интеграция остаётся отдельным этапом."
         }
       ]
     },

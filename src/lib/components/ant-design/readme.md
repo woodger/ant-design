@@ -10,7 +10,7 @@ MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Step
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
 StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
 LayoutContent, LayoutFooter, LayoutSider, Descriptions, Card, CardGrid, CardMeta,
-Breadcrumb, Space, SpaceCompact, SpaceAddon, FloatButton, FloatButtonGroup,
+Breadcrumb, Menu, Space, SpaceCompact, SpaceAddon, FloatButton, FloatButtonGroup,
 FloatButtonBackTop, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
@@ -96,6 +96,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | Popover | Интерактивные snippets, click/hover/focus, bind:open, четыре положения, стрелка, автоматический переворот, клавиатура и возврат фокуса |
 | Popconfirm | Подтверждение и отмена, Promise/loading, повтор после ошибки, защита от поздних результатов, snippets, локализация и клавиатура |
 | Dropdown | Плоское меню команд, click/hover, bind:open, disabled/danger, snippets, шесть положений, стрелки/typeahead и возврат фокуса |
+| Menu | Items/группы/подменю, selected/open keys, horizontal/vertical/inline, native links, клавиатура и collapse |
 | Tabs | Типизированные панели, bind:activeKey, line/card, четыре положения, ручная клавиатурная активация, сохранение содержимого и destroyOnHidden |
 | Collapse | Независимые панели и accordion, bind:activeKey, snippets, extra, header/icon/disabled, сохранение содержимого и destroyOnHidden |
 | Drawer | Модальная выдвижная панель, bind:open, четыре стороны, размеры, snippets, анимация, сохранение содержимого и destroyOnHidden |
@@ -1232,6 +1233,100 @@ aria-controls/aria-expanded. Во время ожидания выставляе
 Первая версия поддерживает открытие по клику и четыре положения;
 hover/contextMenu, corner placements и getPopupContainer пока отсутствуют.
 
+## Menu
+
+Первый этап следует Ant Design 6.6.8 и @rc-component/menu 1.5.0
+(диапазон upstream ~1.5.0). React/rc-menu runtime не устанавливается;
+[MIT-лицензия rc-menu](./vendor/LICENSE.rc-menu) сохранена в пакете.
+
+```svelte
+<script lang="ts">
+  import { Menu, type MenuItemType } from '$lib/components/ant-design';
+  let selected = $state<string[]>(['overview']);
+  let opened = $state<string[]>(['guides']);
+  const items: MenuItemType[] = [
+    { key: 'overview', label: overview },
+    { key: 'guides', label: 'Руководства', children: [
+      { key: 'setup', label: 'Подключение' },
+      { key: 'forms', label: 'Формы' }
+    ] }
+  ];
+</script>
+
+{#snippet overview()}<a href="/overview">Обзор</a>{/snippet}
+<Menu {items} mode="inline" selectedKeys={selected} openKeys={opened}
+  onSelect={info => { selected = info.selectedKeys; }}
+  onDeselect={info => { selected = info.selectedKeys; }}
+  onOpenChange={keys => { opened = keys; }} aria-label="Навигация" />
+```
+
+Items принимает MenuItemType: обычный пункт, подменю с children,
+`type='group'` с label/children, `type='divider'` с dashed либо null.
+У пунктов и подменю обязательны стабильные key. Числовой key нормализуется в
+строку для selection/open/events; исходное значение остаётся в itemData.
+Label и extra пункта — string/number/Snippet, icon — Snippet. Поддержаны
+item.disabled/danger/title, class/style; у подменю также theme/popupClassName
+и onTitleClick. Группы не добавляют уровень отступа и не входят в keyPath.
+
+SelectedKeys/openKeys задают controlled state; defaultSelectedKeys/defaultOpenKeys
+читаются при создании для uncontrolled state. По умолчанию выбран один пункт,
+selectable=true, multiple=false. OnClick пункта, его подменю от ближайшего к корню
+и Menu вызываются до onSelect/onDeselect. Info содержит key, keyPath от листа
+к корню, domEvent и itemData — поверхностную копию исходного пункта. Select info
+добавляет selectedKeys. Устаревший React instance info.item отсутствует.
+Повторная активация выбранного single-пункта сохраняет `[key]`, но вызывает
+onDeselect: это поведение rc-menu 1.5.0. В multiple выбранный key удаляется.
+Selectable=false сохраняет onClick и закрытие popup без изменения selection.
+
+Mode по умолчанию vertical; поддержаны horizontal и inline. Hover открывает
+popup-подменю; triggerSubMenuAction='click' переключает их по клику. Inline
+раскрывается по клику независимо от этого prop. SubMenuOpenDelay и
+subMenuCloseDelay — секунды, обе задержки по умолчанию 0.1, как runtime rc-menu
+1.5.0 (таблица Ant Design указывает open delay=0). OnTitleClick относится к
+клику заголовка; keyboard opening меняет openKeys без этого callback.
+Single selection закрывает все popup-подменю, multiple сохраняет их.
+Закрытие inline-подменю сохраняет descendant openKeys; закрытие popup удаляет их.
+
+InlineIndent по умолчанию 24 px. InlineCollapsed переводит inline в vertical;
+при отсутствии prop учитывается LayoutSider.collapsed. Возврат в inline
+восстанавливает кэш uncontrolled openKeys. Controlled openKeys остаются у владельца:
+если он принял `[]` при сворачивании, компонент не заменяет этот массив кэшем.
+Первый уровень без icon сокращается до первого символа; доступное имя и native
+подсказка title сохраняют текст. Полный Tooltip API для collapsed items пока отсутствует.
+
+Закрытые подменю монтируются при первом открытии; forceSubMenuRender монтирует
+их заранее. Inline скрывает сохранённый DOM через hidden, popup использует native
+popover и общий механизм позиционирования. Боковое подменю выравнивается по верху
+заголовка, horizontal popup — по нижнему левому краю, в RTL по правому; поверхность
+переворачивается/сдвигается в пределах viewport. Outside click закрывает её;
+Escape внутри popup закрывает текущий уровень и возвращает фокус к родителю.
+Таймеры, listeners и animation frames очищаются при unmount.
+
+Структура — ul/li с role=menu/menuitem/group/separator. Заголовки подменю используют
+native button, a[href] в label остаётся настоящей ссылкой. Menu не перехватывает
+переход, модификаторы, target/rel; native Enter на ссылке запускает callback
+один раз через click вместо дублирования legacy React keydown/click.
+Inline Up/Down обходят все видимые доступные пункты, Enter переключает подменю.
+Horizontal Left/Right меняют пункты первого уровня с учётом RTL, Down/Enter входят
+в popup. В popup Up/Down обходят текущий уровень, Left/Right входят/возвращаются
+с учётом RTL. Home/End переходят к границам текущего списка; в inline — всего
+видимого дерева. Disabled пропускается. Space не активирует пункты/подменю, как
+upstream. Ref.focus(options) предпочитает ссылку в пункте; findItem({key}) возвращает
+смонтированный элемент пункта/заголовка, bind:nativeElement — корневой ul.
+
+Theme='light' по умолчанию независимо от алгоритма страницы; theme='dark' задаёт
+тёмную палитру Menu с фоном #001529. Глобальные primary/compact/RTL наследуются.
+Как Ant wrapper, Menu учитывает только свой disabled и disabled пунктов:
+Form.disabled и ConfigProvider.componentDisabled не отключают навигацию.
+Галерея — `/ant-design#menu`, изолированная фикстура — `?fixture=menu`.
+
+Первый этап не включает responsive horizontal overflow/overflowedIndicator,
+исходные popup/collapse motion, controlled activeKey/defaultActiveFirst,
+component config/tokens, semantic classNames/styles, prefixCls, render hooks,
+getPopupContainer/placements/offset и overrides expandIcon/itemIcon. Legacy
+Menu.Item/SubMenu/ItemGroup/Divider children wrappers отсутствуют; данные задаются
+items. Standalone Menu пока не расширяет существующий контракт Dropdown.
+
 ## Dropdown
 
 ```svelte
@@ -1311,8 +1406,8 @@ Arrow по умолчанию false. Поверхность использует
 
 Галерея `/ant-design#dropdown` показывает действия строки Table: открытие Modal,
 копирование и архивирование участника. Первая версия ограничена плоскими командами:
-отдельный Menu, подменю, selectable/checkable items, contextMenu, Dropdown.Button,
-href, popupRender и getPopupContainer пока отсутствуют.
+интеграция standalone Menu, подменю, selectable/checkable items, contextMenu,
+Dropdown.Button, href, popupRender и getPopupContainer пока отсутствуют.
 
 ## Tabs
 
@@ -4041,6 +4136,9 @@ Popconfirm использует тот же dialog с именем и описа
 Dropdown использует role=menu и нативные button/a с role=menuitem, один активный
 tabindex и разделители. Стрелки и typeahead обходят доступные команды;
 Escape закрывает меню раньше Modal, Tab сохраняет естественную навигацию.
+Menu использует ul/li с role=menu/menuitem, native button для заголовков и
+настоящие ссылки в label. Стрелки/Home/End обходят доступные пункты по режиму;
+Enter раскрывает подменю, Escape возвращает фокус к родителю popup.
 Tabs использует tablist, нативные button с role=tab и связанные tabpanel.
 Aria-selected сообщает выбор; стрелки двигают фокус без активации. Скрытые
 панели недоступны для Tab. Escape остаётся доступен содержащему Modal.
@@ -4284,7 +4382,7 @@ Popover и SSR; модель — нормализацию имён, Unicode-ин
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
 расширенные режимы DatePicker,
-расширения Tree/TreeSelect/Upload, Select tags, Form.List, вложенные name paths,
+расширения Tree/TreeSelect/Upload/Menu, Select tags, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.
 
@@ -4353,6 +4451,12 @@ InputNumber outlined находится в [vendor/input-number.css](./vendor/in
 [vendor/popconfirm.css](./vendor/popconfirm.css) содержит Popconfirm из того же
 архива. Popconfirm.svelte использует Popover для поверхности и фокуса,
 а popconfirm.model.svelte.ts связывает результат действия с текущим открытием.
+[vendor/menu.css](./vendor/menu.css) содержит 201 правило Menu из того же архива:
+items, группы, подменю, три режима, light/dark/RTL и токены; collapse/slide/zoom
+motion исключены. Рецепт menu воспроизводит файл; корни ограничены
+:where(.ant-menu-css-var). Menu/MenuList/MenuSubMenu адаптируют Svelte snippets,
+native buttons/links/popover и refs, menu.engine.ts — key paths/selection/навигацию.
+Theme.css связывает цвета и геометрию с общей темой и compact.
 [vendor/dropdown.css](./vendor/dropdown.css) содержит базовое меню Dropdown,
 команды, разделитель, danger/disabled, стрелку и токены из того же архива.
 Dropdown.svelte добавляет нативные menu buttons и управление фокусом;

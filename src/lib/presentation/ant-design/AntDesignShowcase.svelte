@@ -25,6 +25,7 @@
   import ResultExample from './ResultExample.svelte';
   import StepsVariantsExample from './StepsVariantsExample.svelte';
   import ButtonFeaturesExample from './ButtonFeaturesExample.svelte';
+  import MenuExample from './MenuExample.svelte';
   import TreeSelectExample from './TreeSelectExample.svelte';
   import TreeExample from './TreeExample.svelte';
   import UploadExample from './UploadExample.svelte';
@@ -68,6 +69,7 @@
     ['upload', 'Upload'],
     ['tree', 'Tree'],
     ['tree-select', 'TreeSelect'],
+    ['menu', 'Menu'],
     ['checkbox', 'Checkbox'],
     ['radio', 'Radio / RadioGroup'],
     ['switch', 'Switch'],
@@ -222,7 +224,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">73 компонента</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">74 компонента</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -583,6 +585,11 @@
           <div class="section-heading"><h2>Breadcrumb</h2></div>
           <p class="section-description">Навигационный путь с параметрами, разделителями и меню разделов.</p>
           <div class="panel"><BreadcrumbExample /></div>
+        </section>
+
+        <section id="menu">
+          <div class="section-heading"><h2>Menu</h2></div>
+          <div class="panel"><MenuExample /></div>
         </section>
 
         <section id="tree-select">

@@ -27,6 +27,12 @@
 
 ### Added
 
+- Menu: items/группы/разделители/подменю, controlled/default selected/open keys,
+  single/multiple и исходные callbacks, horizontal/vertical/inline, native links,
+  клавиатура, Sider collapse, темы/RTL/Compact и native popup. Добавлены
+  CSS-рецепт, галерея, фикстура и unit/SSR/browser-проверки; horizontal overflow,
+  исходные motion и расширенные API отмечены как следующий объём.
+
 - TreeSelect: single/multiple и labelInValue, исходные check strategies/conduction,
   поиск с сохранением предков, loadData/expanded/loaded keys и native popup.
   Добавлены Form/raw values, темы/RTL/Compact, галерея, фикстура и unit/SSR/browser

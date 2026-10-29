@@ -532,5 +532,28 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * TreeSelect: dropdown/checkbox/RTL; .ant-select-tree заменён на общий .ant-tree.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "menu",
+    "output": "src/lib/components/ant-design/vendor/menu.css",
+    "expectedRules": 201,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-menu(?![\\w])"
+    ],
+    "exclude": [
+      "\\.ant-(?:slide|zoom|motion-collapse|fade)"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-menu-css-var",
+        "replacement": ".ant-menu-css-var"
+      },
+      {
+        "pattern": "\\.ant-menu(?![-\\w])",
+        "replacement": ".ant-menu:where(.ant-menu-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Menu: items/submenus/inline/horizontal/themes; rc-motion исключён.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

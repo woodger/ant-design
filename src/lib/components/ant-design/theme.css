@@ -451,3 +451,44 @@
   --ant-tree-select-node-selected-bg: var(--ant-control-item-bg-active);
   --ant-tree-select-node-selected-color: var(--ant-color-text);
 }
+
+.ant-menu-css-var {
+  --ant-menu-item-color: var(--ant-color-text);
+  --ant-menu-item-hover-color: var(--ant-color-text);
+  --ant-menu-group-title-color: var(--ant-color-text-description);
+  --ant-menu-item-selected-color: var(--ant-color-primary);
+  --ant-menu-sub-menu-item-selected-color: var(--ant-color-primary);
+  --ant-menu-horizontal-item-hover-color: var(--ant-color-primary);
+  --ant-menu-horizontal-item-selected-color: var(--ant-color-primary);
+  --ant-menu-item-bg: var(--ant-color-bg-container);
+  --ant-menu-popup-bg: var(--ant-color-bg-elevated);
+  --ant-menu-item-hover-bg: var(--ant-color-fill-tertiary);
+  --ant-menu-item-active-bg: var(--ant-control-item-bg-active);
+  --ant-menu-sub-menu-item-bg: var(--ant-color-fill-quaternary);
+  --ant-menu-item-selected-bg: var(--ant-control-item-bg-active);
+  --ant-menu-item-disabled-color: var(--ant-color-text-disabled);
+  --ant-menu-danger-item-color: var(--ant-color-error);
+  --ant-menu-danger-item-hover-color: var(--ant-color-error);
+  --ant-menu-danger-item-selected-color: var(--ant-color-error);
+  --ant-menu-danger-item-active-bg: var(--ant-color-error-bg);
+  --ant-menu-danger-item-selected-bg: var(--ant-color-error-bg);
+  --ant-menu-item-height: var(--ant-control-height-lg);
+  --ant-menu-item-margin-inline: var(--ant-margin-xxs);
+  --ant-menu-item-margin-block: var(--ant-margin-xxs);
+  --ant-menu-item-padding-inline: var(--ant-padding);
+  --ant-menu-icon-size: var(--ant-font-size);
+  --ant-menu-collapsed-icon-size: var(--ant-font-size-lg);
+  --ant-menu-group-title-font-size: var(--ant-font-size);
+  --ant-menu-group-title-line-height: var(--ant-line-height);
+  --ant-menu-item-border-radius: var(--ant-border-radius-lg);
+  --ant-menu-sub-menu-item-border-radius: var(--ant-border-radius-sm);
+  --ant-menu-dark-item-selected-bg: var(--ant-color-primary);
+  --ant-menu-dark-danger-item-color: var(--ant-color-error);
+  --ant-menu-dark-danger-item-hover-color: var(--ant-color-error-hover);
+  --ant-menu-dark-danger-item-selected-bg: var(--ant-color-error);
+  --ant-menu-dark-danger-item-active-bg: var(--ant-color-error);
+  --ant-menu-collapsed-width: calc(var(--ant-control-height-lg) * 2);
+  --ant-menu-horizontal-line-height: calc(var(--ant-control-height-lg) * 1.15);
+  --ant-menu-icon-margin-inline-end: calc(var(--ant-control-height-sm) - var(--ant-font-size));
+  --ant-menu-item-width: calc(100% - var(--ant-menu-item-margin-inline) * 2);
+}

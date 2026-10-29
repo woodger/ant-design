@@ -11,7 +11,7 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
   onDismiss: (reason: 'escape' | 'outside') => void;
   preserveFocus?: boolean;
   maxWidth?: string;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'top' | 'bottom';
   matchAnchorWidth?: boolean;
   onVisibilityChange?: (visible: boolean) => void;
 }): () => void {

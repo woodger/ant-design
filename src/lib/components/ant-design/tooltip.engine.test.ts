@@ -74,6 +74,12 @@ describe('Tooltip positioning', () => {
     expect(getTooltipPosition({ ...anchor, x: 580 }, popup, viewport, 'bottom', true, 'left').left).toBe(472);
     expect(getTooltipPosition({ ...anchor, x: 0 }, popup, viewport, 'top', false, 'right').left).toBe(-40);
   });
+
+  it('aligns side submenus to the top edge through flipping and viewport clamping', () => {
+    expect(getTooltipPosition(anchor, popup, viewport, 'right', true, 'top')).toMatchObject({ left: 288, top: 160 });
+    expect(getTooltipPosition({ ...anchor, x: 580 }, popup, viewport, 'right', true, 'top')).toMatchObject({ placement: 'left', top: 160 });
+    expect(getTooltipPosition({ ...anchor, y: 390 }, popup, viewport, 'left', true, 'top').top).toBe(360);
+  });
 });
 
 describe('Tooltip delays', () => {

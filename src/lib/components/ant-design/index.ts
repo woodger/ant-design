@@ -1,3 +1,5 @@
+export { default as Menu } from './Menu.svelte';
+export type { MenuProps, MenuItemType, MenuItem, MenuSubMenu, MenuGroup, MenuDivider, MenuMode, MenuTheme, MenuContent, MenuClickInfo, MenuSelectInfo } from './menu.types';
 export { default as TreeSelect } from './TreeSelect.svelte';
 export { TREE_SELECT_SHOW_ALL, TREE_SELECT_SHOW_PARENT, TREE_SELECT_SHOW_CHILD } from './tree-select.engine';
 export type { TreeSelectProps, TreeSelectNode, TreeSelectRawValue, TreeSelectLabel, TreeSelectValue, TreeSelectLabeledValue, TreeSelectStrategy, TreeSelectSearchConfig, TreeSelectChangeInfo } from './tree-select.types';
