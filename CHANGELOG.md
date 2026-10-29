@@ -21,6 +21,9 @@
 
 ### Added
 
+- Card/Grid/Meta: слоты, варианты оформления, загрузка с сохранением фокуса,
+  автоопределение Grid, вкладки и semantic styles. Tabs получил left/right extra
+  content и числовые labels. Добавлены CSS-рецепт, unit/SSR/Chromium и галерея.
 - Descriptions: items/Snippet, responsive column/span/filled, таблицы обоих
   направлений, bordered, semantic styles с исходным приоритетом, темы и RTL.
   Добавлены CSS-рецепт, unit/SSR/Chromium, отдельная фикстура и галерея.

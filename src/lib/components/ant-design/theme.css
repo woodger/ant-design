@@ -6,6 +6,25 @@
   color-scheme: light;
 }
 
+.ant-card-css-var {
+  --ant-card-header-font-size: var(--ant-font-size-lg);
+  --ant-card-header-font-size-sm: var(--ant-font-size);
+  --ant-card-header-height: calc(var(--ant-font-size-lg) * var(--ant-line-height-lg) + var(--ant-padding) * 2);
+  --ant-card-header-height-sm: calc(var(--ant-font-size) * var(--ant-line-height) + var(--ant-padding-xs) * 2);
+  --ant-card-actions-bg: var(--ant-color-bg-container);
+  --ant-card-actions-li-margin: var(--ant-padding-sm) 0;
+  --ant-card-tabs-margin-bottom: calc(0px - var(--ant-padding) - var(--ant-line-width));
+  --ant-card-extra-color: var(--ant-color-text);
+  --ant-card-body-padding: var(--ant-padding-lg);
+  --ant-card-header-padding: var(--ant-padding-lg);
+}
+
+/* Прямые Grid видны CSS при SSR до client detection непрозрачных snippets. */
+.ant-card:where(:not([data-ant-contain-grid='false']):has(> .ant-card-body > .ant-card-grid)) { border-radius: var(--ant-border-radius-lg) var(--ant-border-radius-lg) 0 0; }
+.ant-card:where(:not([data-ant-contain-grid='false']):has(> .ant-card-body > .ant-card-grid)):not(:has(> .ant-card-head)) { border-radius: 0; }
+.ant-card:where(:not([data-ant-contain-grid='false']):has(> .ant-card-body > .ant-card-grid)) .ant-card-body { display: flex; flex-wrap: wrap; }
+.ant-card:where(:not([data-ant-contain-grid='false']):has(> .ant-card-body > .ant-card-grid)):not(.ant-card-loading) .ant-card-body { margin-block-start: calc(0px - var(--ant-line-width)); margin-inline-start: calc(0px - var(--ant-line-width)); padding: 0; }
+
 .ant-descriptions-css-var {
   --ant-descriptions-label-bg: var(--ant-color-fill-quaternary);
   --ant-descriptions-label-color: var(--ant-color-text-tertiary);

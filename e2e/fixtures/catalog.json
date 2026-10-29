@@ -228,5 +228,10 @@
     "id": "descriptions",
     "module": "./DescriptionsFixtures.svelte",
     "root": "descriptions-fixture"
+  },
+  {
+    "id": "card",
+    "module": "./CardFixtures.svelte",
+    "root": "card-fixture"
   }
 ]

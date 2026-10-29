@@ -4,9 +4,9 @@
   import { useConfig } from './config-context';
   import { connectTabsNav, revealTab } from './tabs.dom';
   import { getTabsActiveKey, getTabsNavigationKey, getTabsPlacement, normalizeTabsItems } from './tabs.engine';
-  import type { TabsProps } from './tabs.types';
+  import type { TabsContent, TabsProps } from './tabs.types';
 
-  let { items: sourceItems, activeKey = $bindable<string | undefined>(), defaultActiveKey, onChange, onTabClick, type = 'line', tabPlacement = 'top', size, destroyOnHidden = false, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, class: className = '', style }: TabsProps = $props();
+  let { items: sourceItems, activeKey = $bindable<string | undefined>(), defaultActiveKey, onChange, onTabClick, type = 'line', tabPlacement = 'top', size, destroyOnHidden = false, tabBarExtraContent, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, class: className = '', style }: TabsProps = $props();
 
   const config = useConfig();
   const generatedId = $props.id();
@@ -28,6 +28,8 @@
   let resolvedSize = $derived(size ?? config.componentSize);
   let placement = $derived(getTabsPlacement(tabPlacement, config.direction, mobile));
   let vertical = $derived(placement === 'left' || placement === 'right');
+  let extraLeft = $derived(tabBarExtraContent && typeof tabBarExtraContent === 'object' ? tabBarExtraContent.left : undefined);
+  let extraRight = $derived(tabBarExtraContent && typeof tabBarExtraContent === 'object' ? tabBarExtraContent.right : tabBarExtraContent);
 
   $effect(() => {
     const media = window.matchMedia('(max-width: 575px)');
@@ -147,18 +149,24 @@
   @media (prefers-reduced-motion: reduce) { .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list, .ant-tabs > .ant-tabs-nav .ant-tabs-tab, .ant-tabs > .ant-tabs-nav .ant-tabs-tab-btn, .ant-tabs > .ant-tabs-nav .ant-tabs-ink-bar { animation: none; transition: none; } }
 </style>
 
+{#snippet value(node: TabsContent | undefined)}
+  {#if typeof node === 'function'}{@render node()}{:else if node !== true && node !== false}{node ?? ''}{/if}
+{/snippet}
+
 <div bind:this={root} id={rootId} dir={config.direction} class={['ant-tabs ant-tabs-css-var', `ant-tabs-${placement}`, type === 'card' && 'ant-tabs-card', resolvedSize !== 'middle' && `ant-tabs-${resolvedSize}`, config.direction === 'rtl' && 'ant-tabs-rtl', className]} {style}>
   <div class="ant-tabs-nav" role="presentation">
+    {#if extraLeft}<div class="ant-tabs-extra-content">{@render value(extraLeft)}</div>{/if}
     <div bind:this={viewport} class="ant-tabs-nav-wrap">
       <div bind:this={list} role="tablist" aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-orientation={vertical ? 'vertical' : 'horizontal'} tabindex={tabStop === undefined ? 0 : undefined} class="ant-tabs-nav-list" onkeydown={handleKeydown} onfocusout={handleFocusout}>
         {#each items as item (item.key)}
           <button type="button" role="tab" id={itemId(item.key, 'tab')} data-tabs-key={item.key} aria-controls={itemId(item.key, 'panel')} aria-selected={selectedKey === item.key} disabled={item.disabled} tabindex={tabStop === item.key ? 0 : -1} class={['ant-tabs-tab', selectedKey === item.key && 'ant-tabs-tab-active', item.disabled && 'ant-tabs-tab-disabled']} onfocus={(event) => handleTabFocus(item.key, event.currentTarget)} onclick={(event) => activate(item.key, event)}>
-            <span class="ant-tabs-tab-btn">{#if item.icon}<span class="ant-tabs-tab-icon" aria-hidden="true">{@render item.icon()}</span>{/if}<span class="ant-tabs-tab-label">{#if typeof item.label === 'function'}{@render item.label()}{:else}{item.label}{/if}</span></span>
+            <span class="ant-tabs-tab-btn">{#if item.icon}<span class="ant-tabs-tab-icon" aria-hidden="true">{@render item.icon()}</span>{/if}<span class="ant-tabs-tab-label">{@render value(item.label)}</span></span>
           </button>
         {/each}
         <div bind:this={indicator} class="ant-tabs-ink-bar ant-tabs-ink-bar-animated" aria-hidden="true" hidden></div>
       </div>
     </div>
+    {#if extraRight}<div class="ant-tabs-extra-content">{@render value(extraRight)}</div>{/if}
   </div>
   <div class="ant-tabs-body-holder"><div bind:this={body} class="ant-tabs-body">
     {#each items as item (item.key)}

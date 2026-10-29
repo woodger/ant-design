@@ -210,5 +210,26 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Descriptions: таблицы, bordered, размеры и изоляция вложенных строк.\n * Корни ограничены :where(.ant-descriptions-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "card",
+    "output": "src/lib/components/ant-design/vendor/card.css",
+    "expectedRules": 59,
+    "include": [
+      "\\.ant-card(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-card",
+        "replacement": ".ant-card-css-var"
+      },
+      {
+        "pattern": "\\.ant-card(?![-\\w])",
+        "replacement": ".ant-card:where(.ant-card-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Card/Grid/Meta: header/body/cover/actions, loading, tabs, inner и размеры.\n * Корни ограничены :where(.ant-card-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

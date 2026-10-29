@@ -3,10 +3,12 @@ import type { ComponentSize } from './types';
 
 export type TabsType = 'line' | 'card';
 export type TabsPlacement = 'top' | 'bottom' | 'start' | 'end';
+export type TabsContent = string | number | boolean | null | Snippet;
+export type TabsExtraContent = TabsContent | { left?: TabsContent; right?: TabsContent };
 
 export interface TabsItem {
   key: string;
-  label: string | Snippet;
+  label: TabsContent;
   children?: Snippet;
   icon?: Snippet;
   disabled?: boolean;
@@ -24,6 +26,7 @@ export interface TabsProps {
   tabPlacement?: TabsPlacement;
   size?: ComponentSize;
   destroyOnHidden?: boolean;
+  tabBarExtraContent?: TabsExtraContent;
   id?: string;
   'aria-label'?: string;
   'aria-labelledby'?: string;

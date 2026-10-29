@@ -1,3 +1,8 @@
+export { default as Card } from './Card.svelte';
+export { default as CardGrid } from './CardGrid.svelte';
+export { default as CardMeta } from './CardMeta.svelte';
+export type { CardProps, CardGridProps, CardMetaProps, CardContent, CardSlots, CardMetaSlots, CardTabItem } from './card.types';
+export type { TabsContent, TabsExtraContent } from './tabs.types';
 export { default as Descriptions } from './Descriptions.svelte';
 export type { DescriptionsProps, DescriptionsItem, DescriptionsContent, DescriptionsSlots, DescriptionsCellSlots } from './descriptions.types';
 export { default as ConfigProvider } from './ConfigProvider.svelte';

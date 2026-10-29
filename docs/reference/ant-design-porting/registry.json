@@ -822,7 +822,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/tabs",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Tabs",
@@ -834,7 +834,13 @@
       "dependencies": [
         "config-provider"
       ],
-      "upstreamPackages": [],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/tabs",
+          "range": "~1.13.0",
+          "referenceVersion": "1.13.0"
+        }
+      ],
       "priority": "unassigned",
       "effort": "unknown",
       "fixtures": [
@@ -860,6 +866,18 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "bar-extra",
+          "title": "TabBarExtraContent слева/справа и числовые labels",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/card.test.ts",
+            "e2e/card.spec.ts",
+            "e2e/tabs.spec.ts"
+          ],
+          "note": "Слоты остаются вне tablist; truthiness extras соответствует @rc-component/tabs 1.13.0. Основной подробный аудит Tabs ещё не завершён."
         }
       ]
     },
@@ -1762,25 +1780,102 @@
       "id": "card",
       "name": "Card",
       "category": "data-display",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: Card/Grid/Meta на готовых Skeleton и Tabs; левое/правое tabBarExtraContent добавлено в Tabs.",
       "upstreamPath": "components/card",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Card",
+          "local": [
+            "Card"
+          ]
+        },
+        {
+          "upstream": "Card.Grid",
+          "local": [
+            "CardGrid"
+          ]
+        },
+        {
+          "upstream": "Card.Meta",
+          "local": [
+            "CardMeta"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "tabs",
+        "skeleton"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@rc-component/tabs",
+          "range": "~1.13.0",
+          "referenceVersion": "1.13.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "card"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Card.svelte",
+        "src/lib/components/ant-design/CardGrid.svelte",
+        "src/lib/components/ant-design/CardMeta.svelte",
+        "src/lib/components/ant-design/card.test.ts",
+        "e2e/card.spec.ts",
+        "src/lib/presentation/ant-design/CardExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "structure",
+          "title": "Title/extra/cover/body/actions, Grid и Meta",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/card.test.ts",
+            "e2e/card.spec.ts"
+          ],
+          "note": "Нативные div/ul/li; Snippet/text/number/boolean slots с upstream presence. Grid: CSS :has до mount, direct-child observer после, containGrid для явного SSR-класса."
+        },
+        {
+          "id": "appearance",
+          "title": "Loading/hoverable/inner/variant/size, semantic styles и темы",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/card.test.ts",
+            "e2e/card.spec.ts"
+          ],
+          "note": "Skeleton заменяет только body; root style > semantic root, header/body semantic > legacy. Фокус body при загрузке и восстановление при unmount — доступная Svelte-адаптация."
+        },
+        {
+          "id": "tabs",
+          "title": "Active/default key, legacy tab label и tabProps/extra",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/card.test.ts",
+            "e2e/card.spec.ts",
+            "e2e/tabs.spec.ts"
+          ],
+          "note": "Локальные Tabs сохраняют согласованную ручную клавиатурную модель. Размер large/small, defaultActiveTabKey > tabProps.defaultActiveKey, label > legacy tab; левый/правый native extra."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls, глобальный variant/component config/tokens и полный API Tabs",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Остаётся в полном объёме миграции; Card.tabProps пока ограничен существующим Svelte Tabs, включая отсутствие editable-card/renderTabBar/overflow menu."
         }
       ]
     },

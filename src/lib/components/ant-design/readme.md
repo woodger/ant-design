@@ -9,7 +9,8 @@ Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
 StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
-LayoutContent, LayoutFooter, LayoutSider, Descriptions, Form и FormItem.
+LayoutContent, LayoutFooter, LayoutSider, Descriptions, Card, CardGrid, CardMeta,
+Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -111,6 +112,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Row / Col | 24 колонки, responsive span/offset/order/push/pull/flex, gutter, align/justify и вложенные контексты |
 | Layout / LayoutHeader / LayoutContent / LayoutFooter / LayoutSider | Нативная структура, hasSider, collapse/trigger, responsive sidebar, темы и RTL |
 | Descriptions | Таблица read-only полей, responsive column/span/filled, horizontal/vertical, bordered и semantic slots |
+| Card / CardGrid / CardMeta | Header/cover/body/actions, loading, grid, tabs, metadata, semantic slots и варианты оформления |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -459,6 +461,57 @@ Unit/SSR/Chromium проверяют раскладку, media, приорите
 Рецепт descriptions извлекает 40 правил без keyframes, включая две интеграции
 Table expanded-row. PrefixCls, произвольные breakpoint/theme tokens и глобальный
 component config пока не поддержаны и остаются в полном объёме миграции.
+
+## Card
+
+Card, CardGrid и CardMeta соответствуют Card/Grid/Meta эталона 6.6.8. Слоты
+title/extra/cover/actions и Meta.avatar/title/description принимают text/number/
+boolean/Snippet; 0 и true считаются присутствующими, но boolean не выводит текст.
+Children Card/Grid — Snippet. Все три компонента поддерживают нативные attrs,
+class/style и bind:nativeElement; Card дополнительно rootClassName.
+Корни остаются div, actions — ul/li/span с равными долями ширины. Интерактивный
+контент actions задавайте нативными buttons/links; hoverable не добавляет роль
+button или клавиатурную активацию контейнеру.
+
+Пустой Card не создаёт body. Loading заменяет только children на активный
+Skeleton без title с четырьмя строками; header/cover/actions остаются. State
+заменённого содержимого уничтожается, как в upstream. Если фокус был внутри
+body, он паркуется на body (tabindex=-1, aria-busy); unmount передаёт его соседнему
+control. Это доступная Svelte-адаптация поверх исходной разметки.
+
+Variant=outlined; variant имеет приоритет над legacy bordered=false. Hoverable
+по умолчанию false, type=inner меняет header/body. Small наследуется из явно
+заданного ConfigProvider.componentSize; medium/middle/default/large используют
+обычную геометрию. Small body/header padding остаётся фиксированным 12px;
+остальные размеры/цвета используют theme/compact tokens.
+ClassNames/styles Card принимают root/header/body/extra/title/actions/cover,
+Meta — root/section/avatar/title/description, объект либо callback ({ props }).
+Style корня перекрывает styles.root; styles.header/body перекрывают legacy
+headStyle/bodyStyle. Meta root следует тому же приоритету.
+
+CardGrid по умолчанию hoverable=true и width=33.33%; style переопределяет ширину.
+Card определяет только прямые Grid внутри body. При SSR CSS :has сохраняет
+геометрию до mount, затем direct-child MutationObserver обновляет класс
+ant-card-contain-grid; listener очищается, отложенные callbacks игнорируются.
+Для точного SSR-класса и начального loading с Grid задавайте containGrid=true;
+false отключает auto detection. Это адаптация непрозрачного Snippet вместо
+React children inspection. Флаг сохраняется во время загрузки уже показанного
+Grid. Meta вне Card не подключает самостоятельные стили, как в upstream.
+
+TabList задаёт заголовки Tabs, а body остаётся children Card; выбор поддерживает
+bind:activeTabKey/onTabChange. DefaultActiveTabKey (включая пустую строку) имеет
+приоритет над tabProps.defaultActiveKey. Label перекрывает legacy tab, включая
+явные null/undefined. Размер вкладок large или small по размеру Card;
+tabProps.size переопределяет его. Card переопределяет tabProps items/class/onChange/
+tabBarExtraContent; остальные поддерживаемые Tabs props передаются. Верхний
+activeTabKey имеет приоритет над tabProps.activeKey. TabBarExtraContent поддерживает
+правый слот либо { left, right }. Клавиатура и fallback ключей следуют ранее
+согласованному Svelte Tabs; полный React Tabs API пока не перенесён.
+
+Галерея — `/ant-design#card`, фикстура — `?fixture=card`; unit/SSR/Chromium
+проверяют стили, слоты, Grid, загрузку/фокус и вкладки. Рецепт card извлекает
+59 правил без keyframes. PrefixCls, глобальный variant/component config/tokens
+и отсутствующие возможности Tabs остаются в полном объёме миграции.
 
 ## InputNumber
 
@@ -962,8 +1015,8 @@ href, popupRender и getPopupContainer пока отсутствуют.
 />
 ```
 
-`items` принимает readonly-массив TabsItem: строковый key, label (строку или
-пассивный Snippet), необязательные children (Snippet), icon, disabled,
+`items` принимает readonly-массив TabsItem: строковый key, label (строку, число,
+boolean/null или пассивный Snippet), необязательные children (Snippet), icon, disabled,
 forceRender и destroyOnHidden. Ключи идентифицируют панели при перестановке;
 содержимое и его фокус сохраняются.
 Пустой строковый ключ допустим; при повторении используется первое вхождение.
@@ -1020,10 +1073,15 @@ Start/end разрешаются относительно RTL. На экране
 ComponentSize: small/middle/large, по умолчанию ConfigProvider.componentSize.
 Тема, compact, RTL и reduced motion применяются через существующие токены.
 
+TabBarExtraContent задаёт правый слот либо { left, right }: string/number/boolean/
+Snippet. Слоты находятся вне tablist и допускают нативные интерактивные controls;
+они не участвуют в навигации стрелками. Как @rc-component/tabs 1.13.0, falsy extra
+(включая 0) не создаёт wrapper; числовой label=0 при этом отображается.
+
 Галерея `/ant-design#tabs` показывает профиль, настройки, историю Table,
 сохранение черновиков, destroyOnHidden и Tabs внутри Modal. Первая версия
 не поддерживает editable-card, добавление/закрытие пользователем, drag-and-drop,
-меню переполнения more, renderTabBar, tabBarExtraContent и настройку indicator.
+меню переполнения more, renderTabBar и настройку indicator.
 
 ## Collapse
 

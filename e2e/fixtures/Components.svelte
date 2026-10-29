@@ -41,6 +41,7 @@
   import SegmentedFixtures from './SegmentedFixtures.svelte';
   import GridFixtures from './GridFixtures.svelte';
   import DescriptionsFixtures from './DescriptionsFixtures.svelte';
+  import CardFixtures from './CardFixtures.svelte';
   import LayoutFixtures from './LayoutFixtures.svelte';
 
   const controls = createControls();
@@ -104,6 +105,7 @@
     <SegmentedFixtures />
     <GridFixtures />
     <LayoutFixtures />
+    <CardFixtures />
     <DescriptionsFixtures />
 
     <BasicFixtures kind="form" {controls} />

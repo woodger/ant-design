@@ -34,6 +34,7 @@
   import SegmentedExample from './SegmentedExample.svelte';
   import GridExample from './GridExample.svelte';
   import DescriptionsExample from './DescriptionsExample.svelte';
+  import CardExample from './CardExample.svelte';
   import LayoutExample from './LayoutExample.svelte';
 
   const demo = createShowcase();
@@ -80,7 +81,8 @@
     ['segmented', 'Segmented'],
     ['grid', 'Grid'],
     ['layout', 'Layout'],
-    ['descriptions', 'Descriptions']
+    ['descriptions', 'Descriptions'],
+    ['card', 'Card']
   ];
   const frameworks = [
     { value: 'svelte', label: 'Svelte 5' },
@@ -192,7 +194,7 @@
           <span class="eyebrow">Знакомый дизайн. Новый runtime.</span>
           <h1>Ant Design для Svelte</h1>
           <p class="lead">Базовые компоненты Ant Design на Svelte 5. Типизированные свойства, реактивные формы и переключение тем — попробуйте всё прямо здесь.</p>
-          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">51 компонент</span></div>
+          <div class="badges"><span class="badge blue">Первая версия</span><span class="badge">Svelte 5</span><span class="badge">TypeScript</span><span class="badge">Ant Design 6.6.8</span><span class="badge">54 компонента</span></div>
 
           <div class="settings">
             <div><div class="setting-label">Основной цвет</div><div class="swatches" role="group" aria-label="Основной цвет">
@@ -540,6 +542,12 @@
           <div class="section-heading"><h2>Descriptions</h2></div>
           <p class="section-description">Поля с адаптивными колонками и управляемой структурой таблицы.</p>
           <div class="panel"><DescriptionsExample /></div>
+        </section>
+
+        <section id="card">
+          <div class="section-heading"><h2>Card</h2></div>
+          <p class="section-description">Карточки с вкладками, метаданными, загрузкой и сеткой.</p>
+          <div class="panel"><CardExample /></div>
         </section>
 
         <div class="status-line" role="status"><span class="status-dot" aria-hidden="true"></span>{demo.action}</div>
