@@ -29,6 +29,7 @@
 @import './vendor/layout.css';
 @import './vendor/descriptions.css';
 @import './vendor/card.css';
+@import './vendor/breadcrumb.css';
 @import './vendor/radio.css';
 @import './vendor/switch.css';
 @import './theme.css';

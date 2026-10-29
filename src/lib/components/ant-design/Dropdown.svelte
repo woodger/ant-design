@@ -151,7 +151,7 @@
   function focusItem(key: string | null) {
     if (!list) return;
 
-    const element = Array.from(list.querySelectorAll<HTMLButtonElement>('[role="menuitem"]')).find((item) => item.dataset.dropdownKey === key && !item.disabled);
+    const element = Array.from(list.querySelectorAll<HTMLElement>('[role="menuitem"]')).find((item) => item.dataset.dropdownKey === key && !item.matches(':disabled, [aria-disabled="true"]'));
     activeKey = key;
     (element ?? list).focus({ preventScroll: true });
     if (element) {
@@ -231,7 +231,12 @@
     leavingByTab = event.key === 'Tab';
     const direction = event.key === 'ArrowDown' ? 'next' : event.key === 'ArrowUp' ? 'previous' : event.key === 'Home' ? 'first' : event.key === 'End' ? 'last' : null;
     if (direction) { event.preventDefault(); focusItem(getDropdownNavigationKey(items, resolvedKey, direction)); return; }
-    if (event.key === ' ' || Array.from(event.key).length !== 1) return;
+    if (event.key === ' ') {
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[role="menuitem"]') : null;
+      if (link) { event.preventDefault(); link.click(); }
+      return;
+    }
+    if (Array.from(event.key).length !== 1) return;
 
     event.preventDefault();
     const now = Date.now();
@@ -239,7 +244,7 @@
     const repeated = previous && Array.from(previous).every((character) => character.toLocaleLowerCase() === event.key.toLocaleLowerCase());
     search = { text: repeated ? event.key : previous + event.key, time: now };
     const commands = getDropdownCommands(items).map((item) => {
-      const element = Array.from(list?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]') ?? []).find((node) => node.dataset.dropdownKey === item.key);
+      const element = Array.from(list?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []).find((node) => node.dataset.dropdownKey === item.key);
       return { key: item.key, text: item.textValue ?? (typeof item.label === 'string' ? item.label : element?.querySelector('.ant-dropdown-menu-title-content')?.textContent ?? '') };
     });
     const key = getDropdownMatch(commands, resolvedKey, search.text);
@@ -263,12 +268,13 @@
   .ant-dropdown { position: fixed; inset: auto; margin: 0; padding: 0; border: 0; background: transparent; width: max-content; overflow: visible; }
   .ant-dropdown[hidden], .ant-dropdown:not(:popover-open) { display: none; }
   .ant-dropdown-menu { box-sizing: border-box; width: 100%; max-width: 100%; max-height: calc(100dvh - 16px); overflow: auto; overflow-wrap: anywhere; }
-  :where(button) { appearance: none; width: 100%; margin: 0; border: 0; background: transparent; color: inherit; text-align: start; font: inherit; }
+  :where(button, a) { appearance: none; width: 100%; margin: 0; border: 0; background: transparent; color: inherit; text-align: start; font: inherit; }
+  a.ant-dropdown-menu-item { box-sizing: border-box; text-decoration: none; }
   .ant-dropdown-menu-title-content { min-width: 0; white-space: normal; }
   .ant-dropdown-menu-empty { padding: 8px 12px; color: var(--ant-color-text-description); }
   .ant-dropdown-placement-top > .ant-dropdown-arrow, .ant-dropdown-placement-topLeft > .ant-dropdown-arrow, .ant-dropdown-placement-topRight > .ant-dropdown-arrow { left: var(--arrow-x, 50%); right: auto; transform: translateX(-50%) translateY(100%) rotate(180deg); }
   .ant-dropdown-placement-bottom > .ant-dropdown-arrow, .ant-dropdown-placement-bottomLeft > .ant-dropdown-arrow, .ant-dropdown-placement-bottomRight > .ant-dropdown-arrow { left: var(--arrow-x, 50%); right: auto; transform: translateX(-50%) translateY(-100%); }
-  @media (prefers-reduced-motion: reduce) { .ant-dropdown, .ant-dropdown .ant-dropdown-menu, .ant-dropdown .ant-dropdown-menu button.ant-dropdown-menu-item { animation: none; transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .ant-dropdown, .ant-dropdown .ant-dropdown-menu, .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item { animation: none; transition: none; } }
 </style>
 
 <span bind:this={host} id={triggerId} role="presentation" class={['ant-dropdown-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onclick={handleClick} onkeydown={handleTriggerKeydown}>{@render children()}</span>
@@ -278,10 +284,10 @@
     {#each items as item (item.key)}
       {#if item.type === 'divider'}<li role="separator" class="ant-dropdown-menu-item-divider"></li>
       {:else}
-        <li role="none"><button type="button" role="menuitem" data-dropdown-key={item.key} disabled={item.disabled} tabindex={resolvedKey === item.key ? 0 : -1} aria-label={typeof item.label === 'function' ? item.textValue : undefined} class={['ant-dropdown-menu-item', item.disabled && 'ant-dropdown-menu-item-disabled', item.danger && 'ant-dropdown-menu-item-danger', resolvedKey === item.key && 'ant-dropdown-menu-item-active']} onfocus={() => { activeKey = item.key; }} onpointermove={(event) => { if (!item.disabled && event.pointerType !== 'touch') { activeKey = item.key; if (menuFocused) focusItem(item.key); } }} onclick={(event) => activate(item.key, event)}>
+        <li role="none"><svelte:element this={item.href === undefined ? 'button' : 'a'} type={item.href === undefined ? 'button' : undefined} href={item.disabled ? undefined : item.href} target={item.href === undefined ? undefined : item.target} rel={item.href === undefined ? undefined : item.rel} role="menuitem" data-dropdown-key={item.key} disabled={item.href === undefined ? item.disabled : undefined} aria-disabled={item.href !== undefined && item.disabled || undefined} tabindex={resolvedKey === item.key ? 0 : -1} aria-label={typeof item.label === 'function' ? item.textValue : undefined} class={['ant-dropdown-menu-item', item.disabled && 'ant-dropdown-menu-item-disabled', item.danger && 'ant-dropdown-menu-item-danger', resolvedKey === item.key && 'ant-dropdown-menu-item-active']} onfocus={() => { activeKey = item.key; }} onpointermove={(event: PointerEvent) => { if (!item.disabled && event.pointerType !== 'touch') { activeKey = item.key; if (menuFocused) focusItem(item.key); } }} onclick={(event: MouseEvent) => activate(item.key, event)}>
           {#if item.icon}<span class="ant-dropdown-menu-item-icon" aria-hidden="true">{@render item.icon()}</span>{/if}
           <span class="ant-dropdown-menu-title-content">{#if typeof item.label === 'function'}{@render item.label()}{:else}{item.label}{/if}</span>
-        </button></li>
+        </svelte:element></li>
       {/if}
     {:else}<li role="none" class="ant-dropdown-menu-empty">{config.locale.emptyText}</li>{/each}
   </ul>

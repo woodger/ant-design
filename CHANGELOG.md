@@ -21,6 +21,9 @@
 
 ### Added
 
+- Breadcrumb: items/legacy routes, path/params, разделители, Snippet itemRender,
+  semantic styles, темы/RTL и меню. Dropdown получил нативные href/target/rel
+  items с Enter/Space, disabled и отменой навигации. Добавлены CSS-рецепт и проверки.
 - Card/Grid/Meta: слоты, варианты оформления, загрузка с сохранением фокуса,
   автоопределение Grid, вкладки и semantic styles. Tabs получил left/right extra
   content и числовые labels. Добавлены CSS-рецепт, unit/SSR/Chromium и галерея.

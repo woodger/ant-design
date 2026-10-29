@@ -16,6 +16,9 @@ export interface DropdownMenuItem {
   icon?: Snippet;
   disabled?: boolean;
   danger?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
   onClick?: (info: DropdownClickInfo) => void;
 }
 

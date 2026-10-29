@@ -10,7 +10,7 @@ MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Step
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
 StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
 LayoutContent, LayoutFooter, LayoutSider, Descriptions, Card, CardGrid, CardMeta,
-Form и FormItem.
+Breadcrumb, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -113,6 +113,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | Layout / LayoutHeader / LayoutContent / LayoutFooter / LayoutSider | Нативная структура, hasSider, collapse/trigger, responsive sidebar, темы и RTL |
 | Descriptions | Таблица read-only полей, responsive column/span/filled, horizontal/vertical, bordered и semantic slots |
 | Card / CardGrid / CardMeta | Header/cover/body/actions, loading, grid, tabs, metadata, semantic slots и варианты оформления |
+| Breadcrumb | Items/routes, params, separator items, custom Snippet renderer, меню и native navigation |
 | Form | Типизированная модель, валидация, submit, reset и обработка ошибок |
 | FormItem | Label, required, help, ошибки и контекст доступности одного control |
 
@@ -512,6 +513,58 @@ activeTabKey имеет приоритет над tabProps.activeKey. TabBarExtr
 проверяют стили, слоты, Grid, загрузку/фокус и вкладки. Рецепт card извлекает
 59 правил без keyframes. PrefixCls, глобальный variant/component config/tokens
 и отсутствующие возможности Tabs остаются в полном объёме миграции.
+
+## Breadcrumb
+
+Breadcrumb использует nav/ol/li и items: { key?, title?, href?, path?, menu? }.
+Title/separator/dropdownIcon принимают string/number/boolean/Snippet. Snippet
+title должен быть пассивным; для собственных интерактивных элементов используйте
+itemRender. Default title=0 отображается как "0", true — как "true" после
+строкового преобразования upstream; null/undefined/false/пустая строка пропускают
+item без menu. Нативные props, class/rootClassName/style и bind:nativeElement
+относятся к nav. Имя landmark задавайте через aria-label/aria-labelledby.
+
+Path удаляет один начальный slash, подставляет каждый params[key] один раз и
+добавляет сегмент к предыдущим path: href="#/" + paths.join('/'). Пустые сегменты
+сохраняются; URL encoding не выполняется. Path перекрывает href только на самом
+item с path; item с одним href не добавляет сегмент. Title подставляет все
+совпадения :key, но falsy parameter оставляет исходный текст. Эти особенности
+взяты из getPath/getBreadcrumbName 6.6.8. Items имеет приоритет над legacy routes,
+включая пустой массив. Routes преобразует breadcrumbName и children в title/menu;
+React children sugar Breadcrumb.Item/Separator заменён массивом items.
+
+Separator по умолчанию "/", null также выбирает default, false/"" отключают
+автоматический разделитель. { type:'separator', separator? } создаёт отдельный
+aria-hidden li, даже при отключённых автоматических разделителях; его default
+также "/". Как в исходнике, последний видимый item может сохранить разделитель,
+если после него есть пустые items. Последний href не удаляется автоматически.
+Aria/data атрибуты item и class передаются default a/span/button. OnClick без
+href создаёт нативную кнопку type=button вместо clickable span upstream.
+
+ItemRender — Snippet<[route, params, originalItemsOrRoutes, paths]>, который
+полностью задаёт содержимое li. Paths содержит накопленный префикс текущего item.
+Шаблон непрозрачен для родителя: пустой Snippet сохраняет li; React callback с
+null мог удалить его. В custom menu template задайте свой нативный trigger.
+ClassNames/styles поддерживают root/item/separator, объект либо callback ({ props });
+style корня перекрывает styles.root, item/separator styles применяются на li.
+Item.style в закреплённом BreadcrumbItem.tsx не применяется; сохранено поведение
+кода, для стилей элемента используйте styles.item либо itemRender.
+
+Menu.items принимает key/title/label/path/disabled/danger/onClick. Label имеет
+приоритет над title; truthy path конкатенируется с разрешённым href родителя без
+добавления slash. Raw menu.items.href сам по себе не создаёт ссылку в upstream
+и здесь не используется; навигацию задаёт path. DropdownProps передаются текущему
+Svelte Dropdown с placement=bottom по умолчанию; dropdownIcon=null/undefined
+выбирает стрелку, false скрывает её. Нативные links меню сохраняют href и
+поддерживают Enter/Space, callback/preventDefault, typeahead и disabled. Это
+адаптация прежнего плоского Dropdown; произвольные React Menu options ещё не
+поддержаны. Тема/compact/RTL наследуются через ConfigProvider.
+
+Галерея — `/ant-design#breadcrumb`, фикстура — `?fixture=breadcrumb`.
+Unit/SSR/Chromium покрывают маршруты, параметры, разделители, шаблон, стили,
+меню, отмену перехода и production hydration. Рецепт breadcrumb извлекает 21
+правило без keyframes. PrefixCls и глобальный component config/tokens остаются
+в полном объёме миграции.
 
 ## InputNumber
 
@@ -949,6 +1002,12 @@ danger и onClick. Разделитель имеет `{ key, type: 'divider' }`.
 Для snippet со сложным или нетекстовым содержимым задайте textValue: он служит
 доступным именем команды и текстом поиска. В label не следует вкладывать кнопки,
 ссылки и поля ввода. Пустой список показывает ConfigProvider.locale.emptyText.
+
+Для навигации item поддерживает href/target/rel: вместо button создаётся a с
+role=menuitem. Это Svelte-адаптация link label исходного Menu без вложения ссылки
+в кнопку. Disabled link не получает href и имеет aria-disabled=true. Enter и
+Space активируют его; preventDefault в callbacks отменяет и нативный переход,
+и закрытие меню. Без href сохраняется прежняя нативная кнопка команды.
 
 Open поддерживает bind:open; defaultOpen читается при создании компонента.
 `onOpenChange(boolean)` сообщает запросы видимости от trigger, hover, Escape,
@@ -3063,7 +3122,7 @@ Popover предоставляет именованный немодальный
 Popconfirm использует тот же dialog с именем и описанием подтверждения.
 Кнопки не отправляют окружающую форму. Во время Promise aria-busy сообщает
 ожидание, а Escape потребляется до содержащего Modal без закрытия подтверждения.
-Dropdown использует role=menu и нативные button с role=menuitem, один активный
+Dropdown использует role=menu и нативные button/a с role=menuitem, один активный
 tabindex и разделители. Стрелки и typeahead обходят доступные команды;
 Escape закрывает меню раньше Modal, Tab сохраняет естественную навигацию.
 Tabs использует tablist, нативные button с role=tab и связанные tabpanel.

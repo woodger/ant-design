@@ -1,3 +1,5 @@
+export { default as Breadcrumb } from './Breadcrumb.svelte';
+export type { BreadcrumbProps, BreadcrumbItem, BreadcrumbMenuItem, BreadcrumbContent, BreadcrumbSlots } from './breadcrumb.types';
 export { default as Card } from './Card.svelte';
 export { default as CardGrid } from './CardGrid.svelte';
 export { default as CardMeta } from './CardMeta.svelte';

@@ -6,6 +6,16 @@
   color-scheme: light;
 }
 
+.ant-breadcrumb-css-var {
+  --ant-breadcrumb-item-color: var(--ant-color-text-description);
+  --ant-breadcrumb-last-item-color: var(--ant-color-text);
+  --ant-breadcrumb-icon-font-size: var(--ant-font-size);
+  --ant-breadcrumb-link-color: var(--ant-color-text-description);
+  --ant-breadcrumb-link-hover-color: var(--ant-color-text);
+  --ant-breadcrumb-separator-color: var(--ant-color-text-description);
+  --ant-breadcrumb-separator-margin: var(--ant-margin-xs);
+}
+
 .ant-card-css-var {
   --ant-card-header-font-size: var(--ant-font-size-lg);
   --ant-card-header-font-size-sm: var(--ant-font-size);

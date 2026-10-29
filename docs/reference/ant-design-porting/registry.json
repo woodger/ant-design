@@ -623,25 +623,90 @@
       "id": "breadcrumb",
       "name": "Breadcrumb",
       "category": "navigation",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: навигационный путь, legacy routes, параметры, Snippet renderer и меню на готовом Dropdown.",
       "upstreamPath": "components/breadcrumb",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Breadcrumb",
+          "local": [
+            "Breadcrumb"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "dropdown"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@rc-component/menu",
+          "range": "~1.5.0",
+          "referenceVersion": "1.5.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "M",
+      "fixtures": [
+        "breadcrumb"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Breadcrumb.svelte",
+        "src/lib/components/ant-design/breadcrumb.test.ts",
+        "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
+        "e2e/breadcrumb.spec.ts",
+        "src/lib/presentation/ant-design/BreadcrumbExample.svelte"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "routes",
+          "title": "Items/routes, path/href и подстановка params",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/breadcrumb.test.ts",
+            "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
+            "e2e/breadcrumb.spec.ts"
+          ],
+          "note": "Сохраняет пустые сегменты, отсутствие URL encoding, однократную подстановку каждого path-param и глобальную подстановку title с исходным falsy fallback. Нативные nav/ol/li/a."
+        },
+        {
+          "id": "rendering",
+          "title": "Separator items, semantic styles и itemRender Snippet",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
+            "e2e/breadcrumb.spec.ts"
+          ],
+          "note": "React children sugar заменён items. ItemRender — Svelte Snippet с route/params/routes/paths; непрозрачный пустой Snippet сохраняет li. Item.style не применяется в исходнике 6.6.8; styles.item используется на li."
+        },
+        {
+          "id": "menu",
+          "title": "Меню, конкатенация path, native links и клавиатура",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
+            "src/lib/components/ant-design/dropdown.ssr.test.ts",
+            "e2e/breadcrumb.spec.ts",
+            "e2e/dropdown.spec.ts"
+          ],
+          "note": "Dropdown получает нативный href/target/rel вместо вложенного interactive label. Нативные кнопки вместо clickable span без href. Поддержан текущий Svelte Dropdown; произвольный React Menu API остаётся в полном объёме."
+        },
+        {
+          "id": "global-config",
+          "title": "PrefixCls, глобальный component config/tokens и полный Menu API",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Пока фиксированный prefix и существующий standalone Dropdown; глобальная конфигурация и отсутствующие Menu-возможности требуют следующих этапов."
         }
       ]
     },
@@ -652,7 +717,7 @@
       "scope": "target",
       "scopeReason": "Ранее реализованный публичный API; проверяется текущее покрытие.",
       "upstreamPath": "components/dropdown",
-      "reviewedRevision": null,
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
       "exports": [
         {
           "upstream": "Dropdown",
@@ -690,6 +755,18 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Ограничение зафиксировано в README модуля."
+        },
+        {
+          "id": "native-links",
+          "title": "Нативные ссылки href/target/rel в menu items",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/dropdown.ssr.test.ts",
+            "e2e/breadcrumb.spec.ts",
+            "e2e/dropdown.spec.ts"
+          ],
+          "note": "Существующие commands сохраняют button; links используют a role=menuitem с Enter/Space и disabled без href. Основной подробный аудит Dropdown ещё не завершён."
         }
       ]
     },

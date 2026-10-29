@@ -231,5 +231,26 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Card/Grid/Meta: header/body/cover/actions, loading, tabs, inner и размеры.\n * Корни ограничены :where(.ant-card-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "breadcrumb",
+    "output": "src/lib/components/ant-design/vendor/breadcrumb.css",
+    "expectedRules": 21,
+    "include": [
+      "\\.ant-breadcrumb(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-breadcrumb",
+        "replacement": ".ant-breadcrumb-css-var"
+      },
+      {
+        "pattern": "\\.ant-breadcrumb(?![-\\w])",
+        "replacement": ".ant-breadcrumb:where(.ant-breadcrumb-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Breadcrumb: links, separators, overlay, icon alignment, focus и RTL.\n * Корни ограничены :where(.ant-breadcrumb-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

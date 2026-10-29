@@ -36,6 +36,19 @@ describe('Dropdown server rendering', () => {
     expect(body).toContain('ant-dropdown-arrow');
   });
 
+  it('renders native links with target/rel and removes href from disabled links while retaining buttons for commands', () => {
+    const { body } = render(Dropdown, { props: { children, menu: { items: [
+      { key: 'link', label: 'Open page', href: '/page', target: '_blank', rel: 'noopener' },
+      { key: 'locked', label: 'Locked page', href: '/locked', disabled: true },
+      { key: 'action', label: 'Action' }
+    ] } } });
+
+    expect(body).toMatch(/<a[^>]*href="\/page"[^>]*target="_blank"[^>]*rel="noopener"[^>]*role="menuitem"/);
+    expect(body).not.toContain('href="/locked"');
+    expect(body).toMatch(/<a[^>]*aria-disabled="true"/);
+    expect(body).toMatch(/<button[^>]*type="button"[^>]*data-dropdown-key="action"/);
+  });
+
   it('escapes labels and unusual keys and keeps only the first duplicate', () => {
     const { body } = render(Dropdown, { props: { children, menu: { items: [{ key: '"[data-key]', label: '<script>Open</script>' }, { key: '"[data-key]', label: 'Duplicate' }] } } });
 
