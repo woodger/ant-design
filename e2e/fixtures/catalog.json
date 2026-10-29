@@ -278,5 +278,11 @@
     "id": "button",
     "module": "./ButtonFixtures.svelte",
     "root": "button-fixture"
+  },
+  {
+    "id": "float-button",
+    "module": "./FloatButtonFixtures.svelte",
+    "root": "float-button-fixture",
+    "kind": "float-button"
   }
 ]

@@ -1,3 +1,7 @@
+export { default as FloatButton } from './FloatButton.svelte';
+export { default as FloatButtonGroup } from './FloatButtonGroup.svelte';
+export { default as FloatButtonBackTop } from './FloatButtonBackTop.svelte';
+export type { FloatButtonProps, FloatButtonGroupProps, FloatButtonBackTopProps, FloatButtonContent, FloatButtonShape, FloatButtonType, FloatButtonPlacement, FloatButtonBadge, FloatButtonGroupSlots, BackTopTarget, FloatButtonConfig, FloatButtonGroupConfig } from './float-button.types';
 export { default as Timeline } from './Timeline.svelte';
 export type { TimelineProps, TimelineItem, TimelineContent, TimelineMode, TimelinePlacement, TimelinePosition, TimelineSlots } from './timeline.types';
 export { default as Anchor } from './Anchor.svelte';

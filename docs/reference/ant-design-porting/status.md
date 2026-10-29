@@ -5,9 +5,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **63**.
-Есть публичная реализация у **45** семейств; отсутствует у **28**.
-Проверенный объём v1 покрыт у **17**; требуется аудит у **28**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **66**.
+Есть публичная реализация у **46** семейств; отсутствует у **27**.
+Проверенный объём v1 покрыт у **18**; требуется аудит у **28**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -15,7 +15,7 @@ Candidate означает запись каталога, для которой 
 | Семейство | Категория | Scope | Экспорты Svelte | Аудит v1 | Известные пробелы |
 | --- | --- | --- | --- | --- | --- |
 | [Button](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/button) | general | target | Button, ButtonGroup | Согласованный v1 покрыт | Автопробел для двух китайских символов (partial); Wave, loading icon enter/leave, prefixCls и произвольные component tokens (missing) |
-| [FloatButton](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/float-button) | general | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [FloatButton](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/float-button) | general | target | FloatButton, FloatButtonGroup, FloatButtonBackTop | Согласованный v1 покрыт | PrefixCls, общий z-index context, Wave и произвольные component tokens (missing) |
 | [Icon](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/icon) | general | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Typography](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/typography) | general | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Divider](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/divider) | layout | target | Divider | Согласованный v1 покрыт | Произвольные component tokens, prefixCls и component config (missing) |

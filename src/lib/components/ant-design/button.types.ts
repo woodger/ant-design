@@ -32,14 +32,16 @@ export interface ButtonProps extends Omit<HTMLButtonAttributes, 'type' | 'childr
   onClick?: MouseEventHandler<HTMLButtonElement>;
   autoFocus?: boolean;
   autoInsertSpace?: boolean;
-  classNames?: ButtonSlots | ((info: { props: ButtonSemanticProps }) => ButtonSlots);
-  styles?: ButtonSlots | ((info: { props: ButtonSemanticProps }) => ButtonSlots);
+  classNames?: ButtonSlots | ((info: { props: ButtonSemanticProps }) => ButtonSlots | undefined);
+  styles?: ButtonSlots | ((info: { props: ButtonSemanticProps }) => ButtonSlots | undefined);
   class?: string;
   rootClassName?: string;
   style?: HTMLButtonAttributes['style'];
   nativeElement?: HTMLButtonElement | HTMLAnchorElement;
   /** Internal FloatButton composition only. */
   _skipSemantic?: boolean;
+  /** Internal FloatButton renders its already styled content and Badge without an extra span. */
+  _skipContentWrapper?: boolean;
 }
 export type ButtonSemanticProps = Omit<ButtonProps, 'onclick' | 'onClick'>;
 export type ButtonElementProps<Href extends string | undefined = undefined> = Omit<ButtonProps, 'onclick' | 'onClick'> & {

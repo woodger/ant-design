@@ -125,25 +125,122 @@
       "id": "float-button",
       "name": "FloatButton",
       "category": "general",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Перенос FloatButton/Group/BackTop с исходными placements, native Button и scroll lifecycle.",
       "upstreamPath": "components/float-button",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "FloatButton",
+          "local": [
+            "FloatButton"
+          ]
+        },
+        {
+          "upstream": "FloatButton.Group",
+          "local": [
+            "FloatButtonGroup"
+          ]
+        },
+        {
+          "upstream": "FloatButton.BackTop",
+          "local": [
+            "FloatButtonBackTop"
+          ]
+        }
+      ],
+      "dependencies": [
+        "button",
+        "badge",
+        "tooltip",
+        "space",
+        "flex",
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@rc-component/motion",
+          "range": "^1.3.3",
+          "referenceVersion": "1.3.3"
+        },
+        {
+          "name": "@ant-design/icons",
+          "range": "^6.3.4",
+          "referenceVersion": "6.3.4"
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "fixtures": [
+        "float-button"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/FloatButton.svelte",
+        "src/lib/components/ant-design/FloatButtonGroup.svelte",
+        "src/lib/components/ant-design/FloatButtonBackTop.svelte",
+        "src/lib/components/ant-design/float-button.engine.test.ts",
+        "src/lib/components/ant-design/float-button-back-top.dom.test.ts",
+        "src/lib/components/ant-design/float-button.ssr.test.ts",
+        "e2e/float-button.spec.ts",
+        "src/lib/presentation/ant-design/FloatButtonExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Native action/href, icon/content/description, Badge/Tooltip и semantic slots",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/float-button.ssr.test.ts",
+            "e2e/float-button.spec.ts"
+          ],
+          "note": "Сохранены renderable zero, shape/type, native forms/disabled, приоритет стилей. Snippet заменяет ReactNode; используются существующие Svelte Button/Badge/Tooltip контракты."
+        },
+        {
+          "id": "group",
+          "title": "Group click/hover/controlled, outside click, shape и physical placements",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "e2e/float-button.spec.ts",
+            "src/lib/components/ant-design/FloatButtonGroup.svelte"
+          ],
+          "note": "Owner rejection сохраняется; disabled блокирует открытие, не children. Structured items дают отдельные Compact slots; opaque children используют CSS siblings для геометрии краёв без точного воспроизведения Compact edge classes."
+        },
+        {
+          "id": "back-top",
+          "title": "BackTop targets, visibility/progress, cubic scroll и lifecycle",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/float-button-back-top.dom.test.ts",
+            "e2e/float-button.spec.ts"
+          ],
+          "note": "Window/Document/Element, visibilityHeight=400 и duration=450; resize обновляет progress. Reduced motion и отмена собственных RAF при unmount — адаптации проекта."
+        },
+        {
+          "id": "styles-config",
+          "title": "Закреплённый CSS, RTL/theme и source config",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "tools/ant-design-css-recipes.json",
+            "e2e/float-button.spec.ts"
+          ],
+          "note": "42 правила; global fade заменён scoped WAAPI с исходными длительностями. Config floatButton.backTopIcon и floatButtonGroup closeIcon/class/style/slots. Как source FloatButton, глобальные floatButton class/style/slots не потребляются."
+        },
+        {
+          "id": "global-parity",
+          "title": "PrefixCls, общий z-index context, Wave и произвольные component tokens",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Наследуются действующие локальные theme/Tooltip/Badge/Button ограничения. Нет полного общего React token/prefix/z-index механизма; CSS popup base используется без нового stacking context API."
         }
       ]
     },

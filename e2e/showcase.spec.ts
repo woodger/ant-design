@@ -1455,3 +1455,16 @@ test.describe('server-rendered showcase', () => {
     await expect(page.locator('#tabs dialog')).not.toBeVisible();
   });
 });
+
+test('FloatButton showcase keeps grouped actions and returns its own scroll area to the beginning', async ({ page }) => {
+  await page.goto('/ant-design#float-button');
+  const section = page.locator('#float-button');
+  await section.getByRole('button', { name: 'Помощь FloatButton', exact: true }).click();
+  await expect(section.getByLabel('Действия FloatButton', { exact: true })).toHaveText('1');
+  await section.getByRole('button', { name: 'Прокрутить пример FloatButton', exact: true }).click();
+  const back = section.getByRole('button', { name: 'К началу FloatButton', exact: true });
+  await expect(back).toBeVisible();
+  await back.click();
+  await expect.poll(() => section.getByLabel('Область прокрутки FloatButton', { exact: true }).evaluate(node => node.scrollTop)).toBe(0);
+  await expect(back).toHaveCount(0);
+});

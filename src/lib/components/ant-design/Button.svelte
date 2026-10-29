@@ -15,7 +15,7 @@
   import type { ButtonColor, ButtonContent, ButtonElementProps } from './button.types';
   let { children, icon, type, htmlType = 'button', color, variant, size, loading = false, danger = false, block = false, shape, ghost = false,
     disabled, iconPlacement, iconPosition, autoInsertSpace, autoFocus, href, target, rel, download, hreflang, referrerpolicy, onclick, onClick, classNames, styles,
-    class: className = '', rootClassName = '', style, nativeElement = $bindable(), _skipSemantic, ...attributes }: ButtonElementProps<Href> = $props();
+    class: className = '', rootClassName = '', style, nativeElement = $bindable(), _skipSemantic, _skipContentWrapper, ...attributes }: ButtonElementProps<Href> = $props();
   const config = useConfig();
   const compact = useCompact();
   const group = useButtonGroup();
@@ -37,10 +37,10 @@
   let textRuntime = $state.raw<ReturnType<typeof connectButtonText>>();
   let info = $derived({ props: { ...attributes, children, icon, type: type || 'default', color: appearance.color as ButtonColor, variant: appearance.variant, danger: appearance.color === 'danger', shape: resolvedShape, size: resolvedSize,
     disabled: blocked, loading: innerLoading, block, ghost, htmlType, href, target, rel, download, hreflang, referrerpolicy, iconPlacement: placement, iconPosition, autoInsertSpace, autoFocus, classNames, styles, class: className, rootClassName, style, onclick, onClick } });
-  let contextClasses = $derived(_skipSemantic ? {} : typeof config.button?.classNames === 'function' ? config.button.classNames(info) : config.button?.classNames ?? {});
-  let contextStyles = $derived(_skipSemantic ? {} : typeof config.button?.styles === 'function' ? config.button.styles(info) : config.button?.styles ?? {});
-  let classes = $derived(typeof classNames === 'function' ? classNames(info) : classNames ?? {});
-  let slots = $derived(typeof styles === 'function' ? styles(info) : styles ?? {});
+  let contextClasses = $derived(_skipSemantic ? {} : typeof config.button?.classNames === 'function' ? config.button.classNames(info) ?? {} : config.button?.classNames ?? {});
+  let contextStyles = $derived(_skipSemantic ? {} : typeof config.button?.styles === 'function' ? config.button.styles(info) ?? {} : config.button?.styles ?? {});
+  let classes = $derived(typeof classNames === 'function' ? classNames(info) ?? {} : classNames ?? {});
+  let slots = $derived(typeof styles === 'function' ? styles(info) ?? {} : styles ?? {});
   let rootClasses = $derived(['ant-btn', `ant-btn-${type || 'default'}`, `ant-btn-color-${appearance.color === 'danger' ? 'dangerous' : appearance.color}`, `ant-btn-variant-${appearance.variant}`,
     resolvedSize === 'large' && 'ant-btn-lg', resolvedSize === 'small' && 'ant-btn-sm', innerLoading && 'ant-btn-loading', danger && 'ant-btn-dangerous', block && 'ant-btn-block',
     resolvedShape !== 'default' && resolvedShape !== 'square' && `ant-btn-${resolvedShape}`, !children && children !== 0 && Boolean(innerLoading || icon) && 'ant-btn-icon-only',
@@ -80,5 +80,5 @@
       {#if innerLoading}{#if loadingIcon}{@render value(loadingIcon)}{:else}<Icon name="loading" />{/if}{:else}{@render value(icon)}{/if}
     </span>
   {/if}
-  {#if buttonHasContent(children)}<span bind:this={content} class={[contextClasses.content, classes.content]} style={[contextStyles.content, slots.content].filter(Boolean).join(';')}>{@render value(children, insert)}</span>{/if}
+  {#if _skipContentWrapper && typeof children === 'function'}{@render children()}{:else if buttonHasContent(children)}<span bind:this={content} class={[contextClasses.content, classes.content]} style={[contextStyles.content, slots.content].filter(Boolean).join(';')}>{@render value(children, insert)}</span>{/if}
 </svelte:element>

@@ -10,7 +10,8 @@ MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Step
 Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
 StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
 LayoutContent, LayoutFooter, LayoutSider, Descriptions, Card, CardGrid, CardMeta,
-Breadcrumb, Space, SpaceCompact, SpaceAddon, Form и FormItem.
+Breadcrumb, Space, SpaceCompact, SpaceAddon, FloatButton, FloatButtonGroup,
+FloatButtonBackTop, Form и FormItem.
 Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
 входа — [index.ts](./index.ts). Компоненты работают без React и SvelteKit API.
 
@@ -71,6 +72,7 @@ Svelte 5, TypeScript и `.svelte.ts`, например Vite с официаль�
 | --- | --- |
 | ConfigProvider | Светлая и тёмная темы, три основных цвета, компактная плотность, размеры, disabled, направление и локаль |
 | Button / ButtonGroup | Native button/href, color/variant/ghost, loading delay/icon, semantic slots, config, Group и Compact |
+| FloatButton / FloatButtonGroup / FloatButtonBackTop | Плавающие native actions, Badge/Tooltip, меню групп и возврат с прогрессом прокрутки |
 | Input | Текст, email, пароль, поиск, телефон и URL; размеры, error/warning, нативные атрибуты и события |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
@@ -2318,6 +2320,58 @@ useBreakpoint версии 6.6.8 использует xs), componentDisabled и 
 Новые сценарии находятся в ?fixture=steps-variants и втором примере #steps;
 unit/SSR/Chromium проверяют layouts, collapse/index mapping, render Snippets,
 rich tooltip и доступность процента.
+
+## FloatButton, FloatButtonGroup и FloatButtonBackTop
+
+FloatButton сохраняет native Button/href, type=default|primary, shape=circle|square,
+icon, content и deprecated description (content ?? description). Текст, число,
+boolean и Snippet заменяют ReactNode; число 0 не включает default icon. Без
+renderable content/icon используется FileTextOutlined из закреплённого icons-svg.
+Кнопка имеет размер 40px и fixed-положение: inline-end 24px, bottom 48px.
+Размер стандартной иконки — fontSizeIcon × 1.5 = 18px. Shape группы имеет
+приоритет над shape детей. Native htmlType/disabled/события сохраняют Button API.
+
+Tooltip принимает scalar/Snippet либо props существующего Tooltip; 0 показывает
+подсказку. Badge принимает props существующего Badge без status/text/title/children;
+этот набор исключается и в runtime. Semantic classNames/styles root/icon/content
+принимают объект или callback { props }, включая undefined result. Group context
+сливается перед локальными slots, style кнопки имеет последний приоритет.
+
+FloatButtonGroup принимает children Snippet либо items=[{ key, children: Snippet }].
+Items создают отдельные Compact slots и имеют приоритет над children. Для opaque
+Snippet геометрия квадратных краёв определяется CSS siblings, без точного
+воспроизведения Compact edge classes. Circle использует Flex, square — Compact.
+Trigger click/hover включает меню; без trigger показывается список без trigger.
+Placement top/bottom/left/right остаётся физическим и при RTL. Open + onOpenChange
+дают controlled mode: владелец может отклонить запрос; без open состояние внутреннее.
+Disabled блокирует переключение меню, но сам по себе не отключает детей.
+Клик вне группы закрывает меню, клик элемента сохраняет его открытым.
+CloseIcon и semantic slots root/list/item/itemIcon/itemContent/trigger/triggerIcon/
+triggerContent доступны локально и через ConfigProvider.floatButtonGroup.
+
+FloatButtonBackTop принимает target={() => window|document|element|null},
+visibilityHeight (400), duration (450ms), showProgress. На SSR виден только при
+visibilityHeight=0, target не вызывается. После mount scroll обновляет видимость
+и progress; resize обновляет только progress. Click запускает cubic scroll к 0
+перед пользовательским callback. При reduced motion прокрутка мгновенная;
+собственные RAF/listeners отменяются при unmount. NativeElement с bind доступен
+у кнопки/BackTop, у Group указывает на div группы.
+
+ConfigProvider.floatButton.backTopIcon задаёт BackTop icon. Как в исходной 6.6.8,
+FloatButton не потребляет объявленные в глобальном floatButton config class/style/
+semantic slots; локальные props работают. Config вложенного provider наследуется
+при undefined и заменяется целиком при заданном объекте. Сохраняются прежние
+ограничения Button/Badge/Tooltip; произвольные prefix/component tokens, Wave и
+общий React z-index context ещё не перенесены. CSS-рецепт воспроизводит 42 правила;
+глобальный fade адаптирован через WAAPI с исходными длительностями и reduced motion.
+
+```svelte
+<FloatButton tooltip="Помощь" aria-label="Помощь" onclick={showHelp} />
+<FloatButtonGroup shape="square" trigger="click" aria-label="Действия">
+  <FloatButton content="?" aria-label="Поддержка" />
+  <FloatButtonBackTop visibilityHeight={0} aria-label="К началу" />
+</FloatButtonGroup>
+```
 
 ## Timeline
 

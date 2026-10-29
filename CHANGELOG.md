@@ -27,6 +27,11 @@
 
 ### Added
 
+- FloatButton/Group/BackTop: native actions, Badge/Tooltip, click/hover/controlled
+  меню, physical placements, scroll targets и progress. Добавлены CSS-рецепт,
+  unit/SSR/Chromium, изолированная фикстура и пример галереи. Semantic callbacks
+  Button допускают undefined result, как upstream.
+
 - Button/Group: color/variant/ghost, href, semantic slots, icon placement, delayed
   loading/custom icon, native refs и button config. Сохранены формы, Compact и
   native disabled loading; добавлены unit/SSR/Chromium, отдельная фикстура и галерея.

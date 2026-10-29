@@ -35,6 +35,10 @@ describe('Button SSR', () => {
     const body = render(Button, { props: { children, icon: '★', iconPlacement: 'end', color: 'pink', variant: 'filled', classNames: { root: 'semantic', content: 'label' }, styles: { root: 'color:red' }, style: 'color:blue' } }).body;
     expect(body).toContain('<strong class="owner">按钮</strong>'); expect(body).toContain('ant-btn-color-pink'); expect(body).toContain('ant-btn-variant-filled'); expect(body).toContain('ant-btn-icon-end'); expect(body).toContain('semantic'); expect(body).toContain('color:red;color:blue');
   });
+  it('treats undefined semantic callback results as an absent layer', () => {
+    const body = render(Button, { props: { children: 'Default', classNames: () => undefined, styles: () => undefined } }).body;
+    expect(body).toContain('Default'); expect(body).toContain('ant-btn-color-default');
+  });
   it('renders composition with group size precedence and no automatic form submission', () => {
     const body = render(ButtonFixtures).body;
     expect(body).toMatch(/id="button-group"[^>]*class="ant-btn-group ant-btn-group-sm/);

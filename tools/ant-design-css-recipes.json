@@ -410,5 +410,26 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Timeline: все правила, оформление поверх Steps dot.\n * Корни ограничены :where(.ant-timeline-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "float-button",
+    "output": "src/lib/components/ant-design/vendor/float-button.css",
+    "expectedRules": 42,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-float-btn(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-float-btn",
+        "replacement": ".ant-float-btn-css-var"
+      },
+      {
+        "pattern": "\\.ant-float-btn(?![-\\w])",
+        "replacement": ".ant-float-btn:where(.ant-float-btn-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * FloatButton/Group/BackTop: geometry, placements и progress; общий fade\n * адаптирован через Web Animations API, без глобальных ant-fade/keyframes.\n * Корни кнопок ограничены :where(.ant-float-btn-css-var).\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]
