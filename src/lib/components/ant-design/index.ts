@@ -1,3 +1,6 @@
+export { default as TreeSelect } from './TreeSelect.svelte';
+export { TREE_SELECT_SHOW_ALL, TREE_SELECT_SHOW_PARENT, TREE_SELECT_SHOW_CHILD } from './tree-select.engine';
+export type { TreeSelectProps, TreeSelectNode, TreeSelectRawValue, TreeSelectLabel, TreeSelectValue, TreeSelectLabeledValue, TreeSelectStrategy, TreeSelectSearchConfig, TreeSelectChangeInfo } from './tree-select.types';
 export { default as Tree } from './Tree.svelte';
 export type { TreeProps, TreeDataNode, TreeEventNode, TreeKey, TreeCheckedKeys, TreeCheckInfo } from './tree.types';
 export { default as Upload } from './Upload.svelte';

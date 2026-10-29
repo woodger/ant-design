@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, Upload, UploadDragger, Tree, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -79,6 +79,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | RangePicker | Пара Dayjs, связанные календари, время и подтверждение границ, allowEmpty/disabled, presets и hover |
 | Upload / UploadDragger | Выбор/drop, controlled list, beforeUpload, XHR/customRequest, статусы и удаление |
 | Tree | TreeData, раскрытие/выбор/отметки, strict/conduction, loadData, клавиатура и showLine |
+| TreeSelect | Single/multiple, labelInValue, check strategies, поиск, loadData и native popup |
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
@@ -2464,6 +2465,100 @@ Form/нативная отправка и UTC в разных browser zones. О�
 mask, render hooks, полный semantic/config/motion/container API остаются пробелами
 семейства; наличие RangePicker не означает полного покрытия React DatePicker.
 
+## TreeSelect
+
+TreeSelect переносит первый объём Ant Design 6.6.8 / rc-tree-select 1.16.1.
+Панель использует существующий Tree; checkbox conduction считается по полному
+дереву, а display values и фильтрованная панель вычисляются отдельно.
+React-зависимости не устанавливаются. Лицензия сохранена в
+vendor/LICENSE.rc-tree-select. Рецепт CSS извлекает 92 правила dropdown/checkbox/RTL;
+внутренний prefix .ant-select-tree нормализован к общему .ant-tree. Selector
+использует существующие стили Select и theme aliases.
+
+```svelte
+<script lang="ts">
+  import { TreeSelect } from '$lib/components/ant-design';
+  const data = [{value:'docs',title:'Документы',children:[{value:'intro',title:'Введение'}]}];
+  let value = $state<string[]>([]);
+</script>
+<TreeSelect treeData={data} {value} treeCheckable treeDefaultExpandAll
+  showSearch={{treeNodeFilterProp:'title'}} onChange={next => { value = next; }} />
+```
+
+Узел содержит уникальный value (string/number), title/label, children,
+disabled/disableCheckbox/checkable/selectable/isLeaf. Внутренняя идентичность —
+value, как в upstream fieldNames; key можно не задавать. Значения должны быть
+уникальны также после String(value). Title/label могут быть string/number/Snippet.
+TreeTitleRender принимает snippet с исходным TreeSelectNode и задаёт заголовки
+панели и выбранных значений.
+
+Value/defaultValue принимают scalar, массив или {value,label?,halfChecked?}.
+Null очищает; undefined включает внутреннее состояние. Value/open/searchValue —
+controlled props с callbacks, без автоматического переписывания владельца.
+Multiple включает массивы. TreeCheckable включает checkbox и multiple;
+treeCheckStrictly также включает checkbox/multiple и принудительно labelInValue.
+Параметр типа TreeSelectProps<ValueType> сохраняет конкретный тип callback value;
+режим и переданный тип должны соответствовать друг другу, как в upstream.
+
+OnChange(value,labels,extra) получает scalar либо массив; при labelInValue/strict
+это объекты с value/label/halfChecked/disabled, а labels=null. При полной очистке
+single возвращается undefined, multiple — []; labels=[] в raw mode. Extra включает
+preValue (массив исходных full values), triggerValue и checked либо selected.
+OnSelect/onDeselect(value,node) вызываются для конкретного узла; clear вызывает
+onClear/onChange без onDeselect для каждого тега. Deprecated React getters
+triggerNode/allCheckedNodes и wrappers node.props не входят в этот этап.
+
+В checkbox-режиме исходная conduction уважает disabled/disableCheckbox/checkable
+границы. ShowCheckedStrategy по умолчанию SHOW_CHILD; отдельные экспорты
+TREE_SELECT_SHOW_CHILD/SHOW_PARENT/SHOW_ALL соответствуют константам React TreeSelect.
+Стратегия влияет и на теги, и на onChange при conduction. Внутренние полные отметки
+сохраняются отдельно: снятие потомка или удаление тега корректирует родителей.
+Без treeCheckable стратегия равна SHOW_ALL, включая independent strict mode.
+HalfChecked объекты в strict value не показываются отдельными тегами, но
+сохраняются в callback до явной отметки этого значения.
+
+Missing values не удаляются при смене treeData. Подпись отсутствующего узла
+сохраняется из labeled value либо внутреннего labeled состояния; raw controlled
+value без подписи отображается самим значением. Индивидуальный тег disabled узла
+не удаляется, но clear очищает весь набор, как в upstream.
+
+ShowSearch по умолчанию false для single и true для multiple. Объект showSearch
+поддерживает searchValue/onSearch, autoClearSearchValue, filterTreeNode и
+treeNodeFilterProp; его поля имеют приоритет над одноимёнными top-level props.
+Default filter prop — value, не title. Поиск без учёта регистра сохраняет предков
+совпадения и всех потомков совпавшего родителя. FilterTreeNode=false сохраняет
+всё дерево; callback задаёт predicate. Отметка фильтрованного родителя всё равно
+считается по полному дереву. AutoClearSearchValue=true очищает внутренний search
+после выбора; controlled search очищает владелец. Само автоматическое очищение
+не вызывает onSearch. Загрузка узлов во время поиска отключена.
+
+LoadData(node), treeLoadedKeys/onTreeLoad и treeExpandedKeys/onTreeExpand
+используют механизмы Tree; children добавляет потребитель. TreeDefaultExpandAll
+и treeDefaultExpandedKeys задают начальное раскрытие. В TreeSelect раскрытие
+панели хранится снаружи Tree: после load rejection раскрытая ветка может повторять
+загрузку до исходного лимита Tree. Отдельного error callback/слота нет. Закрытый
+popup не начинает новых загрузок; уже начатый Promise может завершиться и вызвать
+onTreeLoad. После unmount результаты игнорируются.
+
+Native combobox удерживает фокус при действиях в панели. Arrows перемещаются/
+раскрывают дерево через его keyboard engine; Enter выбирает активный узел, а не
+переключает раскрытие. Escape/Tab закрывают popup; Backspace удаляет последний
+доступный тег при пустом search. Single закрывает popup после выбора, multiple
+оставляет его открытым. Popup использует существующий native popover lifecycle;
+listHeight ограничивает viewport, onPopupScroll получает его scroll event.
+PopupMatchSelectWidth, placement, size/status/variant, treeLine/treeIcon/switcherIcon,
+notFoundContent/loading, RTL, темы, Compact и ConfigProvider/Form disabled поддержаны.
+Bind:nativeElement/inputElement дают DOM; bind:this — focus(options)/blur().
+
+Name/FormItem создают hidden inputs с raw values для native FormData. Form model
+хранит raw scalar/массивы, поддерживает required/submit/reset; библиотека не меняет
+объектный контракт labelInValue ради ограничений Form v1. Его общий object store
+остаётся отдельным этапом. SSR не запускает loadData, popover или browser APIs.
+
+Virtual/scrollTo, fieldNames/simple mode, TreeNode children, maxCount/maxTagCount,
+tag/popup render hooks, treeExpandAction, полный semantic/config/token/ref API,
+legacy React extras и исходные motion/container API ещё не перенесены.
+
 ## Tree
 
 Tree переносит Ant Design 6.6.8 и @rc-component/tree 1.4.0. Чистые engines отвечают
@@ -4189,7 +4284,7 @@ Popover и SSR; модель — нормализацию имён, Unicode-ин
 Эта версия покрывает перечисленное ядро. Simple/quick jumper
 и произвольный itemRender Pagination, древовидные/поисковые фильтры Table,
 расширенные режимы DatePicker,
-TreeSelect и расширения Tree/Upload, Select tags, Form.List, вложенные name paths,
+расширения Tree/TreeSelect/Upload, Select tags, Form.List, вложенные name paths,
 порталы, виртуализация и статические методы Modal пока отсутствуют. Совместимость
 всего React API и визуальная идентичность всех состояний не заявлены.
 

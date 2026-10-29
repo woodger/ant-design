@@ -27,6 +27,11 @@
 
 ### Added
 
+- TreeSelect: single/multiple и labelInValue, исходные check strategies/conduction,
+  поиск с сохранением предков, loadData/expanded/loaded keys и native popup.
+  Добавлены Form/raw values, темы/RTL/Compact, галерея, фикстура и unit/SSR/browser
+  проверки; расширенные API и виртуализация отмечены отдельно в реестре.
+
 - Tree: treeData, controlled/default раскрытие и выбор, checkable/checkStrictly
   с исходной conduction, async loadData/loadedKeys, retry, клавиатура и ARIA.
   Добавлены showLine/icons/title snippets, темы/RTL/Form disabled, галерея,

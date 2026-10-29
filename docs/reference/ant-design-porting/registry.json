@@ -10,7 +10,10 @@
   "supportingExports": [
     "ruRU",
     "enUS",
-    "UPLOAD_LIST_IGNORE"
+    "UPLOAD_LIST_IGNORE",
+    "TREE_SELECT_SHOW_ALL",
+    "TREE_SELECT_SHOW_PARENT",
+    "TREE_SELECT_SHOW_CHILD"
   ],
   "components": [
     {
@@ -828,7 +831,7 @@
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "AutoComplete, Cascader, TimePicker, TreeSelect и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API. DatePicker и RangePicker наследуют Compact context."
+          "note": "AutoComplete, Cascader, TimePicker и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API. DatePicker, RangePicker и TreeSelect наследуют Compact context."
         }
       ]
     },
@@ -2182,25 +2185,100 @@
       "id": "tree-select",
       "name": "TreeSelect",
       "category": "data-entry",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первый этап TreeSelect по Ant Design 6.6.8 и rc-tree-select 1.16.1: значения, check/стратегии, поиск, loadData и native popup; расширенный API и virtual отдельно.",
       "upstreamPath": "components/tree-select",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "TreeSelect",
+          "local": [
+            "TreeSelect"
+          ]
+        }
+      ],
+      "dependencies": [
+        "tree",
+        "select",
+        "config-provider",
+        "form",
+        "space"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/tree-select",
+          "range": "~1.16.1",
+          "referenceVersion": "1.16.1"
+        },
+        {
+          "name": "@rc-component/tree",
+          "range": "~1.4.0",
+          "referenceVersion": "1.4.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "L",
+      "fixtures": [
+        "tree-select"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/TreeSelect.svelte",
+        "src/lib/components/ant-design/tree-select.engine.test.ts",
+        "src/lib/components/ant-design/tree-select.ssr.test.ts",
+        "e2e/tree-select.spec.ts",
+        "src/lib/presentation/ant-design/TreeSelectExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Single/multiple, labelInValue, controlled/default value и очистка",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/TreeSelect.svelte",
+            "src/lib/components/ant-design/tree-select.engine.test.ts",
+            "src/lib/components/ant-design/tree-select.ssr.test.ts",
+            "e2e/tree-select.spec.ts"
+          ],
+          "note": "Raw keys и labeled objects, null/undefined, numeric zero, onChange(value,labels,extra), onSelect/onDeselect и clear. TreeCheckStrictly форсирует multiple и labelInValue; labels=null в labeled mode. Missing values сохраняются; подписи доступны из labeled value либо внутреннего состояния."
+        },
+        {
+          "id": "checking-search",
+          "title": "Tree conduction/стратегии и controlled поиск по полному дереву",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/tree-select.engine.test.ts",
+            "e2e/tree-select.spec.ts"
+          ],
+          "note": "SHOW_ALL/PARENT/CHILD как TREE_SELECT_SHOW_*; display отдельно от полных checked keys. Search сохраняет предков и всех потомков совпавшего родителя, default filter prop=value, predicate/bypass и autoClearSearchValue. Проверка фильтрованного родителя использует полное исходное дерево."
+        },
+        {
+          "id": "async-keyboard",
+          "title": "LoadData/loadedKeys, keyboard/input focus, SSR и контексты",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/tree-select.ssr.test.ts",
+            "e2e/tree-select.spec.ts"
+          ],
+          "note": "Панель — существующий Tree с native popover, input сохраняет focus и aria-activedescendant. Во время поиска loadData отключён; закрытый popup не начинает новые загрузки. TreeExpanded/Loaded keys и callbacks, onPopupScroll/listHeight. Form raw values/required/reset, locale, themes/RTL и Compact. 92 CSS-правила; prefix внутренних узлов нормализован к общему Tree."
+        },
+        {
+          "id": "extended-api",
+          "title": "FieldNames/simple mode, maxCount/tags/render hooks, semantic/config/ref и legacy extras",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Нет fieldNames, treeDataSimpleMode, TreeNode children, maxCount/maxTagCount/tagRender, popupRender/prefix/suffix customization, treeExpandAction, component config/token engine и полного semantic/ref API. Deprecated extra.triggerNode/allCheckedNodes и node.props React wrappers не перенесены."
+        },
+        {
+          "id": "virtual-motion",
+          "title": "Виртуализация, scrollTo и исходные popup/list motion",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Все отфильтрованные видимые узлы рендерятся существующим Tree; listHeight ограничивает native scroll viewport. Rc-trigger/virtual-list/motion/getPopupContainer API остаются отдельными этапами."
         }
       ]
     },

@@ -509,5 +509,28 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Tree: базовые nodes/checkbox/line/RTL; collapse motion пока исключён.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "tree-select",
+    "output": "src/lib/components/ant-design/vendor/tree-select.css",
+    "expectedRules": 92,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-tree-select"
+    ],
+    "exclude": [
+      "\\.ant-motion-collapse"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-tree-select-css-var",
+        "replacement": ".ant-tree-select-css-var"
+      },
+      {
+        "pattern": "\\.ant-select-tree(?!-select)",
+        "replacement": ".ant-tree"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * TreeSelect: dropdown/checkbox/RTL; .ant-select-tree заменён на общий .ant-tree.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

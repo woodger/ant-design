@@ -441,3 +441,13 @@
   --ant-tree-directory-node-selected-color: var(--ant-color-text-light-solid);
   --ant-tree-directory-node-selected-bg: var(--ant-color-primary);
 }
+
+.ant-tree-select-css-var {
+  --ant-tree-select-title-height: var(--ant-control-height-sm);
+  --ant-tree-select-switcher-size: var(--ant-control-height-sm);
+  --ant-tree-select-indent-size: var(--ant-control-height-sm);
+  --ant-tree-select-node-hover-bg: var(--ant-control-item-bg-hover);
+  --ant-tree-select-node-hover-color: var(--ant-color-text);
+  --ant-tree-select-node-selected-bg: var(--ant-control-item-bg-active);
+  --ant-tree-select-node-selected-color: var(--ant-color-text);
+}
