@@ -25,6 +25,7 @@
   import ResultExample from './ResultExample.svelte';
   import StepsVariantsExample from './StepsVariantsExample.svelte';
   import ButtonFeaturesExample from './ButtonFeaturesExample.svelte';
+  import RemoteSelectExample from './RemoteSelectExample.svelte';
   import TextAreaExample from './TextAreaExample.svelte';
   import FloatButtonExample from './FloatButtonExample.svelte';
   import TimelineExample from './TimelineExample.svelte';
@@ -56,6 +57,7 @@
     ['slider', 'Slider'],
     ['select', 'Select'],
     ['select-multiple', 'Select · multiple'],
+    ['select-remote', 'Select · remote'],
     ['checkbox', 'Checkbox'],
     ['radio', 'Radio / RadioGroup'],
     ['switch', 'Switch'],
@@ -571,6 +573,11 @@
           <div class="section-heading"><h2>Breadcrumb</h2></div>
           <p class="section-description">Навигационный путь с параметрами, разделителями и меню разделов.</p>
           <div class="panel"><BreadcrumbExample /></div>
+        </section>
+
+        <section id="select-remote">
+          <div class="section-heading"><h2>Select · remote</h2></div>
+          <div class="panel"><RemoteSelectExample /></div>
         </section>
 
         <section id="textarea">

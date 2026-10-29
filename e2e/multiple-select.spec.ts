@@ -83,7 +83,7 @@ test('multiple Select accepts owner values and option replacement without synthe
   await fixture.getByLabel('Rename option zero', { exact: true }).check();
   await expect(container.getByRole('button', { name: 'Удалить Updated zero', exact: true })).toBeVisible();
   await fixture.getByLabel('Remove option zero', { exact: true }).check();
-  await expect(container.getByRole('button', { name: 'Удалить 0', exact: true })).toBeVisible();
+  await expect(container.getByRole('button', { name: 'Удалить Updated zero', exact: true })).toBeVisible();
   expect(await fixture.locator('#multiple-native-form').evaluate((element) => new FormData(element as HTMLFormElement).getAll('choices'))).toEqual(['2', '0']);
   await fixture.getByLabel('Remove option zero', { exact: true }).uncheck();
   await expect(container.getByRole('button', { name: 'Удалить Updated zero', exact: true })).toBeVisible();

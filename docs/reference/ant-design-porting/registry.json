@@ -1854,20 +1854,25 @@
         {
           "name": "@rc-component/select",
           "range": "~1.10.1",
-          "referenceVersion": null
+          "referenceVersion": "1.10.1"
         }
       ],
-      "priority": "unassigned",
+      "priority": "p1",
       "effort": "unknown",
       "fixtures": [
         "select",
         "select-numeric",
-        "select-multiple"
+        "select-multiple",
+        "select-remote"
       ],
       "evidence": [
         "src/lib/components/ant-design/readme.md",
         "e2e/input-select.spec.ts",
-        "e2e/multiple-select.spec.ts"
+        "e2e/multiple-select.spec.ts",
+        "src/lib/components/ant-design/select-remote.ssr.test.ts",
+        "e2e/remote-select.spec.ts",
+        "src/lib/presentation/ant-design/RemoteSelectExample.svelte",
+        "src/lib/presentation/ant-design/remote-select.model.test.ts"
       ],
       "features": [
         {
@@ -1914,10 +1919,15 @@
         {
           "id": "remote-search",
           "title": "Удалённый поиск",
-          "state": "missing",
-          "requiredForV1": false,
-          "evidence": [],
-          "note": "Отложено в README."
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/select.engine.test.ts",
+            "src/lib/components/ant-design/select-remote.ssr.test.ts",
+            "e2e/remote-select.spec.ts",
+            "src/lib/presentation/ant-design/remote-select.model.test.ts"
+          ],
+          "note": "SearchValue/onSearch/filterOption и showSearch object subset, loading/notFoundContent/onPopupScroll; cache только selected labels/disabled, включая single и numeric zero. Requests/debounce/stale guards/pagination/retry/dispose принадлежат consumer model; ошибка через status/content. Остальной rc-select API не заявлен."
         },
         {
           "id": "virtualization",

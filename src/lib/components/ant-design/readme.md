@@ -2791,8 +2791,10 @@ maxStyle/maxPopoverPlacement/maxPopoverTrigger в эту версию не вх�
 общую очистку всех значений. После пользовательского изменения callback
 получает новый массив; изменение этого массива не меняет привязку. Внешние
 обновления value/options не вызывают onValueChange. Если выбранный option
-временно отсутствует, значение сохраняется и показывается текстом; возвращённый
-option восстанавливает подпись и disabled-состояние.
+временно отсутствует, сохраняются последнее известное имя и disabled-состояние
+в single и multiple. При появлении option берутся актуальные label/disabled. Для
+значения, которого ещё не было в options, показывается String(value). Кэш содержит
+только выбранные значения; он очищается при снятии выбора.
 
 Для отдельного control `defaultValue` принимает readonly-массив и копируется
 один раз. При привязке задавайте начальное значение у владельца, без defaultValue;
@@ -2815,7 +2817,52 @@ disabled control не передаёт значения. Поисковый те
 массива явно, например `createForm<{ teams: number[] }>({ initialValues: { teams: [] } })`.
 `required` отклоняет пустой массив, min/max ограничивают количество элементов.
 Галерея `/ant-design` содержит форму выбора от одной до трёх команд с отправкой
-и сбросом. Режим tags и удалённый поиск пока не поддерживаются.
+и сбросом. Режим tags пока не поддерживается.
+
+### Удалённый поиск
+
+Select принимает searchValue, onSearch, filterOption, loading, notFoundContent и
+onPopupScroll. Вариант Ant Design 6.6.8 showSearch={{ searchValue, onSearch,
+filterOption }} также поддержан; поля объекта имеют приоритет над одноимёнными
+верхними props. Boolean showSearch сохраняет прежнее поведение. FilterOption=false
+полностью отключает локальную фильтрацию, true сохраняет прежний поиск по label;
+callback (search, option) позволяет собственную фильтрацию непустого запроса.
+
+SearchValue управляет текстом поиска, onSearch получает пользовательский ввод.
+Владелец может отклонить запрос, оставив searchValue прежним; внешняя замена текста
+не вызывает onSearch. Без searchValue используется внутренний текст. Выбор,
+закрытие и reset очищают внутренний поиск без onSearch; при управляемом поиске
+владелец сам очищает searchValue, если это нужно. Поисковый текст не попадает в
+FormData и не меняет выбранные value. OnSearch не имеет встроенного debounce.
+
+Loading показывает spinner и aria-busy, сохраняя доступность уже выданных options.
+При пустой выдаче по умолчанию выводится локализованный текст loading/empty;
+notFoundContent заменяет его строкой, числом или Snippet, null убирает содержимое.
+Ошибка не является отдельным upstream prop: используйте status="error" и
+notFoundContent, при необходимости внешний alert и кнопку повтора. Для кнопки
+внутри popup предотвращайте pointerdown default, чтобы сохранять фокус поля;
+дублируйте действие вне popup для последовательной клавиатурной навигации.
+OnPopupScroll получает native scroll event с currentTarget=listbox; решение о
+следующей странице и объединение options остаются у потребителя.
+
+```svelte
+<Select options={remote.options} bind:value
+  showSearch={{ searchValue: remote.searchValue, onSearch: remote.search, filterOption: false }}
+  loading={remote.loading} notFoundContent={emptyState}
+  onPopupScroll={event => {
+    const list = event.currentTarget;
+    if (list.scrollTop + list.clientHeight >= list.scrollHeight - 16) remote.more();
+  }} />
+```
+
+Галерея /ant-design#select-remote использует отдельную
+[presentation model](../../presentation/ant-design/remote-select.model.svelte.ts)
+с debounce, AbortSignal, защитой от поздних ответов
+уже во время debounce, стабильным объединением страниц по value и повтором
+последнего неудачного cursor. Dispose отменяет таймер/запрос. Источник демонстрационный,
+сетевые API, таймеры и server-specific ошибки не входят в библиотечный Select.
+Пока не перенесены остальные поля showSearch config, labelInValue, tags,
+виртуализация, произвольный popupRender и общий полный rc-select API.
 
 ## Checkbox
 

@@ -6,13 +6,24 @@ export function getSelectValues<Value extends string | number>(value: Value | re
 
 export function filterOptions<Value extends string | number>(
   options: readonly SelectOption<Value>[],
-  search: string
+  search: string,
+  filter: boolean | ((search: string, option: SelectOption<Value>) => boolean) = true
 ): readonly SelectOption<Value>[] {
+  if (filter === false) return options;
+  if (typeof filter === 'function') return search ? options.filter(option => filter(search, option)) : options;
   const query = search.trim().normalize('NFKD').toLowerCase();
 
   return query
     ? options.filter((option) => option.label.normalize('NFKD').toLowerCase().includes(query))
     : options;
+}
+
+// Храним только выбранные options с последними известными label и disabled.
+export function resolveSelectedOptions<Value extends string | number>(
+  values: readonly Value[], options: ReadonlyMap<Value, SelectOption<Value>>, previous: ReadonlyMap<Value, SelectOption<Value>>
+): ReadonlyMap<Value, SelectOption<Value>> {
+  const next = new Map(values.map(value => [value, options.get(value) ?? previous.get(value) ?? { value, label: String(value) }]));
+  return next.size === previous.size && [...next].every(([key, option]) => previous.get(key) === option) ? previous : next;
 }
 
 export function getEnabledIndex<Value extends string | number>(

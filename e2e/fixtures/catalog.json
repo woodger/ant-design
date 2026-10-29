@@ -289,5 +289,10 @@
     "id": "textarea",
     "module": "./TextAreaFixtures.svelte",
     "root": "textarea-fixture"
+  },
+  {
+    "id": "select-remote",
+    "module": "./RemoteSelectFixtures.svelte",
+    "root": "remote-select-fixture"
   }
 ]

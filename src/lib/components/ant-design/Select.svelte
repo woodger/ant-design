@@ -1,10 +1,10 @@
 <script lang="ts" generics="Value extends string | number = string, Mode extends 'multiple' | undefined = undefined">
-  import { untrack } from 'svelte';
+  import { tick, untrack } from 'svelte';
   import { useConfig } from './config-context';
   import { useCompact } from './space-compact-context';
   import { compactClasses } from './space-compact.engine';
   import { useFormField } from './form-context';
-  import { filterOptions, getEnabledIndex, getSelectValues } from './select.engine';
+  import { filterOptions, getEnabledIndex, getSelectValues, resolveSelectedOptions } from './select.engine';
   import { ruRU, type SelectOption } from './types';
   import type { SelectProps } from './select.types';
   import Icon from './Icon.svelte';
@@ -16,6 +16,12 @@
     value = $bindable<SelectProps<Value, Mode>['value']>(),
     size,
     showSearch,
+    searchValue,
+    onSearch,
+    filterOption,
+    loading = false,
+    notFoundContent,
+    onPopupScroll,
     allowClear = false,
     status,
     disabled,
@@ -40,7 +46,13 @@
   const initialDefault = untrack(() => Array.isArray(defaultValue) ? [...defaultValue] : defaultValue);
   let useDefault = $state(true);
   let isOpen = $state(false);
-  let search = $state('');
+  let internalSearch = $state('');
+  let searchConfig = $derived({ searchValue, onSearch, filterOption, ...(typeof showSearch === 'object' ? showSearch : {}) });
+  let controlledSearch = $derived(searchConfig.searchValue);
+  let search = $derived(controlledSearch ?? internalSearch);
+  let searchCallback = $derived(searchConfig.onSearch);
+  let filter = $derived(searchConfig.filterOption ?? true);
+  let cachedOptions = $state.raw<ReadonlyMap<Value, SelectOption<Value>>>(new Map());
   let activeValue = $state<Value>();
   let container: HTMLDivElement;
   let control = $state<HTMLInputElement>();
@@ -49,16 +61,18 @@
   let lastTyped = 0;
   let controlId = $derived(id ?? field?.id ?? `ant-select-${generatedId}`);
   let selectedValue = $derived(value ?? (useDefault ? initialDefault : undefined));
-  let selected = $derived(options.find((option) => option.value === selectedValue));
   let multiple = $derived(mode === 'multiple');
-  let canSearch = $derived(showSearch ?? multiple);
+  let canSearch = $derived(typeof showSearch === 'object' ? true : showSearch ?? multiple);
   // Readonly исключает input из нативной проверки; required multiple блокирует ввод через beforeinput.
   let isReadOnly = $derived(!canSearch && (!multiple || !attributes.required));
   let selectedValues = $derived(multiple ? getSelectValues(selectedValue) : []);
   let selectedKeys = $derived(new Set(selectedValues));
   let optionMap = $derived(new Map(options.map((option) => [option.value, option])));
-  let tags = $derived(selectedValues.map((item) => ({ value: item, label: optionMap.get(item)?.label ?? String(item), disabled: optionMap.get(item)?.disabled ?? false })));
-  let filtered = $derived(filterOptions(options, search));
+  let selectionOptions = $derived(resolveSelectedOptions(multiple ? selectedValues : typeof selectedValue === 'string' || typeof selectedValue === 'number' ? [selectedValue as Value] : [], optionMap, cachedOptions));
+  let selected = $derived(typeof selectedValue === 'string' || typeof selectedValue === 'number' ? selectionOptions.get(selectedValue as Value) : undefined);
+  let tags = $derived(selectedValues.map(item => selectionOptions.get(item)!));
+  let filtered = $derived(filterOptions(options, search, filter));
+  $effect(() => { cachedOptions = selectionOptions; });
   let activeIndex = $derived.by(() => {
     const index = filtered.findIndex((option) => option.value === activeValue && !option.disabled);
 
@@ -97,13 +111,13 @@
     }
 
     if (!next) {
-      search = '';
+      internalSearch = '';
     }
   }
 
   function openList(direction: 'first' | 'last' = 'first') {
     if (!isOpen) {
-      search = '';
+      internalSearch = '';
       activeValue = !multiple && selected && !selected.disabled
         ? selected.value
         : options[getEnabledIndex(options, -1, direction)]?.value;
@@ -126,6 +140,8 @@
       return;
     }
 
+    if (option) cachedOptions = new Map(cachedOptions).set(option.value, option);
+
     if (multiple) {
       const next = new Set(selectedValues);
 
@@ -138,7 +154,7 @@
       }
 
       changeMultiple([...next]);
-      search = '';
+      internalSearch = '';
       control?.focus();
       return;
     }
@@ -151,7 +167,7 @@
   }
 
   function remove(item: Value) {
-    if (resolvedDisabled || optionMap.get(item)?.disabled) return;
+    if (resolvedDisabled || selectionOptions.get(item)?.disabled) return;
 
     const next = new Set(selectedValues);
 
@@ -169,7 +185,7 @@
 
       useDefault = false;
       value = getSelectValues(initialDefault) as typeof value;
-      search = '';
+      internalSearch = '';
       isOpen = false;
     });
   }
@@ -237,8 +253,14 @@
       return;
     }
 
-    search = event.currentTarget.value;
-    const matches = filterOptions(options, search);
+    const next = event.currentTarget.value;
+    internalSearch = next;
+    searchCallback?.(next);
+    const matches = filterOptions(options, next, filter);
+    if (controlledSearch !== undefined) {
+      const input = event.currentTarget;
+      void tick().then(() => { if (input === control && input.isConnected && (multiple || expanded) && canSearch) input.value = search; });
+    }
     activeValue = matches[getEnabledIndex(matches, -1, 'first')]?.value;
     setOpen(true);
   }
@@ -320,6 +342,7 @@
     onpointerdown={handlePointerDown}
     class={[
       'ant-select ant-select-css-var ant-select-outlined ant-select-show-arrow',
+      loading && 'ant-select-loading',
       multiple ? 'ant-select-multiple' : 'ant-select-single',
       expanded && 'ant-select-open ant-select-focused',
       resolvedDisabled && 'ant-select-disabled',
@@ -345,6 +368,7 @@
         type="text"
         role="combobox"
         aria-expanded={expanded}
+        aria-busy={loading || undefined}
         aria-controls={`${controlId}-list`}
         aria-activedescendant={expanded && activeIndex >= 0 ? `${controlId}-option-${activeIndex}` : undefined}
         aria-autocomplete={canSearch ? 'list' : 'none'}
@@ -368,7 +392,7 @@
     {#if allowClear && (multiple ? selectedValues.length : selected) && !resolvedDisabled}
       <button type="button" class="clear" aria-label={config.locale.clearText} onpointerdown={(event) => event.preventDefault()} onclick={() => choose(undefined)}><Icon name="close" /></button>
     {/if}
-    <span class="suffix"><Icon name="down" /></span>
+    <span class="suffix"><Icon name={loading ? 'loading' : 'down'} /></span>
   </div>
   {#if name ?? field?.name}
     {#if multiple}
@@ -383,6 +407,8 @@
       class="popup ant-select-dropdown"
       id={`${controlId}-list`}
       role="listbox"
+      aria-busy={loading || undefined}
+      onscroll={onPopupScroll}
       aria-multiselectable={multiple || undefined}
       aria-label={attributes['aria-label'] ?? placeholder ?? config.locale.searchText}
     >
@@ -409,7 +435,7 @@
           {#if multiple ? selectedKeys.has(option.value) : option.value === selectedValue}<span class="ant-select-item-option-state"><Icon name="check" /></span>{/if}
         </button>
       {:else}
-        <div class="ant-select-item-empty">{config.locale.emptyText}</div>
+        <div class="ant-select-item-empty">{#if typeof notFoundContent === 'function'}{@render notFoundContent()}{:else if notFoundContent !== null}{notFoundContent ?? (loading ? (config.locale.spin ?? ruRU.spin!).loadingText : config.locale.emptyText)}{/if}</div>
       {/each}
     </div>
   {/if}

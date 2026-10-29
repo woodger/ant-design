@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ConfigProvider, enUS } from '../../src/lib/components/ant-design';
+  import RemoteSelectFixtures from './RemoteSelectFixtures.svelte';
   import TextAreaFixtures from './TextAreaFixtures.svelte';
   import BasicFixtures from './BasicFixtures.svelte';
   import { createControls } from './controls.model.svelte';
@@ -71,6 +72,7 @@
     <label><input type="checkbox" bind:checked={controls.rtl} /> Right to left</label>
     <label><input type="checkbox" bind:checked={controls.english} /> English locale</label>
 
+    <RemoteSelectFixtures />
     <TextAreaFixtures />
     <BasicFixtures kind="input" {controls} />
 

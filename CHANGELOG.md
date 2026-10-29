@@ -27,6 +27,11 @@
 
 ### Added
 
+- Select: controlled remote search, filter bypass/predicate, loading/empty/error
+  content и popup scroll callback. Выбранные label/disabled сохраняются при смене
+  выдачи. Добавлены пример с debounce/abort/stale guards/pages/retry, отдельная
+  фикстура и unit/SSR/Chromium-проверки.
+
 - TextArea: native multiline input, bindings, constraints, selection ref, IME-aware
   Enter, FormItem/status/RTL и размеры. Добавлены изолированная фикстура, галерея,
   SSR/browser-проверки; зафиксирована очередь проектных приоритетов переноса.

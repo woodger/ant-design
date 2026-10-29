@@ -128,7 +128,7 @@ export type { RadioProps, RadioGroupProps, RadioOption, RadioValue } from './rad
 export type { SwitchProps } from './Switch.svelte';
 export type { PaginationProps } from './Pagination.svelte';
 export type { TableProps, TableColumn, TableKey, TableRowKey, TableSorter, TableSortOrder, TableRowSelection, TablePaginationConfig, TableChange, TableFilters, TableFilterOption, TableFilterValue, TableMode, TableFixed, TableExpandable } from './table.types';
-export type { SelectProps } from './select.types';
+export type { SelectProps, SelectSearchConfig } from './select.types';
 export type { FormProps } from './form.types';
 export type { ModalProps } from './Modal.svelte';
 export type { ConfigProviderProps } from './ConfigProvider.svelte';
