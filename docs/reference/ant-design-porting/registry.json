@@ -3069,25 +3069,90 @@
       "id": "image",
       "name": "Image",
       "category": "data-display",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Первый этап Image по Ant Design 6.6.8 / rc-image 1.10.0: загрузка/fallback/placeholder и одиночный preview с transform, focus и pointer/touch. PreviewGroup — следующий самостоятельный этап.",
       "upstreamPath": "components/image",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "fixtures": [],
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Image",
+          "local": [
+            "Image"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "space"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/image",
+          "range": "~1.10.0",
+          "referenceVersion": "1.10.0"
+        }
+      ],
+      "priority": "p1",
+      "effort": "L",
+      "fixtures": [
+        "image"
+      ],
+      "evidence": [
+        "src/lib/components/ant-design/Image.svelte",
+        "src/lib/components/ant-design/image-preview.engine.test.ts",
+        "src/lib/components/ant-design/image.ssr.test.ts",
+        "e2e/image.spec.ts",
+        "src/lib/presentation/ant-design/ImageExample.svelte"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Native img, загрузка/fallback/placeholder и управляемый одиночный preview",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/image.ssr.test.ts",
+            "e2e/image.spec.ts"
+          ],
+          "note": "Width/height/src/alt/native image attrs, class/style и rootClassName/wrapperStyle. Preview=true по умолчанию, отдельный preview.src, open/onOpenChange/afterOpenChange, cover/closeIcon. Boolean/Snippet placeholder, кешированные complete images и source probe; старые invalid/load callbacks не меняют новый src. Fallback сохраняет исходный error status. Native button вместо div role=button; preview DOM ленивый и сохраняется после закрытия."
+        },
+        {
+          "id": "transforms",
+          "title": "Zoom/wheel/double click, rotate/flip, pointer drag и touch pinch",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/image-preview.engine.test.ts",
+            "e2e/image.spec.ts"
+          ],
+          "note": "Исходные minScale=1/maxScale=50/scaleStep=0.5, pointer-centered zoom, wheel ratio cap, transform/action callbacks с RAF queue. Mouse rebound сохраняет source AND-проверку двух координат; touch underscale восстанавливается на отпускании. Pointer capture заменяет mouse/touch window listeners. ActionsRender/imageRender — Svelte Snippet с original и info/actions; React node icon wrappers отдельно."
+        },
+        {
+          "id": "contexts-popup",
+          "title": "Dialog focus/scroll, mask/blur, SSR, locale/RTL/reduced motion и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/components/ant-design/image.ssr.test.ts",
+            "e2e/image.spec.ts"
+          ],
+          "note": "Native dialog и focusTrap true/false, возврат фокуса, Escape/mask.closable, совместимость с Modal. Image не наследует control disabled, как Ant wrapper. RU/EN accessible preview name и close label; 48 CSS-правил, official icons и reduced motion. Native visibility callbacks выполняются без ожидания отсутствующей rc-motion fade-анимации; frames/probes/listeners/layers очищаются."
+        },
+        {
+          "id": "preview-group",
+          "title": "Image.PreviewGroup, items/registration, current/navigation и group callbacks",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Запланирован следующий самостоятельный этап этой задачи поверх общего ImagePreview; пока публичного ImagePreviewGroup нет."
+        },
+        {
+          "id": "extended-api",
+          "title": "Progress placeholder, полный semantic/config/icons API, container и motion",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Нет placeholder.progress/render, полного classNames/styles и ConfigProvider.image/token engine/prefixCls, getContainer, icons и React info.icons node wrappers, deprecated aliases. ImageRender/actionsRender имеют native Snippet adaptation. Rc-motion fade/appear/leave и mousePosition transform origin ещё не перенесены."
         }
       ]
     },

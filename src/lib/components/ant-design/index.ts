@@ -1,3 +1,5 @@
+export { default as Image } from './Image.svelte';
+export type { ImageProps, ImagePreviewConfig, ImageTransform, ImageTransformAction, ImageInfo, ImagePreviewActions, ImagePreviewRenderInfo } from './image.types';
 export { default as Mentions } from './Mentions.svelte';
 export { getMentions } from './mentions.engine';
 export type { MentionsProps, MentionsOption, MentionsConfig, MentionsEntity } from './mentions.types';

@@ -10,6 +10,7 @@ export interface ThemeConfig {
 }
 
 export interface Locale {
+  image?: { preview?: string };
   tree?: { expand?: string; collapse?: string };
   upload?: UploadLocale;
   datePicker?: DatePickerLocale;
@@ -118,6 +119,7 @@ export const ruRU = {
   okText: 'Подтвердить',
   cancelText: 'Отмена',
   closeText: 'Закрыть',
+  image: { preview: 'Просмотр изображения' },
   clearText: 'Очистить',
   emptyText: 'Ничего не найдено',
   searchText: 'Поиск',
@@ -173,6 +175,7 @@ export const enUS = {
   okText: 'OK',
   cancelText: 'Cancel',
   closeText: 'Close',
+  image: { preview: 'Image preview' },
   clearText: 'Clear',
   emptyText: 'No options',
   searchText: 'Search',

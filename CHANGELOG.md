@@ -27,6 +27,11 @@
 
 ### Added
 
+- Image: native thumbnail/fallback/placeholder и управляемый preview, source
+  zoom/rotate/flip/wheel/drag/touch, mask/focus/scroll и Snippet render hooks.
+  Добавлены CSS-рецепт, official icons, RU/EN labels, галерея, фикстура и
+  unit/SSR/browser; PreviewGroup остаётся следующим отдельным этапом.
+
 - Mentions: prefix/split, поиск и исходная вставка у каретки, rich options/loading,
   callbacks, getMentions, autoSize/resize, native popup, формы и темы. Добавлены
   CSS-рецепт, галерея, фикстура и unit/SSR/browser. Общий popup допускает source

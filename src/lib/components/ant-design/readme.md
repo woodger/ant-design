@@ -3,7 +3,7 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, Mentions, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
+Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, Mentions, Image, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
 Radio, RadioGroup, Switch, Pagination, Table,
 Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
 MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
@@ -83,6 +83,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | TextArea | Многострочное значение, native constraints/events/selection, формы, размеры, статусы и RTL |
 | InputNumber | Число/null, черновик ввода, min/max, дробный шаг, precision, кнопки и клавиатура, FormData, reset и FormItem |
 | Slider | Одно число, min/max/step, мышь и касание, клавиатура, завершение изменения, подсказка значения, ориентация, reverse/RTL, FormData, reset и FormItem |
+| Image | Native img/fallback/placeholder и preview с zoom/rotate/flip/drag/touch, mask и focus |
 | Mentions | Prefix/split, поиск и вставка у каретки, loading, autoSize и native popup |
 | AutoComplete | Свободный текст, options/groups, поиск, keyboard backfill, custom input и controlled popup |
 | Select | Одиночный и множественный выбор строковых/числовых значений; поиск, очистка, disabled options, клавиатура и FormData |
@@ -3260,6 +3261,79 @@ aria-describedby описывает корень; id/class/style также от
 AvatarGroupKey, AvatarGroupMax и AvatarGroupLocale. Responsive-размеры по
 breakpoint, произвольные компоненты вместо Avatar и устаревшие maxCount/
 maxStyle/maxPopoverPlacement/maxPopoverTrigger в эту версию не входят.
+
+## Image
+
+Первый этап следует Ant Design 6.6.8 / @rc-component/image 1.10.0 (~1.10.0).
+[MIT-лицензия rc-image](./vendor/LICENSE.rc-image) сохранена; React runtime не
+устанавливается. Геометрия перенесена в image-preview.engine.ts, browser
+listeners/probes — в соответствующие DOM-модули. PreviewGroup переносится следующим
+отдельным этапом поверх общего ImagePreview.
+
+```svelte
+<script lang="ts">
+  import { Image } from '$lib/components/ant-design';
+  let open = $state(false);
+</script>
+<Image src="/photo.jpg" alt="Фотография" width={240}
+  preview={{ open, onOpenChange: next => { open = next; } }} />
+```
+
+Src/alt/width/height и native image attrs поддержаны. Числовые размеры задаются
+в px, CSS-строки сохраняются. Class/style относятся к img; rootClassName и
+wrapperStyle — к обёртке. Bind:nativeElement и bind:imageElement дают native refs.
+Preview по умолчанию true; false оставляет пассивное изображение. Интерактивная
+обёртка — native button вместо React div role=button, поэтому не отправляет форму.
+Enter/Space открывают preview, onKeyDown доступен; pointer opening вызывается до
+onClick, как upstream. Image не наследует Form/ConfigProvider control disabled.
+
+Fallback подставляется при ошибке исходного src; root сохраняет ant-image-error,
+даже если fallback загрузился. Новый src сбрасывает ошибку. Source probe повторяет
+useStatus; результаты старого src и события отсоединённого img игнорируются.
+OnError/onLoad передают native event. Placeholder=true включает исходный фон img,
+Snippet отображается до загрузки; без src Snippet показывается отдельно без preview.
+Кешированный complete img обрабатывается после mount без зависания placeholder.
+
+Preview config содержит src, open/onOpenChange/afterOpenChange, cover, closeIcon,
+mask, focusTrap, movable, wheel, scaleStep/minScale/maxScale и onTransform.
+Preview.src может отличаться от thumbnail. Open без onOpenChange остаётся под
+контролем владельца; без open компонент хранит состояние сам. Программная смена
+open не вызывает onOpenChange. Cover — boolean/Snippet/{coverNode,placement};
+placement top/bottom/center. По runtime 6.6.8 default cover=true создаёт пустую
+hover-поверхность. CloseIcon — boolean/null/Snippet; false/null скрывают кнопку.
+
+Viewer — native dialog, SSR не открывает его. После первого открытия DOM остаётся
+смонтированным. FocusTrap по умолчанию true; false допускает фокус вне viewer.
+Escape закрывает верхний preview, фокус возвращается opener, scroll освобождается
+при закрытии/unmount и остаётся заперт при открытом host Modal. Mask принимает
+boolean/{enabled,blur,closable}; closable по умолчанию true. RootClassName/zIndex
+в preview применяются к viewer. AfterOpenChange выполняется после native смены
+видимости; rc-motion fade timing пока отсутствует.
+
+Default transform: x=y=rotate=0, scale=1, flipX=flipY=false. По умолчанию
+minScale=1, maxScale=50, scaleStep=0.5. Toolbar zoom использует множитель 1+step;
+wheel учитывает deltaY и ограничивает ratio, сохраняя точку под курсором.
+Double click переключает zoom/scale=1; rotate меняется по 90°, flip инвертирует
+соответствующую ось. Movable=false отключает drag/touch, wheel управляется отдельно.
+Touch pinch допускает временный scale ниже min и восстанавливает его на отпускании.
+Mouse rebound сохраняет source проверку изменения обеих координат.
+
+OnTransform({transform,action}) сообщает изменения через RAF queue; close сбрасывает
+transform, если он отличается от начального. Actions: zoomIn/zoomOut, rotateLeft/
+rotateRight, flipX/flipY, wheel, doubleClick, move, dragRebound, touchZoom, reset/close.
+ActionsRender(original,info) и imageRender(original,info) — Snippet: original можно
+вызвать через @render, info содержит transform/image, а toolbar info также
+current/total/actions. Reset доступен через info.actions.onReset. Native Pointer
+Events/capture заменяют React window mouse/touch handlers с cleanup на unmount.
+
+Темы, RTL, RU/EN accessible labels и reduced motion поддержаны. Рецепт image
+извлекает 48 правил; progress wrapper и rc-motion исключены. Иконки перенесены из
+Ant Design Icons SVG 4.6.0 с существующей MIT-лицензией. Галерея `/ant-design#image`,
+фикстура `?fixture=image`.
+
+Placeholder progress/render, полный semantic classNames/styles, ConfigProvider.image/
+token engine/prefixCls, getContainer, icons/React info.icons wrappers, deprecated
+aliases и исходные fade/appear/leave/mousePosition motion пока отсутствуют.
 
 ## Mentions
 

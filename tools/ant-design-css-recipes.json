@@ -578,5 +578,29 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Mentions: textarea/variants/dropdown; rc-trigger motion исключён.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "image",
+    "output": "src/lib/components/ant-design/vendor/image.css",
+    "expectedRules": 48,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-image(?![\\w])"
+    ],
+    "exclude": [
+      "\\.ant-(?:slide|zoom|motion-collapse|fade)",
+      "ant-image-progress"
+    ],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-image-css-var",
+        "replacement": ".ant-image-css-var"
+      },
+      {
+        "pattern": "\\.ant-image(?![-\\w])",
+        "replacement": ".ant-image:where(.ant-image-css-var)"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Image/Preview: thumbnail/cover/viewer/actions; progress wrapper/rc-motion исключены.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

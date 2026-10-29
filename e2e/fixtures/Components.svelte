@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ImageFixtures from './ImageFixtures.svelte';
   import MentionsFixtures from './MentionsFixtures.svelte';
   import AutoCompleteFixtures from './AutoCompleteFixtures.svelte';
   import { ConfigProvider, enUS } from '../../src/lib/components/ant-design';
@@ -80,6 +81,7 @@
     <label><input type="checkbox" bind:checked={controls.rtl} /> Right to left</label>
     <label><input type="checkbox" bind:checked={controls.english} /> English locale</label>
 
+    <ImageFixtures />
     <MentionsFixtures />
     <AutoCompleteFixtures />
     <MenuFixtures />

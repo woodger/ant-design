@@ -334,5 +334,10 @@
     "id": "mentions",
     "module": "./MentionsFixtures.svelte",
     "root": "mentions-fixture"
+  },
+  {
+    "id": "image",
+    "module": "./ImageFixtures.svelte",
+    "root": "image-fixture"
   }
 ]
