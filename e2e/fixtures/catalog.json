@@ -354,5 +354,10 @@
     "id": "watermark",
     "module": "./WatermarkFixtures.svelte",
     "root": "watermark-fixture"
+  },
+  {
+    "id": "textarea-features",
+    "module": "./TextAreaFeaturesFixtures.svelte",
+    "root": "textarea-features-fixture"
   }
 ]

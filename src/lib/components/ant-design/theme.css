@@ -240,7 +240,7 @@
   --ant-button-border-color-disabled: var(--ant-color-border-disabled);
 }
 
-.ant-input {
+.ant-input, .ant-input-textarea-affix-wrapper {
   --ant-input-active-border-color: var(--ant-color-primary);
   --ant-input-hover-border-color: var(--ant-color-primary-hover);
   --ant-input-hover-bg: var(--ant-color-bg-container);

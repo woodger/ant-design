@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TextAreaFeaturesFixtures from './TextAreaFeaturesFixtures.svelte';
   import WatermarkFixtures from './WatermarkFixtures.svelte';
   import RateFixtures from './RateFixtures.svelte';
   import ImageGroupFixtures from './ImageGroupFixtures.svelte';
@@ -98,6 +99,7 @@
     <RateFixtures />
     <RemoteSelectFixtures />
     <TextAreaFixtures />
+    <TextAreaFeaturesFixtures />
     <BasicFixtures kind="input" {controls} />
 
     <BasicFixtures kind="select" {controls} />

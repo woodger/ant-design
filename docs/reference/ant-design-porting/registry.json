@@ -1837,7 +1837,8 @@
       "effort": "unknown",
       "fixtures": [
         "input",
-        "textarea"
+        "textarea",
+        "textarea-features"
       ],
       "evidence": [
         "src/lib/components/ant-design/readme.md",
@@ -1845,7 +1846,11 @@
         "src/lib/components/ant-design/TextArea.svelte",
         "src/lib/components/ant-design/textarea.ssr.test.ts",
         "e2e/textarea.spec.ts",
-        "src/lib/presentation/ant-design/TextAreaExample.svelte"
+        "src/lib/presentation/ant-design/TextAreaExample.svelte",
+        "src/lib/components/ant-design/textarea.engine.test.ts",
+        "src/lib/components/ant-design/textarea.dom.ts",
+        "e2e/textarea-features.spec.ts",
+        "src/lib/presentation/ant-design/TextAreaFeaturesExample.svelte"
       ],
       "features": [
         {
@@ -1881,10 +1886,22 @@
         {
           "id": "textarea-extended",
           "title": "TextArea autoSize, clear/count, variants, semantic slots и textArea config",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/textarea.engine.test.ts",
+            "src/lib/components/ant-design/textarea.ssr.test.ts",
+            "e2e/textarea-features.spec.ts"
+          ],
+          "note": "AutoSize/row limits, счётчик с UTF-16 length по умолчанию и custom strategy, soft count.max и opt-in exceedFormatter с IME/selection; native clear button/callbacks, explicit/component variants, semantic slots и textArea config. Сохранены bind:value/string, onValueChange/oninput и nativeElement=textarea; rootElement представляет wrapper. Общий аудит Input остаётся unreviewed."
+        },
+        {
+          "id": "textarea-remaining",
+          "title": "TextArea prefixCls, общий variant/token engine и React value/ref conventions",
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "Отложено за пределы выбранного минимального native объёма. Общий аудит Input остаётся unreviewed."
+          "note": "Не перенесены prefixCls, общий ConfigProvider.variant/Form.variant и произвольный token engine. Существующий строковый Svelte bind:value имеет приоритет над React controlled rejection; React broad value types и shape resizableTextArea не добавлены, textarea/root доступны через именованные native refs."
         }
       ]
     },

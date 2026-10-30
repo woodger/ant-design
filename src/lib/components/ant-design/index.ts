@@ -23,7 +23,7 @@ export type { RangePickerProps, RangePickerValue, RangePickerInputValue, RangePi
 export { default as DatePicker } from './DatePicker.svelte';
 export type { DatePickerProps, DatePickerLocale, DatePickerTimeConfig, DatePickerDisabledTime, DatePickerFormat, DatePickerMode } from './date-picker.types';
 export { default as TextArea } from './TextArea.svelte';
-export type { TextAreaProps } from './textarea.types';
+export type { TextAreaProps, TextAreaConfig, TextAreaVariant, TextAreaCountInfo, TextAreaCountConfig, TextAreaCountContent, TextAreaCountFormatter, TextAreaAllowClear, TextAreaSemanticSlots, TextAreaSemantic, TextAreaChangeEvent } from './textarea.types';
 export { default as FloatButton } from './FloatButton.svelte';
 export { default as FloatButtonGroup } from './FloatButtonGroup.svelte';
 export { default as FloatButtonBackTop } from './FloatButtonBackTop.svelte';

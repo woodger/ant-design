@@ -33,6 +33,10 @@
 
 ### Added
 
+- TextArea: autoSize/row limits, clear, count/strategy/exceedFormatter с IME и
+  selection, variants, semantic slots и ConfigProvider.textArea. Сохранены native
+  binding/events/refs; добавлены расширенные unit/SSR/browser, фикстура и галерея.
+
 - Watermark: Canvas text/image и построчные fonts, исходные clips/cache/offsets,
   mutation repair/onRemove, config и наследование в Modal/Drawer. Добавлены
   unit/SSR/browser, пример и фикстура; исходные ограничения кэша и RAF описаны явно.

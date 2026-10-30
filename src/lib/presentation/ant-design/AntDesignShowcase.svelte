@@ -39,6 +39,7 @@
   import DatePickerExample from './DatePickerExample.svelte';
   import RemoteSelectExample from './RemoteSelectExample.svelte';
   import TextAreaExample from './TextAreaExample.svelte';
+  import TextAreaFeaturesExample from './TextAreaFeaturesExample.svelte';
   import FloatButtonExample from './FloatButtonExample.svelte';
   import TimelineExample from './TimelineExample.svelte';
   import StepsExample from './StepsExample.svelte';
@@ -645,7 +646,7 @@
 
         <section id="textarea">
           <div class="section-heading"><h2>TextArea</h2></div>
-          <div class="panel"><TextAreaExample /></div>
+          <div class="panel"><TextAreaExample /><div style="margin-top:24px;margin-bottom:24px"><TextAreaFeaturesExample /></div></div>
         </section>
 
         <section id="float-button">
