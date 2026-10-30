@@ -4,7 +4,7 @@
   // Добавлены viewBox и декоративная семантика; удалены SVG title.
   // https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
   // SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
-  let { status }: { status: '403' | '404' | '500' } = $props();
+  let { status }: { status: '403' | '404' | '500'; } = $props();
 </script>
 
 {#if status === '403'}

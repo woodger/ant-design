@@ -14,6 +14,11 @@ export function normalizeStepsCurrent(current: number, count: number): number {
   return Math.min(count, Math.max(0, Number.isFinite(current) ? Math.trunc(current) : 0));
 }
 
-export function getStepsStatus<T extends { key: string; status?: StepsStatus }>(item: T, index: number, current: number, status: StepsStatus): StepsStatus {
+export function getStepsStatus<T extends { key: string; status?: StepsStatus; }>(
+  item: T,
+  index: number,
+  current: number,
+  status: StepsStatus
+): StepsStatus {
   return item.status ?? (index < current ? 'finish' : index === current ? status : 'wait');
 }

@@ -22,7 +22,9 @@ export function previewImage(file: File | Blob): Promise<string> {
     const canvas = document.createElement('canvas');
     canvas.width = MEASURE_SIZE;
     canvas.height = MEASURE_SIZE;
-    canvas.style.cssText = `position: fixed; left: 0; top: 0; width: ${MEASURE_SIZE}px; height: ${MEASURE_SIZE}px; z-index: 9999; display: none;`;
+    canvas
+      .style
+      .cssText = `position: fixed; left: 0; top: 0; width: ${MEASURE_SIZE}px; height: ${MEASURE_SIZE}px; z-index: 9999; display: none;`;
     document.body.appendChild<HTMLCanvasElement>(canvas);
     const ctx = canvas.getContext('2d');
     const img = new Image();

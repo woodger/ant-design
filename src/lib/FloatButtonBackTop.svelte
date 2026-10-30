@@ -6,7 +6,19 @@
   import { createBackTopRuntime } from './float-button-back-top.dom';
   import { createFloatButtonMotion } from './float-button-motion.dom';
   import type { FloatButtonBackTopProps } from './float-button.types';
-  let { target, visibilityHeight = 400, duration = 450, showProgress = false, icon, onclick, onClick, class: className = '', style, nativeElement = $bindable(), ...rest }: FloatButtonBackTopProps = $props();
+  let {
+    target,
+    visibilityHeight = 400,
+    duration = 450,
+    showProgress = false,
+    icon,
+    onclick,
+    onClick,
+    class: className = '',
+    style,
+    nativeElement = $bindable(),
+    ...rest
+  }: FloatButtonBackTopProps = $props();
   const config = useConfig();
   let visible = $state(untrack(() => visibilityHeight === 0));
   let present = $state(untrack(() => visibilityHeight === 0));
@@ -17,23 +29,56 @@
   const defaultTarget = () => nativeElement?.ownerDocument ?? window;
   let getTarget = $derived(target ?? defaultTarget);
   $effect(() => {
-    const controller = createBackTopRuntime(window, state => { visible = state.visible; progress = state.progress; });
+    const controller = createBackTopRuntime(window, state => {
+      visible = state.visible;
+      progress = state.progress;
+    });
     runtime = controller;
-    return () => { controller.destroy(); runtime = undefined; };
+    return () => {
+      controller.destroy();
+      runtime = undefined;
+    };
   });
-  $effect(() => { getTarget(); runtime?.configure({ getTarget, visibilityHeight, showProgress }); });
-  $effect(() => { if (visible) present = true; });
+  $effect(() => {
+    getTarget();
+    runtime?.configure({ getTarget, visibilityHeight, showProgress });
+  });
+  $effect(() => {
+    if (visible)
+      present = true;
+  });
   $effect(() => {
     if (!nativeElement) return;
-    const controller = createFloatButtonMotion(nativeElement, false, () => { present = false; }, motionState);
+    const controller = createFloatButtonMotion(nativeElement, false, () => {
+      present = false;
+    }, motionState);
     motion = controller;
-    return () => { controller.destroy(); motion = undefined; };
+    return () => {
+      controller.destroy();
+      motion = undefined;
+    };
   });
-  $effect(() => { if (motion) { motion.sync(visible); motionState = visible; } });
+  $effect(() => {
+    if (motion) {
+      motion.sync(visible);
+      motionState = visible;
+    }
+  });
 </script>
 {#snippet defaultIcon()}<FloatButtonIcon name="vertical-align-top" />{/snippet}
 {#if present}
   <FloatButton {...rest} icon={icon ?? config.floatButton?.backTopIcon ?? defaultIcon} bind:nativeElement
-    class={[className, showProgress && 'ant-float-btn-progress'].filter(Boolean).join(' ')} style={[showProgress && `--ant-float-btn-progress:${progress}turn`, style].filter(Boolean).join(';')}
-    onclick={event => { runtime?.scrollToTop(duration); (onclick ?? onClick)?.(event); }} />
+    class={[className, showProgress
+        && 'ant-float-btn-progress'].filter(Boolean).join(
+          ' '
+        )} style={[showProgress
+            && `--ant-float-btn-progress:${progress}turn`, style].filter(
+              Boolean
+            ).join(
+              ';'
+            )}
+    onclick={event => {
+        runtime?.scrollToTop(duration);
+        (onclick ?? onClick)?.(event);
+      }} />
 {/if}

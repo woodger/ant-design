@@ -7,12 +7,26 @@
   import { ruRU } from './types';
   import type { AvatarGroupProps } from './avatar-group.types';
 
-  let { items = [], size, shape, max, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, class: className = '', style }: AvatarGroupProps = $props();
+  let {
+    items = [],
+    size,
+    shape,
+    max,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    class: className = '',
+    style
+  }: AvatarGroupProps = $props();
   const config = useConfig();
   let host = $state<HTMLDivElement>();
   let layout = $derived(getAvatarGroupItems(items, max?.count));
   let strings = $derived({ ...ruRU.avatarGroup, ...config.locale.avatarGroup });
-  $effect(() => { const node = host; if (node) return connectFeedbackFocus(node); });
+  $effect(() => {
+    const node = host;
+    if (node) return connectFeedbackFocus(node);
+  });
 </script>
 
 <style>
@@ -22,7 +36,11 @@
   .ant-avatar-group-overflow { display: inline-flex; flex-shrink: 0; }
 </style>
 
-<div bind:this={host} {id} role="group" aria-label={ariaLabel ?? (ariaLabelledby ? undefined : strings.label)} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction} class={['ant-avatar-group ant-avatar-css-var', config.direction === 'rtl' && 'ant-avatar-group-rtl', className]} {style}>
+<div bind:this={host} {id} role="group" aria-label={ariaLabel ?? (ariaLabelledby ? undefined : strings.label)} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction} class={[
+    'ant-avatar-group ant-avatar-css-var',
+    config.direction === 'rtl' && 'ant-avatar-group-rtl',
+    className
+  ]} {style}>
   {#each layout.visible as item (item.key)}<Avatar {...item} alt={item.alt ?? item.label} size={item.size ?? size} shape={item.shape ?? shape}>{#if item.children}{@render item.children()}{:else}{item.text}{/if}</Avatar>{/each}
   {#if layout.hidden.length}<span class="ant-avatar-group-overflow"><AvatarGroupOverflow items={layout.hidden} {size} {shape} {max} /></span>{/if}
 </div>

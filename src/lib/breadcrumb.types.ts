@@ -21,7 +21,7 @@ export interface BreadcrumbItem extends AriaAttributes {
   path?: string;
   title?: BreadcrumbContent;
   breadcrumbName?: string;
-  menu?: { items?: readonly BreadcrumbMenuItem[]; onClick?: (info: DropdownClickInfo) => void };
+  menu?: { items?: readonly BreadcrumbMenuItem[]; onClick?: (info: DropdownClickInfo) => void; };
   dropdownProps?: Partial<Omit<DropdownProps, 'children' | 'menu'>>;
   children?: readonly BreadcrumbMenuItem[];
   class?: string;
@@ -31,17 +31,24 @@ export interface BreadcrumbItem extends AriaAttributes {
   separator?: BreadcrumbContent;
   [key: `data-${string}`]: string | undefined;
 }
-export interface BreadcrumbProps<Params extends Record<string, unknown> = Record<string, unknown>> extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'class' | 'style'> {
+/** Навигационная цепочка с нативными ссылками, separators и меню пункта. */
+export interface BreadcrumbProps<
+  Params extends Record<string, unknown> = Record<string, unknown>
+> extends Omit<
+  HTMLAttributes<HTMLElement>,
+  'children' | 'class' | 'style'
+> {
   items?: readonly BreadcrumbItem[];
   routes?: readonly BreadcrumbItem[];
   params?: Params;
   separator?: BreadcrumbContent;
   dropdownIcon?: BreadcrumbContent;
   itemRender?: Snippet<[BreadcrumbItem, Params, readonly BreadcrumbItem[], readonly string[]]>;
-  classNames?: BreadcrumbSlots | ((info: { props: BreadcrumbProps<Params> }) => BreadcrumbSlots);
-  styles?: BreadcrumbSlots | ((info: { props: BreadcrumbProps<Params> }) => BreadcrumbSlots);
+  classNames?: BreadcrumbSlots | ((info: { props: BreadcrumbProps<Params>; }) => BreadcrumbSlots);
+  styles?: BreadcrumbSlots | ((info: { props: BreadcrumbProps<Params>; }) => BreadcrumbSlots);
   class?: string;
   rootClassName?: string;
   style?: string;
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLElement;
 }

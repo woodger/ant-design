@@ -31,8 +31,15 @@
       return;
     }
 
-    const sameValue = value.length === openedValue.length && value.every((item) => openedValue.includes(item));
-    const sameOptions = options.length === openedOptions.length && options.every((item, index) => Object.is(item.value, openedOptions[index].value) && item.text === openedOptions[index].text);
+    const sameValue = value.length === openedValue.length
+      && value.every(
+        (item) => openedValue.includes(item)
+      );
+    const sameOptions = options.length === openedOptions.length
+      && options.every(
+        (item, index) => Object.is(item.value, openedOptions[index].value)
+          && item.text === openedOptions[index].text
+      );
 
     if (disabled || !sameValue || !sameOptions || multiple !== openedMultiple) {
       panel.hidePopover();
@@ -48,13 +55,25 @@
     const focusFrame = requestAnimationFrame(() => {
       positionPanel();
 
-      if (panel?.matches(':popover-open') && (document.activeElement === panel || !panel.contains(document.activeElement))) {
-        (panel.querySelector<HTMLInputElement>('input:checked') ?? panel.querySelector<HTMLInputElement>('input'))?.focus({ preventScroll: true });
+      if (panel?.matches(':popover-open')
+        && (document.activeElement === panel
+          || !panel.contains(
+            document.activeElement
+          ))) {
+        (panel.querySelector<HTMLInputElement>('input:checked')
+          ?? panel.querySelector<
+            HTMLInputElement
+          >(
+            'input'
+          ))?.focus(
+            { preventScroll: true }
+          );
       }
     });
     const observer = new ResizeObserver(positionPanel);
     observer.observe(panel);
-    for (const cell of trigger.closest('tr')?.cells ?? []) observer.observe(cell);
+    for (const cell of trigger.closest('tr')?.cells ?? [])
+      observer.observe(cell);
     window.addEventListener('resize', positionPanel);
     window.addEventListener('scroll', positionPanel, true);
 
@@ -76,7 +95,13 @@
     const start = config.direction === 'rtl' ? anchor.right - bounds.width : anchor.left;
     panel.style.left = `${Math.max(8, Math.min(start, window.innerWidth - bounds.width - 8))}px`;
     const below = anchor.bottom + 4;
-    panel.style.top = `${Math.max(8, Math.min(below + bounds.height <= window.innerHeight - 8 ? below : anchor.top - bounds.height - 4, window.innerHeight - bounds.height - 8))}px`;
+    panel.style.top = `${Math.max(
+      8,
+      Math.min(
+        below + bounds.height <= window.innerHeight - 8 ? below : anchor.top - bounds.height - 4,
+        window.innerHeight - bounds.height - 8
+      )
+    )}px`;
     panel.style.opacity = '1';
     panel.style.pointerEvents = 'auto';
   }

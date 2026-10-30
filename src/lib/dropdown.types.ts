@@ -1,6 +1,12 @@
 import type { Snippet } from 'svelte';
 
-export type DropdownPlacement = 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
+export type DropdownPlacement =
+  'top'
+  | 'topLeft'
+  | 'topRight'
+  | 'bottom'
+  | 'bottomLeft'
+  | 'bottomRight';
 export type DropdownTrigger = 'hover' | 'click';
 
 export interface DropdownClickInfo {
@@ -29,23 +35,31 @@ export interface DropdownDivider {
 
 export type DropdownItem = DropdownMenuItem | DropdownDivider;
 
+/** Данные плоского меню команд Dropdown. */
 export interface DropdownMenuProps {
   items: readonly DropdownItem[];
   onClick?: (info: DropdownClickInfo) => void;
 }
 
+/** Меню команд у trigger snippet с клавиатурой, hover/click и возвратом фокуса. */
 export interface DropdownProps {
   children: Snippet;
   menu: DropdownMenuProps;
+  /** Поддерживает bind:open. */
   open?: boolean | undefined;
+  /** @defaultValue false */
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: DropdownTrigger | readonly DropdownTrigger[];
   disabled?: boolean;
   placement?: DropdownPlacement;
+  /** @defaultValue false */
   arrow?: boolean;
+  /** @defaultValue true */
   autoAdjustOverflow?: boolean;
+  /** @defaultValue 0.1 */
   mouseEnterDelay?: number;
+  /** @defaultValue 0.1 */
   mouseLeaveDelay?: number;
   'aria-label'?: string;
   class?: string;

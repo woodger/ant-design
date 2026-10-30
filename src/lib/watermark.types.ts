@@ -16,11 +16,13 @@ export interface WatermarkText {
 
 export type WatermarkContent = string | WatermarkText;
 
+/** Стили ConfigProvider.watermark; локальный class/style добавляется после настроек провайдера. */
 export interface WatermarkConfig {
   class?: string;
   style?: string;
 }
 
+/** Повторяемая Canvas-подложка текста или изображения с наследованием в Modal/Drawer. */
 export interface WatermarkProps {
   zIndex?: number;
   rotate?: number;
@@ -35,8 +37,11 @@ export interface WatermarkProps {
   gap?: readonly [number, number];
   offset?: readonly [number, number];
   children?: Snippet;
+  /** Передаёт подложку в дочерние Modal/Drawer. */
   inherit?: boolean;
+  /** Удаление watermark DOM извне; штатный unmount callback не вызывает. */
   onRemove?: () => void;
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLDivElement;
 }
 

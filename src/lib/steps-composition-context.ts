@@ -4,5 +4,9 @@ export interface StepsComposition {
   readonly timeline: boolean;
 }
 const key = Symbol('ant-steps-composition');
-export function setStepsComposition(context: StepsComposition) { setContext(key, context); }
-export function useStepsComposition() { return getContext<StepsComposition | undefined>(key); }
+export function setStepsComposition(context: StepsComposition) {
+  setContext(key, context);
+}
+export function useStepsComposition() {
+  return getContext<StepsComposition | undefined>(key);
+}

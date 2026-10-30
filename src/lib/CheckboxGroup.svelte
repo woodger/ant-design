@@ -4,7 +4,11 @@
   import { useConfig } from './config-context';
   import { useForm, useFormField } from './form-context';
   import { getCheckboxGroupOptions, getCheckboxGroupValue } from './checkbox-group.engine';
-  import type { CheckboxGroupOption, CheckboxGroupProps, CheckboxGroupValue } from './checkbox-group.types';
+  import type {
+    CheckboxGroupOption,
+    CheckboxGroupProps,
+    CheckboxGroupValue
+  } from './checkbox-group.types';
 
   let {
     options,
@@ -32,17 +36,25 @@
   let controlId = $derived(id ?? field?.id ?? `ant-checkbox-group-${generatedId}`);
   let items = $derived(getCheckboxGroupOptions(options));
   let selected = $derived(new Set(value ?? initialDefault));
-  let resolvedDisabled = $derived(disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled);
-  let describedBy = $derived([attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined);
+  let resolvedDisabled = $derived(
+    disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled
+  );
+  let describedBy = $derived(
+    [attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined
+  );
 
-  onDestroy(() => { for (const reset of resets) clearTimeout(reset); });
+  onDestroy(() => {
+    for (const reset of resets)
+      clearTimeout(reset);
+  });
 
   function change(option: CheckboxGroupOption<Value>, checked: boolean) {
     if (resolvedDisabled || option.disabled || selected.has(option.value) === checked) return;
 
     const next = new Set(selected);
 
-    if (checked) next.add(option.value);
+    if (checked)
+      next.add(option.value);
     else next.delete(option.value);
 
     const values = getCheckboxGroupValue(items, [...next]);
@@ -50,7 +62,7 @@
     onValueChange?.(values);
   }
 
-  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLFieldSetElement }) {
+  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLFieldSetElement; }) {
     if (!event.defaultPrevented && event.target === event.currentTarget) {
       event.currentTarget.querySelector<HTMLInputElement>('input:not(:disabled)')?.focus();
     }
@@ -90,10 +102,20 @@
   id={controlId}
   {name}
   {style}
-  class={['ant-checkbox-group ant-checkbox-css-var', config.direction === 'rtl' && 'ant-checkbox-group-rtl', className]}
+  class={[
+      'ant-checkbox-group ant-checkbox-css-var',
+      config.direction === 'rtl' && 'ant-checkbox-group-rtl',
+      className
+    ]}
   disabled={resolvedDisabled}
-  aria-label={attributes['aria-label'] ?? (attributes['aria-labelledby'] ? undefined : field?.label)}
-  data-ant-form-invalid={field?.status === 'error' || ariaInvalid === true || ariaInvalid === 'true' || undefined}
+  aria-label={attributes['aria-label']
+      ?? (attributes['aria-labelledby']
+        ? undefined
+        : field?.label)}
+  data-ant-form-invalid={field?.status === 'error'
+      || ariaInvalid === true
+      || ariaInvalid === 'true'
+      || undefined}
   aria-describedby={describedBy}
   tabindex="-1"
   onfocus={handleFocus}
@@ -105,7 +127,7 @@
       name={name ?? field?.name}
       value={String(option.value)}
       form={attributes.form}
-      bind:checked={() => selected.has(option.value), () => {}}
+      bind:checked={() => selected.has(option.value), () => { }}
       defaultChecked={initialKeys.has(option.value)}
       disabled={resolvedDisabled || option.disabled || false}
       required={false}

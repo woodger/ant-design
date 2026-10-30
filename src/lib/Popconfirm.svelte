@@ -9,7 +9,30 @@
   import Button from './Button.svelte';
   import Icon from './Icon.svelte';
 
-  let { children, title, description, icon, open = $bindable<boolean | undefined>(), defaultOpen = false, disabled, showCancel = true, okText, cancelText, okType = 'primary', okButtonProps, cancelButtonProps, placement = 'top', arrow = true, autoAdjustOverflow = true, onOpenChange, onConfirm, onCancel, onError, class: className = '', style }: PopconfirmProps = $props();
+  let {
+    children,
+    title,
+    description,
+    icon,
+    open = $bindable<boolean | undefined>(),
+    defaultOpen = false,
+    disabled,
+    showCancel = true,
+    okText,
+    cancelText,
+    okType = 'primary',
+    okButtonProps,
+    cancelButtonProps,
+    placement = 'top',
+    arrow = true,
+    autoAdjustOverflow = true,
+    onOpenChange,
+    onConfirm,
+    onCancel,
+    onError,
+    class: className = '',
+    style
+  }: PopconfirmProps = $props();
 
   const config = useConfig();
   const form = useForm();
@@ -22,12 +45,20 @@
   let active = true;
   let resolvedDisabled = $derived(disabled ?? form?.disabled ?? config.componentDisabled);
   let hasTitle = $derived(typeof title === 'function' || Boolean(String(title ?? '').trim()));
-  let hasDescription = $derived(typeof description === 'function' || Boolean(String(description ?? '').trim()));
+  let hasDescription = $derived(
+    typeof description === 'function' || Boolean(String(description ?? '').trim())
+  );
   let visible = $derived(!resolvedDisabled && hasTitle && (open ?? initialDefault));
   let session = $derived(visible ? { owner: open } : null);
   const action = createPopconfirmAction(() => session, {
-    onSuccess: () => { open = false; onOpenChange?.(false); },
-    onError: (error) => { errorSession = session ?? undefined; onError?.(error); }
+    onSuccess: () => {
+      open = false;
+      onOpenChange?.(false);
+    },
+    onError: (error) => {
+      errorSession = session ?? undefined;
+      onError?.(error);
+    }
   });
   let errorVisible = $derived(session !== null && session === errorSession);
 
@@ -35,10 +66,14 @@
     const element = overlay;
 
     // Сохраняем фокус в карточке до отключения кнопок на время Promise.
-    if (action.loading && element?.contains(element.ownerDocument.activeElement)) element.focus({ preventScroll: true });
+    if (action.loading && element?.contains(element.ownerDocument.activeElement))
+      element.focus({ preventScroll: true });
   });
 
-  onDestroy(() => { active = false; action.dispose(); });
+  onDestroy(() => {
+    active = false;
+    action.dispose();
+  });
 
   function request(next: boolean) {
     if (!active || resolvedDisabled || action.loading || next === (open ?? initialDefault)) return;
@@ -47,7 +82,7 @@
     onOpenChange?.(next);
   }
 
-  function confirm(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
+  function confirm(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
     if (!visible || action.loading || okButtonProps?.disabled) return;
 
     okButtonProps?.onclick?.(event);
@@ -57,7 +92,7 @@
     void action.run(() => onConfirm?.(event));
   }
 
-  function cancel(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
+  function cancel(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
     if (!visible || action.loading || cancelButtonProps?.disabled) return;
 
     cancelButtonProps?.onclick?.(event);
@@ -88,8 +123,12 @@
       </div>
     </div>
     <div class="ant-popconfirm-buttons">
-      {#if showCancel}<Button {...cancelButtonProps} size={cancelButtonProps?.size ?? 'small'} disabled={Boolean(action.loading || resolvedDisabled || cancelButtonProps?.disabled)} htmlType="button" onclick={cancel}>{cancelText ?? config.locale.cancelText}</Button>{/if}
-      <Button {...okButtonProps} type={okButtonProps?.type ?? okType} size={okButtonProps?.size ?? 'small'} disabled={Boolean(action.loading || resolvedDisabled || okButtonProps?.disabled)} loading={action.loading} htmlType="button" onclick={confirm}>{okText ?? config.locale.okText}</Button>
+      {#if showCancel}<Button {...cancelButtonProps} size={cancelButtonProps?.size ?? 'small'} disabled={Boolean(
+          action.loading || resolvedDisabled || cancelButtonProps?.disabled
+        )} htmlType="button" onclick={cancel}>{cancelText ?? config.locale.cancelText}</Button>{/if}
+      <Button {...okButtonProps} type={okButtonProps?.type ?? okType} size={okButtonProps?.size ?? 'small'} disabled={Boolean(
+          action.loading || resolvedDisabled || okButtonProps?.disabled
+        )} loading={action.loading} htmlType="button" onclick={confirm}>{okText ?? config.locale.okText}</Button>
     </div>
     {#if errorVisible}<p role="alert" class="ant-popconfirm-error">{config.locale.confirmErrorText ?? ruRU.confirmErrorText}</p>{/if}
   </div>

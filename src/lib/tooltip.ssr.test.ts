@@ -4,7 +4,9 @@ import { describe, expect, expectTypeOf, it } from 'vitest';
 import Tooltip from './Tooltip.svelte';
 import type { TooltipProps } from './tooltip.types';
 
-const children = createRawSnippet(() => ({ render: () => '<button type="button" aria-describedby="existing-help">Save</button>' }));
+const children = createRawSnippet(
+  () => ({ render: () => '<button type="button" aria-describedby="existing-help">Save</button>' })
+);
 
 describe('Tooltip server rendering', () => {
   it('renders its trigger and a hidden text tooltip without adding a focus stop', () => {
@@ -20,19 +22,38 @@ describe('Tooltip server rendering', () => {
   });
 
   it('keeps defaultOpen safe before hydration without invoking the owner', () => {
-    const { body } = render(Tooltip, { props: { title: 'Initially open', children, defaultOpen: true, onOpenChange: () => { throw new Error('Unexpected callback'); } } });
+    const { body } = render(Tooltip, {
+      props: {
+        title: 'Initially open',
+        children,
+        defaultOpen: true,
+        onOpenChange: () => {
+          throw new Error('Unexpected callback');
+        }
+      }
+    });
 
     expect(body).toContain('Initially open');
     expect(body).toMatch(/role="tooltip"[^>]*\shidden(?:[\s=>])/);
   });
 
   it('renders zero as text and permits an empty title', () => {
-    expect(render(Tooltip, { props: { title: 0, children } }).body.replace(/<!--.*?-->/g, '')).toContain('>0</span>');
-    expect(render(Tooltip, { props: { title: null, children } }).body).toContain('role="tooltip"');
+    expect(render(Tooltip, { props: { title: 0, children } })
+      .body
+      .replace(/<!--.*?-->/g, ''))
+      .toContain(
+        '>0</span>'
+      );
+    expect(render(Tooltip, { props: { title: null, children } }).body).toContain(
+      'role="tooltip"'
+    );
   });
 
   it('supports all four placement names and optional arrow', () => {
-    const { body } = render(Tooltip, { props: { title: 'Below', children, placement: 'bottom', arrow: false } });
+    const { body } = render(
+      Tooltip,
+      { props: { title: 'Below', children, placement: 'bottom', arrow: false } }
+    );
 
     expect(body).toContain('ant-tooltip-placement-bottom');
     expect(body).not.toContain('class="ant-tooltip-arrow');
@@ -47,8 +68,11 @@ describe('Tooltip server rendering', () => {
 
   it('assigns distinct popup identifiers to separate instances', () => {
     const first = render(Tooltip, { idPrefix: 'first-', props: { title: 'First', children } }).body;
-    const second = render(Tooltip, { idPrefix: 'second-', props: { title: 'Second', children } }).body;
+    const second = render(Tooltip, { idPrefix: 'second-', props: { title: 'Second', children } })
+      .body;
 
-    expect(first.match(/id="(ant-tooltip-[^"]+)"/)?.[1]).not.toBe(second.match(/id="(ant-tooltip-[^"]+)"/)?.[1]);
+    expect(first.match(/id="(ant-tooltip-[^"]+)"/)?.[1]).not.toBe(
+      second.match(/id="(ant-tooltip-[^"]+)"/)?.[1]
+    );
   });
 });

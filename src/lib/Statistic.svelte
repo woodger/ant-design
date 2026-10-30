@@ -5,17 +5,50 @@
   import type { StatisticContent, StatisticProps, StatisticSemanticInfo } from './statistic.types';
 
   let {
-    value = 0, title, prefix, suffix, loading = false, precision,
-    decimalSeparator = '.', groupSeparator = ',', formatter, valueRender, valueStyle,
-    class: className = '', rootClassName = '', style, classNames, styles,
-    nativeElement = $bindable(), ...rest
+    value = 0,
+    title,
+    prefix,
+    suffix,
+    loading = false,
+    precision,
+    decimalSeparator = '.',
+    groupSeparator = ',',
+    formatter,
+    valueRender,
+    valueStyle,
+    class: className = '',
+    rootClassName = '',
+    style,
+    classNames,
+    styles,
+    nativeElement = $bindable(),
+    ...rest
   }: StatisticProps = $props();
   const config = useConfig();
-  let semanticInfo = $derived<StatisticSemanticInfo>({ props: {
-    ...rest, value, title, prefix, suffix, loading, precision, decimalSeparator, groupSeparator,
-    formatter, valueRender, valueStyle, class: className, rootClassName, style, classNames, styles
-  } });
-  let classes = $derived(typeof classNames === 'function' ? classNames(semanticInfo) : classNames ?? {});
+  let semanticInfo = $derived<StatisticSemanticInfo>({
+    props: {
+      ...rest,
+      value,
+      title,
+      prefix,
+      suffix,
+      loading,
+      precision,
+      decimalSeparator,
+      groupSeparator,
+      formatter,
+      valueRender,
+      valueStyle,
+      class: className,
+      rootClassName,
+      style,
+      classNames,
+      styles
+    }
+  });
+  let classes = $derived(
+    typeof classNames === 'function' ? classNames(semanticInfo) : classNames ?? {}
+  );
   let slotStyles = $derived(typeof styles === 'function' ? styles(semanticInfo) : styles ?? {});
   let formatted = $derived(typeof formatter === 'function' ? formatter(value) : undefined);
   let parts = $derived(formatStatisticValue(value, precision, decimalSeparator, groupSeparator));
@@ -43,7 +76,14 @@
 {/snippet}
 
 <div {...rest} bind:this={nativeElement} dir={config.direction}
-  class={['ant-statistic ant-statistic-css-var', config.direction === 'rtl' && 'ant-statistic-rtl', config.theme.compact && 'ant-statistic-compact', className, rootClassName, classes.root]}
+  class={[
+      'ant-statistic ant-statistic-css-var',
+      config.direction === 'rtl' && 'ant-statistic-rtl',
+      config.theme.compact && 'ant-statistic-compact',
+      className,
+      rootClassName,
+      classes.root
+    ]}
   style={[slotStyles.root, style].filter(Boolean).join(';')}>
   {#if hasContent(title)}<div class={['ant-statistic-header', classes.header]} style={slotStyles.header}><div class={['ant-statistic-title', classes.title]} style={slotStyles.title}>{@render content(title)}</div></div>{/if}
   {#if loading}<Skeleton paragraph={false} active class="ant-statistic-skeleton" />

@@ -7,7 +7,27 @@
   import { getTooltipDelay } from './tooltip.engine';
   import type { PopoverContent, PopoverProps, PopoverTrigger } from './popover.types';
 
-  let { children, title, content, open = $bindable<boolean | undefined>(), defaultOpen = false, onOpenChange, trigger = ['hover', 'focus'], placement = 'top', arrow = true, autoAdjustOverflow = true, mouseEnterDelay = 0.1, mouseLeaveDelay = 0.1, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, 'aria-busy': ariaBusy, popupClass, class: className = '', style }: PopoverProps = $props();
+  let {
+    children,
+    title,
+    content,
+    open = $bindable<boolean | undefined>(),
+    defaultOpen = false,
+    onOpenChange,
+    trigger = ['hover', 'focus'],
+    placement = 'top',
+    arrow = true,
+    autoAdjustOverflow = true,
+    mouseEnterDelay = 0.1,
+    mouseLeaveDelay = 0.1,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    'aria-busy': ariaBusy,
+    popupClass,
+    class: className = '',
+    style
+  }: PopoverProps = $props();
 
   const config = useConfig();
   const generatedId = $props.id();
@@ -36,7 +56,12 @@
   let visible = $derived(available && (open ?? initialDefault));
 
   function hasContent(value: PopoverContent | null | undefined) {
-    return typeof value === 'function' || value !== null && value !== undefined && Boolean(String(value).trim());
+    return typeof value === 'function'
+      || value !== null
+      && value !== undefined
+      && Boolean(
+        String(value).trim()
+      );
   }
 
   $effect(() => {
@@ -44,7 +69,9 @@
 
     if (!element) return;
 
-    function update() { anchor = element!.firstElementChild ?? element; }
+    function update() {
+      anchor = element!.firstElementChild ?? element;
+    }
 
     update();
     const observer = new MutationObserver(update);
@@ -66,7 +93,9 @@
     clicked = false;
     focusOnShow = false;
     // Возвращаем фокус до удаления условного snippet и скрытия поверхности.
-    if (surface?.contains(surface.ownerDocument.activeElement) && source instanceof HTMLElement && source.isConnected) {
+    if (surface?.contains(surface.ownerDocument.activeElement)
+      && source instanceof HTMLElement
+      && source.isConnected) {
       untrack(() => {
         closing = true;
         source.focus({ preventScroll: true });
@@ -84,22 +113,39 @@
     // Положение меняется без повторного hide/show, чтобы сохранить ввод и фокус.
     const disconnect = untrack(() => connectPopup(surface, source, {
       trigger: host,
-      get placement() { return placement; },
-      get autoAdjustOverflow() { return autoAdjustOverflow; },
+      get placement() {
+        return placement;
+      },
+      get autoAdjustOverflow() {
+        return autoAdjustOverflow;
+      },
       maxWidth: '100vw',
       preserveFocus: false,
-      onPlacement: (next) => { actualPlacement = next; },
+      onPlacement: (next) => {
+        actualPlacement = next;
+      },
       onDismiss: dismiss,
       onVisibilityChange: (next) => {
         shown = next;
-        if (!next) { popupFocused = false; popupHovered = false; }
-        else if (resumeFocus?.isConnected) { resumeFocus.focus({ preventScroll: true }); resumeFocus = undefined; }
-        else if (focusOnShow) { focusOnShow = false; focusPopover(surface); }
+        if (!next) {
+          popupFocused = false;
+          popupHovered = false;
+        }
+        else if (resumeFocus?.isConnected) {
+          resumeFocus.focus({ preventScroll: true });
+          resumeFocus = undefined;
+        }
+        else if (focusOnShow) {
+          focusOnShow = false;
+          focusPopover(surface);
+        }
       }
     }));
 
     return () => {
-      resumeFocus = surface.contains(surface.ownerDocument.activeElement) ? surface.ownerDocument.activeElement as HTMLElement : undefined;
+      resumeFocus = surface.contains(surface.ownerDocument.activeElement)
+        ? surface.ownerDocument.activeElement as HTMLElement
+        : undefined;
 
       closing = true;
       disconnect();
@@ -107,10 +153,14 @@
     };
   });
 
-  onDestroy(() => { active = false; cancelPending(); });
+  onDestroy(() => {
+    active = false;
+    cancelPending();
+  });
 
   function cancelPending() {
-    if (pending !== undefined) clearTimeout(pending);
+    if (pending !== undefined)
+      clearTimeout(pending);
     pending = undefined;
   }
 
@@ -119,7 +169,16 @@
   }
 
   function wanted() {
-    return !dismissed && (clicked || popupHovered || popupFocused || hovered && supports('hover') || focused && supports('focus'));
+    return !dismissed
+      && (clicked
+        || popupHovered
+        || popupFocused
+        || hovered
+        && supports('hover')
+        || focused
+        && supports(
+          'focus'
+        ));
   }
 
   function request(next: boolean, delay = 0) {
@@ -129,13 +188,30 @@
 
     function apply() {
       pending = undefined;
-      if (!active || next && !available || !target?.isConnected || target !== anchor || !Object.is(open, ownerValue) || next && !wanted()) return;
+      if (!active
+        || next
+        && !available
+        || !target?.isConnected
+        || target !== anchor
+        || !Object.is(
+          open,
+          ownerValue
+        )
+        || next
+        && !wanted()) return;
 
-      if (next !== (open ?? initialDefault)) { open = next; onOpenChange?.(next); }
-      if (next && visible && shown && focusOnShow && popup) { focusOnShow = false; focusPopover(popup); }
+      if (next !== (open ?? initialDefault)) {
+        open = next;
+        onOpenChange?.(next);
+      }
+      if (next && visible && shown && focusOnShow && popup) {
+        focusOnShow = false;
+        focusPopover(popup);
+      }
     }
 
-    if (delay) pending = setTimeout(apply, delay);
+    if (delay)
+      pending = setTimeout(apply, delay);
     else apply();
   }
 
@@ -144,43 +220,67 @@
 
     hovered = true;
     dismissed = false;
-    if (supports('hover')) request(true, getTooltipDelay(mouseEnterDelay));
+    if (supports('hover'))
+      request(true, getTooltipDelay(mouseEnterDelay));
   }
 
   function handleLeave() {
     hovered = false;
-    if (!wanted()) request(false, getTooltipDelay(mouseLeaveDelay));
+    if (!wanted())
+      request(false, getTooltipDelay(mouseLeaveDelay));
   }
 
   function handleFocus(event: FocusEvent) {
     focused = true;
-    if (!active || closing || !shown && event.relatedTarget instanceof Node && popup?.contains(event.relatedTarget)) return;
+    if (!active
+      || closing
+      || !shown
+      && event.relatedTarget instanceof Node
+      && popup?.contains(
+        event.relatedTarget
+      )) return;
 
     dismissed = false;
-    if (supports('focus')) request(true);
+    if (supports('focus'))
+      request(true);
   }
 
   function handleBlur(event: FocusEvent) {
     if (event.relatedTarget instanceof Node && host?.contains(event.relatedTarget)) return;
 
     focused = false;
-    if (closing || event.relatedTarget instanceof Node && popup?.contains(event.relatedTarget)) return;
+    if (closing
+      || event.relatedTarget instanceof Node
+      && popup?.contains(event.relatedTarget)) return;
 
     clicked = false;
-    if (!wanted()) request(false);
+    if (!wanted())
+      request(false);
   }
 
   function handleClick(event: MouseEvent) {
-    if (event.defaultPrevented || !supports('click') || anchor?.matches(':disabled, [aria-disabled="true"]')) return;
+    if (event.defaultPrevented
+      || !supports('click')
+      || anchor?.matches(
+        ':disabled, [aria-disabled="true"]'
+      )) return;
 
-    if (clicked || visible && !wanted()) dismiss('trigger');
-    else { clicked = true; dismissed = false; focusOnShow = true; request(true); }
+    if (clicked || visible && !wanted())
+      dismiss('trigger');
+    else {
+      clicked = true;
+      dismissed = false;
+      focusOnShow = true;
+      request(true);
+    }
   }
 
   function handlePopupHover(next: boolean) {
     popupHovered = next;
-    if (next) cancelPending();
-    else if (!wanted()) request(false, getTooltipDelay(mouseLeaveDelay));
+    if (next)
+      cancelPending();
+    else if (!wanted())
+      request(false, getTooltipDelay(mouseLeaveDelay));
   }
 
   function handlePopupBlur(event: FocusEvent) {
@@ -188,13 +288,23 @@
 
     popupFocused = false;
     function closeIfOutside() {
-      if (!active || !host?.isConnected || !popup?.isConnected || closing || !shown || event.relatedTarget instanceof Node && host?.contains(event.relatedTarget)) return;
+      if (!active
+        || !host?.isConnected
+        || !popup?.isConnected
+        || closing
+        || !shown
+        || event.relatedTarget instanceof Node
+        && host?.contains(
+          event.relatedTarget
+        )) return;
 
       clicked = false;
-      if (!wanted()) request(false);
+      if (!wanted())
+        request(false);
     }
     // При remove() браузер отправляет blur до отсоединения DOM и cleanup Svelte.
-    if (event.relatedTarget === null) queueMicrotask(closeIfOutside);
+    if (event.relatedTarget === null)
+      queueMicrotask(closeIfOutside);
     else closeIfOutside();
   }
 
@@ -208,7 +318,9 @@
       ({ clicked, dismissed, focusOnShow } = previous);
       return;
     }
-    if (reason === 'escape' && popup?.contains(popup.ownerDocument.activeElement) && anchor instanceof HTMLElement) {
+    if (reason === 'escape'
+      && popup?.contains(popup.ownerDocument.activeElement)
+      && anchor instanceof HTMLElement) {
       closing = true;
       anchor.focus({ preventScroll: true });
       closing = false;
@@ -229,7 +341,20 @@
 
 <span bind:this={host} role="presentation" class={['ant-popover-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onfocusin={handleFocus} onfocusout={handleBlur} onclick={handleClick}>{@render children()}</span>
 <NoCompactStyle>
-<div bind:this={popup} {id} role="dialog" popover="manual" hidden tabindex="-1" dir={config.direction} aria-label={ariaLabel} aria-labelledby={!ariaLabel ? ariaLabelledby ?? (hasTitle ? titleId : undefined) : undefined} aria-describedby={ariaDescribedby} aria-busy={ariaBusy} class={['ant-popover', popupClass, `ant-popover-placement-${shown ? actualPlacement : placement}`, config.direction === 'rtl' && 'ant-popover-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') handlePopupHover(true); }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => { popupFocused = true; cancelPending(); }} onfocusout={handlePopupBlur}>
+<div bind:this={popup} {id} role="dialog" popover="manual" hidden tabindex="-1" dir={config.direction} aria-label={ariaLabel} aria-labelledby={!ariaLabel
+    ? ariaLabelledby ?? (hasTitle ? titleId : undefined)
+    : undefined} aria-describedby={ariaDescribedby} aria-busy={ariaBusy} class={[
+        'ant-popover',
+        popupClass,
+        `ant-popover-placement-${shown ? actualPlacement : placement}`,
+        config.direction === 'rtl' && 'ant-popover-rtl'
+      ]} onpointerenter={(event) => {
+      if (event.pointerType !== 'touch')
+        handlePopupHover(true);
+    }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => {
+      popupFocused = true;
+      cancelPending();
+    }} onfocusout={handlePopupBlur}>
   {#if arrow}<div class="ant-popover-arrow" aria-hidden="true"></div>{/if}
   <div class="ant-popover-container">
     {#if hasTitle}<div id={titleId} class="ant-popover-title">{#if typeof title === 'function'}{@render title()}{:else}{title}{/if}</div>{/if}

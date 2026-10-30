@@ -6,14 +6,21 @@
   import Icon from './Icon.svelte';
   import Select from './Select.svelte';
 
+  /** Постраничная навигация с bind:current/pageSize и нормализацией диапазона. */
   export interface PaginationProps {
+    /** @defaultValue 0 */
     total?: number;
+    /** Поддерживает bind:current. */
     current?: number;
+    /** @defaultValue 1 */
     defaultCurrent?: number;
+    /** Поддерживает bind:pageSize. */
     pageSize?: number;
+    /** @defaultValue 10 */
     defaultPageSize?: number;
     pageSizeOptions?: readonly number[];
     showSizeChanger?: boolean;
+    /** @defaultValue false */
     hideOnSinglePage?: boolean;
     showTotal?: Snippet<[total: number, range: [number, number]]>;
     disabled?: boolean;
@@ -50,7 +57,9 @@
   const initialCurrent = untrack(() => defaultCurrent);
   const initialSize = untrack(() => defaultPageSize);
   let navigation = $state<HTMLElement>();
-  let pagination = $derived(getPaginationState(total, current ?? initialCurrent, pageSize ?? initialSize));
+  let pagination = $derived(
+    getPaginationState(total, current ?? initialCurrent, pageSize ?? initialSize)
+  );
   let items = $derived(getPaginationItems(pagination));
   let resolvedDisabled = $derived(disabled ?? config.componentDisabled);
   let resolvedSize = $derived(size ?? config.componentSize);
@@ -111,31 +120,64 @@
 
 {#if !hideOnSinglePage || pagination.pageCount > 1}
   <nav bind:this={navigation} {id} aria-label={ariaLabel ?? strings.label} dir={config.direction} {style}>
-    <ul class={['ant-pagination', `ant-pagination-${resolvedSize}`, resolvedSize === 'small' && 'ant-pagination-mini', resolvedDisabled && 'ant-pagination-disabled', config.direction === 'rtl' && 'ant-pagination-rtl', className]}>
+    <ul class={[
+        'ant-pagination',
+        `ant-pagination-${resolvedSize}`,
+        resolvedSize === 'small' && 'ant-pagination-mini',
+        resolvedDisabled && 'ant-pagination-disabled',
+        config.direction === 'rtl' && 'ant-pagination-rtl',
+        className
+      ]}>
       {#if showTotal}<li class="ant-pagination-total-text">{@render showTotal(pagination.total, pagination.range)}</li>{/if}
-      <li class={['ant-pagination-prev', (resolvedDisabled || pagination.current === 1) && 'ant-pagination-disabled']}>
-        <button type="button" class="ant-pagination-item-link" aria-label={strings.previous} disabled={resolvedDisabled || pagination.current === 1} onclick={(event) => changePage(pagination.current - 1, event.currentTarget)}><Icon name={config.direction === 'rtl' ? 'right' : 'left'} /></button>
+      <li class={[
+          'ant-pagination-prev',
+          (resolvedDisabled || pagination.current === 1) && 'ant-pagination-disabled'
+        ]}>
+        <button type="button" class="ant-pagination-item-link" aria-label={strings.previous} disabled={resolvedDisabled || pagination.current === 1} onclick={(event) => changePage(
+            pagination.current - 1,
+            event.currentTarget
+          )}><Icon name={config.direction === 'rtl' ? 'right' : 'left'} /></button>
       </li>
       {#each items as item (item)}
         {#if typeof item === 'number'}
-          <li class={['ant-pagination-item', item === pagination.current && 'ant-pagination-item-active']}>
+          <li class={[
+              'ant-pagination-item',
+              item === pagination.current && 'ant-pagination-item-active'
+            ]}>
             <button type="button" class="page-button" aria-label={`${strings.page} ${item}`} aria-current={item === pagination.current ? 'page' : undefined} disabled={resolvedDisabled} onclick={(event) => changePage(item, event.currentTarget)}>{item}</button>
           </li>
         {:else}
-          <li class={item === 'jump-prev' ? 'ant-pagination-jump-prev' : 'ant-pagination-jump-next'}>
-            <button type="button" class="jump-button" aria-label={item === 'jump-prev' ? strings.jumpPrevious : strings.jumpNext} disabled={resolvedDisabled} onclick={(event) => changePage(pagination.current + (item === 'jump-prev' ? -5 : 5), event.currentTarget)}><span aria-hidden="true">•••</span></button>
+          <li class={item === 'jump-prev'
+              ? 'ant-pagination-jump-prev'
+              : 'ant-pagination-jump-next'}>
+            <button type="button" class="jump-button" aria-label={item === 'jump-prev'
+                ? strings.jumpPrevious
+                : strings.jumpNext} disabled={resolvedDisabled} onclick={(event) => changePage(
+                    pagination.current + (item === 'jump-prev' ? -5 : 5),
+                    event.currentTarget
+                  )}><span aria-hidden="true">•••</span></button>
           </li>
         {/if}
       {/each}
-      <li class={['ant-pagination-next', (resolvedDisabled || pagination.current === pagination.pageCount) && 'ant-pagination-disabled']}>
-        <button type="button" class="ant-pagination-item-link" aria-label={strings.next} disabled={resolvedDisabled || pagination.current === pagination.pageCount} onclick={(event) => changePage(pagination.current + 1, event.currentTarget)}><Icon name={config.direction === 'rtl' ? 'left' : 'right'} /></button>
+      <li class={[
+          'ant-pagination-next',
+          (resolvedDisabled
+            || pagination.current === pagination.pageCount)
+          && 'ant-pagination-disabled'
+        ]}>
+        <button type="button" class="ant-pagination-item-link" aria-label={strings.next} disabled={resolvedDisabled || pagination.current === pagination.pageCount} onclick={(event) => changePage(
+            pagination.current + 1,
+            event.currentTarget
+          )}><Icon name={config.direction === 'rtl' ? 'left' : 'right'} /></button>
       </li>
       {#if showSizeChanger ?? pagination.total > 50}
         <li class="ant-pagination-options">
           <Select
             aria-label={strings.pageSize}
             value={pagination.pageSize}
-            options={sizeOptions.map((value) => ({ value, label: `${value} ${strings.itemsPerPage}` }))}
+            options={sizeOptions.map(
+                (value) => ({ value, label: `${value} ${strings.itemsPerPage}` })
+              )}
             disabled={resolvedDisabled}
             size={resolvedSize}
             style="width: 112px"

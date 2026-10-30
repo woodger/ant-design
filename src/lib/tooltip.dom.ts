@@ -2,7 +2,8 @@ export function connectTooltipDescription(element: Element, id: string): () => v
   function merge() {
     const tokens = (element.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean);
 
-    if (!tokens.includes(id)) element.setAttribute('aria-describedby', [...tokens, id].join(' '));
+    if (!tokens.includes(id))
+      element.setAttribute('aria-describedby', [...tokens, id].join(' '));
   }
 
   merge();
@@ -11,9 +12,12 @@ export function connectTooltipDescription(element: Element, id: string): () => v
 
   return () => {
     observer.disconnect();
-    const tokens = (element.getAttribute('aria-describedby') ?? '').split(/\s+/).filter((token) => token && token !== id);
+    const tokens = (element.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(
+      (token) => token && token !== id
+    );
 
-    if (tokens.length) element.setAttribute('aria-describedby', tokens.join(' '));
+    if (tokens.length)
+      element.setAttribute('aria-describedby', tokens.join(' '));
     else element.removeAttribute('aria-describedby');
   };
 }

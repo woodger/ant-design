@@ -2,7 +2,7 @@ export function inputChangeEvent<T extends HTMLInputElement | HTMLTextAreaElemen
   event: Event,
   element: T,
   value: string
-): Event & { target: T; currentTarget: T; readonly nativeEvent: Event } {
+): Event & { target: T; currentTarget: T; readonly nativeEvent: Event; } {
   const target = element.cloneNode(true) as T;
   target.value = value;
 
@@ -26,5 +26,5 @@ export function inputChangeEvent<T extends HTMLInputElement | HTMLTextAreaElemen
 
       return typeof result === 'function' ? result.bind(original) : result;
     }
-  }) as Event & { target: T; currentTarget: T; readonly nativeEvent: Event };
+  }) as Event & { target: T; currentTarget: T; readonly nativeEvent: Event; };
 }

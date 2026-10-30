@@ -23,11 +23,12 @@ function copyValues<Values extends FormValues>(source: Values): Values {
 }
 
 export type SubmissionResult<Values extends FormValues> =
-  | { status: 'success' }
-  | { status: 'invalid'; error: FormValidationError<Values> }
-  | { status: 'failed'; error: unknown }
-  | { status: 'busy' };
+  | { status: 'success'; }
+  | { status: 'invalid'; error: FormValidationError<Values>; }
+  | { status: 'failed'; error: unknown; }
+  | { status: 'busy'; };
 
+/** Реактивные значения, validation и submit одной формы; экземпляр не разделяется глобально. */
 export interface FormInstance<Values extends FormValues> {
   readonly values: Readonly<Values>;
   readonly errors: Readonly<FieldErrors<Values>>;
@@ -45,6 +46,10 @@ export interface FormInstance<Values extends FormValues> {
   submit(onFinish: (values: Values) => void | Promise<void>): Promise<SubmissionResult<Values>>;
 }
 
+/**
+ * Создаёт изолированную реактивную модель формы. Начальные значения копируются;
+ * устаревшая асинхронная validation не заменяет ошибки новой версии значений.
+ */
 export function createForm<Values extends FormValues>({
   initialValues,
   rules = {}
@@ -91,7 +96,9 @@ export function createForm<Values extends FormValues>({
       }
     }));
 
-    const outOfDate = revision !== startRevision || fields.some((name) => runs.get(name) !== token);
+    const outOfDate = revision !== startRevision || fields.some(
+      (name) => runs.get(name) !== token
+    );
 
     if (outOfDate || Object.keys(nextErrors).length) {
       throw new FormValidationError(snapshot, nextErrors, outOfDate);
@@ -117,10 +124,18 @@ export function createForm<Values extends FormValues>({
   }
 
   return {
-    get values() { return values; },
-    get errors() { return errors; },
-    get isSubmitting() { return isSubmitting; },
-    get submissionError() { return submissionError; },
+    get values() {
+      return values;
+    },
+    get errors() {
+      return errors;
+    },
+    get isSubmitting() {
+      return isSubmitting;
+    },
+    get submissionError() {
+      return submissionError;
+    },
     getFieldError: (name) => errors[name] ?? [],
     isFieldTouched: (name) => touched[name] ?? false,
     isFieldValidating: (name) => validating[name] ?? false,

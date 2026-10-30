@@ -7,16 +7,28 @@ export type GridResponsive<Value> = Partial<Record<GridBreakpoint, Value>>;
 export type GridGap = number | string | undefined;
 export type GridGutter = GridGap | GridResponsive<number>;
 export type RowAlign = 'top' | 'middle' | 'bottom' | 'stretch';
-export type RowJustify = 'start' | 'end' | 'center' | 'space-around' | 'space-between' | 'space-evenly';
+export type RowJustify =
+  'start'
+  | 'end'
+  | 'center'
+  | 'space-around'
+  | 'space-between'
+  | 'space-evenly';
 
-export interface RowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'class' | 'style' | 'align'> {
+/** Строка Grid с responsive gutters и общим выравниванием дочерних Col. */
+export interface RowProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'class' | 'style' | 'align'
+> {
   children?: Snippet;
+  /** @defaultValue 0 */
   gutter?: GridGutter | [GridGutter, GridGutter];
   align?: RowAlign | GridResponsive<RowAlign>;
   justify?: RowJustify | GridResponsive<RowJustify>;
   wrap?: boolean;
   class?: string;
   style?: string;
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLDivElement;
 }
 
@@ -28,7 +40,11 @@ export interface ColSize {
   pull?: number | string;
   flex?: number | string;
 }
-export interface ColProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'class' | 'style'>, ColSize {
+/** Колонка Grid с responsive span, offset, order и flex. */
+export interface ColProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'class' | 'style'
+>, ColSize {
   children?: Snippet;
   xs?: number | string | ColSize;
   sm?: number | string | ColSize;
@@ -39,5 +55,6 @@ export interface ColProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children
   xxxl?: number | string | ColSize;
   class?: string;
   style?: string;
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLDivElement;
 }

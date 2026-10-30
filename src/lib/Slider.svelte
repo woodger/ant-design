@@ -3,21 +3,48 @@
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { useConfig } from './config-context';
   import { useForm, useFormField } from './form-context';
-  import { getSliderDirection, getSliderKeyValue, getSliderRatio, normalizeSliderValue, resolveSliderOptions, type SliderDirection, type SliderOptions } from './slider.engine';
+  import {
+    getSliderDirection,
+    getSliderKeyValue,
+    getSliderRatio,
+    normalizeSliderValue,
+    resolveSliderOptions,
+    type SliderDirection,
+    type SliderOptions
+  } from './slider.engine';
   import type { SliderTooltipConfig } from './tooltip.types';
   import TooltipPopup from './TooltipPopup.svelte';
 
-  export interface SliderProps extends Omit<HTMLInputAttributes, 'value' | 'defaultValue' | 'type' | 'min' | 'max' | 'step' | 'size' | 'class' | 'children' | 'readonly'> {
+  /** Одиночное числовое значение с pointer/keyboard взаимодействием и bind:value. */
+  export interface SliderProps extends Omit<
+    HTMLInputAttributes,
+    'value'
+    | 'defaultValue'
+    | 'type'
+    | 'min'
+    | 'max'
+    | 'step'
+    | 'size'
+    | 'class'
+    | 'children'
+    | 'readonly'
+  > {
+    /** Поддерживает bind:value. */
     value?: number | undefined;
+    /** @defaultValue 0 */
     defaultValue?: number;
     min?: number;
     max?: number;
     step?: number;
+    /** @defaultValue 'horizontal' */
     orientation?: 'horizontal' | 'vertical';
+    /** @defaultValue false */
     reverse?: boolean;
+    /** @defaultValue true */
     keyboard?: boolean;
     tooltip?: false | SliderTooltipConfig;
     onValueChange?: (value: number) => void;
+    /** Один callback после завершённого изменения; отменённое взаимодействие не публикуется. */
     onChangeComplete?: (value: number) => void;
     class?: string;
   }
@@ -77,26 +104,64 @@
   let popupHovered = $state(false);
   let interaction: Interaction | null = null;
   let options = $derived(resolveSliderOptions({ min, max, step }));
-  let resolvedValue = $derived(normalizeSliderValue(value === undefined ? initialDefault : value, options));
-  let resolvedDisabled = $derived(disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled);
+  let resolvedValue = $derived(
+    normalizeSliderValue(value === undefined ? initialDefault : value, options)
+  );
+  let resolvedDisabled = $derived(
+    disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled
+  );
   let direction = $derived(getSliderDirection(orientation, reverse, config.direction === 'rtl'));
   let percentage = $derived(getSliderRatio(resolvedValue, options) * 100);
-  let position = $derived(direction === 'rtl' || direction === 'btt' ? 100 - percentage : percentage);
+  let position = $derived(direction === 'rtl' || direction === 'btt'
+    ? 100 - percentage
+    : percentage);
   let trackStart = $derived(direction === 'rtl' || direction === 'btt' ? 100 - percentage : 0);
   let configuredTooltipOpen = $derived(tooltip === false ? false : tooltip?.open);
-  let tooltipState = $derived({ ownerOpen: configuredTooltipOpen, disabled: resolvedDisabled, dismissed: false });
-  let tooltipTitle = $derived(tooltip === false || configuredTooltipOpen === false ? '' : tooltip?.formatter === null ? '' : tooltip?.formatter ? tooltip.formatter(resolvedValue) ?? '' : String(resolvedValue));
-  let tooltipOpen = $derived(!resolvedDisabled && !tooltipState.dismissed && configuredTooltipOpen !== false && (configuredTooltipOpen === true || tooltipHovered || tooltipFocused || popupHovered || dragging));
-  let tooltipPlacement = $derived(tooltip !== false && tooltip?.placement || (orientation === 'vertical' ? config.direction === 'rtl' ? 'left' : 'right' : 'top'));
+  let tooltipState = $derived(
+    { ownerOpen: configuredTooltipOpen, disabled: resolvedDisabled, dismissed: false }
+  );
+  let tooltipTitle = $derived(
+    tooltip === false || configuredTooltipOpen === false
+      ? ''
+      : tooltip?.formatter === null
+        ? ''
+        : tooltip?.formatter ? tooltip.formatter(resolvedValue) ?? '' : String(resolvedValue)
+  );
+  let tooltipOpen = $derived(
+    !resolvedDisabled
+    && !tooltipState.dismissed
+    && configuredTooltipOpen !== false
+    && (configuredTooltipOpen === true
+      || tooltipHovered
+      || tooltipFocused
+      || popupHovered
+      || dragging)
+  );
+  let tooltipPlacement = $derived(
+    tooltip !== false
+    && tooltip?.placement
+    || (orientation === 'vertical'
+      ? config.direction === 'rtl' ? 'left' : 'right'
+      : 'top')
+  );
 
   function runtime() {
-    return { value, options, direction, disabled: resolvedDisabled, keyboard, resetKey: form?.resetKey };
+    return {
+      value,
+      options,
+      direction,
+      disabled: resolvedDisabled,
+      keyboard,
+      resetKey: form?.resetKey
+    };
   }
 
   function isCurrent(active: Interaction, current = runtime()): boolean {
     return !active.canceled && !current.disabled && !!control?.isConnected
       && Object.is(active.expectedValue, current.value)
-      && active.options.min === current.options.min && active.options.max === current.options.max && active.options.step === current.options.step
+      && active.options.min === current.options.min
+      && active.options.max === current.options.max
+      && active.options.step === current.options.step
       && active.direction === current.direction && active.resetKey === current.resetKey
       && (active.kind !== 'key' || current.keyboard);
   }
@@ -112,17 +177,29 @@
     input.defaultValue = String(normalizeSliderValue(initialDefault, current.options));
     input.value = String(next);
 
-    if (interaction && !interaction.canceled && !isCurrent(interaction, current)) cancelInteraction(true);
+    if (interaction && !interaction.canceled && !isCurrent(interaction, current))
+      cancelInteraction(true);
   });
 
   onDestroy(() => {
     cancelInteraction();
-    for (const reset of resets) clearTimeout(reset);
+    for (const reset of resets)
+      clearTimeout(reset);
   });
 
   function begin(kind: Interaction['kind'], pointerId?: number): Interaction {
     cancelInteraction();
-    interaction = { kind, pointerId, keys: new Set(), expectedValue: value, options, direction, resetKey: form?.resetKey, changed: false, canceled: false };
+    interaction = {
+      kind,
+      pointerId,
+      keys: new Set(),
+      expectedValue: value,
+      options,
+      direction,
+      resetKey: form?.resetKey,
+      changed: false,
+      canceled: false
+    };
     dragging = kind === 'pointer';
     tooltipState = { ...tooltipState, dismissed: false };
 
@@ -135,10 +212,12 @@
     if (!active) return;
 
     active.canceled = true;
-    if (!keepPointer || active.kind !== 'pointer') interaction = null;
+    if (!keepPointer || active.kind !== 'pointer')
+      interaction = null;
     dragging = false;
 
-    if (active.pointerId !== undefined && control?.hasPointerCapture(active.pointerId)) control.releasePointerCapture(active.pointerId);
+    if (active.pointerId !== undefined && control?.hasPointerCapture(active.pointerId))
+      control.releasePointerCapture(active.pointerId);
   }
 
   function finish(canceled = false) {
@@ -148,7 +227,8 @@
 
     cancelInteraction();
 
-    if (notify) onChangeComplete?.(next);
+    if (notify)
+      onChangeComplete?.(next);
   }
 
   function publish(next: number) {
@@ -162,26 +242,30 @@
     onValueChange?.(next);
   }
 
-  function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
     if (resolvedDisabled || interaction?.canceled) {
       event.currentTarget.value = String(resolvedValue);
       return;
     }
 
-    if (!interaction) begin('native');
+    if (!interaction)
+      begin('native');
     publish(normalizeSliderValue(event.currentTarget.valueAsNumber, options));
     event.currentTarget.value = String(resolvedValue);
     oninput?.(event);
   }
 
-  function handleChange(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleChange(event: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
     if (resolvedDisabled || interaction?.canceled) return;
 
-    if (interaction?.kind === 'native') finish();
+    if (interaction?.kind === 'native')
+      finish();
     onchange?.(event);
   }
 
-  function handlePointerdown(event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handlePointerdown(
+    event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     onpointerdown?.(event);
 
     if (event.defaultPrevented || resolvedDisabled) return;
@@ -194,20 +278,27 @@
   }
 
   function handlePointerup(event: PointerEvent) {
-    if (interaction?.kind === 'pointer' && interaction.pointerId === event.pointerId) finish(event.defaultPrevented);
+    if (interaction?.kind === 'pointer' && interaction.pointerId === event.pointerId)
+      finish(event.defaultPrevented);
   }
 
   function handlePointercancel(event: PointerEvent) {
-    if (interaction?.kind === 'pointer' && interaction.pointerId === event.pointerId) cancelInteraction();
+    if (interaction?.kind === 'pointer' && interaction.pointerId === event.pointerId)
+      cancelInteraction();
   }
 
-  function handleLostCapture(event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleLostCapture(
+    event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     onlostpointercapture?.(event);
 
-    if (interaction?.kind === 'pointer' && interaction.pointerId === event.pointerId) cancelInteraction(true);
+    if (interaction?.kind === 'pointer' && interaction.pointerId === event.pointerId)
+      cancelInteraction(true);
   }
 
-  function handlePointerenter(event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handlePointerenter(
+    event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     if (event.pointerType !== 'touch') {
       tooltipHovered = true;
       tooltipState = { ...tooltipState, dismissed: false };
@@ -215,12 +306,16 @@
     onpointerenter?.(event);
   }
 
-  function handlePointerleave(event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handlePointerleave(
+    event: PointerEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     tooltipHovered = false;
     onpointerleave?.(event);
   }
 
-  function handleKeydown(event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleKeydown(
+    event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     onkeydown?.(event);
 
     if (event.defaultPrevented || event.isComposing || resolvedDisabled) return;
@@ -238,20 +333,21 @@
     publish(next);
   }
 
-  function handleKeyup(event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleKeyup(event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     onkeyup?.(event);
 
     if (interaction?.kind !== 'key' || !interaction.keys.delete(event.key)) return;
-    if (!interaction.keys.size) finish(event.defaultPrevented);
+    if (!interaction.keys.size)
+      finish(event.defaultPrevented);
   }
 
-  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     tooltipFocused = true;
     tooltipState = { ...tooltipState, dismissed: false };
     onfocus?.(event);
   }
 
-  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     tooltipFocused = false;
     cancelInteraction(true);
     field?.onBlur();
@@ -295,10 +391,22 @@
 <svelte:document onreset={handleReset} />
 <svelte:window onpointerup={handlePointerup} onpointercancel={handlePointercancel} />
 
-<div class={['ant-slider', `ant-slider-${orientation}`, resolvedDisabled && 'ant-slider-disabled', dragging && 'ant-slider-lock', config.direction === 'rtl' && 'ant-slider-rtl', className]} {style}>
+<div class={[
+    'ant-slider',
+    `ant-slider-${orientation}`,
+    resolvedDisabled && 'ant-slider-disabled',
+    dragging && 'ant-slider-lock',
+    config.direction === 'rtl' && 'ant-slider-rtl',
+    className
+  ]} {style}>
   <div class="ant-slider-rail" aria-hidden="true"></div>
-  <div class="ant-slider-track" aria-hidden="true" style={orientation === 'horizontal' ? `left:${trackStart}%;width:${percentage}%` : `top:${trackStart}%;height:${percentage}%`}></div>
-  <div bind:this={handle} class={['ant-slider-handle', resolvedDisabled && 'ant-slider-handle-disabled']} aria-hidden="true" style={orientation === 'horizontal' ? `left:${position}%` : `top:${position}%`}></div>
+  <div class="ant-slider-track" aria-hidden="true" style={orientation === 'horizontal'
+      ? `left:${trackStart}%;width:${percentage}%`
+      : `top:${trackStart}%;height:${percentage}%`}></div>
+  <div bind:this={handle} class={['ant-slider-handle', resolvedDisabled
+      && 'ant-slider-handle-disabled']} aria-hidden="true" style={orientation === 'horizontal'
+          ? `left:${position}%`
+          : `top:${position}%`}></div>
   <input
     {...attributes}
     bind:this={control}
@@ -312,13 +420,22 @@
     value={resolvedValue}
     disabled={resolvedDisabled}
     style:direction={direction === 'rtl' || direction === 'btt' ? 'rtl' : 'ltr'}
-    aria-label={attributes['aria-label'] ?? (attributes['aria-labelledby'] ? undefined : field?.label)}
+    aria-label={attributes['aria-label']
+        ?? (attributes['aria-labelledby']
+          ? undefined
+          : field?.label)}
     aria-valuemin={options.min}
     aria-valuemax={options.max}
     aria-valuenow={resolvedValue}
     aria-orientation={orientation}
     aria-invalid={field?.status === 'error' || attributes['aria-invalid'] || undefined}
-    aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined}
+    aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(
+        Boolean
+      )
+        .join(
+          ' '
+        )
+        || undefined}
     oninput={handleInput}
     onchange={handleChange}
     onpointerdown={handlePointerdown}
@@ -330,5 +447,9 @@
     onfocus={handleFocus}
     onblur={handleBlur}
   />
-  <TooltipPopup title={resolvedDisabled ? '' : tooltipTitle} open={tooltipOpen} anchor={handle} describe={control} trigger={control} placement={tooltipPlacement} arrow={tooltip === false ? false : tooltip?.arrow ?? true} onDismiss={() => { tooltipState = { ...tooltipState, dismissed: true }; }} onHoverChange={(next) => { popupHovered = next; }} />
+  <TooltipPopup title={resolvedDisabled ? '' : tooltipTitle} open={tooltipOpen} anchor={handle} describe={control} trigger={control} placement={tooltipPlacement} arrow={tooltip === false ? false : tooltip?.arrow ?? true} onDismiss={() => {
+      tooltipState = { ...tooltipState, dismissed: true };
+    }} onHoverChange={(next) => {
+        popupHovered = next;
+      }} />
 </div>

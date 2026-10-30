@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { getDropdownActiveKey, getDropdownCommands, getDropdownMatch, getDropdownNavigationKey, normalizeDropdownItems } from './dropdown.engine';
+import {
+  getDropdownActiveKey,
+  getDropdownCommands,
+  getDropdownMatch,
+  getDropdownNavigationKey,
+  normalizeDropdownItems
+} from './dropdown.engine';
 import type { DropdownItem } from './dropdown.types';
 
 const items: DropdownItem[] = [
@@ -13,11 +19,17 @@ const items: DropdownItem[] = [
 
 describe('Dropdown menu normalization', () => {
   it('preserves the first command or divider with each key without changing the source', () => {
-    const source = [...items, { key: '', label: 'Duplicate' }, { key: 'rename', type: 'divider' as const }];
+    const source = [
+      ...items,
+      { key: '', label: 'Duplicate' },
+      { key: 'rename', type: 'divider' as const }
+    ];
 
     expect(normalizeDropdownItems(source)).toEqual(items);
     expect(source).toHaveLength(8);
-    expect(getDropdownCommands(items).map((item) => item.key)).toEqual(['', 'rename', 'report', 'archive']);
+    expect(getDropdownCommands(items).map((item) => item.key)).toEqual(
+      ['', 'rename', 'report', 'archive']
+    );
   });
 
   it('preserves a usable active key and falls back after removal or disabling', () => {
@@ -25,7 +37,12 @@ describe('Dropdown menu normalization', () => {
     expect(getDropdownActiveKey(items, 'missing')).toBe('');
     expect(getDropdownActiveKey(items, 'disabled')).toBe('');
     expect(getDropdownActiveKey([], '')).toBeNull();
-    expect(getDropdownActiveKey(items.filter((item) => item.type === 'divider' || item.disabled), null)).toBeNull();
+    expect(
+      getDropdownActiveKey(
+        items.filter((item) => item.type === 'divider' || item.disabled),
+        null
+      )
+    ).toBeNull();
   });
 });
 
@@ -41,13 +58,20 @@ describe('Dropdown keyboard navigation', () => {
   it('starts at the requested edge when no current command exists', () => {
     expect(getDropdownNavigationKey(items, 'missing', 'next')).toBe('');
     expect(getDropdownNavigationKey(items, null, 'previous')).toBe('archive');
-    expect(getDropdownNavigationKey([{ key: 'only', label: 'Only' }], 'only', 'next')).toBe('only');
+    expect(getDropdownNavigationKey([{ key: 'only', label: 'Only' }], 'only', 'next')).toBe(
+      'only'
+    );
     expect(getDropdownNavigationKey([], null, 'last')).toBeNull();
   });
 });
 
 describe('Dropdown typeahead', () => {
-  const commands = [{ key: '', text: ' Open' }, { key: 'rename', text: 'Rename' }, { key: 'report', text: 'Report' }, { key: 'ru', text: 'Архив' }];
+  const commands = [
+    { key: '', text: ' Open' },
+    { key: 'rename', text: 'Rename' },
+    { key: 'report', text: 'Report' },
+    { key: 'ru', text: 'Архив' }
+  ];
 
   it('cycles a single letter after the current command and wraps', () => {
     expect(getDropdownMatch(commands, '', 'r')).toBe('rename');

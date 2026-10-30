@@ -8,13 +8,18 @@ describe('getCheckboxGroupOptions', () => {
     const options = Object.freeze([0, false, 'zero', locked]);
 
     expect(getCheckboxGroupOptions<CheckboxGroupValue>(options)).toEqual([
-      { value: 0, label: '0' }, { value: false, label: 'false' }, { value: 'zero', label: 'zero' }, locked
+      { value: 0, label: '0' },
+      { value: false, label: 'false' },
+      { value: 'zero', label: 'zero' },
+      locked
     ]);
     expect(options).toEqual([0, false, 'zero', locked]);
   });
 
   it('keeps the first duplicate without conflating zero or false with strings', () => {
-    const result = getCheckboxGroupOptions<CheckboxGroupValue>([0, '0', false, 'false', { value: 0, label: 'Duplicate zero' }, false]);
+    const result = getCheckboxGroupOptions<CheckboxGroupValue>(
+      [0, '0', false, 'false', { value: 0, label: 'Duplicate zero' }, false]
+    );
 
     expect(result.map((option) => option.value)).toEqual([0, '0', false, 'false']);
     expect(result[0].label).toBe('0');
@@ -22,7 +27,11 @@ describe('getCheckboxGroupOptions', () => {
 });
 
 describe('getCheckboxGroupValue', () => {
-  const options: CheckboxGroupOption<number>[] = [{ value: 0, label: 'Zero' }, { value: 1, label: 'Locked', disabled: true }, { value: 2, label: 'Two' }];
+  const options: CheckboxGroupOption<number>[] = [
+    { value: 0, label: 'Zero' },
+    { value: 1, label: 'Locked', disabled: true },
+    { value: 2, label: 'Two' }
+  ];
 
   it('returns current choices in option order and retains selected disabled values', () => {
     expect(getCheckboxGroupValue(options, [2, 99, 1, 0, 2])).toEqual([0, 1, 2]);

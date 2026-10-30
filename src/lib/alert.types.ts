@@ -14,15 +14,19 @@ export interface AlertClosable {
   'aria-describedby'?: string;
 }
 
+/** Сообщение со статусом, действием и отменяемым закрытием с завершением анимации. */
 export interface AlertProps {
   type?: AlertType;
+  /** @defaultValue 'outlined' */
   variant?: AlertVariant;
   title?: AlertContent;
   description?: AlertContent;
   showIcon?: boolean;
   icon?: Snippet;
   action?: Snippet;
+  /** @defaultValue false */
   banner?: boolean;
+  /** @defaultValue false */
   closable?: boolean | AlertClosable;
   role?: 'alert' | 'status';
   id?: string;
@@ -30,6 +34,7 @@ export interface AlertProps {
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'aria-live'?: 'off' | 'assertive' | 'polite';
+  /** @defaultValue true */
   'aria-atomic'?: boolean;
   class?: string;
   style?: string;

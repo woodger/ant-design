@@ -6,15 +6,52 @@
   import DescriptionsCell from './DescriptionsCell.svelte';
   import type { DescriptionsContent, DescriptionsProps } from './descriptions.types';
 
-  let { items = [], title, extra, column, layout = 'horizontal', bordered = false, colon = true, size,
-    labelStyle, contentStyle, classNames, styles, class: className = '', rootClassName = '', style,
-    nativeElement = $bindable(), ...rest }: DescriptionsProps = $props();
+  let {
+    items = [],
+    title,
+    extra,
+    column,
+    layout = 'horizontal',
+    bordered = false,
+    colon = true,
+    size,
+    labelStyle,
+    contentStyle,
+    classNames,
+    styles,
+    class: className = '',
+    rootClassName = '',
+    style,
+    nativeElement = $bindable(),
+    ...rest
+  }: DescriptionsProps = $props();
   const config = useConfig();
   const breakpoint = createBreakpoint();
   let columns = $derived(descriptionsColumn(column, breakpoint.screens));
   let rows = $derived(descriptionsRows(items, columns, breakpoint.screens));
   let mergedSize = $derived(size ?? config.explicitComponentSize);
-  let info = $derived({ props: { ...rest, items: descriptionsItems(items, breakpoint.screens), title, extra, column: columns, layout, bordered, colon, size: mergedSize, labelStyle, contentStyle, classNames, styles, class: className, rootClassName, style } });
+  let info = $derived(
+    {
+      props: {
+        ...rest,
+        items: descriptionsItems(items, breakpoint.screens),
+        title,
+        extra,
+        column: columns,
+        layout,
+        bordered,
+        colon,
+        size: mergedSize,
+        labelStyle,
+        contentStyle,
+        classNames,
+        styles,
+        class: className,
+        rootClassName,
+        style
+      }
+    }
+  );
   let classes = $derived(typeof classNames === 'function' ? classNames(info) : classNames ?? {});
   let slots = $derived(typeof styles === 'function' ? styles(info) : styles ?? {});
   $effect(() => untrack(() => breakpoint.connect(window)));
@@ -24,7 +61,16 @@
   {#if typeof node === 'function'}{@render node()}{:else if node !== true && node !== false}{node ?? ''}{/if}
 {/snippet}
 <div {...rest} bind:this={nativeElement} dir={config.direction}
-  class={['ant-descriptions ant-descriptions-css-var', bordered && 'ant-descriptions-bordered', mergedSize === 'small' && 'ant-descriptions-small', (mergedSize === 'middle' || mergedSize === 'medium') && 'ant-descriptions-medium', config.direction === 'rtl' && 'ant-descriptions-rtl', className, rootClassName, classes.root]}
+  class={[
+      'ant-descriptions ant-descriptions-css-var',
+      bordered && 'ant-descriptions-bordered',
+      mergedSize === 'small' && 'ant-descriptions-small',
+      (mergedSize === 'middle' || mergedSize === 'medium') && 'ant-descriptions-medium',
+      config.direction === 'rtl' && 'ant-descriptions-rtl',
+      className,
+      rootClassName,
+      classes.root
+    ]}
   style={[slots.root, style].filter(Boolean).join(';')}>
   {#if title !== undefined && title !== null && title !== false && title !== '' || extra !== undefined && extra !== null && extra !== false && extra !== ''}
     <div class={['ant-descriptions-header', classes.header]} style={slots.header}>

@@ -4,14 +4,18 @@ import { FormValidationError } from './FormValidationError';
 
 function deferred<Value>() {
   let resolve!: (value: Value) => void;
-  const promise = new Promise<Value>((complete) => { resolve = complete; });
+  const promise = new Promise<Value>((complete) => {
+    resolve = complete;
+  });
 
   return { promise, resolve };
 }
 
 describe('createForm', () => {
   it('keeps values and errors isolated between form instances', async () => {
-    const first = createForm({ initialValues: { email: '' }, rules: { email: [{ required: true }] } });
+    const first = createForm(
+      { initialValues: { email: '' }, rules: { email: [{ required: true }] } }
+    );
     const second = createForm({ initialValues: { email: '' } });
 
     first.setFieldValue('email', 'first@example.com');
@@ -23,10 +27,17 @@ describe('createForm', () => {
   });
 
   it('returns validation errors without invoking the submission callback', async () => {
-    const form = createForm({ initialValues: { email: '' }, rules: { email: [{ required: true, message: 'Email required' }] } });
+    const form = createForm(
+      {
+        initialValues: { email: '' },
+        rules: { email: [{ required: true, message: 'Email required' }] }
+      }
+    );
     let submitted = false;
 
-    const result = await form.submit(() => { submitted = true; });
+    const result = await form.submit(() => {
+      submitted = true;
+    });
 
     expect(result.status).toBe('invalid');
     expect(form.getFieldError('email')).toEqual(['Email required']);
@@ -47,7 +58,9 @@ describe('createForm', () => {
     });
     await entered.promise;
 
-    const second = await form.submit(() => { submitted.push('duplicate'); });
+    const second = await form.submit(() => {
+      submitted.push('duplicate');
+    });
 
     expect(second.status).toBe('busy');
     expect(form.isSubmitting).toBe(true);
@@ -122,7 +135,9 @@ describe('createForm', () => {
       rules: { name: [{ validator: () => pending.promise }] }
     });
     let submitted = false;
-    const submission = form.submit(() => { submitted = true; });
+    const submission = form.submit(() => {
+      submitted = true;
+    });
 
     form.resetFields();
     pending.resolve();
@@ -139,7 +154,9 @@ describe('createForm', () => {
       rules: { name: [{ validator: () => pending.promise }] }
     });
     let submitted = false;
-    const submission = form.submit(() => { submitted = true; });
+    const submission = form.submit(() => {
+      submitted = true;
+    });
 
     form.touchField('name');
     pending.resolve();
@@ -152,21 +169,30 @@ describe('createForm', () => {
   it('revalidates touched dependent fields after another field changes', async () => {
     const form = createForm({
       initialValues: { password: 'first', confirmation: 'first' },
-      rules: { confirmation: [{ validator: (value, values) => value === values.password ? undefined : 'Mismatch' }] }
+      rules: {
+        confirmation: [
+          { validator: (value, values) => value === values.password ? undefined : 'Mismatch' }
+        ]
+      }
     });
     form.touchField('confirmation');
     await form.validateFields(['confirmation']);
 
     form.setFieldValue('password', 'second');
-    await expect(form.validateFields(['confirmation'])).rejects.toMatchObject({ errors: { confirmation: ['Mismatch'] } });
+
+    await expect(form.validateFields(['confirmation'])).rejects.toMatchObject(
+      { errors: { confirmation: ['Mismatch'] } }
+    );
 
     expect(form.getFieldError('confirmation')).toEqual(['Mismatch']);
   });
 
   it('restores initial values and clears errors and touched state', async () => {
-    const form = createForm({ initialValues: { name: 'Anna' }, rules: { name: [{ required: true }] } });
+    const form = createForm(
+      { initialValues: { name: 'Anna' }, rules: { name: [{ required: true }] } }
+    );
     form.setFieldValue('name', '');
-    await form.submit(() => {});
+    await form.submit(() => { });
 
     form.resetFields();
 
@@ -187,13 +213,15 @@ describe('createForm', () => {
     const form = createForm({ initialValues: { name: 'Anna' } });
     const error = new Error('Save failed');
 
-    const failed = await form.submit(async () => { throw error; });
+    const failed = await form.submit(async () => {
+      throw error;
+    });
 
     expect(failed).toEqual({ status: 'failed', error });
     expect(form.submissionError).toBe(error);
     expect(form.isSubmitting).toBe(false);
 
-    const retry = await form.submit(() => {});
+    const retry = await form.submit(() => { });
 
     expect(retry.status).toBe('success');
     expect(form.submissionError).toBeUndefined();
@@ -209,6 +237,7 @@ describe('createForm', () => {
     expect(form.values.roles).toEqual([0, 2]);
     form.setFieldValue('roles', [5]);
     form.resetFields();
+
     expect(form.values.roles).toEqual([0, 2]);
     expect(initial.roles).toEqual([0, 2, 3]);
   });
@@ -218,11 +247,13 @@ describe('createForm', () => {
     const roles = [0];
     form.setFieldValue('roles', roles);
     roles.push(1);
+
     expect(form.values.roles).toEqual([0]);
 
     const next = [2];
     form.setFieldsValue({ roles: next });
     next.push(3);
+
     expect(form.values).toEqual({ roles: [2], name: 'Anna' });
   });
 
@@ -230,58 +261,110 @@ describe('createForm', () => {
     const form = createForm({ initialValues: { roles: [0] } });
     const snapshot = await form.validateFields();
     snapshot.roles.push(2);
+
     expect(form.values.roles).toEqual([0]);
 
-    const result = await form.submit((values) => { values.roles.push(3); });
+    const result = await form.submit((values) => {
+      values.roles.push(3);
+    });
+
     expect(result.status).toBe('success');
     expect(form.values.roles).toEqual([0]);
     form.resetFields();
+
     expect(form.values.roles).toEqual([0]);
   });
 
-  it('keeps asynchronous array validation snapshots stable and rejects a stale result', async () => {
-    const pending = deferred<string>();
-    let observed: readonly (string | number | boolean)[] | undefined;
-    const form = createForm({
-      initialValues: { roles: [0] },
-      rules: { roles: [{ validator: (value) => { if (Array.isArray(value)) observed = value; return pending.promise; } }] }
+  it(
+    'keeps asynchronous array validation snapshots stable and rejects a stale result',
+    async () => {
+      const pending = deferred<string>();
+      let observed: readonly (string | number | boolean)[] | undefined;
+      const form = createForm({
+        initialValues: { roles: [0] },
+        rules: {
+          roles: [{
+            validator: (value) => {
+              if (Array.isArray(value))
+                observed = value;
+              return pending.promise;
+            }
+          }]
+        }
+      });
+      const validation = form.validateFields().catch((error: unknown) => error);
+      form.setFieldValue('roles', [2]);
+      pending.resolve('Old role rejected');
+      const error = await validation;
+
+      expect(observed).toEqual([0]);
+      expect(error).toBeInstanceOf(FormValidationError);
+      expect((error as FormValidationError).outOfDate).toBe(true);
+      expect((error as FormValidationError).values).toEqual({ roles: [0] });
+      expect(form.values.roles).toEqual([2]);
+      expect(form.getFieldError('roles')).toEqual([]);
+    }
+  );
+});
+
+it(
+  'stores immutable Dayjs instances without coercion and restores the initial instance on reset',
+  async () => {
+    const dayjs = (await import('dayjs')).default;
+    const initial = dayjs('2026-10-15T10:20:30.123');
+    const form = createForm<{ when: import('dayjs').Dayjs | null; }>(
+      { initialValues: { when: initial }, rules: { when: [{ required: true }] } }
+    );
+
+    expect(form.values.when).toBe(initial);
+    const next = initial.add(1, 'day');
+    form.setFieldValue('when', next);
+    let received: unknown;
+    const result = await form.submit(values => {
+      received = values.when;
     });
-    const validation = form.validateFields().catch((error: unknown) => error);
-    form.setFieldValue('roles', [2]);
-    pending.resolve('Old role rejected');
-    const error = await validation;
 
-    expect(observed).toEqual([0]);
-    expect(error).toBeInstanceOf(FormValidationError);
-    expect((error as FormValidationError).outOfDate).toBe(true);
-    expect((error as FormValidationError).values).toEqual({ roles: [0] });
-    expect(form.values.roles).toEqual([2]);
-    expect(form.getFieldError('roles')).toEqual([]);
-  });
-});
+    expect(result.status).toBe('success');
+    expect(received).toBe(next);
+    expect(dayjs.isDayjs(received)).toBe(true);
+    form.setFieldValue('when', null);
+    await form.validateFields().catch(() => { });
 
-it('stores immutable Dayjs instances without coercion and restores the initial instance on reset', async () => {
-  const dayjs = (await import('dayjs')).default;
-  const initial = dayjs('2026-10-15T10:20:30.123');
-  const form = createForm<{ when: import('dayjs').Dayjs | null }>({ initialValues: { when: initial }, rules: { when: [{ required: true }] } });
-  expect(form.values.when).toBe(initial);
-  const next = initial.add(1, 'day'); form.setFieldValue('when', next);
-  let received: unknown;
-  const result = await form.submit(values => { received = values.when; });
-  expect(result.status).toBe('success'); expect(received).toBe(next); expect(dayjs.isDayjs(received)).toBe(true);
-  form.setFieldValue('when', null); await form.validateFields().catch(() => {}); expect(form.getFieldError('when')).toHaveLength(1);
-  form.resetFields(); expect(form.values.when).toBe(initial); expect(initial.millisecond()).toBe(123); expect(form.getFieldError('when')).toEqual([]);
-});
+    expect(form.getFieldError('when')).toHaveLength(1);
+    form.resetFields();
 
-it('copies range tuples while preserving immutable Dayjs values through submit and reset', async () => {
-  const dayjs = (await import('dayjs')).default;
-  const first = dayjs('2026-10-10T10:20:30.123'); const last = first.add(10, 'day');
-  const initial: [import('dayjs').Dayjs | null, import('dayjs').Dayjs | null] = [first, last];
-  const form = createForm<{ period: typeof initial | null }>({ initialValues: { period: initial } });
-  expect(form.values.period).not.toBe(initial); expect(form.values.period?.[0]).toBe(first);
-  form.setFieldValue('period', [null, last]);
-  let received: typeof initial | null = null;
-  await form.submit(values => { received = values.period; });
-  expect(received).toEqual([null, last]); expect(received).not.toBe(form.values.period); expect(dayjs.isDayjs(received?.[1])).toBe(true);
-  form.resetFields(); expect(form.values.period).toEqual(initial); expect(form.values.period?.[1]).toBe(last); expect(first.millisecond()).toBe(123);
-});
+    expect(form.values.when).toBe(initial);
+    expect(initial.millisecond()).toBe(123);
+    expect(form.getFieldError('when')).toEqual([]);
+  }
+);
+
+it(
+  'copies range tuples while preserving immutable Dayjs values through submit and reset',
+  async () => {
+    const dayjs = (await import('dayjs')).default;
+    const first = dayjs('2026-10-10T10:20:30.123');
+    const last = first.add(10, 'day');
+    const initial: [import('dayjs').Dayjs | null, import('dayjs').Dayjs | null] = [first, last];
+    const form = createForm<{ period: typeof initial | null; }>(
+      { initialValues: { period: initial } }
+    );
+
+    expect(form.values.period).not.toBe(initial);
+    expect(form.values.period?.[0]).toBe(first);
+    form.setFieldValue('period', [null, last]);
+    let received: typeof initial | null = null;
+    await form.submit(values => {
+      received = values.period;
+    });
+
+    expect(received).toEqual([null, last]);
+    expect(received).not.toBe(form.values.period);
+    expect(dayjs.isDayjs(received?.[1])).toBe(true);
+    form.resetFields();
+
+    expect(form.values.period).toEqual(initial);
+    expect(form.values.period?.[1]).toBe(last);
+    expect(first.millisecond()).toBe(123);
+  }
+);

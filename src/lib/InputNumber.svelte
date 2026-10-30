@@ -5,18 +5,34 @@
   import { useCompact } from './space-compact-context';
   import { compactClasses } from './space-compact.engine';
   import { useForm, useFormField } from './form-context';
-  import { commitInputNumber, formatInputNumber, isInputNumberInRange, normalizeInputNumber, parseInputNumber, resolveInputNumberOptions, stepInputNumber } from './input-number.engine';
+  import {
+    commitInputNumber,
+    formatInputNumber,
+    isInputNumberInRange,
+    normalizeInputNumber,
+    parseInputNumber,
+    resolveInputNumberOptions,
+    stepInputNumber
+  } from './input-number.engine';
   import { ruRU, type ComponentSize } from './types';
   import Icon from './Icon.svelte';
 
-  export interface InputNumberProps extends Omit<HTMLInputAttributes, 'value' | 'defaultValue' | 'min' | 'max' | 'step' | 'size' | 'class' | 'type' | 'children'> {
+  /** Числовой control с отдельным черновиком ввода, bind:value и нативной формой. */
+  export interface InputNumberProps extends Omit<
+    HTMLInputAttributes,
+    'value' | 'defaultValue' | 'min' | 'max' | 'step' | 'size' | 'class' | 'type' | 'children'
+  > {
+    /** Поддерживает bind:value. */
     value?: number | null | undefined;
+    /** Начальное локальное значение; последующие изменения prop не переинициализируют состояние. */
     defaultValue?: number | null;
     min?: number;
     max?: number;
     step?: number;
     precision?: number;
+    /** @defaultValue true */
     controls?: boolean;
+    /** @defaultValue true */
     keyboard?: boolean;
     size?: ComponentSize;
     status?: 'error' | 'warning';
@@ -61,39 +77,56 @@
   let control = $state<HTMLInputElement>();
   let focused = $state(false);
   let composing = false;
-  let resolvedValue = $derived(normalizeInputNumber(value === undefined ? initialDefault : value));
+  let resolvedValue = $derived(
+    normalizeInputNumber(value === undefined ? initialDefault : value)
+  );
   let options = $derived(resolveInputNumberOptions({ min, max, step, precision }));
   let resolvedPrecision = $derived(options.precision);
   let resolvedSize = $derived(size ?? compact?.size ?? config.componentSize);
-  let compactItemClasses = $derived(compactClasses('ant-input-number', config.direction, compact));
+  let compactItemClasses = $derived(
+    compactClasses('ant-input-number', config.direction, compact)
+  );
   let resolvedStatus = $derived(status ?? field?.status);
-  let resolvedDisabled = $derived(disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled);
+  let resolvedDisabled = $derived(
+    disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled
+  );
   let controlId = $derived(id ?? field?.id ?? `ant-input-number-${generatedId}`);
   let fieldName = $derived(name ?? field?.name);
   let upValue = $derived(stepInputNumber(resolvedValue, 1, options));
   let downValue = $derived(stepInputNumber(resolvedValue, -1, options));
-  let editor: { text: string; dirty: boolean; resetKey?: object } = $derived.by(() => {
+  let editor: { text: string; dirty: boolean; resetKey?: object; } = $derived.by(() => {
     // Исходный value и контейнер Form снимают черновик даже при прежнем нормализованном числе.
     const current = normalizeInputNumber(value === undefined ? initialDefault : value);
 
-    return { text: formatInputNumber(current, resolvedPrecision), dirty: false, resetKey: form?.resetKey };
+    return {
+      text: formatInputNumber(current, resolvedPrecision),
+      dirty: false,
+      resetKey: form?.resetKey
+    };
   });
   let parsed = $derived(parseInputNumber(editor.text));
-  let outOfRange = $derived(resolvedValue !== null && !isInputNumberInRange(resolvedValue, options)
-    || parsed !== null && parsed !== undefined && !isInputNumberInRange(parsed, options));
+  let outOfRange = $derived(
+    resolvedValue !== null && !isInputNumberInRange(resolvedValue, options)
+    || parsed !== null && parsed !== undefined && !isInputNumberInRange(parsed, options)
+  );
 
   $effect(() => {
     const input = control;
 
     if (!input) return;
 
-    input.setCustomValidity(!resolvedDisabled && !readonly && (parsed === undefined || outOfRange)
-      ? config.locale.inputNumber?.invalidNumber ?? ruRU.inputNumber.invalidNumber : '');
+    input.setCustomValidity(
+      !resolvedDisabled && !readonly && (parsed === undefined || outOfRange)
+        ? config.locale.inputNumber?.invalidNumber ?? ruRU.inputNumber.invalidNumber : ''
+    );
 
     return () => input.setCustomValidity('');
   });
 
-  onDestroy(() => { for (const reset of resets) clearTimeout(reset); });
+  onDestroy(() => {
+    for (const reset of resets)
+      clearTimeout(reset);
+  });
 
   function publish(next: number | null) {
     if (next === resolvedValue) return;
@@ -105,7 +138,8 @@
   function collect(text: string) {
     const next = parseInputNumber(text);
 
-    if (next === null || next !== undefined && isInputNumberInRange(next, options)) publish(next);
+    if (next === null || next !== undefined && isInputNumberInRange(next, options))
+      publish(next);
 
     editor = { text, dirty: true };
   }
@@ -116,7 +150,8 @@
     const next = commitInputNumber(parseInputNumber(editor.text) ?? resolvedValue, options);
 
     // Пустое поле остаётся null; нечисловой черновик возвращается к последнему числу.
-    if (next !== undefined) publish(editor.text.trim() ? next : null);
+    if (next !== undefined)
+      publish(editor.text.trim() ? next : null);
 
     editor = { text: formatInputNumber(resolvedValue, resolvedPrecision), dirty: false };
   }
@@ -133,18 +168,25 @@
     control?.focus();
   }
 
-  function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
     if (resolvedDisabled || readonly) return;
 
-    if (composing) editor = { text: event.currentTarget.value, dirty: true };
+    if (composing)
+      editor = { text: event.currentTarget.value, dirty: true };
     else collect(event.currentTarget.value);
     oninput?.(event);
   }
 
-  function handleKeydown(event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleKeydown(
+    event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     onkeydown?.(event);
 
-    if (event.defaultPrevented || event.isComposing || composing || resolvedDisabled || readonly) return;
+    if (event.defaultPrevented
+      || event.isComposing
+      || composing
+      || resolvedDisabled
+      || readonly) return;
 
     if (keyboard && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
       event.preventDefault();
@@ -154,26 +196,31 @@
     }
   }
 
-  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     focused = true;
     onfocus?.(event);
   }
 
-  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     focused = false;
     flush();
     field?.onBlur();
     onblur?.(event);
   }
 
-  function handleCompositionStart(event: CompositionEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleCompositionStart(
+    event: CompositionEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     composing = true;
     oncompositionstart?.(event);
   }
 
-  function handleCompositionEnd(event: CompositionEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleCompositionEnd(
+    event: CompositionEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     composing = false;
-    if (!resolvedDisabled && !readonly) collect(event.currentTarget.value);
+    if (!resolvedDisabled && !readonly)
+      collect(event.currentTarget.value);
     oncompositionend?.(event);
   }
 
@@ -213,19 +260,21 @@
 <div
   {style}
   class={[
-    'ant-input-number ant-input-number-css-var ant-input-number-outlined ant-input-number-mode-input',
-    resolvedDisabled && 'ant-input-number-disabled',
-    readonly && 'ant-input-number-readonly',
-    focused && !resolvedDisabled && 'ant-input-number-focused ant-input-number-mode-input-focused',
-    resolvedSize === 'large' && 'ant-input-number-lg',
-    resolvedSize === 'small' && 'ant-input-number-sm',
-    resolvedStatus && `ant-input-number-status-${resolvedStatus}`,
-    outOfRange && 'ant-input-number-out-of-range',
-    config.direction === 'rtl' && 'ant-input-number-rtl',
-    (!controls || resolvedDisabled || readonly) && 'ant-input-number-without-controls',
-    compactItemClasses,
-    className
-  ]}
+      'ant-input-number ant-input-number-css-var ant-input-number-outlined ant-input-number-mode-input',
+      resolvedDisabled && 'ant-input-number-disabled',
+      readonly && 'ant-input-number-readonly',
+      focused
+      && !resolvedDisabled
+      && 'ant-input-number-focused ant-input-number-mode-input-focused',
+      resolvedSize === 'large' && 'ant-input-number-lg',
+      resolvedSize === 'small' && 'ant-input-number-sm',
+      resolvedStatus && `ant-input-number-status-${resolvedStatus}`,
+      outOfRange && 'ant-input-number-out-of-range',
+      config.direction === 'rtl' && 'ant-input-number-rtl',
+      (!controls || resolvedDisabled || readonly) && 'ant-input-number-without-controls',
+      compactItemClasses,
+      className
+    ]}
 >
   <input
     {...attributes}
@@ -235,17 +284,31 @@
     role="spinbutton"
     class="ant-input-number-input"
     value={editor.text}
-    inputmode={attributes.inputmode ?? (resolvedPrecision === 0 ? 'numeric' : 'decimal')}
+    inputmode={attributes.inputmode
+        ?? (resolvedPrecision === 0
+          ? 'numeric'
+          : 'decimal')}
     autocomplete={attributes.autocomplete ?? 'off'}
     required={attributes.required ?? field?.required}
     disabled={resolvedDisabled}
     {readonly}
-    aria-label={attributes['aria-label'] ?? (attributes['aria-labelledby'] ? undefined : field?.label)}
+    aria-label={attributes['aria-label']
+        ?? (attributes['aria-labelledby']
+          ? undefined
+          : field?.label)}
     aria-valuenow={resolvedValue ?? undefined}
     aria-valuemin={options.min}
     aria-valuemax={options.max}
-    aria-invalid={resolvedStatus === 'error' || attributes['aria-invalid'] || undefined}
-    aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined}
+    aria-invalid={resolvedStatus === 'error'
+        || attributes['aria-invalid']
+        || undefined}
+    aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(
+        Boolean
+      )
+        .join(
+          ' '
+        )
+        || undefined}
     oninput={handleInput}
     onkeydown={handleKeydown}
     onfocus={handleFocus}
@@ -255,8 +318,14 @@
   />
   {#if controls && !resolvedDisabled && !readonly}
     <div class="ant-input-number-actions">
-      <button type="button" class={['ant-input-number-action ant-input-number-action-up', upValue === null && 'ant-input-number-action-up-disabled']} tabindex="-1" disabled={upValue === null} aria-label={config.locale.inputNumber?.increase ?? ruRU.inputNumber.increase} aria-controls={controlId} onpointerdown={(event) => event.preventDefault()} onclick={() => changeStep(1)}><span class="up-icon"><Icon name="down" /></span></button>
-      <button type="button" class={['ant-input-number-action ant-input-number-action-down', downValue === null && 'ant-input-number-action-down-disabled']} tabindex="-1" disabled={downValue === null} aria-label={config.locale.inputNumber?.decrease ?? ruRU.inputNumber.decrease} aria-controls={controlId} onpointerdown={(event) => event.preventDefault()} onclick={() => changeStep(-1)}><Icon name="down" /></button>
+      <button type="button" class={[
+          'ant-input-number-action ant-input-number-action-up',
+          upValue === null && 'ant-input-number-action-up-disabled'
+        ]} tabindex="-1" disabled={upValue === null} aria-label={config.locale.inputNumber?.increase ?? ruRU.inputNumber.increase} aria-controls={controlId} onpointerdown={(event) => event.preventDefault()} onclick={() => changeStep(1)}><span class="up-icon"><Icon name="down" /></span></button>
+      <button type="button" class={[
+          'ant-input-number-action ant-input-number-action-down',
+          downValue === null && 'ant-input-number-action-down-disabled'
+        ]} tabindex="-1" disabled={downValue === null} aria-label={config.locale.inputNumber?.decrease ?? ruRU.inputNumber.decrease} aria-controls={controlId} onpointerdown={(event) => event.preventDefault()} onclick={() => changeStep(-1)}><Icon name="down" /></button>
     </div>
   {/if}
   {#if fieldName}<input type="hidden" name={fieldName} value={resolvedValue ?? ''} disabled={resolvedDisabled} form={attributes.form} />{/if}

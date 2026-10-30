@@ -5,9 +5,16 @@
   import { useForm, useFormField } from './form-context';
   import Icon from './Icon.svelte';
 
-  export interface SwitchProps extends Omit<HTMLButtonAttributes, 'type' | 'value' | 'children' | 'class' | 'onchange'> {
+  /** Нативная кнопка-переключатель с bind:checked, loading и поддержкой форм. */
+  export interface SwitchProps extends Omit<
+    HTMLButtonAttributes,
+    'type' | 'value' | 'children' | 'class' | 'onchange'
+  > {
+    /** Поддерживает bind:checked. */
     checked?: boolean | undefined;
+    /** @defaultValue false */
     defaultChecked?: boolean;
+    /** @defaultValue false */
     loading?: boolean;
     size?: 'small' | 'middle';
     checkedChildren?: Snippet;
@@ -41,13 +48,18 @@
   const resets = new Set<ReturnType<typeof setTimeout>>();
   let control = $state<HTMLButtonElement>();
   let resolvedChecked = $derived(checked ?? initialDefault);
-  let resolvedDisabled = $derived(loading || (disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled));
+  let resolvedDisabled = $derived(
+    loading || (disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled)
+  );
   let isSmall = $derived((size ?? config.componentSize) === 'small');
   let fieldName = $derived(name ?? field?.name);
 
-  onDestroy(() => { for (const reset of resets) clearTimeout(reset); });
+  onDestroy(() => {
+    for (const reset of resets)
+      clearTimeout(reset);
+  });
 
-  function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
+  function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
     if (resolvedDisabled) return;
 
     onclick?.(event);
@@ -59,7 +71,7 @@
     onCheckedChange?.(next);
   }
 
-  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
+  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLButtonElement; }) {
     field?.onBlur();
     onblur?.(event);
   }
@@ -98,11 +110,28 @@
   disabled={resolvedDisabled}
   aria-checked={resolvedChecked}
   aria-busy={loading || undefined}
-  aria-label={attributes['aria-label'] ?? (attributes['aria-labelledby'] ? undefined : field?.label)}
+  aria-label={attributes['aria-label']
+      ?? (attributes['aria-labelledby']
+        ? undefined
+        : field?.label)}
   aria-required={attributes['aria-required'] ?? (field?.required || undefined)}
   aria-invalid={field?.status === 'error' || attributes['aria-invalid'] || undefined}
-  aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined}
-  class={['ant-switch', resolvedChecked && 'ant-switch-checked', resolvedDisabled && 'ant-switch-disabled', loading && 'ant-switch-loading', isSmall && 'ant-switch-small', config.direction === 'rtl' && 'ant-switch-rtl', className]}
+  aria-describedby={[attributes['aria-describedby'], field
+      ?.describedBy]
+      .filter(Boolean)
+      .join(
+        ' '
+      )
+      || undefined}
+  class={[
+      'ant-switch',
+      resolvedChecked && 'ant-switch-checked',
+      resolvedDisabled && 'ant-switch-disabled',
+      loading && 'ant-switch-loading',
+      isSmall && 'ant-switch-small',
+      config.direction === 'rtl' && 'ant-switch-rtl',
+      className
+    ]}
   onclick={handleClick}
   onblur={handleBlur}
 >

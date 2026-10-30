@@ -1,6 +1,8 @@
 import type { RadioOption, RadioValue } from './radio.types';
 
-export function getRadioOptions<Value extends RadioValue>(options: readonly (Value | RadioOption<Value>)[]): RadioOption<Value>[] {
+export function getRadioOptions<Value extends RadioValue>(
+  options: readonly (Value | RadioOption<Value>)[]
+): RadioOption<Value>[] {
   const seen = new Set<Value>();
 
   return options.flatMap((option) => {

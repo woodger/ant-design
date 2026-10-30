@@ -20,12 +20,18 @@ export function parseInputNumber(text: string): number | null | undefined {
   return Number.isFinite(value) ? value || 0 : undefined;
 }
 
-export function resolveInputNumberOptions(options: Partial<InputNumberOptions> = {}): InputNumberOptions {
+export function resolveInputNumberOptions(
+  options: Partial<InputNumberOptions> = {}
+): InputNumberOptions {
   return {
     min: Number.isFinite(options.min) ? options.min! : Number.MIN_SAFE_INTEGER,
     max: Number.isFinite(options.max) ? options.max! : Number.MAX_SAFE_INTEGER,
     step: Number.isFinite(options.step) && options.step! > 0 ? options.step! : 1,
-    precision: Number.isInteger(options.precision) && options.precision! >= 0 && options.precision! <= 100 ? options.precision : undefined
+    precision: Number.isInteger(options.precision)
+      && options.precision! >= 0
+      && options.precision! <= 100
+      ? options.precision
+      : undefined
   };
 }
 
@@ -33,7 +39,7 @@ export function isInputNumberInRange(value: number, options: InputNumberOptions)
   return Number.isFinite(value) && value >= options.min && value <= options.max;
 }
 
-function getDecimal(value: number): { integer: bigint; scale: number } {
+function getDecimal(value: number): { integer: bigint; scale: number; } {
   const [mantissa, exponent = '0'] = String(value).split('e');
   const fraction = mantissa.split('.')[1]?.length ?? 0;
   const scale = fraction - Number(exponent);
@@ -42,7 +48,10 @@ function getDecimal(value: number): { integer: bigint; scale: number } {
   return scale >= 0 ? { integer, scale } : { integer: integer * 10n ** BigInt(-scale), scale: 0 };
 }
 
-function quantize(value: number, precision: number, rounding: 'round' | 'floor' | 'ceil' = 'round'): bigint {
+function quantize(value: number, precision: number, rounding:
+  'round'
+  | 'floor'
+  | 'ceil' = 'round'): bigint {
   const { integer, scale } = getDecimal(value);
 
   if (scale <= precision) return integer * 10n ** BigInt(precision - scale);
@@ -70,10 +79,17 @@ export function formatInputNumber(value: number | null, precision?: number): str
   const digits = String(integer < 0n ? -integer : integer).padStart(precision + 1, '0');
   const sign = integer < 0n ? '-' : '';
 
-  return precision ? `${sign}${digits.slice(0, -precision)}.${digits.slice(-precision)}` : `${sign}${digits}`;
+  return precision
+    ? `${sign}${digits.slice(0, -precision)}.${digits.slice(-precision)}`
+    : `${sign}${digits}`;
 }
 
-export function commitInputNumber(value: number | null, options: InputNumberOptions): number | null | undefined {
+export function commitInputNumber(value:
+  number
+  | null, options: InputNumberOptions):
+  number
+  | null
+  | undefined {
   if (value === null) return null;
   if (options.min > options.max || !Number.isFinite(value)) return undefined;
 
@@ -84,14 +100,26 @@ export function commitInputNumber(value: number | null, options: InputNumberOpti
 
   let rounded = decimalToNumber(quantize(clamped, precision), precision);
 
-  if (rounded < options.min) rounded = decimalToNumber(quantize(options.min, precision, 'ceil'), precision);
-  if (rounded > options.max) rounded = decimalToNumber(quantize(options.max, precision, 'floor'), precision);
+  if (rounded < options.min)
+    rounded = decimalToNumber(quantize(options.min, precision, 'ceil'), precision);
+  if (rounded > options.max)
+    rounded = decimalToNumber(quantize(options.max, precision, 'floor'), precision);
 
   return isInputNumberInRange(rounded, options) ? rounded : undefined;
 }
 
-export function stepInputNumber(value: number | null, direction: 1 | -1, options: InputNumberOptions): number | null {
-  if (options.min > options.max || value !== null && (direction > 0 ? value >= options.max : value <= options.min)) return null;
+export function stepInputNumber(value:
+  number
+  | null, direction:
+    1
+    | -1, options: InputNumberOptions):
+  number
+  | null {
+  if (options.min > options.max
+    || value !== null
+    && (direction > 0
+      ? value >= options.max
+      : value <= options.min)) return null;
 
   const current = getDecimal(value ?? 0);
   const step = getDecimal(options.step);
@@ -100,7 +128,10 @@ export function stepInputNumber(value: number | null, direction: 1 | -1, options
   const integer = current.integer * 10n ** BigInt(scale - current.scale)
     + BigInt(direction) * step.integer * 10n ** BigInt(scale - step.scale);
   const candidate = decimalToNumber(integer, scale);
-  const next = commitInputNumber(Number.isFinite(candidate) ? candidate : direction > 0 ? options.max : options.min, options);
+  const next = commitInputNumber(
+    Number.isFinite(candidate) ? candidate : direction > 0 ? options.max : options.min,
+    options
+  );
 
   return next === undefined || next === value ? null : next;
 }

@@ -1,12 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { getCollapseFocusKey, getCollapseKeys, getCollapseTrigger, normalizeCollapseItems, toggleCollapseKey } from './collapse.engine';
+import {
+  getCollapseFocusKey,
+  getCollapseKeys,
+  getCollapseTrigger,
+  normalizeCollapseItems,
+  toggleCollapseKey
+} from './collapse.engine';
 import type { CollapseItem } from './collapse.types';
 
-const items: CollapseItem[] = [{ key: '', label: 'Profile' }, { key: 'locked', label: 'Locked', collapsible: 'disabled' }, { key: 'settings', label: 'Settings' }];
+const items: CollapseItem[] = [
+  { key: '', label: 'Profile' },
+  { key: 'locked', label: 'Locked', collapsible: 'disabled' },
+  { key: 'settings', label: 'Settings' }
+];
 
 describe('Collapse items and values', () => {
   it('preserves the first item for each key without changing readonly input', () => {
-    const source = Object.freeze([...items.map((item) => Object.freeze({ ...item })), Object.freeze({ key: '', label: 'Duplicate' })]);
+    const source = Object.freeze(
+      [
+        ...items.map((item) => Object.freeze({ ...item })),
+        Object.freeze({ key: '', label: 'Duplicate' })
+      ]
+    );
 
     expect(normalizeCollapseItems(source)).toEqual(items);
     expect(source).toHaveLength(4);
@@ -45,12 +60,29 @@ describe('Collapse trigger modes', () => {
   it('inherits the global mode and respects per-item overrides', () => {
     expect(getCollapseTrigger(items[0], 'icon')).toBe('icon');
     expect(getCollapseTrigger(items[1], 'header')).toBe('disabled');
-    expect(getCollapseTrigger({ key: 'override', label: 'Override', collapsible: 'header' }, 'disabled')).toBe('header');
+    expect(
+      getCollapseTrigger(
+        { key: 'override', label: 'Override', collapsible: 'header' },
+        'disabled'
+      )
+    ).toBe(
+      'header'
+    );
   });
 
   it('keeps a keyboard and pointer trigger when icon mode has no arrow', () => {
-    expect(getCollapseTrigger({ key: 'no-arrow', label: 'No arrow', showArrow: false }, 'icon')).toBe('header');
-    expect(getCollapseTrigger({ key: 'disabled', label: 'Disabled', showArrow: false, collapsible: 'disabled' }, 'icon')).toBe('disabled');
+    expect(getCollapseTrigger({ key: 'no-arrow', label: 'No arrow', showArrow: false }, 'icon'))
+      .toBe(
+        'header'
+      );
+    expect(
+      getCollapseTrigger(
+        { key: 'disabled', label: 'Disabled', showArrow: false, collapsible: 'disabled' },
+        'icon'
+      )
+    ).toBe(
+      'disabled'
+    );
   });
 });
 
@@ -60,15 +92,30 @@ describe('Collapse focus recovery', () => {
     expect(getCollapseFocusKey(items, 'settings', [])).toBe('settings');
   });
 
-  it('falls back to an open header, then the first enabled header after removal or disabling', () => {
-    expect(getCollapseFocusKey(items, 'removed', ['settings'])).toBe('settings');
-    expect(getCollapseFocusKey(items, 'locked', [])).toBe('');
-    expect(getCollapseFocusKey(items, undefined, ['locked'])).toBe('');
-  });
+  it(
+    'falls back to an open header, then the first enabled header after removal or disabling',
+    () => {
+      expect(getCollapseFocusKey(items, 'removed', ['settings'])).toBe('settings');
+      expect(getCollapseFocusKey(items, 'locked', [])).toBe('');
+      expect(getCollapseFocusKey(items, undefined, ['locked'])).toBe('');
+    }
+  );
 
-  it('returns no header when empty or globally disabled unless an item overrides the mode', () => {
-    expect(getCollapseFocusKey([], undefined, [])).toBeUndefined();
-    expect(getCollapseFocusKey(items, '', [''], 'disabled')).toBeUndefined();
-    expect(getCollapseFocusKey([{ key: 'override', label: 'Override', collapsible: 'header' }], undefined, [], 'disabled')).toBe('override');
-  });
+  it(
+    'returns no header when empty or globally disabled unless an item overrides the mode',
+    () => {
+      expect(getCollapseFocusKey([], undefined, [])).toBeUndefined();
+      expect(getCollapseFocusKey(items, '', [''], 'disabled')).toBeUndefined();
+      expect(
+        getCollapseFocusKey(
+          [{ key: 'override', label: 'Override', collapsible: 'header' }],
+          undefined,
+          [],
+          'disabled'
+        )
+      ).toBe(
+        'override'
+      );
+    }
+  );
 });

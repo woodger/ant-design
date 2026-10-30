@@ -15,26 +15,40 @@ export interface RateCharacterInfo {
   onClick: (event: MouseEvent | KeyboardEvent, index: number) => void;
 }
 
+/** Стили ConfigProvider.rate; class и style компонента дополняют настройки провайдера. */
 export interface RateConfig {
   class?: string;
   style?: string;
 }
 
-export interface RateProps extends Omit<HTMLAttributes<HTMLUListElement>, 'children' | 'class' | 'style' | 'onchange'> {
+/** Оценка со звёздами, половинным выбором, hover и управляемым или локальным value. */
+export interface RateProps extends Omit<
+  HTMLAttributes<HTMLUListElement>,
+  'children' | 'class' | 'style' | 'onchange'
+> {
+  /** Управляемое значение; владелец принимает новый выбор через onChange. */
   value?: number;
+  /** Начальная локальная оценка при отсутствии value; по умолчанию 0. */
   defaultValue?: number;
+  /** @defaultValue 5 */
   count?: number;
+  /** @defaultValue false */
   allowHalf?: boolean;
+  /** @defaultValue true */
   allowClear?: boolean;
+  /** @defaultValue true */
   keyboard?: boolean;
   disabled?: boolean;
   size?: ComponentSize | 'medium';
   character?: string | number | Snippet<[RateCharacterInfo]>;
+  /** Snippet получает исходный character snippet и контекст текущей звезды. */
   characterRender?: Snippet<[Snippet, RateCharacterInfo]>;
   tooltips?: readonly (string | Omit<TooltipProps, 'children'>)[];
+  /** @defaultValue false */
   autoFocus?: boolean;
   tabIndex?: number;
   onChange?: (value: number) => void;
+  /** Hover-оценка; undefined означает уход указателя с control. */
   onHoverChange?: (value: number | undefined) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -43,5 +57,6 @@ export interface RateProps extends Omit<HTMLAttributes<HTMLUListElement>, 'child
   class?: string;
   rootClassName?: string;
   style?: string;
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLUListElement;
 }

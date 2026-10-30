@@ -5,17 +5,25 @@
   import { animateMessageNotice } from './message.dom';
   import type { MessageInstance } from './message.types';
 
-  let { notice, message }: { notice: MessageNotice; message: MessageInstance } = $props();
+  let { notice, message }: { notice: MessageNotice; message: MessageInstance; } = $props();
   const id = untrack(() => notice.id);
   const runtime = untrack(() => message[messageHolderKey]);
-  const icons = { success: 'check-circle-filled', info: 'info-circle-filled', warning: 'exclamation-circle-filled', error: 'close-circle-filled', loading: 'loading' } as const;
+  const icons = {
+    success: 'check-circle-filled',
+    info: 'info-circle-filled',
+    warning: 'exclamation-circle-filled',
+    error: 'close-circle-filled',
+    loading: 'loading'
+  } as const;
   let node = $state<HTMLDivElement>();
   let present = $state(true);
   let entered = false;
   let active = true;
   let disposeMotion: (() => void) | undefined;
 
-  function mounted() { runtime.mounted(id); }
+  function mounted() {
+    runtime.mounted(id);
+  }
 
   $effect(() => {
     const root = node;
@@ -30,17 +38,24 @@
         disposeMotion?.();
         const finish = () => {
           present = false;
-          void tick().then(() => { if (active) runtime.complete(id, current.version); });
+          void tick().then(() => {
+            if (active)
+              runtime.complete(id, current.version);
+          });
         };
-        if (!visible) finish(); else disposeMotion = animateMessageNotice(root, true, from, finish);
+        if (!visible)
+          finish(); else disposeMotion = animateMessageNotice(root, true, from, finish);
       } else if (visible && !entered) {
         entered = true;
-        disposeMotion = animateMessageNotice(root, false, undefined, () => {});
+        disposeMotion = animateMessageNotice(root, false, undefined, () => { });
       }
     });
   });
 
-  onDestroy(() => { active = false; disposeMotion?.(); });
+  onDestroy(() => {
+    active = false;
+    disposeMotion?.();
+  });
 </script>
 
 <style>
@@ -52,9 +67,19 @@
 </style>
 
 {#if present}
-  <div bind:this={node} {@attach mounted} role={notice.role} aria-atomic="true" aria-hidden={notice.closing || undefined} inert={notice.closing} class={['ant-message-notice', `ant-message-notice-${notice.type}`, notice.class]} style={notice.style} onpointerenter={(event) => { if (event.pointerType !== 'touch') runtime.hover(id, true); }} onpointerleave={() => runtime.hover(id, false)}>
+  <div bind:this={node} {@attach mounted} role={notice.role} aria-atomic="true" aria-hidden={notice.closing || undefined} inert={notice.closing} class={[
+      'ant-message-notice',
+      `ant-message-notice-${notice.type}`,
+      notice.class
+    ]} style={notice.style} onpointerenter={(event) => {
+      if (event.pointerType !== 'touch')
+        runtime.hover(id, true);
+    }} onpointerleave={() => runtime.hover(id, false)}>
     <div class={['ant-message-notice-wrapper', `ant-message-${notice.type}`]}>
-      <span class={['ant-message-notice-icon', `ant-message-notice-icon-${notice.type}`]} aria-hidden="true">{#if notice.icon}{@render notice.icon()}{:else}<Icon name={icons[notice.type]} />{/if}</span>
+      <span class={[
+          'ant-message-notice-icon',
+          `ant-message-notice-icon-${notice.type}`
+        ]} aria-hidden="true">{#if notice.icon}{@render notice.icon()}{:else}<Icon name={icons[notice.type]} />{/if}</span>
       <div class="ant-message-notice-title">{#if typeof notice.content === 'function'}{@render notice.content()}{:else}{notice.content}{/if}</div>
     </div>
   </div>

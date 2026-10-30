@@ -27,9 +27,12 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
     const stack = openPopups.get(document);
     const index = stack?.indexOf(popup) ?? -1;
 
-    if (index !== -1) stack!.splice(index, 1);
-    if (shown) options.onVisibilityChange?.(false);
-    if (popup.matches(':popover-open')) popup.hidePopover();
+    if (index !== -1)
+      stack!.splice(index, 1);
+    if (shown)
+      options.onVisibilityChange?.(false);
+    if (popup.matches(':popover-open'))
+      popup.hidePopover();
     popup.hidden = true;
     shown = false;
   }
@@ -39,10 +42,21 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
 
     const rect = anchor.getBoundingClientRect();
     const visual = view.visualViewport;
-    const viewport = { x: visual?.offsetLeft ?? 0, y: visual?.offsetTop ?? 0, width: visual?.width ?? view.innerWidth, height: visual?.height ?? view.innerHeight };
+    const viewport = {
+      x: visual?.offsetLeft ?? 0,
+      y: visual?.offsetTop ?? 0,
+      width: visual?.width ?? view.innerWidth,
+      height: visual?.height ?? view.innerHeight
+    };
     const modal = document.querySelector('dialog:modal');
-    const visible = anchor.isConnected && anchor.getClientRects().length && rect.width && rect.height
-      && rect.right > viewport.x && rect.left < viewport.x + viewport.width && rect.bottom > viewport.y && rect.top < viewport.y + viewport.height
+    const visible = anchor.isConnected
+      && anchor.getClientRects().length
+      && rect.width
+      && rect.height
+      && rect.right > viewport.x
+      && rect.left < viewport.x + viewport.width
+      && rect.bottom > viewport.y
+      && rect.top < viewport.y + viewport.height
       && (!modal || modal.contains(anchor));
 
     if (!visible) {
@@ -50,8 +64,13 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
       return;
     }
 
-    popup.style.maxWidth = `min(${options.maxWidth ?? 'var(--ant-tooltip-max-width)'}, ${Math.max(0, viewport.width - 16)}px)`;
-    if (options.matchAnchorWidth) popup.style.minWidth = `${Math.min(rect.width, Math.max(0, viewport.width - 16))}px`;
+    popup.style.maxWidth = `min(${options.maxWidth
+      ?? 'var(--ant-tooltip-max-width)'}, ${Math.max(
+        0,
+        viewport.width - 16
+      )}px)`;
+    if (options.matchAnchorWidth)
+      popup.style.minWidth = `${Math.min(rect.width, Math.max(0, viewport.width - 16))}px`;
     popup.hidden = false;
 
     if (!popup.matches(':popover-open')) {
@@ -63,8 +82,21 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
     }
 
     const bounds = popup.getBoundingClientRect();
-    const position = getTooltipPosition(rect, bounds, viewport, options.placement, options.autoAdjustOverflow, options.align, options.gap);
-    const signature = `${position.left}:${position.top}:${position.arrowX}:${position.arrowY}:${position.placement}`;
+    const position = getTooltipPosition(
+      rect,
+      bounds,
+      viewport,
+      options.placement,
+      options.autoAdjustOverflow,
+      options.align,
+      options.gap
+    );
+    const signature = `${position
+      .left}:${position
+        .top}:${position
+          .arrowX}:${position
+            .arrowY}:${position
+              .placement}`;
 
     if (signature !== lastPosition) {
       popup.style.left = `${position.left}px`;
@@ -76,16 +108,21 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
     }
     const wasShown = shown;
     shown = true;
-    if (!wasShown) options.onVisibilityChange?.(true);
+    if (!wasShown)
+      options.onVisibilityChange?.(true);
   }
 
   function tick() {
     update();
-    if (!disposed) frame = view.requestAnimationFrame(tick);
+    if (!disposed)
+      frame = view.requestAnimationFrame(tick);
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (shown && openPopups.get(document)?.at(-1) === popup && event.key === 'Escape' && !event.defaultPrevented) {
+    if (shown
+      && openPopups.get(document)?.at(-1) === popup
+      && event.key === 'Escape'
+      && !event.defaultPrevented) {
       event.preventDefault();
       event.stopPropagation();
       options.onDismiss('escape');
@@ -95,16 +132,25 @@ export function connectPopup(popup: HTMLElement, anchor: Element, options: {
   function handlePointerdown(event: PointerEvent) {
     const target = event.target;
 
-    if (shown && target instanceof Node && !popup.contains(target) && !(options.trigger ?? anchor).contains(target)) options.onDismiss('outside');
+    if (shown
+      && target instanceof Node
+      && !popup.contains(target)
+      && !(options.trigger ?? anchor).contains(
+        target
+      ))
+      options.onDismiss('outside');
   }
 
-  function preserveFocus(event: PointerEvent) { event.preventDefault(); }
+  function preserveFocus(event: PointerEvent) {
+    event.preventDefault();
+  }
 
   // Пока поверхность открыта, отслеживаем и перемещение anchor без resize (включая бегунок).
   tick();
   document.addEventListener('keydown', handleKeydown);
   document.addEventListener('pointerdown', handlePointerdown, true);
-  if (options.preserveFocus !== false) popup.addEventListener('pointerdown', preserveFocus);
+  if (options.preserveFocus !== false)
+    popup.addEventListener('pointerdown', preserveFocus);
 
   return () => {
     disposed = true;

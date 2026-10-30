@@ -5,7 +5,22 @@
   import Icon from './Icon.svelte';
   import type { TagProps } from './tag.types';
 
-  let { children, color = 'default', variant = 'filled', icon, closeIcon = false, closeLabel, disabled, onClose, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, class: className = '', style }: TagProps = $props();
+  let {
+    children,
+    color = 'default',
+    variant = 'filled',
+    icon,
+    closeIcon = false,
+    closeLabel,
+    disabled,
+    onClose,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    class: className = '',
+    style
+  }: TagProps = $props();
   const config = useConfig();
   const generatedId = $props.id();
   let host = $state<HTMLSpanElement>();
@@ -15,16 +30,26 @@
   let blocked = $derived(disabled ?? config.componentDisabled);
   let contentId = $derived(`ant-tag-content-${generatedId}`);
 
-  onDestroy(() => { active = false; });
-  $effect(() => { const node = host; if (node && closeIcon) return connectFeedbackFocus(node); });
+  onDestroy(() => {
+    active = false;
+  });
+  $effect(() => {
+    const node = host;
+    if (node && closeIcon) return connectFeedbackFocus(node);
+  });
 
   function handleClose(event: MouseEvent) {
     event.stopPropagation();
     if (!active || closed || closing || blocked || !closeIcon || event.defaultPrevented) return;
 
     closing = true;
-    try { onClose?.(event); } finally { closing = false; }
-    if (active && !event.defaultPrevented) closed = true;
+    try {
+      onClose?.(event);
+    } finally {
+      closing = false;
+    }
+    if (active && !event.defaultPrevented)
+      closed = true;
   }
 
   function connectClose(node: HTMLButtonElement) {
@@ -68,7 +93,15 @@
 </style>
 
 {#if !closed}
-  <span bind:this={host} {id} role={ariaLabel || ariaLabelledby ? 'group' : undefined} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction} class={['ant-tag ant-tag-css-var', `ant-tag-${color}`, `ant-tag-${variant}`, blocked && 'ant-tag-disabled', config.theme.mode === 'dark' && 'ant-tag-dark', config.direction === 'rtl' && 'ant-tag-rtl', className]} {style}>
+  <span bind:this={host} {id} role={ariaLabel || ariaLabelledby ? 'group' : undefined} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction} class={[
+      'ant-tag ant-tag-css-var',
+      `ant-tag-${color}`,
+      `ant-tag-${variant}`,
+      blocked && 'ant-tag-disabled',
+      config.theme.mode === 'dark' && 'ant-tag-dark',
+      config.direction === 'rtl' && 'ant-tag-rtl',
+      className
+    ]} {style}>
     {#if icon}<span class="ant-tag-icon anticon" aria-hidden="true" inert>{@render icon()}</span>{/if}<span class="ant-tag-content" id={contentId}>{@render children()}</span>
     {#if closeIcon}<button type="button" class="ant-tag-close-icon" disabled={blocked} aria-label={closeLabel ?? config.locale.closeText} aria-describedby={contentId} {@attach connectClose}><span aria-hidden="true" inert>{#if typeof closeIcon === 'function'}{@render closeIcon()}{:else}<Icon name="close" />{/if}</span></button>{/if}
   </span>

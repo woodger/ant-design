@@ -6,7 +6,22 @@
   import { ruRU } from './types';
   import type { SkeletonProps } from './skeleton.types';
 
-  let { loading = true, active = false, round = false, avatar = false, title = true, paragraph = true, children, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, 'aria-hidden': ariaHidden, class: className = '', style }: SkeletonProps = $props();
+  let {
+    loading = true,
+    active = false,
+    round = false,
+    avatar = false,
+    title = true,
+    paragraph = true,
+    children,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    'aria-hidden': ariaHidden,
+    class: className = '',
+    style
+  }: SkeletonProps = $props();
   const config = useConfig();
   const focus = createSkeletonFocus();
   let host = $state<HTMLDivElement>();
@@ -19,7 +34,8 @@
     const node = host;
     const container = content;
     const busy = loading;
-    if (node) untrack(() => focus.update(node, container, busy));
+    if (node)
+      untrack(() => focus.update(node, container, busy));
   });
   onDestroy(() => focus.destroy());
 </script>
@@ -45,8 +61,19 @@
   {#if loading && !ariaHidden}<span class="loading-status" role="status" aria-live="polite" aria-atomic="true">{strings.loadingText}</span>{/if}
   <div bind:this={content} class="ant-skeleton-content" aria-busy={loading}>
     {#if loading}
-      <div class={['ant-skeleton ant-skeleton-css-var', layout.avatar && 'ant-skeleton-with-avatar', active && 'ant-skeleton-active', round && 'ant-skeleton-round', config.direction === 'rtl' && 'ant-skeleton-rtl']} aria-hidden="true">
-        {#if layout.avatar}<div class="ant-skeleton-header"><span class={['ant-skeleton-avatar', `ant-skeleton-avatar-${layout.avatar.shape}`, !layout.avatar.width && layout.avatar.size === 'small' && 'ant-skeleton-avatar-sm', !layout.avatar.width && layout.avatar.size === 'large' && 'ant-skeleton-avatar-lg']} style:width={layout.avatar.width}></span></div>{/if}
+      <div class={[
+          'ant-skeleton ant-skeleton-css-var',
+          layout.avatar && 'ant-skeleton-with-avatar',
+          active && 'ant-skeleton-active',
+          round && 'ant-skeleton-round',
+          config.direction === 'rtl' && 'ant-skeleton-rtl'
+        ]} aria-hidden="true">
+        {#if layout.avatar}<div class="ant-skeleton-header"><span class={[
+            'ant-skeleton-avatar',
+            `ant-skeleton-avatar-${layout.avatar.shape}`,
+            !layout.avatar.width && layout.avatar.size === 'small' && 'ant-skeleton-avatar-sm',
+            !layout.avatar.width && layout.avatar.size === 'large' && 'ant-skeleton-avatar-lg'
+          ]} style:width={layout.avatar.width}></span></div>{/if}
         {#if layout.title || layout.paragraph}<div class="ant-skeleton-section">{#if layout.title}<div class="ant-skeleton-title" style:width={layout.title.width}></div>{/if}{#if layout.paragraph}<ul class="ant-skeleton-paragraph">{#each layout.paragraph.widths as width, index (index)}<li style:width></li>{/each}</ul>{/if}</div>{/if}
       </div>
     {:else if children}{@render children()}{/if}

@@ -3,6 +3,9 @@ import type { DatePickerLocale } from './date-picker.types';
 import { datePickerEnUS, datePickerRuRU } from './date-picker.locale';
 export type ComponentSize = 'small' | 'middle' | 'large';
 
+/**
+ * Поддерживаемая палитра, светлая/тёмная тема и compact density; не общий token engine Ant Design.
+ */
 export interface ThemeConfig {
   mode?: 'light' | 'dark';
   primary?: 'blue' | 'purple' | 'green';
@@ -10,8 +13,8 @@ export interface ThemeConfig {
 }
 
 export interface Locale {
-  image?: { preview?: string };
-  tree?: { expand?: string; collapse?: string };
+  image?: { preview?: string; };
+  tree?: { expand?: string; collapse?: string; };
   upload?: UploadLocale;
   datePicker?: DatePickerLocale;
   okText: string;
@@ -37,19 +40,46 @@ export interface Locale {
   layout?: Partial<LayoutLocale>;
 }
 
-export interface LayoutLocale { expand: string; collapse: string; }
+export interface LayoutLocale {
+  expand: string;
+  collapse: string;
+}
 
-export interface AvatarGroupLocale { label: string; hiddenLabel: string; overflow: string; }
+export interface AvatarGroupLocale {
+  label: string;
+  hiddenLabel: string;
+  overflow: string;
+}
 
-export interface BadgeLocale { count: string; dot: string; success: string; processing: string; default: string; error: string; warning: string; }
+export interface BadgeLocale {
+  count: string;
+  dot: string;
+  success: string;
+  processing: string;
+  default: string;
+  error: string;
+  warning: string;
+}
 
-export interface StepsLocale { label: string; wait: string; process: string; finish: string; error: string; }
+export interface StepsLocale {
+  label: string;
+  wait: string;
+  process: string;
+  finish: string;
+  error: string;
+}
 
-export interface EmptyLocale { description: string; }
+export interface EmptyLocale {
+  description: string;
+}
 
-export interface SkeletonLocale { loadingText: string; }
+export interface SkeletonLocale {
+  loadingText: string;
+}
 
-export interface SpinLocale { loadingText: string; }
+export interface SpinLocale {
+  loadingText: string;
+}
 
 export interface ProgressLocale {
   label: string;
@@ -99,12 +129,36 @@ export interface SelectOption<Value extends string | number = string> {
 
 export const ruRU = {
   tree: { expand: 'Развернуть', collapse: 'Свернуть' },
-  upload: { uploading: 'Загрузка...', removeFile: 'Удалить файл', uploadError: 'При загрузке произошла ошибка', previewFile: 'Предпросмотр файла', downloadFile: 'Загрузить файл' },
+  upload: {
+    uploading: 'Загрузка...',
+    removeFile: 'Удалить файл',
+    uploadError: 'При загрузке произошла ошибка',
+    previewFile: 'Предпросмотр файла',
+    downloadFile: 'Загрузить файл'
+  },
   datePicker: datePickerRuRU,
   layout: { expand: 'Развернуть боковую панель', collapse: 'Свернуть боковую панель' },
-  avatarGroup: { label: 'Участники', hiddenLabel: 'Скрытые участники', overflow: 'Ещё участников' },
-  badge: { count: 'Количество', dot: 'Есть обновления', success: 'Успешно', processing: 'Выполняется', default: 'Обычный статус', error: 'Ошибка', warning: 'Предупреждение' },
-  steps: { label: 'Этапы', wait: 'Ожидается', process: 'Выполняется', finish: 'Завершён', error: 'Ошибка' },
+  avatarGroup: {
+    label: 'Участники',
+    hiddenLabel: 'Скрытые участники',
+    overflow: 'Ещё участников'
+  },
+  badge: {
+    count: 'Количество',
+    dot: 'Есть обновления',
+    success: 'Успешно',
+    processing: 'Выполняется',
+    default: 'Обычный статус',
+    error: 'Ошибка',
+    warning: 'Предупреждение'
+  },
+  steps: {
+    label: 'Этапы',
+    wait: 'Ожидается',
+    process: 'Выполняется',
+    finish: 'Завершён',
+    error: 'Ошибка'
+  },
   empty: { description: 'Нет данных' },
   skeleton: { loadingText: 'Загрузка…' },
   spin: { loadingText: 'Загрузка…' },
@@ -155,12 +209,32 @@ export const ruRU = {
 
 export const enUS = {
   tree: { expand: 'Expand', collapse: 'Collapse' },
-  upload: { uploading: 'Uploading...', removeFile: 'Remove file', uploadError: 'Upload error', previewFile: 'Preview file', downloadFile: 'Download file' },
+  upload: {
+    uploading: 'Uploading...',
+    removeFile: 'Remove file',
+    uploadError: 'Upload error',
+    previewFile: 'Preview file',
+    downloadFile: 'Download file'
+  },
   datePicker: datePickerEnUS,
   layout: { expand: 'Expand sidebar', collapse: 'Collapse sidebar' },
   avatarGroup: { label: 'Members', hiddenLabel: 'Hidden members', overflow: 'More members' },
-  badge: { count: 'Count', dot: 'Updates available', success: 'Success', processing: 'Processing', default: 'Default status', error: 'Error', warning: 'Warning' },
-  steps: { label: 'Steps', wait: 'Waiting', process: 'In progress', finish: 'Finished', error: 'Error' },
+  badge: {
+    count: 'Count',
+    dot: 'Updates available',
+    success: 'Success',
+    processing: 'Processing',
+    default: 'Default status',
+    error: 'Error',
+    warning: 'Warning'
+  },
+  steps: {
+    label: 'Steps',
+    wait: 'Waiting',
+    process: 'In progress',
+    finish: 'Finished',
+    error: 'Error'
+  },
   empty: { description: 'No data' },
   skeleton: { loadingText: 'Loading…' },
   spin: { loadingText: 'Loading…' },

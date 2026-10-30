@@ -1,4 +1,12 @@
-import type { TableColumn, TableFilters, TableFilterValue, TableKey, TableMode, TableRowKey, TableSorter } from './table.types';
+import type {
+  TableColumn,
+  TableFilters,
+  TableFilterValue,
+  TableKey,
+  TableMode,
+  TableRowKey,
+  TableSorter
+} from './table.types';
 
 export interface TableRow<Row extends object> {
   key: TableKey;
@@ -6,6 +14,11 @@ export interface TableRow<Row extends object> {
   sourceIndex: number;
 }
 
+/**
+ * Фильтрует и стабильно сортирует данные без мутации исходных records. Row keys должны
+ * быть уникальными строками или конечными числами; некорректные keys/columns вызывают Error.
+ * В server mode обработка данных остаётся у потребителя.
+ */
 export function getTableData<Row extends object>(
   dataSource: readonly Row[],
   columns: readonly TableColumn<Row>[],
@@ -13,7 +26,12 @@ export function getTableData<Row extends object>(
   sorter?: TableSorter | null,
   filters?: Readonly<Record<string, readonly TableFilterValue[]>>,
   mode: TableMode = 'client'
-): { rows: TableRow<Row>[]; allRows: TableRow<Row>[]; sorter: TableSorter | null; filters: TableFilters } {
+): {
+  rows: TableRow<Row>[];
+  allRows: TableRow<Row>[];
+  sorter: TableSorter | null;
+  filters: TableFilters;
+} {
   if (!columns.length) {
     throw new Error('Table requires at least one column');
   }
@@ -30,7 +48,9 @@ export function getTableData<Row extends object>(
 
   const keys = new Set<TableKey>();
   const allRows = dataSource.map((record, sourceIndex) => {
-    const key: unknown = typeof rowKey === 'function' ? rowKey(record) : Reflect.get(record, rowKey ?? 'key');
+    const key: unknown = typeof rowKey === 'function'
+      ? rowKey(record)
+      : Reflect.get(record, rowKey ?? 'key');
 
     if (typeof key !== 'string' && (typeof key !== 'number' || !Number.isFinite(key))) {
       throw new Error('Table rowKey must resolve to a string or finite number for every record');
@@ -45,7 +65,12 @@ export function getTableData<Row extends object>(
     return { key, record, sourceIndex };
   });
   const activeFilters = getTableFilters(columns, filters, mode);
-  const column = columns.find((item) => item.key === sorter?.columnKey && (typeof item.sorter === 'function' || (mode === 'server' && item.sorter === true)));
+  const column = columns.find(
+    (item) => item.key === sorter?.columnKey
+      && (typeof item.sorter === 'function'
+        || (mode === 'server'
+          && item.sorter === true))
+  );
   const activeSorter = column && sorter && (sorter.order === 'ascend' || sorter.order === 'descend')
     ? { columnKey: column.key, order: sorter.order }
     : null;
@@ -55,7 +80,11 @@ export function getTableData<Row extends object>(
   }
 
   const filteredColumns = columns.filter((item) => Object.hasOwn(activeFilters, item.key));
-  const rows = allRows.filter((row) => filteredColumns.every((item) => activeFilters[item.key].some((value) => item.onFilter?.(value, row.record))));
+  const rows = allRows.filter(
+    (row) => filteredColumns.every(
+      (item) => activeFilters[item.key].some((value) => item.onFilter?.(value, row.record))
+    )
+  );
 
   if (typeof column?.sorter !== 'function' || !activeSorter) {
     return { rows, allRows, sorter: null, filters: activeFilters };
@@ -63,12 +92,19 @@ export function getTableData<Row extends object>(
 
   const compare = column.sorter;
   const direction = activeSorter.order === 'ascend' ? 1 : -1;
-  rows.sort((left, right) => (compare(left.record, right.record) * direction || left.sourceIndex - right.sourceIndex));
+  rows.sort(
+    (left, right) => (compare(left.record, right.record) * direction
+      || left.sourceIndex - right.sourceIndex)
+  );
 
   return { rows, allRows, sorter: activeSorter, filters: activeFilters };
 }
 
-export function getTableFilters<Row extends object>(columns: readonly TableColumn<Row>[], filters: Readonly<Record<string, readonly TableFilterValue[]>> = {}, mode: TableMode = 'client'): TableFilters {
+export function getTableFilters<Row extends object>(
+  columns: readonly TableColumn<Row>[],
+  filters: Readonly<Record<string, readonly TableFilterValue[]>> = {},
+  mode: TableMode = 'client'
+): TableFilters {
   const entries: [string, TableFilterValue[]][] = [];
 
   for (const column of columns) {
@@ -104,7 +140,11 @@ export function areTableFiltersEqual(left: TableFilters, right: TableFilters): b
   });
 }
 
-export function getNextTableSorter(columnKey: string, sorter: TableSorter | null): TableSorter | null {
+export function getNextTableSorter(columnKey: string, sorter:
+  TableSorter
+  | null):
+  TableSorter
+  | null {
   if (sorter?.columnKey !== columnKey) {
     return { columnKey, order: 'ascend' };
   }
@@ -112,7 +152,10 @@ export function getNextTableSorter(columnKey: string, sorter: TableSorter | null
   return sorter.order === 'ascend' ? { columnKey, order: 'descend' } : null;
 }
 
-export function getTableSelection(pageKeys: readonly TableKey[], selectedKeys: readonly TableKey[]) {
+export function getTableSelection(
+  pageKeys: readonly TableKey[],
+  selectedKeys: readonly TableKey[]
+) {
   const selected = new Set(selectedKeys);
   const count = pageKeys.filter((key) => selected.has(key)).length;
 
@@ -123,7 +166,11 @@ export function getTableSelection(pageKeys: readonly TableKey[], selectedKeys: r
   };
 }
 
-export function changeTableSelection(selectedKeys: readonly TableKey[], changedKeys: readonly TableKey[], checked: boolean): TableKey[] {
+export function changeTableSelection(
+  selectedKeys: readonly TableKey[],
+  changedKeys: readonly TableKey[],
+  checked: boolean
+): TableKey[] {
   const selected = new Set(selectedKeys);
 
   for (const key of changedKeys) {

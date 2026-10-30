@@ -1,7 +1,19 @@
 <script lang="ts">
   import { useConfig } from './config-context';
   import type { LayoutSectionProps } from './layout.types';
-  let { tag, part, children, class: className = '', rootClassName = '', style, nativeElement = $bindable(), ...rest }: LayoutSectionProps & { tag: 'header' | 'footer' | 'main'; part: 'header' | 'footer' | 'content' } = $props();
+  let {
+    tag,
+    part,
+    children,
+    class: className = '',
+    rootClassName = '',
+    style,
+    nativeElement = $bindable(),
+    ...rest
+  }: LayoutSectionProps & {
+    tag: 'header' | 'footer' | 'main';
+    part: 'header' | 'footer' | 'content';
+  } = $props();
   const config = useConfig();
 </script>
 

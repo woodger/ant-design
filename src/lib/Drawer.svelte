@@ -8,7 +8,27 @@
   import { getDrawerSize } from './drawer.engine';
   import type { DrawerProps } from './drawer.types';
 
-  let { open = $bindable(false), title, children, extra, footer, placement = 'right', size = 'default', closable = true, keyboard = true, mask, forceRender = false, destroyOnHidden = false, onClose, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, class: className = '', style }: DrawerProps = $props();
+  let {
+    open = $bindable(false),
+    title,
+    children,
+    extra,
+    footer,
+    placement = 'right',
+    size = 'default',
+    closable = true,
+    keyboard = true,
+    mask,
+    forceRender = false,
+    destroyOnHidden = false,
+    onClose,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    class: className = '',
+    style
+  }: DrawerProps = $props();
 
   const config = useConfig();
   const watermarkPanel = useWatermarkPanel();
@@ -29,7 +49,8 @@
     const node = dialog;
     const requested = open;
     const side = placement;
-    if (node && !requested) untrack(() => runtime?.sync(false, side));
+    if (node && !requested)
+      untrack(() => runtime?.sync(false, side));
   });
 
   $effect(() => {
@@ -39,16 +60,23 @@
     if (!node) return;
 
     untrack(() => {
-      runtime ??= createDrawerDialog(node, (value) => { closing = value; });
+      runtime ??= createDrawerDialog(node, (value) => {
+        closing = value;
+      });
       runtime.sync(requested, side);
     });
   });
 
-  onDestroy(() => { active = false; runtime?.destroy(); });
+  onDestroy(() => {
+    active = false;
+    runtime?.destroy();
+  });
 
   function rememberContent() {
     mounted = true;
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }
 
   function requestClose(event: Event) {
@@ -61,17 +89,24 @@
 
   function handleCancel(event: Event) {
     event.preventDefault();
-    if (keyboard) requestClose(event);
+    if (keyboard)
+      requestClose(event);
   }
 
   function isBackdrop(event: PointerEvent) {
-    return event.target === dialog || event.target instanceof HTMLElement && event.target.classList.contains('ant-drawer-mask') && event.target.parentElement === dialog;
+    return event.target === dialog
+      || event.target instanceof HTMLElement
+      && event.target.classList.contains(
+        'ant-drawer-mask'
+      )
+      && event.target.parentElement === dialog;
   }
 
   function handlePointerUp(event: PointerEvent) {
     const dismiss = event.pointerId === backdropPointer && isBackdrop(event);
     backdropPointer = undefined;
-    if (mask?.closable !== false && dismiss) requestClose(event);
+    if (mask?.closable !== false && dismiss)
+      requestClose(event);
   }
 
   function handleClose() {
@@ -99,7 +134,19 @@
 </style>
 
 <NoCompactStyle>
-<dialog bind:this={dialog} id={rootId} class={['ant-drawer ant-drawer-css-var ant-svelte-drawer', `ant-drawer-${placement}`, config.direction === 'rtl' && 'ant-drawer-rtl', className]} {style} style:--ant-svelte-drawer-size={getDrawerSize(size)} dir={config.direction} aria-modal="true" aria-label={ariaLabel} aria-labelledby={ariaLabelledby ?? (ariaLabel === undefined && title !== undefined ? titleId : undefined)} aria-describedby={ariaDescribedby} oncancel={handleCancel} onclose={handleClose} onpointerdown={(event) => { backdropPointer = event.button === 0 && isBackdrop(event) ? event.pointerId : undefined; }} onpointerup={handlePointerUp} onpointercancel={() => { backdropPointer = undefined; }}>
+<dialog bind:this={dialog} id={rootId} class={[
+    'ant-drawer ant-drawer-css-var ant-svelte-drawer',
+    `ant-drawer-${placement}`,
+    config.direction === 'rtl' && 'ant-drawer-rtl',
+    className
+  ]} {style} style:--ant-svelte-drawer-size={getDrawerSize(size)} dir={config.direction} aria-modal="true" aria-label={ariaLabel} aria-labelledby={ariaLabelledby
+      ?? (ariaLabel === undefined && title !== undefined
+        ? titleId
+        : undefined)} aria-describedby={ariaDescribedby} oncancel={handleCancel} onclose={handleClose} onpointerdown={(event) => {
+          backdropPointer = event.button === 0 && isBackdrop(event) ? event.pointerId : undefined;
+        }} onpointerup={handlePointerUp} onpointercancel={() => {
+      backdropPointer = undefined;
+    }}>
   <div class={['ant-drawer-mask', mask?.blur && 'ant-drawer-mask-blur']} aria-hidden="true"></div>
   <div class="ant-drawer-content-wrapper">
     {#if renderContent}

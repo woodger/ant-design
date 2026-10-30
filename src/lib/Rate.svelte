@@ -7,10 +7,30 @@
   import Tooltip from './Tooltip.svelte';
 
   let {
-    value, defaultValue, count = 5, allowHalf = false, allowClear = true, keyboard = true,
-    disabled, size, character, characterRender, tooltips, autoFocus = false, tabIndex,
-    onChange, onHoverChange, onFocus, onBlur, onKeyDown, onMouseLeave,
-    class: className = '', rootClassName = '', style, nativeElement = $bindable(), ...attributes
+    value,
+    defaultValue,
+    count = 5,
+    allowHalf = false,
+    allowClear = true,
+    keyboard = true,
+    disabled,
+    size,
+    character,
+    characterRender,
+    tooltips,
+    autoFocus = false,
+    tabIndex,
+    onChange,
+    onHoverChange,
+    onFocus,
+    onBlur,
+    onKeyDown,
+    onMouseLeave,
+    class: className = '',
+    rootClassName = '',
+    style,
+    nativeElement = $bindable(),
+    ...attributes
   }: RateProps = $props();
   const config = useConfig();
   const form = useForm();
@@ -21,19 +41,31 @@
   let cleanedValue: number | null = null;
   let focused = $state(false);
   let shownValue = $derived(hoverValue === null ? actualValue : hoverValue);
-  let blocked = $derived(disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled);
+  let blocked = $derived(
+    disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled
+  );
   let resolvedSize = $derived(size ?? config.componentSize);
   let previous = untrack(() => value);
 
   $effect(() => {
     const next = value;
-    if (next !== previous) innerValue = next;
+    if (next !== previous)
+      innerValue = next;
     previous = next;
   });
-  onMount(() => { if (autoFocus) focus(); });
+  onMount(() => {
+    if (autoFocus)
+      focus();
+  });
 
-  export function focus() { if (!blocked) nativeElement?.focus(); }
-  export function blur() { if (!blocked) nativeElement?.blur(); }
+  export function focus() {
+    if (!blocked)
+      nativeElement?.focus();
+  }
+  export function blur() {
+    if (!blocked)
+      nativeElement?.blur();
+  }
 
   function change(next: number) {
     innerValue = next;
@@ -46,15 +78,25 @@
     const element = (event.currentTarget as HTMLElement).closest('li')!;
     const box = element.getBoundingClientRect();
     const document = element.ownerDocument;
-    return getRatePointerValue(index, 'pageX' in event && (event.detail !== 0 || event.pageX !== 0) ? event.pageX : undefined,
-      box.left + document.defaultView!.scrollX - (document.documentElement.clientLeft || document.body.clientLeft || 0),
-      element.clientWidth, allowHalf, config.direction === 'rtl');
+    return getRatePointerValue(
+      index,
+      'pageX' in event && (event.detail !== 0 || event.pageX !== 0) ? event.pageX : undefined,
+      box.left + document.defaultView!.scrollX - (document.documentElement.clientLeft
+        || document.body.clientLeft
+        || 0),
+      element.clientWidth,
+      allowHalf,
+      config.direction === 'rtl'
+    );
   }
 
   function handleHover(index: number, event: MouseEvent) {
     if (blocked) return;
     const next = pointerValue(index, event);
-    if (next !== cleanedValue) { hoverValue = next; cleanedValue = null; }
+    if (next !== cleanedValue) {
+      hoverValue = next;
+      cleanedValue = null;
+    }
     onHoverChange?.(next);
   }
 
@@ -76,13 +118,22 @@
 
   function handleKeydown(event: KeyboardEvent) {
     if (blocked) return;
-    const next = keyboard ? getRateKeyValue(actualValue, count, allowHalf, event.key, config.direction === 'rtl') : undefined;
-    if (next !== undefined) { change(next); event.preventDefault(); }
+    const next = keyboard
+      ? getRateKeyValue(actualValue, count, allowHalf, event.key, config.direction === 'rtl')
+      : undefined;
+    if (next !== undefined) {
+      change(next);
+      event.preventDefault();
+    }
     onKeyDown?.(event);
   }
 
-  function handleStarHover(event: MouseEvent, index: number) { handleHover(index, event); }
-  function handleStarClick(event: MouseEvent | KeyboardEvent, index: number) { handleClick(index, event); }
+  function handleStarHover(event: MouseEvent, index: number) {
+    handleHover(index, event);
+  }
+  function handleStarClick(event: MouseEvent | KeyboardEvent, index: number) {
+    handleClick(index, event);
+  }
 </script>
 
 <style>
@@ -100,19 +151,54 @@
 {/snippet}
 
 <ul role="radiogroup" {...attributes} bind:this={nativeElement} tabindex={blocked ? -1 : tabIndex ?? attributes.tabindex ?? 0}
-  class={['ant-rate ant-rate-css-var', blocked && 'ant-rate-disabled', config.direction === 'rtl' && 'ant-rate-rtl', resolvedSize === 'small' && 'ant-rate-small', resolvedSize === 'large' && 'ant-rate-large', className, rootClassName, config.rate?.class]}
+  class={[
+      'ant-rate ant-rate-css-var',
+      blocked && 'ant-rate-disabled',
+      config.direction === 'rtl' && 'ant-rate-rtl',
+      resolvedSize === 'small' && 'ant-rate-small',
+      resolvedSize === 'large' && 'ant-rate-large',
+      className,
+      rootClassName,
+      config.rate?.class
+    ]}
   style={[config.rate?.style, style].filter(Boolean).join(';')}
-  onfocusin={event => { if (!blocked) { focused = true; onFocus?.(); } attributes.onfocusin?.(event); }}
-  onfocusout={event => { if (!blocked) { focused = false; onBlur?.(); } attributes.onfocusout?.(event); }}
-  onkeydown={event => { handleKeydown(event); attributes.onkeydown?.(event); }}
-  onmouseleave={event => { leave(); onMouseLeave?.(event); attributes.onmouseleave?.(event); }}>
+  onfocusin={event => {
+      if (!blocked) {
+        focused = true;
+        onFocus?.();
+      }
+      attributes.onfocusin?.(event);
+    }}
+  onfocusout={event => {
+      if (!blocked) {
+        focused = false;
+        onBlur?.();
+      }
+      attributes.onfocusout?.(event);
+    }}
+  onkeydown={event => {
+      handleKeydown(event);
+      attributes.onkeydown?.(event);
+    }}
+  onmouseleave={event => {
+      leave();
+      onMouseLeave?.(event);
+      attributes.onmouseleave?.(event);
+    }}>
   {#each Array(count).fill(0) as _, index (index)}
     {@const info: RateCharacterInfo = { index, count, value: shownValue, allowHalf, disabled: Boolean(blocked), focused, prefixCls: 'ant-rate-star', onHover: handleStarHover, onClick: handleStarClick }}
     {#snippet star()}
-      <li class={getRateStarClass(index, shownValue, allowHalf, focused)} style={tooltips && !characterRender && index < count - 1 ? 'margin-inline-end:var(--ant-margin-xs);' : undefined}>
+      <li class={getRateStarClass(index, shownValue, allowHalf, focused)} style={tooltips && !characterRender && index < count - 1
+          ? 'margin-inline-end:var(--ant-margin-xs);'
+          : undefined}>
         <button type="button" role="radio" aria-checked={shownValue !== undefined && shownValue > index} aria-posinset={index + 1} aria-setsize={count} aria-label={String(index + 1)} disabled={blocked} tabindex={blocked ? -1 : 0}
           onmousemove={event => handleHover(index, event)} onclick={event => handleClick(index, event)}
-          onkeydown={event => { if (event.key === 'Enter' && !blocked) { event.preventDefault(); handleClick(index, event); } }}>
+          onkeydown={event => {
+              if (event.key === 'Enter' && !blocked) {
+                event.preventDefault();
+                handleClick(index, event);
+              }
+            }}>
           <span class="ant-rate-star-first" aria-hidden="true">{@render symbol(info)}</span>
           <span class="ant-rate-star-second" aria-hidden="true">{@render symbol(info)}</span>
         </button>
@@ -121,7 +207,9 @@
     {#if characterRender}{@render characterRender(star, info)}
     {:else if tooltips}
       {@const tooltip = tooltips[index]}
-      <Tooltip {...typeof tooltip === 'object' ? tooltip : { title: tooltip }} style={`display:contents;${typeof tooltip === 'object' ? tooltip.style ?? '' : ''}`}>
+      <Tooltip {...typeof tooltip === 'object' ? tooltip : { title: tooltip }} style={`display:contents;${typeof tooltip === 'object'
+          ? tooltip.style ?? ''
+          : ''}`}>
         {@render star()}
       </Tooltip>
     {:else}{@render star()}{/if}

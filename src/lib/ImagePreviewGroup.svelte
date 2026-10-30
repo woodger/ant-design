@@ -1,6 +1,9 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import type { ImagePreviewGroupProps, ImagePreviewGroupConfig } from './image-preview-group.types';
+  import type {
+    ImagePreviewGroupProps,
+    ImagePreviewGroupConfig
+  } from './image-preview-group.types';
   import type { ImageGroupEntry } from './image-group-context';
   import { provideImageGroup } from './image-group-context';
   import { getImagePreviewItems, getImagePreviewIndex } from './image-preview-group.engine';
@@ -16,30 +19,42 @@
   let opened = $derived(config.open ?? innerOpen);
   let data = $derived(entries[current]?.data ?? {});
   let viewerConfig = $derived({ ...config, onOpenChange: undefined });
-  let keepOpenIndex = false; let previousOpen = false;
+  let keepOpenIndex = false;
+  let previousOpen = false;
   let previous = untrack(() => ({ current: config.current, open: config.open }));
   $effect(() => {
     const next = { current: config.current, open: config.open };
-    if (next.current !== previous.current) innerCurrent = next.current ?? 0;
-    if (next.open !== previous.open) innerOpen = Boolean(next.open);
+    if (next.current !== previous.current)
+      innerCurrent = next.current ?? 0;
+    if (next.open !== previous.open)
+      innerOpen = Boolean(next.open);
     previous = next;
   });
   $effect(() => {
     const next = opened;
     untrack(() => {
-      if (next && !previousOpen && !keepOpenIndex) innerCurrent = 0;
-      if (!next) keepOpenIndex = false;
+      if (next && !previousOpen && !keepOpenIndex)
+        innerCurrent = 0;
+      if (!next)
+        keepOpenIndex = false;
       previousOpen = next;
     });
   });
   function register(id: string, entry: ImageGroupEntry) {
-    const next = new Map(registered); next.set(id, entry); registered = next;
-    return () => { const next = new Map(registered); next.delete(id); registered = next; };
+    const next = new Map(registered);
+    next.set(id, entry);
+    registered = next;
+    return () => {
+      const next = new Map(registered);
+      next.delete(id);
+      registered = next;
+    };
   }
   function requestOpen(next: boolean, index = current) {
     const before = opened;
     innerOpen = next;
-    if (next !== before) config.onOpenChange?.(next, { current: index });
+    if (next !== before)
+      config.onOpenChange?.(next, { current: index });
   }
   function fromImage(id: string, source: string | undefined) {
     const before = current;
@@ -47,7 +62,10 @@
     requestOpen(true, before);
     keepOpenIndex = true;
   }
-  function change(next: number, previous: number) { innerCurrent = next; config.onChange?.(next, previous); }
+  function change(next: number, previous: number) {
+    innerCurrent = next;
+    config.onChange?.(next, previous);
+  }
   provideImageGroup({ register, preview: fromImage });
 </script>
 

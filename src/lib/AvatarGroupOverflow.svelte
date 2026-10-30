@@ -6,7 +6,12 @@
   import type { AvatarGroupItem, AvatarGroupMax } from './avatar-group.types';
   import type { AvatarShape, AvatarSize } from './avatar.types';
 
-  let { items, size, shape, max }: { items: readonly AvatarGroupItem[]; size?: AvatarSize; shape?: AvatarShape; max?: AvatarGroupMax } = $props();
+  let { items, size, shape, max }: {
+    items: readonly AvatarGroupItem[];
+    size?: AvatarSize;
+    shape?: AvatarShape;
+    max?: AvatarGroupMax;
+  } = $props();
   const config = useConfig();
   let open = $state<boolean | undefined>(false);
   let strings = $derived({ ...ruRU.avatarGroup, ...config.locale.avatarGroup });

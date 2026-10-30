@@ -2,7 +2,7 @@
   import AnchorItems from './AnchorItems.svelte';
   import AnchorLink from './AnchorLink.svelte';
   import type { AnchorItem } from './anchor.types';
-  let { items, replace }: { items?: readonly AnchorItem[]; replace?: boolean } = $props();
+  let { items, replace }: { items?: readonly AnchorItem[]; replace?: boolean; } = $props();
 </script>
 
 {#each items ?? [] as item (item.key)}

@@ -1,7 +1,15 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
-  let { id, labelledBy, itemKey, active, children, forceRender = false, destroyOnHidden = false }: { id: string; labelledBy: string; itemKey: string; active: boolean; children?: Snippet; forceRender?: boolean; destroyOnHidden?: boolean } = $props();
+  let { id, labelledBy, itemKey, active, children, forceRender = false, destroyOnHidden = false }: {
+    id: string;
+    labelledBy: string;
+    itemKey: string;
+    active: boolean;
+    children?: Snippet;
+    forceRender?: boolean;
+    destroyOnHidden?: boolean;
+  } = $props();
   let mounted = $state(false);
   let renderContent = $derived(active || forceRender || mounted && !destroyOnHidden);
 
@@ -9,7 +17,9 @@
   // После уничтожения панель снова ждёт активации, даже если destroyOnHidden отключат.
   function rememberContent() {
     mounted = true;
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }
 </script>
 

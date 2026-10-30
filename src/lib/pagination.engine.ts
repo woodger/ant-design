@@ -25,7 +25,9 @@ export function getPaginationState(total: number, current = 1, pageSize = 10): P
     current: page,
     pageSize: normalizedSize,
     pageCount,
-    range: normalizedTotal ? [(page - 1) * normalizedSize + 1, Math.min(normalizedTotal, page * normalizedSize)] : [0, 0]
+    range: normalizedTotal
+      ? [(page - 1) * normalizedSize + 1, Math.min(normalizedTotal, page * normalizedSize)]
+      : [0, 0]
   };
 }
 

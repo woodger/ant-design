@@ -3,8 +3,22 @@
   import { useConfig } from './config-context';
   import { getPaginationState } from './pagination.engine';
   import { getTableFixedOffsets } from './table-layout.engine';
-  import { areTableFiltersEqual, changeTableSelection, getNextTableSorter, getTableData, getTableFilters, getTableSelection } from './table.engine';
-  import type { TableChange, TableFilters, TableFilterValue, TableKey, TableProps, TableSorter } from './table.types';
+  import {
+    areTableFiltersEqual,
+    changeTableSelection,
+    getNextTableSorter,
+    getTableData,
+    getTableFilters,
+    getTableSelection
+  } from './table.engine';
+  import type {
+    TableChange,
+    TableFilters,
+    TableFilterValue,
+    TableKey,
+    TableProps,
+    TableSorter
+  } from './table.types';
   import { ruRU } from './types';
   import Checkbox from './Checkbox.svelte';
   import Icon from './Icon.svelte';
@@ -57,14 +71,52 @@
   const initialSize = untrack(() => defaultPageSize);
   const initialSelection = untrack(() => [...defaultSelectedRowKeys]);
   const initialExpansion = untrack(() => [...defaultExpandedRowKeys]);
-  const initialFilters: TableFilters = untrack(() => Object.fromEntries(Object.entries(defaultFilters).map(([key, values]) => [key, [...values]])));
-  let tableData = $derived(getTableData(dataSource, columns, rowKey, sorter === undefined ? initialSorter : sorter, filters ?? initialFilters, mode));
-  let hasFilters = $derived(columns.some((column) => column.filters?.length && (mode === 'server' || column.onFilter)));
-  let paging = $derived(getPaginationState(mode === 'server' ? total ?? dataSource.length : tableData.rows.length, current ?? initialCurrent, pageSize ?? initialSize));
-  let pageRows = $derived(mode === 'server' || pagination === false ? tableData.rows : tableData.rows.slice((paging.current - 1) * paging.pageSize, paging.current * paging.pageSize));
+  const initialFilters: TableFilters = untrack(
+    () => Object.fromEntries(
+      Object.entries(defaultFilters).map(([key, values]) => [key, [...values]])
+    )
+  );
+  let tableData = $derived(
+    getTableData(
+      dataSource,
+      columns,
+      rowKey,
+      sorter === undefined ? initialSorter : sorter,
+      filters ?? initialFilters,
+      mode
+    )
+  );
+  let hasFilters = $derived(
+    columns.some((column) => column.filters?.length && (mode === 'server' || column.onFilter))
+  );
+  let paging = $derived(
+    getPaginationState(
+      mode === 'server' ? total ?? dataSource.length : tableData.rows.length,
+      current ?? initialCurrent,
+      pageSize ?? initialSize
+    )
+  );
+  let pageRows = $derived(
+    mode === 'server' || pagination === false
+      ? tableData.rows
+      : tableData.rows.slice(
+        (paging.current - 1) * paging.pageSize,
+        paging.current * paging.pageSize
+      )
+  );
   let selectionOptions = $derived(typeof rowSelection === 'object' ? rowSelection : undefined);
-  let visibleRows = $derived(pageRows.map((row) => ({ ...row, checkbox: selectionOptions?.getCheckboxProps?.(row.record) ?? {}, canExpand: expandable ? expandable.rowExpandable?.(row.record) ?? true : false })));
-  let changeableKeys = $derived(visibleRows.filter((row) => !row.checkbox.disabled).map((row) => row.key));
+  let visibleRows = $derived(
+    pageRows.map(
+      (row) => ({
+        ...row,
+        checkbox: selectionOptions?.getCheckboxProps?.(row.record) ?? {},
+        canExpand: expandable ? expandable.rowExpandable?.(row.record) ?? true : false
+      })
+    )
+  );
+  let changeableKeys = $derived(
+    visibleRows.filter((row) => !row.checkbox.disabled).map((row) => row.key)
+  );
   let selectedKeys = $derived(new Set(selectedRowKeys ?? initialSelection));
   let selection = $derived(getTableSelection(changeableKeys, [...selectedKeys]));
   let expandedKeys = $derived(new Set(expandedRowKeys ?? initialExpansion));
@@ -75,7 +127,13 @@
   let table = $state<HTMLTableElement>();
   let expansionOffset = $derived(expandable ? 1 : 0);
   let dataOffset = $derived(expansionOffset + (rowSelection ? 1 : 0));
-  let fixedColumns = $derived([...(expandable ? [expandable.fixed ?? false] : []), ...(rowSelection ? [selectionOptions?.fixed ?? false] : []), ...columns.map((column) => column.fixed)]);
+  let fixedColumns = $derived(
+    [
+      ...(expandable ? [expandable.fixed ?? false] : []),
+      ...(rowSelection ? [selectionOptions?.fixed ?? false] : []),
+      ...columns.map((column) => column.fixed)
+    ]
+  );
   let fixedCells = $derived(fixedColumns.map((fixed, index) => ({
     side: fixed === true ? 'start' : fixed || undefined,
     offset: `var(--ant-table-fixed-${index}, auto)`
@@ -97,7 +155,10 @@
     const measure = () => {
       const widths = cells.map((cell) => cell.getBoundingClientRect().width);
       const offsets = getTableFixedOffsets(fixed, widths);
-      const pinnedWidth = widths.reduce((sum, width, index) => sum + (fixed[index] ? width : 0), 0);
+      const pinnedWidth = widths.reduce(
+        (sum, width, index) => sum + (fixed[index] ? width : 0),
+        0
+      );
       const enabled = cells.length === fixed.length && pinnedWidth < viewport.clientWidth;
       let startWidth = 0;
       let endWidth = 0;
@@ -108,7 +169,8 @@
         if (enabled && offset !== undefined) {
           element.style.setProperty(property, `${offset}px`);
 
-          if (fixed[index] === 'end') endWidth += widths[index];
+          if (fixed[index] === 'end')
+            endWidth += widths[index];
           else startWidth += widths[index];
         } else {
           element.style.removeProperty(property);
@@ -117,7 +179,10 @@
       element.style.setProperty('--ant-table-fixed-position', enabled ? 'sticky' : 'relative');
       viewport.style.setProperty('--ant-table-fixed-start-width', `${startWidth}px`);
       viewport.style.setProperty('--ant-table-fixed-end-width', `${endWidth}px`);
-      viewport.style.setProperty('--ant-table-header-height', `${hasHeader ? element.tHead?.getBoundingClientRect().height ?? 0 : 0}px`);
+      viewport.style.setProperty(
+        '--ant-table-header-height',
+        `${hasHeader ? element.tHead?.getBoundingClientRect().height ?? 0 : 0}px`
+      );
       viewport.style.setProperty('--ant-table-viewport-width', `${viewport.clientWidth}px`);
     };
 
@@ -130,7 +195,14 @@
       observer.disconnect();
       fixed.forEach((_, index) => element.style.removeProperty(`--ant-table-fixed-${index}`));
       element.style.removeProperty('--ant-table-fixed-position');
-      ['--ant-table-fixed-start-width', '--ant-table-fixed-end-width', '--ant-table-header-height', '--ant-table-viewport-width'].forEach((property) => viewport.style.removeProperty(property));
+      [
+        '--ant-table-fixed-start-width',
+        '--ant-table-fixed-end-width',
+        '--ant-table-header-height',
+        '--ant-table-viewport-width'
+      ].forEach(
+        (property) => viewport.style.removeProperty(property)
+      );
     };
   });
 
@@ -205,7 +277,9 @@
   function sortDescription(columnKey: string, active: TableSorter | null): string {
     const next = getNextTableSorter(columnKey, active);
 
-    return next?.order === 'ascend' ? strings.sortAscending : next?.order === 'descend' ? strings.sortDescending : strings.cancelSort;
+    return next?.order === 'ascend'
+      ? strings.sortAscending
+      : next?.order === 'descend' ? strings.sortDescending : strings.cancelSort;
   }
 
   function changeExpansion(record: Row, key: TableKey) {
@@ -216,7 +290,8 @@
     const next = new Set(expandedKeys);
     const expanded = !next.has(key);
 
-    if (expanded) next.add(key);
+    if (expanded)
+      next.add(key);
     else next.delete(key);
 
     expandedRowKeys = [...next];
@@ -227,7 +302,12 @@
   function expansionId(key: TableKey): string {
     const value = `${typeof key}:${key}`;
 
-    return `ant-table-details-${id}-${Array.from({ length: value.length }, (_, index) => value.charCodeAt(index).toString(16)).join('-')}`;
+    return `ant-table-details-${id}-${Array.from(
+      { length: value.length },
+      (_, index) => value.charCodeAt(index).toString(16)
+    ).join(
+      '-'
+    )}`;
   }
 
   function cellValue(record: Row, key: keyof Row | undefined): string {
@@ -272,43 +352,90 @@
   .ant-table-small .expanded-content { padding: var(--ant-table-cell-padding-block-sm) var(--ant-table-cell-padding-inline-sm); }
 </style>
 
-<div class={['ant-table-wrapper ant-table-css-var', config.direction === 'rtl' && 'ant-table-wrapper-rtl', className]} dir={config.direction} {style}>
+<div class={[
+    'ant-table-wrapper ant-table-css-var',
+    config.direction === 'rtl' && 'ant-table-wrapper-rtl',
+    className
+  ]} dir={config.direction} {style}>
   {#if loading}<div class="loading-state" role="status"><Spin size="small" aria-hidden />{strings.loadingText}</div>{/if}
-  <div class={['ant-table', `ant-table-${resolvedSize === 'middle' ? 'medium' : resolvedSize}`, bordered && 'ant-table-bordered', !visibleRows.length && 'ant-table-empty']}>
+  <div class={[
+      'ant-table',
+      `ant-table-${resolvedSize === 'middle' ? 'medium' : resolvedSize}`,
+      bordered && 'ant-table-bordered',
+      !visibleRows.length && 'ant-table-empty'
+    ]}>
     <div class="ant-table-container">
       <!-- svelte-ignore a11y_no_noninteractive_tabindex (Фокус нужен для прокрутки таблицы с клавиатуры.) -->
-      <div bind:this={content} class={['ant-table-content', (scroll?.y !== undefined || fixedColumns.some(Boolean)) && 'table-sticky', scroll?.y !== undefined && 'table-scroll-y']} style:max-height={typeof scroll?.y === 'number' ? `${scroll.y}px` : scroll?.y} role="region" aria-label={caption ?? ariaLabel ?? strings.label} tabindex="0">
+      <div bind:this={content} class={[
+          'ant-table-content',
+          (scroll?.y !== undefined || fixedColumns.some(Boolean)) && 'table-sticky',
+          scroll?.y !== undefined && 'table-scroll-y'
+        ]} style:max-height={typeof scroll?.y === 'number' ? `${scroll.y}px` : scroll?.y} role="region" aria-label={caption ?? ariaLabel ?? strings.label} tabindex="0">
         <table bind:this={table} aria-label={ariaLabel ?? (caption ? undefined : strings.label)} aria-busy={loading || undefined} style:min-width={typeof scroll?.x === 'number' ? `${scroll.x}px` : scroll?.x}>
           {#if caption}<caption>{caption}</caption>{/if}
           <colgroup>
-            {#if expandable}<col style:width={typeof expandable.columnWidth === 'number' ? `${expandable.columnWidth}px` : expandable.columnWidth ?? '48px'} />{/if}
+            {#if expandable}<col style:width={typeof expandable.columnWidth === 'number'
+                ? `${expandable.columnWidth}px`
+                : expandable.columnWidth ?? '48px'} />{/if}
             {#if rowSelection}<col style="width: 48px" />{/if}
-            {#each columns as column (column.key)}<col style:width={typeof column.width === 'number' ? `${column.width}px` : column.width} />{/each}
+            {#each columns as column (column.key)}<col style:width={typeof column.width === 'number'
+                ? `${column.width}px`
+                : column.width} />{/each}
           </colgroup>
           <thead class="ant-table-thead">
             <tr>
               {#if expandable}
-                <th scope="col" aria-label={expandable.columnTitle ?? strings.expandColumn} class={['ant-table-cell ant-table-row-expand-icon-cell', expandable.fixed && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start']} style:inset-inline-start={expandable.fixed ? fixedCells[0].offset : undefined} style:z-index={expandable.fixed ? 3 : undefined}>{expandable.columnTitle ?? ''}</th>
+                <th scope="col" aria-label={expandable.columnTitle ?? strings.expandColumn} class={[
+                    'ant-table-cell ant-table-row-expand-icon-cell',
+                    expandable.fixed
+                    && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start'
+                  ]} style:inset-inline-start={expandable.fixed ? fixedCells[0].offset : undefined} style:z-index={expandable.fixed ? 3 : undefined}>{expandable.columnTitle ?? ''}</th>
               {/if}
               {#if rowSelection}
-                <th scope="col" class={['ant-table-cell ant-table-selection-column', selectionOptions?.fixed && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start']} style:inset-inline-start={selectionOptions?.fixed ? fixedCells[expansionOffset].offset : undefined} style:z-index={selectionOptions?.fixed ? 3 : undefined}>
-                  <Checkbox checked={selection.all} indeterminate={selection.some} disabled={resolvedDisabled || selection.disabled} aria-label={strings.selectAll} onCheckedChange={(checked) => changeSelection(changeableKeys, checked, 'all')} />
+                <th scope="col" class={[
+                    'ant-table-cell ant-table-selection-column',
+                    selectionOptions?.fixed
+                    && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start'
+                  ]} style:inset-inline-start={selectionOptions?.fixed
+                      ? fixedCells[expansionOffset].offset
+                      : undefined} style:z-index={selectionOptions?.fixed ? 3 : undefined}>
+                  <Checkbox checked={selection.all} indeterminate={selection.some} disabled={resolvedDisabled || selection.disabled} aria-label={strings.selectAll} onCheckedChange={(checked) => changeSelection(
+                      changeableKeys,
+                      checked,
+                      'all'
+                    )} />
                 </th>
               {/if}
               {#each columns as column, columnIndex (column.key)}
                 {@const sortable = typeof column.sorter === 'function' || (mode === 'server' && column.sorter === true)}
                 {@const order = tableData.sorter?.columnKey === column.key ? tableData.sorter.order : undefined}
                 {@const fixed = fixedCells[columnIndex + dataOffset]}
-                <th scope="col" class={['ant-table-cell', fixed.side && `table-fixed-cell ant-table-cell-fix ant-table-cell-fix-${fixed.side}`, sortable && 'ant-table-column-has-sorters', order && 'ant-table-column-sort']} style:inset-inline-start={fixed.side === 'start' ? fixed.offset : undefined} style:inset-inline-end={fixed.side === 'end' ? fixed.offset : undefined} style:z-index={fixed.side ? 3 : undefined} style:text-align={column.align} aria-sort={order === 'ascend' ? 'ascending' : order === 'descend' ? 'descending' : undefined}>
+                <th scope="col" class={[
+                    'ant-table-cell',
+                    fixed.side
+                    && `table-fixed-cell ant-table-cell-fix ant-table-cell-fix-${fixed.side}`,
+                    sortable && 'ant-table-column-has-sorters',
+                    order && 'ant-table-column-sort'
+                  ]} style:inset-inline-start={fixed.side === 'start' ? fixed.offset : undefined} style:inset-inline-end={fixed.side === 'end' ? fixed.offset : undefined} style:z-index={fixed.side ? 3 : undefined} style:text-align={column.align} aria-sort={order === 'ascend'
+                      ? 'ascending'
+                      : order === 'descend' ? 'descending' : undefined}>
                   <div class="column-heading">
                     {#if sortable}
                       <button type="button" class="sort-button ant-table-column-sorters" disabled={resolvedDisabled} title={sortDescription(column.key, tableData.sorter)} onclick={() => changeSort(column.key)}>
                         <span class="ant-table-column-title">{column.title}</span>
-                        <span class="ant-table-column-sorter" aria-hidden="true"><span class="ant-table-column-sorter-inner"><span class={['sort-arrow sort-up', order === 'ascend' && 'active']}></span><span class={['sort-arrow sort-down', order === 'descend' && 'active']}></span></span></span>
+                        <span class="ant-table-column-sorter" aria-hidden="true"><span class="ant-table-column-sorter-inner"><span class={[
+                            'sort-arrow sort-up',
+                            order === 'ascend' && 'active'
+                          ]}></span><span class={[
+                              'sort-arrow sort-down',
+                              order === 'descend' && 'active'
+                            ]}></span></span></span>
                       </button>
                     {:else}<span>{column.title}</span>{/if}
                     {#if column.filters?.length && (mode === 'server' || column.onFilter)}
-                      <TableFilter title={column.title} options={column.filters} value={Object.hasOwn(tableData.filters, column.key) ? tableData.filters[column.key] : []} multiple={column.filterMultiple !== false} disabled={resolvedDisabled} onApply={(values) => changeFilter(column.key, values)} />
+                      <TableFilter title={column.title} options={column.filters} value={Object.hasOwn(tableData.filters, column.key)
+                          ? tableData.filters[column.key]
+                          : []} multiple={column.filterMultiple !== false} disabled={resolvedDisabled} onApply={(values) => changeFilter(column.key, values)} />
                     {/if}
                   </div>
                 </th>
@@ -318,22 +445,52 @@
           <tbody class="ant-table-tbody">
             {#each visibleRows as row, index (row.key)}
               {@const expanded = row.canExpand && expandedKeys.has(row.key)}
-              <tr class={['ant-table-row', rowSelection && selectedKeys.has(row.key) && 'ant-table-row-selected']}>
+              <tr class={[
+                  'ant-table-row',
+                  rowSelection && selectedKeys.has(row.key) && 'ant-table-row-selected'
+                ]}>
                 {#if expandable}
-                  <td class={['ant-table-cell ant-table-row-expand-icon-cell', expandable.fixed && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start']} style:inset-inline-start={expandable.fixed ? fixedCells[0].offset : undefined} style:z-index={expandable.fixed ? 1 : undefined}>
+                  <td class={[
+                      'ant-table-cell ant-table-row-expand-icon-cell',
+                      expandable.fixed
+                      && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start'
+                    ]} style:inset-inline-start={expandable.fixed ? fixedCells[0].offset : undefined} style:z-index={expandable.fixed ? 1 : undefined}>
                     {#if row.canExpand}
-                      <button type="button" class={['ant-table-row-expand-icon', expanded ? 'ant-table-row-expand-icon-expanded' : 'ant-table-row-expand-icon-collapsed']} disabled={resolvedDisabled} aria-label={`${expanded ? strings.collapseRow : strings.expandRow} ${row.key}`} aria-expanded={expanded} aria-controls={expanded ? expansionId(row.key) : undefined} onclick={() => changeExpansion(row.record, row.key)}></button>
+                      <button type="button" class={[
+                          'ant-table-row-expand-icon',
+                          expanded
+                            ? 'ant-table-row-expand-icon-expanded'
+                            : 'ant-table-row-expand-icon-collapsed'
+                        ]} disabled={resolvedDisabled} aria-label={`${expanded
+                            ? strings.collapseRow
+                            : strings.expandRow} ${row.key}`} aria-expanded={expanded} aria-controls={expanded ? expansionId(row.key) : undefined} onclick={() => changeExpansion(row.record, row.key)}></button>
                     {/if}
                   </td>
                 {/if}
                 {#if rowSelection}
-                  <td class={['ant-table-cell ant-table-selection-column', selectionOptions?.fixed && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start']} style:inset-inline-start={selectionOptions?.fixed ? fixedCells[expansionOffset].offset : undefined} style:z-index={selectionOptions?.fixed ? 1 : undefined}>
-                    <Checkbox checked={selectedKeys.has(row.key)} disabled={resolvedDisabled || row.checkbox.disabled} aria-label={row.checkbox['aria-label'] ?? `${strings.selectRow} ${row.key}`} onCheckedChange={(checked) => changeSelection([row.key], checked, 'single')} />
+                  <td class={[
+                      'ant-table-cell ant-table-selection-column',
+                      selectionOptions?.fixed
+                      && 'table-fixed-cell ant-table-cell-fix ant-table-cell-fix-start'
+                    ]} style:inset-inline-start={selectionOptions?.fixed
+                        ? fixedCells[expansionOffset].offset
+                        : undefined} style:z-index={selectionOptions?.fixed ? 1 : undefined}>
+                    <Checkbox checked={selectedKeys.has(row.key)} disabled={resolvedDisabled || row.checkbox.disabled} aria-label={row.checkbox['aria-label']
+                        ?? `${strings.selectRow} ${row.key}`} onCheckedChange={(checked) => changeSelection(
+                            [row.key],
+                            checked,
+                            'single'
+                          )} />
                   </td>
                 {/if}
                 {#each columns as column, columnIndex (column.key)}
                   {@const fixed = fixedCells[columnIndex + dataOffset]}
-                  <td class={['ant-table-cell', fixed.side && `table-fixed-cell ant-table-cell-fix ant-table-cell-fix-${fixed.side}`, tableData.sorter?.columnKey === column.key && 'ant-table-column-sort']} style:inset-inline-start={fixed.side === 'start' ? fixed.offset : undefined} style:inset-inline-end={fixed.side === 'end' ? fixed.offset : undefined} style:z-index={fixed.side ? 1 : undefined} style:text-align={column.align}>
+                  <td class={[
+                      'ant-table-cell',
+                      fixed.side
+                      && `table-fixed-cell ant-table-cell-fix ant-table-cell-fix-${fixed.side}`,
+                      tableData.sorter?.columnKey === column.key && 'ant-table-column-sort'
+                    ]} style:inset-inline-start={fixed.side === 'start' ? fixed.offset : undefined} style:inset-inline-end={fixed.side === 'end' ? fixed.offset : undefined} style:z-index={fixed.side ? 1 : undefined} style:text-align={column.align}>
                     {#if column.render}{@render column.render(row.record, index)}{:else}{cellValue(row.record, column.dataIndex)}{/if}
                   </td>
                 {/each}

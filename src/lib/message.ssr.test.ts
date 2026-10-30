@@ -14,7 +14,8 @@ describe('MessageHolder server rendering', () => {
   });
 
   it('prepares queued content in a closed native popover without callbacks', () => {
-    const message = createMessage(); const callback = vi.fn();
+    const message = createMessage();
+    const callback = vi.fn();
     message.success({ content: 'Saved changes', onClose: callback });
     const { body } = render(MessageHolder, { props: { message } });
 
@@ -33,7 +34,8 @@ describe('MessageHolder server rendering', () => {
     const message = createMessage();
     const content = createRawSnippet(() => ({ render: () => '<strong>Rich message</strong>' }));
     const icon = createRawSnippet(() => ({ render: () => '<span>Custom icon</span>' }));
-    message.error('<script>Unsafe</script>'); message.info({ content, icon });
+    message.error('<script>Unsafe</script>');
+    message.info({ content, icon });
     const { body } = render(MessageHolder, { props: { message } });
 
     expect(body).toContain('&lt;script>');
@@ -44,8 +46,14 @@ describe('MessageHolder server rendering', () => {
   });
 
   it('renders explicit live roles, custom top positions and root attributes', () => {
-    const message = createMessage(); message.error({ content: 'Error', role: 'alert', class: 'notice-custom', style: 'color: red' });
-    const { body } = render(MessageHolder, { props: { message, top: '10vh', id: 'page-messages', class: 'holder-custom' } });
+    const message = createMessage();
+    message.error(
+      { content: 'Error', role: 'alert', class: 'notice-custom', style: 'color: red' }
+    );
+    const { body } = render(
+      MessageHolder,
+      { props: { message, top: '10vh', id: 'page-messages', class: 'holder-custom' } }
+    );
 
     expect(body).toContain('role="alert"');
     expect(body).toContain('--notification-top: 10vh');
@@ -56,7 +64,9 @@ describe('MessageHolder server rendering', () => {
   });
 
   it('keeps independent request queues isolated across rendering', () => {
-    const first = createMessage(); const second = createMessage(); first.info('Private request');
+    const first = createMessage();
+    const second = createMessage();
+    first.info('Private request');
     const firstBody = render(MessageHolder, { props: { message: first } }).body;
     const secondBody = render(MessageHolder, { props: { message: second } }).body;
 

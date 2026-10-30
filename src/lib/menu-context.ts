@@ -27,5 +27,9 @@ export interface MenuContext {
 }
 
 const key = Symbol('ant-menu');
-export function provideMenu(context: MenuContext) { setContext(key, context); }
-export function useMenu(): MenuContext { return getContext(key); }
+export function provideMenu(context: MenuContext) {
+  setContext(key, context);
+}
+export function useMenu(): MenuContext {
+  return getContext(key);
+}

@@ -6,7 +6,21 @@
   import { ruRU } from './types';
   import type { SpinProps } from './spin.types';
 
-  let { spinning = true, delay = 0, size, description, indicator, children, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, 'aria-hidden': ariaHidden, class: className = '', style }: SpinProps = $props();
+  let {
+    spinning = true,
+    delay = 0,
+    size,
+    description,
+    indicator,
+    children,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    'aria-hidden': ariaHidden,
+    class: className = '',
+    style
+  }: SpinProps = $props();
   const config = useConfig();
   let host = $state<HTMLDivElement>();
   let content = $state<HTMLDivElement>();
@@ -14,10 +28,17 @@
   const model = createSpinModel(() => request);
   const focus = createSpinFocus();
   let visible = $derived(model.visible);
-  let resolvedSize = $derived(size ?? (config.componentSize === 'middle' ? 'medium' : config.componentSize));
+  let resolvedSize = $derived(
+    size ?? (config.componentSize === 'middle' ? 'medium' : config.componentSize)
+  );
   let strings = $derived({ ...ruRU.spin, ...config.locale.spin });
   let hasDescription = $derived(typeof description === 'function' || Boolean(description));
-  let label = $derived(ariaLabel ?? (ariaLabelledby ? undefined : typeof description === 'string' && description ? description : strings.loadingText));
+  let label = $derived(
+    ariaLabel
+    ?? (ariaLabelledby
+      ? undefined
+      : typeof description === 'string' && description ? description : strings.loadingText)
+  );
   let announce = $derived(visible && !ariaHidden);
 
   $effect(() => {
@@ -26,14 +47,20 @@
     if (!node) return;
 
     const view = node.ownerDocument.defaultView!;
-    return untrack(() => model.connect(current, { schedule(callback, milliseconds) { const timer = view.setTimeout(callback, milliseconds); return () => view.clearTimeout(timer); } }));
+    return untrack(() => model.connect(current, {
+      schedule(callback, milliseconds) {
+        const timer = view.setTimeout(callback, milliseconds);
+        return () => view.clearTimeout(timer);
+      }
+    }));
   });
 
   $effect.pre(() => {
     const node = host;
     const container = content;
     const busy = spinning;
-    if (node) untrack(() => focus.update(node, container, busy));
+    if (node)
+      untrack(() => focus.update(node, container, busy));
   });
 
   onDestroy(() => focus.destroy());
@@ -60,7 +87,19 @@
 {/snippet}
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex (Отрицательный tabindex нужен для временного фокуса при блокировке children.) -->
-<div bind:this={host} {id} role={ariaHidden ? undefined : children ? 'group' : announce ? 'status' : undefined} aria-live={!children && announce ? 'polite' : undefined} aria-atomic={!children && announce || undefined} aria-label={children || visible ? label : undefined} aria-labelledby={children || visible ? ariaLabelledby : undefined} aria-describedby={ariaDescribedby} aria-hidden={ariaHidden || !children && !visible || undefined} tabindex={children ? -1 : undefined} hidden={!children && !visible} dir={config.direction} class={['ant-spin ant-spin-css-var', !children && 'ant-spin-section', visible && 'ant-spin-spinning', resolvedSize === 'small' && 'ant-spin-sm', resolvedSize === 'large' && 'ant-spin-lg', config.direction === 'rtl' && 'ant-spin-rtl', className]} {style}>
-  {#if visible}{#if children}<div class="ant-spin-section" role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-atomic={announce || undefined} aria-label={typeof description === 'string' && description ? description : strings.loadingText}>{@render visual()}</div>{:else}{@render visual()}{/if}{/if}
+<div bind:this={host} {id} role={ariaHidden
+    ? undefined
+    : children ? 'group' : announce ? 'status' : undefined} aria-live={!children && announce ? 'polite' : undefined} aria-atomic={!children && announce || undefined} aria-label={children || visible ? label : undefined} aria-labelledby={children || visible ? ariaLabelledby : undefined} aria-describedby={ariaDescribedby} aria-hidden={ariaHidden || !children && !visible || undefined} tabindex={children ? -1 : undefined} hidden={!children && !visible} dir={config.direction} class={[
+        'ant-spin ant-spin-css-var',
+        !children && 'ant-spin-section',
+        visible && 'ant-spin-spinning',
+        resolvedSize === 'small' && 'ant-spin-sm',
+        resolvedSize === 'large' && 'ant-spin-lg',
+        config.direction === 'rtl' && 'ant-spin-rtl',
+        className
+      ]} {style}>
+  {#if visible}{#if children}<div class="ant-spin-section" role={announce ? 'status' : undefined} aria-live={announce ? 'polite' : undefined} aria-atomic={announce || undefined} aria-label={typeof description === 'string' && description
+      ? description
+      : strings.loadingText}>{@render visual()}</div>{:else}{@render visual()}{/if}{/if}
   {#if children}<div bind:this={content} class="ant-spin-container" inert={spinning} aria-busy={spinning}>{@render children()}</div>{/if}
 </div>

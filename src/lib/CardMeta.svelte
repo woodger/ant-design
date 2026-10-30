@@ -1,8 +1,22 @@
 <script lang="ts">
   import { cardHasContent } from './card.engine';
   import type { CardContent, CardMetaProps } from './card.types';
-  let { avatar, title, description, classNames, styles, class: className = '', style, nativeElement = $bindable(), ...rest }: CardMetaProps = $props();
-  let info = $derived({ props: { ...rest, avatar, title, description, classNames, styles, class: className, style } });
+  let {
+    avatar,
+    title,
+    description,
+    classNames,
+    styles,
+    class: className = '',
+    style,
+    nativeElement = $bindable(),
+    ...rest
+  }: CardMetaProps = $props();
+  let info = $derived(
+    {
+      props: { ...rest, avatar, title, description, classNames, styles, class: className, style }
+    }
+  );
   let classes = $derived(typeof classNames === 'function' ? classNames(info) : classNames ?? {});
   let slots = $derived(typeof styles === 'function' ? styles(info) : styles ?? {});
 </script>

@@ -8,8 +8,29 @@ export type FloatButtonShape = 'circle' | 'square';
 export type FloatButtonType = 'default' | 'primary';
 export type FloatButtonPlacement = 'top' | 'left' | 'right' | 'bottom';
 export type FloatButtonBadge = Omit<BadgeProps, 'status' | 'text' | 'title' | 'children'>;
-export interface FloatButtonProps extends Omit<ButtonProps, 'children' | 'type' | 'shape' | 'size' | 'loading' | 'color' | 'variant' | 'danger' | 'ghost' | 'block' | 'classNames' | 'styles' | 'onclick' | 'onClick' | 'autoInsertSpace' | '_skipSemantic' | '_skipContentWrapper'> {
+/** Плавающее нативное действие или ссылка с icon, Badge и Tooltip. */
+export interface FloatButtonProps extends Omit<
+  ButtonProps,
+  'children'
+  | 'type'
+  | 'shape'
+  | 'size'
+  | 'loading'
+  | 'color'
+  | 'variant'
+  | 'danger'
+  | 'ghost'
+  | 'block'
+  | 'classNames'
+  | 'styles'
+  | 'onclick'
+  | 'onClick'
+  | 'autoInsertSpace'
+  | '_skipSemantic'
+  | '_skipContentWrapper'
+> {
   type?: FloatButtonType;
+  /** @defaultValue 'circle' */
   shape?: FloatButtonShape;
   content?: FloatButtonContent;
   description?: FloatButtonContent;
@@ -18,28 +39,67 @@ export interface FloatButtonProps extends Omit<ButtonProps, 'children' | 'type' 
   badge?: FloatButtonBadge;
   onclick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement> | null;
   onClick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
-  classNames?: ButtonSlots | ((info: { props: FloatButtonProps }) => ButtonSlots | undefined);
-  styles?: ButtonSlots | ((info: { props: FloatButtonProps }) => ButtonSlots | undefined);
+  classNames?: ButtonSlots | ((info: { props: FloatButtonProps; }) => ButtonSlots | undefined);
+  styles?: ButtonSlots | ((info: { props: FloatButtonProps; }) => ButtonSlots | undefined);
 }
-export type FloatButtonGroupSlots = Partial<Record<'root' | 'list' | 'item' | 'itemIcon' | 'itemContent' | 'trigger' | 'triggerIcon' | 'triggerContent', string>>;
-export interface FloatButtonGroupProps extends Omit<FloatButtonProps, 'classNames' | 'styles' | 'nativeElement'> {
+export type FloatButtonGroupSlots = Partial<
+  Record<
+    'root'
+    | 'list'
+    | 'item'
+    | 'itemIcon'
+    | 'itemContent'
+    | 'trigger'
+    | 'triggerIcon'
+    | 'triggerContent',
+    string
+  >
+>;
+/** Группа плавающих действий с общими настройками и управлением раскрытием. */
+export interface FloatButtonGroupProps extends Omit<
+  FloatButtonProps,
+  'classNames' | 'styles' | 'nativeElement'
+> {
   children?: Snippet;
-  items?: readonly { key: string | number; children: Snippet }[];
+  items?: readonly { key: string | number; children: Snippet; }[];
   trigger?: 'click' | 'hover';
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   closeIcon?: FloatButtonContent;
   placement?: FloatButtonPlacement;
-  classNames?: FloatButtonGroupSlots | ((info: { props: FloatButtonGroupProps }) => FloatButtonGroupSlots | undefined);
-  styles?: FloatButtonGroupSlots | ((info: { props: FloatButtonGroupProps }) => FloatButtonGroupSlots | undefined);
+  classNames?:
+  FloatButtonGroupSlots
+  | ((info: { props: FloatButtonGroupProps; }) => FloatButtonGroupSlots | undefined);
+  styles?:
+  FloatButtonGroupSlots
+  | ((info: { props: FloatButtonGroupProps; }) => FloatButtonGroupSlots | undefined);
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLDivElement;
 }
 export type BackTopTarget = Window | Document | HTMLElement;
+/** Плавающая кнопка возврата к началу выбранного scroll target. */
 export interface FloatButtonBackTopProps extends Omit<FloatButtonProps, 'target'> {
   target?: () => BackTopTarget | null;
+  /** @defaultValue 400 */
   visibilityHeight?: number;
+  /** @defaultValue 450 */
   duration?: number;
+  /** @defaultValue false */
   showProgress?: boolean;
 }
-export interface FloatButtonConfig { backTopIcon?: FloatButtonContent; class?: string; style?: string; classNames?: FloatButtonProps['classNames']; styles?: FloatButtonProps['styles']; }
-export interface FloatButtonGroupConfig { closeIcon?: FloatButtonContent; class?: string; style?: string; classNames?: FloatButtonGroupProps['classNames']; styles?: FloatButtonGroupProps['styles']; }
+/** Настройки ConfigProvider.floatButton; локальные props уточняют оформление. */
+export interface FloatButtonConfig {
+  backTopIcon?: FloatButtonContent;
+  class?: string;
+  style?: string;
+  classNames?: FloatButtonProps['classNames'];
+  styles?: FloatButtonProps['styles'];
+}
+/** Настройки ConfigProvider.floatButtonGroup и содержимого группы действий. */
+export interface FloatButtonGroupConfig {
+  closeIcon?: FloatButtonContent;
+  class?: string;
+  style?: string;
+  classNames?: FloatButtonGroupProps['classNames'];
+  styles?: FloatButtonGroupProps['styles'];
+}

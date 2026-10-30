@@ -9,5 +9,9 @@ export interface SpaceCompactContext {
   readonly last: boolean;
 }
 const compactKey = Symbol('ant-space-compact');
-export function useCompact(): SpaceCompactContext | null { return getContext<SpaceCompactContext | null>(compactKey) ?? null; }
-export function provideCompact(context: SpaceCompactContext | null) { setContext(compactKey, context); }
+export function useCompact(): SpaceCompactContext | null {
+  return getContext<SpaceCompactContext | null>(compactKey) ?? null;
+}
+export function provideCompact(context: SpaceCompactContext | null) {
+  setContext(compactKey, context);
+}

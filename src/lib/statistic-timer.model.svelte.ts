@@ -1,24 +1,40 @@
 import type { StatisticValue } from './statistic.types';
 import type { StatisticTimerType } from './statistic-timer.types';
 
-export interface StatisticTimerRequest { value?: StatisticValue; type: StatisticTimerType; }
-export interface StatisticTimerCallbacks { onChange?: (value: number) => void; onFinish?: () => void; }
-export interface StatisticTimerClock { now: () => number; repeat: (callback: () => void, milliseconds: number) => () => void; }
+export interface StatisticTimerRequest {
+  value?: StatisticValue;
+  type: StatisticTimerType;
+}
+export interface StatisticTimerCallbacks {
+  onChange?: (value: number) => void;
+  onFinish?: () => void;
+}
+export interface StatisticTimerClock {
+  now: () => number;
+  repeat: (callback: () => void, milliseconds: number) => () => void;
+}
 
-export function createStatisticTimerModel(read: () => StatisticTimerRequest, callbacks: () => StatisticTimerCallbacks) {
+export function createStatisticTimerModel(
+  read: () => StatisticTimerRequest,
+  callbacks: () => StatisticTimerCallbacks
+) {
   let now = $state<number>();
-  let current: { active: boolean; cancel?: () => void } | undefined;
+  let current: { active: boolean; cancel?: () => void; } | undefined;
 
   function stop(run: NonNullable<typeof current>) {
     run.active = false;
     run.cancel?.();
-    if (current === run) current = undefined;
+    if (current === run)
+      current = undefined;
   }
 
   return {
-    get now() { return now; },
+    get now() {
+      return now;
+    },
     connect(request: StatisticTimerRequest, clock: StatisticTimerClock) {
-      if (current) stop(current);
+      if (current)
+        stop(current);
       const run = { active: true, cancel: undefined as (() => void) | undefined };
       current = run;
       now = clock.now();

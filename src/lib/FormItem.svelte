@@ -2,7 +2,9 @@
   import type { Snippet } from 'svelte';
   import { provideFormField, useForm } from './form-context';
 
+  /** Связывает поле модели Form с label, validation status и доступным описанием ошибок. */
   export interface FormItemProps {
+    /** Имя существующего поля initialValues; вложенные name paths не поддерживаются. */
     name: string;
     label: string;
     children: Snippet;
@@ -12,7 +14,15 @@
     class?: string;
   }
 
-  let { name, label, children, help, required, htmlFor, class: className = '' }: FormItemProps = $props();
+  let {
+    name,
+    label,
+    children,
+    help,
+    required,
+    htmlFor,
+    class: className = ''
+  }: FormItemProps = $props();
 
   const form = useForm();
   const generatedId = $props.id();
@@ -22,14 +32,30 @@
   let descriptionId = $derived(errors.length || help ? `${id}-help` : undefined);
 
   provideFormField({
-    get id() { return id; },
-    get name() { return name; },
-    get label() { return label; },
-    get disabled() { return form?.disabled; },
-    get required() { return isRequired; },
-    get status() { return errors.length ? 'error' : undefined; },
-    get describedBy() { return descriptionId; },
-    onBlur() { form?.touchField(name); }
+    get id() {
+      return id;
+    },
+    get name() {
+      return name;
+    },
+    get label() {
+      return label;
+    },
+    get disabled() {
+      return form?.disabled;
+    },
+    get required() {
+      return isRequired;
+    },
+    get status() {
+      return errors.length ? 'error' : undefined;
+    },
+    get describedBy() {
+      return descriptionId;
+    },
+    onBlur() {
+      form?.touchField(name);
+    }
   });
 
   function focusGroupLabel(label: HTMLLabelElement) {
@@ -41,7 +67,11 @@
 
     label.addEventListener('click', handleClick);
 
-    return { destroy() { label.removeEventListener('click', handleClick); } };
+    return {
+      destroy() {
+        label.removeEventListener('click', handleClick);
+      }
+    };
   }
 </script>
 
@@ -49,7 +79,12 @@
   .ant-form-item-row { display: flex; flex-wrap: wrap; }
 </style>
 
-<div class={['ant-form-item', `ant-form-item-${form?.layout ?? 'vertical'}`, errors.length && 'ant-form-item-has-error', className]}>
+<div class={[
+    'ant-form-item',
+    `ant-form-item-${form?.layout ?? 'vertical'}`,
+    errors.length && 'ant-form-item-has-error',
+    className
+  ]}>
   <div class="ant-form-item-row">
     <div class="ant-form-item-label">
       <label for={id} class:ant-form-item-required={isRequired} title={label} use:focusGroupLabel>

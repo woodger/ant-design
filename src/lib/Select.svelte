@@ -4,7 +4,12 @@
   import { useCompact } from './space-compact-context';
   import { compactClasses } from './space-compact.engine';
   import { useFormField } from './form-context';
-  import { filterOptions, getEnabledIndex, getSelectValues, resolveSelectedOptions } from './select.engine';
+  import {
+    filterOptions,
+    getEnabledIndex,
+    getSelectValues,
+    resolveSelectedOptions
+  } from './select.engine';
   import { ruRU, type SelectOption } from './types';
   import type { SelectProps } from './select.types';
   import Icon from './Icon.svelte';
@@ -43,11 +48,15 @@
   const compact = useCompact();
   const field = useFormField();
   const generatedId = $props.id();
-  const initialDefault = untrack(() => Array.isArray(defaultValue) ? [...defaultValue] : defaultValue);
+  const initialDefault = untrack(
+    () => Array.isArray(defaultValue) ? [...defaultValue] : defaultValue
+  );
   let useDefault = $state(true);
   let isOpen = $state(false);
   let internalSearch = $state('');
-  let searchConfig = $derived({ searchValue, onSearch, filterOption, ...(typeof showSearch === 'object' ? showSearch : {}) });
+  let searchConfig = $derived(
+    { searchValue, onSearch, filterOption, ...(typeof showSearch === 'object' ? showSearch : {}) }
+  );
   let controlledSearch = $derived(searchConfig.searchValue);
   let search = $derived(controlledSearch ?? internalSearch);
   let searchCallback = $derived(searchConfig.onSearch);
@@ -68,13 +77,31 @@
   let selectedValues = $derived(multiple ? getSelectValues(selectedValue) : []);
   let selectedKeys = $derived(new Set(selectedValues));
   let optionMap = $derived(new Map(options.map((option) => [option.value, option])));
-  let selectionOptions = $derived(resolveSelectedOptions(multiple ? selectedValues : typeof selectedValue === 'string' || typeof selectedValue === 'number' ? [selectedValue as Value] : [], optionMap, cachedOptions));
-  let selected = $derived(typeof selectedValue === 'string' || typeof selectedValue === 'number' ? selectionOptions.get(selectedValue as Value) : undefined);
+  let selectionOptions = $derived(
+    resolveSelectedOptions(
+      multiple
+        ? selectedValues
+        : typeof selectedValue === 'string' || typeof selectedValue === 'number'
+          ? [selectedValue as Value]
+          : [],
+      optionMap,
+      cachedOptions
+    )
+  );
+  let selected = $derived(
+    typeof selectedValue === 'string' || typeof selectedValue === 'number'
+      ? selectionOptions.get(selectedValue as Value)
+      : undefined
+  );
   let tags = $derived(selectedValues.map(item => selectionOptions.get(item)!));
   let filtered = $derived(filterOptions(options, search, filter));
-  $effect(() => { cachedOptions = selectionOptions; });
+  $effect(() => {
+    cachedOptions = selectionOptions;
+  });
   let activeIndex = $derived.by(() => {
-    const index = filtered.findIndex((option) => option.value === activeValue && !option.disabled);
+    const index = filtered.findIndex(
+      (option) => option.value === activeValue && !option.disabled
+    );
 
     return index < 0 ? getEnabledIndex(filtered, -1, 'first') : index;
   });
@@ -88,7 +115,11 @@
     if (!control || !multiple) return;
 
     const input = control;
-    input.setCustomValidity(attributes.required && !selectedValues.length ? config.locale.selectRequiredText ?? ruRU.selectRequiredText : '');
+    input.setCustomValidity(
+      attributes.required && !selectedValues.length
+        ? config.locale.selectRequiredText ?? ruRU.selectRequiredText
+        : ''
+    );
 
     return () => input.setCustomValidity('');
   });
@@ -140,13 +171,15 @@
       return;
     }
 
-    if (option) cachedOptions = new Map(cachedOptions).set(option.value, option);
+    if (option)
+      cachedOptions = new Map(cachedOptions).set(option.value, option);
 
     if (multiple) {
       const next = new Set(selectedValues);
 
       if (option) {
-        if (next.has(option.value)) next.delete(option.value);
+        if (next.has(option.value))
+          next.delete(option.value);
         else next.add(option.value);
       } else {
         if (!next.size) return;
@@ -171,7 +204,8 @@
 
     const next = new Set(selectedValues);
 
-    if (next.delete(item)) changeMultiple([...next]);
+    if (next.delete(item))
+      changeMultiple([...next]);
     control?.focus();
   }
 
@@ -190,7 +224,9 @@
     });
   }
 
-  function handleKeydown(event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleKeydown(
+    event: KeyboardEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     onkeydown?.(event);
 
     if (event.defaultPrevented || resolvedDisabled || event.isComposing) {
@@ -203,11 +239,17 @@
       if (!expanded) {
         openList(event.key === 'ArrowUp' ? 'last' : 'first');
       } else {
-        activeValue = filtered[getEnabledIndex(filtered, activeIndex, event.key === 'ArrowUp' ? 'previous' : 'next')]?.value;
+        activeValue = filtered[getEnabledIndex(
+          filtered,
+          activeIndex,
+          event.key === 'ArrowUp' ? 'previous' : 'next'
+        )]?.value;
       }
     } else if ((event.key === 'Home' || event.key === 'End') && expanded) {
       event.preventDefault();
-      activeValue = filtered[getEnabledIndex(filtered, -1, event.key === 'Home' ? 'first' : 'last')]?.value;
+      activeValue = filtered[getEnabledIndex(filtered, -1, event.key === 'Home'
+        ? 'first'
+        : 'last')]?.value;
     } else if (event.key === 'Enter' || (event.key === ' ' && !canSearch)) {
       event.preventDefault();
 
@@ -222,16 +264,30 @@
       setOpen(false);
     } else if (event.key === 'Tab') {
       setOpen(false);
-    } else if (multiple && event.key === 'Backspace' && !search && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    } else if (multiple
+      && event.key === 'Backspace'
+      && !search
+      && !event.ctrlKey
+      && !event.metaKey
+      && !event.altKey) {
       event.preventDefault();
 
       const last = [...tags].reverse().find((tag) => !tag.disabled);
 
-      if (last) remove(last.value);
-    } else if (!multiple && allowClear && !canSearch && (event.key === 'Backspace' || event.key === 'Delete')) {
+      if (last)
+        remove(last.value);
+    } else if (!multiple
+      && allowClear
+      && !canSearch
+      && (event.key === 'Backspace'
+        || event.key === 'Delete')) {
       event.preventDefault();
       choose(undefined);
-    } else if (!canSearch && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    } else if (!canSearch
+      && event.key.length === 1
+      && !event.ctrlKey
+      && !event.metaKey
+      && !event.altKey) {
       typeahead = (event.timeStamp - lastTyped > 700 ? '' : typeahead) + event.key;
       lastTyped = event.timeStamp;
       const matches = filterOptions(options, typeahead);
@@ -241,13 +297,16 @@
     }
   }
 
-  function handleBeforeInput(event: InputEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleBeforeInput(
+    event: InputEvent & { currentTarget: EventTarget & HTMLInputElement; }
+  ) {
     onbeforeinput?.(event);
 
-    if (multiple && !canSearch) event.preventDefault();
+    if (multiple && !canSearch)
+      event.preventDefault();
   }
 
-  function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
     if (multiple && !canSearch) {
       event.currentTarget.value = search;
       return;
@@ -259,30 +318,42 @@
     const matches = filterOptions(options, next, filter);
     if (controlledSearch !== undefined) {
       const input = event.currentTarget;
-      void tick().then(() => { if (input === control && input.isConnected && (multiple || expanded) && canSearch) input.value = search; });
+      void tick().then(() => {
+        if (input === control && input.isConnected && (multiple || expanded) && canSearch)
+          input.value = search;
+      });
     }
     activeValue = matches[getEnabledIndex(matches, -1, 'first')]?.value;
     setOpen(true);
   }
 
-  function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     onclick?.(event);
 
     if (!event.defaultPrevented) {
-      if (expanded && !canSearch) { setOpen(false); } else { openList(); }
+      if (expanded && !canSearch) {
+        setOpen(false);
+      } else {
+        openList();
+      }
     }
   }
 
-  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     setOpen(false);
     field?.onBlur();
     onblur?.(event);
   }
 
-  function handlePointerDown(event: PointerEvent & { currentTarget: EventTarget & HTMLDivElement }) {
+  function handlePointerDown(
+    event: PointerEvent & { currentTarget: EventTarget & HTMLDivElement; }
+  ) {
     const target = event.target;
 
-    if (multiple && target instanceof Element && !target.closest('button, input') && !resolvedDisabled) {
+    if (multiple
+      && target instanceof Element
+      && !target.closest('button, input')
+      && !resolvedDisabled) {
       event.preventDefault();
       control?.focus();
       openList();
@@ -336,27 +407,39 @@
 
 <svelte:document onpointerdown={handleOutside} onreset={handleReset} />
 
-<div class={['container ant-select-css-var', compactItemClasses, compact && resolvedSize === 'large' && 'ant-select-lg', compact && resolvedSize === 'small' && 'ant-select-sm', compact && expanded && 'ant-select-focused', compact && resolvedDisabled && 'ant-select-disabled', className]} bind:this={container} {style}>
+<div class={[
+    'container ant-select-css-var',
+    compactItemClasses,
+    compact && resolvedSize === 'large' && 'ant-select-lg',
+    compact && resolvedSize === 'small' && 'ant-select-sm',
+    compact && expanded && 'ant-select-focused',
+    compact && resolvedDisabled && 'ant-select-disabled',
+    className
+  ]} bind:this={container} {style}>
   <div
     role="presentation"
     onpointerdown={handlePointerDown}
     class={[
-      'ant-select ant-select-css-var ant-select-outlined ant-select-show-arrow',
-      loading && 'ant-select-loading',
-      multiple ? 'ant-select-multiple' : 'ant-select-single',
-      expanded && 'ant-select-open ant-select-focused',
-      resolvedDisabled && 'ant-select-disabled',
-      resolvedSize === 'large' && 'ant-select-lg',
-      resolvedSize === 'small' && 'ant-select-sm',
-      resolvedStatus && `ant-select-status-${resolvedStatus}`
-    ]}
+        'ant-select ant-select-css-var ant-select-outlined ant-select-show-arrow',
+        loading && 'ant-select-loading',
+        multiple ? 'ant-select-multiple' : 'ant-select-single',
+        expanded && 'ant-select-open ant-select-focused',
+        resolvedDisabled && 'ant-select-disabled',
+        resolvedSize === 'large' && 'ant-select-lg',
+        resolvedSize === 'small' && 'ant-select-sm',
+        resolvedStatus && `ant-select-status-${resolvedStatus}`
+      ]}
   >
     <div class="ant-select-content">
       {#if multiple}
         {#each tags as tag (tag.value)}
-          <span class={['ant-select-selection-item', (resolvedDisabled || tag.disabled) && 'ant-select-selection-item-disabled']} title={tag.label}>
+          <span class={[
+              'ant-select-selection-item',
+              (resolvedDisabled || tag.disabled) && 'ant-select-selection-item-disabled'
+            ]} title={tag.label}>
             <span class="ant-select-selection-item-content">{tag.label}</span>
-            {#if !resolvedDisabled && !tag.disabled}<button type="button" class="ant-select-selection-item-remove" aria-label={`${config.locale.removeText ?? ruRU.removeText} ${tag.label}`} onpointerdown={(event) => event.preventDefault()} onclick={() => remove(tag.value)}><Icon name="close" /></button>{/if}
+            {#if !resolvedDisabled && !tag.disabled}<button type="button" class="ant-select-selection-item-remove" aria-label={`${config.locale.removeText
+                ?? ruRU.removeText} ${tag.label}`} onpointerdown={(event) => event.preventDefault()} onclick={() => remove(tag.value)}><Icon name="close" /></button>{/if}
           </span>
         {/each}
       {/if}
@@ -370,18 +453,34 @@
         aria-expanded={expanded}
         aria-busy={loading || undefined}
         aria-controls={`${controlId}-list`}
-        aria-activedescendant={expanded && activeIndex >= 0 ? `${controlId}-option-${activeIndex}` : undefined}
+        aria-activedescendant={expanded && activeIndex >= 0
+            ? `${controlId}-option-${activeIndex}`
+            : undefined}
         aria-autocomplete={canSearch ? 'list' : 'none'}
-        aria-invalid={resolvedStatus === 'error' || attributes['aria-invalid'] || undefined}
+        aria-invalid={resolvedStatus === 'error'
+            || attributes['aria-invalid']
+            || undefined}
         aria-required={attributes.required || field?.required || undefined}
-        aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined}
+        aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(
+            Boolean
+          ).join(
+            ' '
+          )
+            || undefined}
         autocomplete="off"
         readonly={isReadOnly}
-        inputmode={attributes.inputmode ?? (multiple && !canSearch ? 'none' : undefined)}
+        inputmode={attributes.inputmode
+            ?? (multiple && !canSearch
+              ? 'none'
+              : undefined)}
         required={multiple ? false : attributes.required}
         disabled={resolvedDisabled}
-        value={multiple ? search : expanded && canSearch ? search : selected?.label ?? ''}
-        placeholder={multiple ? selectedValues.length ? undefined : placeholder : expanded && canSearch ? selected?.label ?? placeholder : placeholder}
+        value={multiple
+            ? search
+            : expanded && canSearch ? search : selected?.label ?? ''}
+        placeholder={multiple
+            ? selectedValues.length ? undefined : placeholder
+            : expanded && canSearch ? selected?.label ?? placeholder : placeholder}
         onkeydown={handleKeydown}
         onbeforeinput={handleBeforeInput}
         oninput={handleInput}
@@ -398,7 +497,10 @@
     {#if multiple}
       {#each selectedValues as item (item)}<input type="hidden" name={name ?? field?.name} value={item} disabled={resolvedDisabled} form={attributes.form} />{/each}
     {:else}
-      <input type="hidden" name={name ?? field?.name} value={typeof selectedValue === 'string' || typeof selectedValue === 'number' ? selectedValue : ''} disabled={resolvedDisabled} form={attributes.form} />
+      <input type="hidden" name={name ?? field?.name} value={typeof selectedValue === 'string'
+          || typeof selectedValue === 'number'
+          ? selectedValue
+          : ''} disabled={resolvedDisabled} form={attributes.form} />
     {/if}
   {/if}
   {#if expanded}
@@ -410,7 +512,9 @@
       aria-busy={loading || undefined}
       onscroll={onPopupScroll}
       aria-multiselectable={multiple || undefined}
-      aria-label={attributes['aria-label'] ?? placeholder ?? config.locale.searchText}
+      aria-label={attributes['aria-label']
+          ?? placeholder
+          ?? config.locale.searchText}
     >
       {#each filtered as option, index (option.value)}
         <button
@@ -418,24 +522,35 @@
           role="option"
           tabindex="-1"
           id={`${controlId}-option-${index}`}
-          aria-selected={multiple ? selectedKeys.has(option.value) : option.value === selectedValue}
+          aria-selected={multiple
+              ? selectedKeys.has(option.value)
+              : option.value === selectedValue}
           aria-disabled={option.disabled || undefined}
           disabled={option.disabled}
           class={[
-            'ant-select-item ant-select-item-option',
-            (multiple ? selectedKeys.has(option.value) : option.value === selectedValue) && 'ant-select-item-option-selected',
-            index === activeIndex && 'ant-select-item-option-active',
-            option.disabled && 'ant-select-item-option-disabled'
-          ]}
+              'ant-select-item ant-select-item-option',
+              (multiple
+                ? selectedKeys.has(option.value)
+                : option.value === selectedValue)
+              && 'ant-select-item-option-selected',
+              index === activeIndex && 'ant-select-item-option-active',
+              option.disabled && 'ant-select-item-option-disabled'
+            ]}
           onpointerdown={(event) => event.preventDefault()}
-          onpointermove={() => { if (!option.disabled) activeValue = option.value; }}
+          onpointermove={() => {
+              if (!option.disabled)
+                activeValue = option.value;
+            }}
           onclick={() => choose(option)}
         >
           <span class="ant-select-item-option-content">{option.label}</span>
           {#if multiple ? selectedKeys.has(option.value) : option.value === selectedValue}<span class="ant-select-item-option-state"><Icon name="check" /></span>{/if}
         </button>
       {:else}
-        <div class="ant-select-item-empty">{#if typeof notFoundContent === 'function'}{@render notFoundContent()}{:else if notFoundContent !== null}{notFoundContent ?? (loading ? (config.locale.spin ?? ruRU.spin!).loadingText : config.locale.emptyText)}{/if}</div>
+        <div class="ant-select-item-empty">{#if typeof notFoundContent === 'function'}{@render notFoundContent()}{:else if notFoundContent !== null}{notFoundContent
+            ?? (loading
+              ? (config.locale.spin ?? ruRU.spin!).loadingText
+              : config.locale.emptyText)}{/if}</div>
       {/each}
     </div>
   {/if}

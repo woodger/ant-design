@@ -20,7 +20,9 @@
   const config = useConfig();
   let active = true;
 
-  onDestroy(() => { active = false; });
+  onDestroy(() => {
+    active = false;
+  });
 
   function getFieldName(name: string): FieldName<Values> {
     if (!Object.hasOwn(form.values, name)) {
@@ -31,15 +33,23 @@
   }
 
   provideForm({
-    get disabled() { return (disabled ?? config.componentDisabled) || form.isSubmitting; },
-    get layout() { return layout; },
-    get resetKey() { return form.values; },
+    get disabled() {
+      return (disabled ?? config.componentDisabled) || form.isSubmitting;
+    },
+    get layout() {
+      return layout;
+    },
+    get resetKey() {
+      return form.values;
+    },
     getFieldError: (name) => form.getFieldError(getFieldName(name)),
     isFieldRequired: (name) => form.isFieldRequired(getFieldName(name)),
     touchField: (name) => form.touchField(getFieldName(name))
   });
 
-  async function handleSubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
+  async function handleSubmit(
+    event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement; }
+  ) {
     event.preventDefault();
     const element = event.currentTarget;
 
@@ -64,7 +74,10 @@
 
       if (!result.error.outOfDate) {
         await tick();
-        element.querySelector<HTMLElement>('[data-ant-form-invalid="true"], [aria-invalid="true"]')?.focus();
+        element.querySelector<HTMLElement>(
+          '[data-ant-form-invalid="true"], [aria-invalid="true"]'
+        )
+          ?.focus();
       }
     } else if (result.status === 'failed') {
       onError?.(result.error);

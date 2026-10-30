@@ -6,7 +6,18 @@
   import { connectPopup } from './popup.dom';
   import type { TooltipPlacement } from './tooltip.types';
 
-  let { title, open, anchor, describe, trigger, placement = 'top', arrow = true, autoAdjustOverflow = true, onDismiss, onHoverChange }: {
+  let {
+    title,
+    open,
+    anchor,
+    describe,
+    trigger,
+    placement = 'top',
+    arrow = true,
+    autoAdjustOverflow = true,
+    onDismiss,
+    onHoverChange
+  }: {
     title: string | Snippet;
     open: boolean;
     anchor?: Element;
@@ -33,7 +44,15 @@
   $effect(() => {
     if (!popup || !anchor || !open || !available) return;
 
-    return connectPopup(popup, anchor, { trigger, placement, autoAdjustOverflow, onDismiss, onPlacement: (next) => { actualPlacement = next; } });
+    return connectPopup(popup, anchor, {
+      trigger,
+      placement,
+      autoAdjustOverflow,
+      onDismiss,
+      onPlacement: (next) => {
+        actualPlacement = next;
+      }
+    });
   });
 </script>
 
@@ -46,7 +65,15 @@
   @media (prefers-reduced-motion: reduce) { .ant-tooltip, .ant-tooltip-container { animation: none; transition: none; } }
 </style>
 
-<span bind:this={popup} {id} role="tooltip" popover="manual" hidden dir={config.direction} class={['ant-tooltip', 'ant-tooltip-css-var', `ant-tooltip-placement-${open ? actualPlacement : placement}`, config.direction === 'rtl' && 'ant-tooltip-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') onHoverChange?.(true); }} onpointerleave={() => onHoverChange?.(false)}>
+<span bind:this={popup} {id} role="tooltip" popover="manual" hidden dir={config.direction} class={[
+    'ant-tooltip',
+    'ant-tooltip-css-var',
+    `ant-tooltip-placement-${open ? actualPlacement : placement}`,
+    config.direction === 'rtl' && 'ant-tooltip-rtl'
+  ]} onpointerenter={(event) => {
+      if (event.pointerType !== 'touch')
+        onHoverChange?.(true);
+    }} onpointerleave={() => onHoverChange?.(false)}>
   {#if arrow}<span class="ant-tooltip-arrow" aria-hidden="true"></span>{/if}
   <span class="ant-tooltip-container" tabindex="-1">{#if typeof title === 'function'}{@render title()}{:else}{title}{/if}</span>
 </span>

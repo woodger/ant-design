@@ -9,5 +9,9 @@ export interface AnchorContext {
   click(event: MouseEvent, href: string, title?: AnchorContent, offset?: number): void;
 }
 const key = Symbol('ant-anchor');
-export function setAnchor(context: AnchorContext) { setContext(key, context); }
-export function useAnchor() { return getContext<AnchorContext | undefined>(key); }
+export function setAnchor(context: AnchorContext) {
+  setContext(key, context);
+}
+export function useAnchor() {
+  return getContext<AnchorContext | undefined>(key);
+}

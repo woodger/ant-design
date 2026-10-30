@@ -6,10 +6,37 @@
   import { connectPopup } from './popup.dom';
   import { connectPopoverTrigger } from './popover.dom';
   import { getTooltipDelay } from './tooltip.engine';
-  import { getDropdownActiveKey, getDropdownCommands, getDropdownMatch, getDropdownNavigationKey, normalizeDropdownItems } from './dropdown.engine';
-  import type { DropdownClickInfo, DropdownPlacement, DropdownProps, DropdownTrigger } from './dropdown.types';
+  import {
+    getDropdownActiveKey,
+    getDropdownCommands,
+    getDropdownMatch,
+    getDropdownNavigationKey,
+    normalizeDropdownItems
+  } from './dropdown.engine';
+  import type {
+    DropdownClickInfo,
+    DropdownPlacement,
+    DropdownProps,
+    DropdownTrigger
+  } from './dropdown.types';
 
-  let { children, menu, open = $bindable<boolean | undefined>(), defaultOpen = false, onOpenChange, trigger = ['hover'], disabled, placement, arrow = false, autoAdjustOverflow = true, mouseEnterDelay = 0.1, mouseLeaveDelay = 0.1, 'aria-label': ariaLabel, class: className = '', style }: DropdownProps = $props();
+  let {
+    children,
+    menu,
+    open = $bindable<boolean | undefined>(),
+    defaultOpen = false,
+    onOpenChange,
+    trigger = ['hover'],
+    disabled,
+    placement,
+    arrow = false,
+    autoAdjustOverflow = true,
+    mouseEnterDelay = 0.1,
+    mouseLeaveDelay = 0.1,
+    'aria-label': ariaLabel,
+    class: className = '',
+    style
+  }: DropdownProps = $props();
 
   const config = useConfig();
   const form = useForm();
@@ -41,16 +68,28 @@
   let resolvedKey = $derived(getDropdownActiveKey(items, activeKey));
   let resolvedDisabled = $derived(disabled ?? form?.disabled ?? config.componentDisabled);
   let visible = $derived(!resolvedDisabled && (open ?? initialDefault));
-  let requestedPlacement = $derived(placement ?? (config.direction === 'rtl' ? 'bottomRight' : 'bottomLeft'));
+  let requestedPlacement = $derived(
+    placement ?? (config.direction === 'rtl' ? 'bottomRight' : 'bottomLeft')
+  );
   let side = $derived(requestedPlacement.startsWith('top') ? 'top' as const : 'bottom' as const);
-  let align = $derived(requestedPlacement.endsWith('Left') ? 'left' as const : requestedPlacement.endsWith('Right') ? 'right' as const : undefined);
-  let actualPlacement = $derived(`${actualSide}${align === 'left' ? 'Left' : align === 'right' ? 'Right' : ''}` as DropdownPlacement);
+  let align = $derived(
+    requestedPlacement.endsWith('Left')
+      ? 'left' as const
+      : requestedPlacement.endsWith('Right') ? 'right' as const : undefined
+  );
+  let actualPlacement = $derived(
+    `${actualSide}${align === 'left'
+      ? 'Left'
+      : align === 'right' ? 'Right' : ''}` as DropdownPlacement
+  );
 
   $effect(() => {
     const element = host;
     if (!element) return;
 
-    function update() { anchor = element!.firstElementChild ?? element; }
+    function update() {
+      anchor = element!.firstElementChild ?? element;
+    }
 
     update();
     const observer = new MutationObserver(update);
@@ -71,12 +110,19 @@
       clicked = false;
       focusPending = null;
       search = { text: '', time: 0 };
-      if (element?.contains(element.ownerDocument.activeElement) && source instanceof HTMLElement && source.isConnected) {
-        untrack(() => { closing = true; source.focus({ preventScroll: true }); closing = false; });
+      if (element?.contains(element.ownerDocument.activeElement)
+        && source instanceof HTMLElement
+        && source.isConnected) {
+        untrack(() => {
+          closing = true;
+          source.focus({ preventScroll: true });
+          closing = false;
+        });
       }
     } else if (element?.contains(element.ownerDocument.activeElement)) {
       const focused = element.ownerDocument.activeElement;
-      if (focused instanceof HTMLElement && (focused.dataset.dropdownKey ?? null) !== key) repairFocus = true;
+      if (focused instanceof HTMLElement && (focused.dataset.dropdownKey ?? null) !== key)
+        repairFocus = true;
     }
   });
 
@@ -85,7 +131,10 @@
     const key = resolvedKey;
     const currentItems = items;
 
-    if (shown && element && currentItems && repairFocus) { repairFocus = false; untrack(() => focusItem(key)); }
+    if (shown && element && currentItems && repairFocus) {
+      repairFocus = false;
+      untrack(() => focusItem(key));
+    }
   });
 
   $effect(() => {
@@ -95,19 +144,37 @@
 
     const disconnect = untrack(() => connectPopup(surface, source, {
       trigger: host,
-      get placement() { return side; },
-      get align() { return align; },
-      get autoAdjustOverflow() { return autoAdjustOverflow; },
+      get placement() {
+        return side;
+      },
+      get align() {
+        return align;
+      },
+      get autoAdjustOverflow() {
+        return autoAdjustOverflow;
+      },
       maxWidth: '100vw',
       matchAnchorWidth: true,
       preserveFocus: false,
-      onPlacement: (next) => { actualSide = next === 'top' ? 'top' : 'bottom'; },
+      onPlacement: (next) => {
+        actualSide = next === 'top' ? 'top' : 'bottom';
+      },
       onDismiss: close,
       onVisibilityChange: (next) => {
         shown = next;
-        if (!next) { menuFocused = false; popupHovered = false; }
-        else if (resumeFocus) { resumeFocus = false; focusItem(resolvedKey); }
-        else if (focusPending) { const edge = focusPending; focusPending = null; focusItem(getDropdownNavigationKey(items, null, edge)); }
+        if (!next) {
+          menuFocused = false;
+          popupHovered = false;
+        }
+        else if (resumeFocus) {
+          resumeFocus = false;
+          focusItem(resolvedKey);
+        }
+        else if (focusPending) {
+          const edge = focusPending;
+          focusPending = null;
+          focusItem(getDropdownNavigationKey(items, null, edge));
+        }
       }
     }));
 
@@ -119,10 +186,14 @@
     };
   });
 
-  onDestroy(() => { active = false; cancelPending(); });
+  onDestroy(() => {
+    active = false;
+    cancelPending();
+  });
 
   function cancelPending() {
-    if (pending !== undefined) clearTimeout(pending);
+    if (pending !== undefined)
+      clearTimeout(pending);
     pending = undefined;
   }
 
@@ -130,7 +201,9 @@
     return typeof trigger === 'string' ? trigger === kind : trigger.includes(kind);
   }
 
-  function wanted() { return !dismissed && (clicked || menuFocused || popupHovered || hovered && supports('hover')); }
+  function wanted() {
+    return !dismissed && (clicked || menuFocused || popupHovered || hovered && supports('hover'));
+  }
 
   function request(next: boolean, delay = 0, notify = true) {
     cancelPending();
@@ -139,27 +212,52 @@
 
     function apply() {
       pending = undefined;
-      if (!active || next && (resolvedDisabled || !wanted()) || !source?.isConnected || source !== anchor || !Object.is(open, ownerValue)) return;
+      if (!active
+        || next
+        && (resolvedDisabled
+          || !wanted())
+        || !source?.isConnected
+        || source !== anchor
+        || !Object.is(
+          open,
+          ownerValue
+        )) return;
 
-      if (next !== (open ?? initialDefault)) { open = next; if (notify) onOpenChange?.(next); }
-      if (next && visible && shown && focusPending) { const edge = focusPending; focusPending = null; focusItem(getDropdownNavigationKey(items, null, edge)); }
+      if (next !== (open ?? initialDefault)) {
+        open = next;
+        if (notify)
+          onOpenChange?.(next);
+      }
+      if (next && visible && shown && focusPending) {
+        const edge = focusPending;
+        focusPending = null;
+        focusItem(getDropdownNavigationKey(items, null, edge));
+      }
     }
 
-    if (delay) pending = setTimeout(apply, delay);
+    if (delay)
+      pending = setTimeout(apply, delay);
     else apply();
   }
 
   function focusItem(key: string | null) {
     if (!list) return;
 
-    const element = Array.from(list.querySelectorAll<HTMLElement>('[role="menuitem"]')).find((item) => item.dataset.dropdownKey === key && !item.matches(':disabled, [aria-disabled="true"]'));
+    const element = Array.from(list.querySelectorAll<HTMLElement>('[role="menuitem"]')).find(
+      (item) => item.dataset.dropdownKey === key
+        && !item.matches(
+          ':disabled, [aria-disabled="true"]'
+        )
+    );
     activeKey = key;
     (element ?? list).focus({ preventScroll: true });
     if (element) {
       const bounds = element.getBoundingClientRect();
       const menuBounds = list.getBoundingClientRect();
-      if (bounds.top < menuBounds.top + 4) list.scrollTop -= menuBounds.top + 4 - bounds.top;
-      else if (bounds.bottom > menuBounds.bottom - 4) list.scrollTop += bounds.bottom - menuBounds.bottom + 4;
+      if (bounds.top < menuBounds.top + 4)
+        list.scrollTop -= menuBounds.top + 4 - bounds.top;
+      else if (bounds.bottom > menuBounds.bottom - 4)
+        list.scrollTop += bounds.bottom - menuBounds.bottom + 4;
     }
   }
 
@@ -169,10 +267,19 @@
     dismissed = true;
     focusPending = null;
     request(false, 0, reason !== 'menu');
-    if (visible) { ({ clicked, dismissed, focusPending } = previous); return; }
+    if (visible) {
+      ({ clicked, dismissed, focusPending } = previous);
+      return;
+    }
 
     search = { text: '', time: 0 };
-    if ((reason === 'escape' || reason === 'menu') && popup?.contains(popup.ownerDocument.activeElement) && anchor instanceof HTMLElement && anchor.isConnected) {
+    if ((reason === 'escape'
+      || reason === 'menu')
+      && popup?.contains(
+        popup.ownerDocument.activeElement
+      )
+      && anchor instanceof HTMLElement
+      && anchor.isConnected) {
       closing = true;
       anchor.focus({ preventScroll: true });
       closing = false;
@@ -180,27 +287,60 @@
   }
 
   function handleEnter(event: PointerEvent) {
-    if (resolvedDisabled || event.pointerType === 'touch' || anchor?.matches(':disabled, [aria-disabled="true"]')) return;
+    if (resolvedDisabled
+      || event.pointerType === 'touch'
+      || anchor?.matches(
+        ':disabled, [aria-disabled="true"]'
+      )) return;
 
     hovered = true;
     dismissed = false;
-    if (supports('hover')) request(true, getTooltipDelay(mouseEnterDelay));
+    if (supports('hover'))
+      request(true, getTooltipDelay(mouseEnterDelay));
   }
 
   function handleLeave() {
     hovered = false;
-    if (!wanted()) request(false, getTooltipDelay(mouseLeaveDelay));
+    if (!wanted())
+      request(false, getTooltipDelay(mouseLeaveDelay));
   }
 
   function handleClick(event: MouseEvent) {
-    if (event.defaultPrevented || resolvedDisabled || anchor?.matches(':disabled, [aria-disabled="true"]') || !supports('click') && !(event.detail === 0 && supports('hover'))) return;
+    if (event.defaultPrevented
+      || resolvedDisabled
+      || anchor?.matches(
+        ':disabled, [aria-disabled="true"]'
+      )
+      || !supports(
+        'click'
+      )
+      && !(event.detail === 0
+        && supports(
+          'hover'
+        ))) return;
 
-    if (clicked || visible && !wanted()) close('trigger');
-    else { clicked = true; dismissed = false; focusPending = 'first'; request(true); }
+    if (clicked || visible && !wanted())
+      close('trigger');
+    else {
+      clicked = true;
+      dismissed = false;
+      focusPending = 'first';
+      request(true);
+    }
   }
 
   function handleTriggerKeydown(event: KeyboardEvent) {
-    if (event.defaultPrevented || event.isComposing || resolvedDisabled || !supports('click') && !supports('hover') && !visible || anchor?.matches(':disabled, [aria-disabled="true"]')) return;
+    if (event.defaultPrevented
+      || event.isComposing
+      || resolvedDisabled
+      || !supports('click')
+      && !supports(
+        'hover'
+      )
+      && !visible
+      || anchor?.matches(
+        ':disabled, [aria-disabled="true"]'
+      )) return;
     if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
 
     event.preventDefault();
@@ -212,14 +352,26 @@
 
   function handlePopupHover(next: boolean) {
     popupHovered = next;
-    if (next) cancelPending();
-    else if (!wanted()) request(false, getTooltipDelay(mouseLeaveDelay));
+    if (next)
+      cancelPending();
+    else if (!wanted())
+      request(false, getTooltipDelay(mouseLeaveDelay));
   }
 
   function handleFocusout(event: FocusEvent) {
-    if (closing || !shown || event.relatedTarget instanceof Node && popup?.contains(event.relatedTarget)) return;
+    if (closing
+      || !shown
+      || event.relatedTarget instanceof Node
+      && popup?.contains(
+        event.relatedTarget
+      )) return;
     if (event.relatedTarget === null && !leavingByTab) return;
-    if (!leavingByTab && event.relatedTarget instanceof Node && host?.contains(event.relatedTarget)) { menuFocused = false; return; }
+    if (!leavingByTab
+      && event.relatedTarget instanceof Node
+      && host?.contains(event.relatedTarget)) {
+      menuFocused = false;
+      return;
+    }
 
     menuFocused = false;
     leavingByTab = false;
@@ -227,14 +379,31 @@
   }
 
   function handleMenuKeydown(event: KeyboardEvent) {
-    if (event.defaultPrevented || event.isComposing || event.ctrlKey || event.altKey || event.metaKey) return;
+    if (event.defaultPrevented
+      || event.isComposing
+      || event.ctrlKey
+      || event.altKey
+      || event.metaKey) return;
 
     leavingByTab = event.key === 'Tab';
-    const direction = event.key === 'ArrowDown' ? 'next' : event.key === 'ArrowUp' ? 'previous' : event.key === 'Home' ? 'first' : event.key === 'End' ? 'last' : null;
-    if (direction) { event.preventDefault(); focusItem(getDropdownNavigationKey(items, resolvedKey, direction)); return; }
+    const direction = event.key === 'ArrowDown'
+      ? 'next'
+      : event.key === 'ArrowUp'
+        ? 'previous'
+        : event.key === 'Home' ? 'first' : event.key === 'End' ? 'last' : null;
+    if (direction) {
+      event.preventDefault();
+      focusItem(getDropdownNavigationKey(items, resolvedKey, direction));
+      return;
+    }
     if (event.key === ' ') {
-      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[role="menuitem"]') : null;
-      if (link) { event.preventDefault(); link.click(); }
+      const link = event.target instanceof Element
+        ? event.target.closest<HTMLAnchorElement>('a[role="menuitem"]')
+        : null;
+      if (link) {
+        event.preventDefault();
+        link.click();
+      }
       return;
     }
     if (Array.from(event.key).length !== 1) return;
@@ -242,25 +411,44 @@
     event.preventDefault();
     const now = Date.now();
     const previous = now - search.time < 1000 ? search.text : '';
-    const repeated = previous && Array.from(previous).every((character) => character.toLocaleLowerCase() === event.key.toLocaleLowerCase());
+    const repeated = previous
+      && Array.from(previous).every(
+        (character) => character.toLocaleLowerCase() === event.key.toLocaleLowerCase()
+      );
     search = { text: repeated ? event.key : previous + event.key, time: now };
     const commands = getDropdownCommands(items).map((item) => {
-      const element = Array.from(list?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []).find((node) => node.dataset.dropdownKey === item.key);
-      return { key: item.key, text: item.textValue ?? (typeof item.label === 'string' ? item.label : element?.querySelector('.ant-dropdown-menu-title-content')?.textContent ?? '') };
+      const element = Array.from(list?.querySelectorAll<HTMLElement>('[role="menuitem"]')
+        ?? []).find(
+          (node) => node.dataset.dropdownKey === item.key
+        );
+      return {
+        key: item.key,
+        text: item.textValue
+          ?? (typeof item.label === 'string'
+            ? item.label
+            : element?.querySelector('.ant-dropdown-menu-title-content')?.textContent ?? '')
+      };
     });
     const key = getDropdownMatch(commands, resolvedKey, search.text);
-    if (key !== null) focusItem(key);
+    if (key !== null)
+      focusItem(key);
   }
 
   function activate(key: string, event: MouseEvent) {
     const item = getDropdownCommands(items).find((command) => command.key === key);
-    if (!active || !visible || !shown || resolvedDisabled || !item || event.defaultPrevented) return;
+    if (!active
+      || !visible
+      || !shown
+      || resolvedDisabled
+      || !item
+      || event.defaultPrevented) return;
 
     const info: DropdownClickInfo = { key, domEvent: event };
     item.onClick?.(info);
     if (!active || event.defaultPrevented) return;
     menu.onClick?.(info);
-    if (active && !event.defaultPrevented) close('menu');
+    if (active && !event.defaultPrevented)
+      close('menu');
   }
 </script>
 
@@ -280,13 +468,37 @@
 
 <span bind:this={host} id={triggerId} role="presentation" class={['ant-dropdown-trigger', className]} {style} onpointerenter={handleEnter} onpointerleave={handleLeave} onclick={handleClick} onkeydown={handleTriggerKeydown}>{@render children()}</span>
 <NoCompactStyle>
-<div bind:this={popup} id={`${menuId}-popup`} popover="manual" role="presentation" hidden dir={config.direction} class={['ant-dropdown', 'ant-dropdown-css-var', `ant-dropdown-placement-${shown ? actualPlacement : requestedPlacement}`, config.direction === 'rtl' && 'ant-dropdown-rtl']} onpointerenter={(event) => { if (event.pointerType !== 'touch') handlePopupHover(true); }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => { menuFocused = true; cancelPending(); }} onfocusout={handleFocusout}>
+<div bind:this={popup} id={`${menuId}-popup`} popover="manual" role="presentation" hidden dir={config.direction} class={[
+    'ant-dropdown',
+    'ant-dropdown-css-var',
+    `ant-dropdown-placement-${shown ? actualPlacement : requestedPlacement}`,
+    config.direction === 'rtl' && 'ant-dropdown-rtl'
+  ]} onpointerenter={(event) => {
+      if (event.pointerType !== 'touch')
+        handlePopupHover(true);
+    }} onpointerleave={() => handlePopupHover(false)} onfocusin={() => {
+      menuFocused = true;
+      cancelPending();
+    }} onfocusout={handleFocusout}>
   {#if arrow}<span class="ant-dropdown-arrow" aria-hidden="true"></span>{/if}
   <ul bind:this={list} id={menuId} role="menu" tabindex="-1" aria-label={ariaLabel} aria-labelledby={ariaLabel ? undefined : triggerId} class="ant-dropdown-menu ant-dropdown-menu-root ant-dropdown-menu-vertical" onkeydown={handleMenuKeydown}>
     {#each items as item (item.key)}
       {#if item.type === 'divider'}<li role="separator" class="ant-dropdown-menu-item-divider"></li>
       {:else}
-        <li role="none"><svelte:element this={item.href === undefined ? 'button' : 'a'} type={item.href === undefined ? 'button' : undefined} href={item.disabled ? undefined : item.href} target={item.href === undefined ? undefined : item.target} rel={item.href === undefined ? undefined : item.rel} role="menuitem" data-dropdown-key={item.key} disabled={item.href === undefined ? item.disabled : undefined} aria-disabled={item.href !== undefined && item.disabled || undefined} tabindex={resolvedKey === item.key ? 0 : -1} aria-label={typeof item.label === 'function' ? item.textValue : undefined} class={['ant-dropdown-menu-item', item.disabled && 'ant-dropdown-menu-item-disabled', item.danger && 'ant-dropdown-menu-item-danger', resolvedKey === item.key && 'ant-dropdown-menu-item-active']} onfocus={() => { activeKey = item.key; }} onpointermove={(event: PointerEvent) => { if (!item.disabled && event.pointerType !== 'touch') { activeKey = item.key; if (menuFocused) focusItem(item.key); } }} onclick={(event: MouseEvent) => activate(item.key, event)}>
+        <li role="none"><svelte:element this={item.href === undefined ? 'button' : 'a'} type={item.href === undefined ? 'button' : undefined} href={item.disabled ? undefined : item.href} target={item.href === undefined ? undefined : item.target} rel={item.href === undefined ? undefined : item.rel} role="menuitem" data-dropdown-key={item.key} disabled={item.href === undefined ? item.disabled : undefined} aria-disabled={item.href !== undefined && item.disabled || undefined} tabindex={resolvedKey === item.key ? 0 : -1} aria-label={typeof item.label === 'function' ? item.textValue : undefined} class={[
+            'ant-dropdown-menu-item',
+            item.disabled && 'ant-dropdown-menu-item-disabled',
+            item.danger && 'ant-dropdown-menu-item-danger',
+            resolvedKey === item.key && 'ant-dropdown-menu-item-active'
+          ]} onfocus={() => {
+              activeKey = item.key;
+            }} onpointermove={(event: PointerEvent) => {
+              if (!item.disabled && event.pointerType !== 'touch') {
+                activeKey = item.key;
+                if (menuFocused)
+                  focusItem(item.key);
+              }
+            }} onclick={(event: MouseEvent) => activate(item.key, event)}>
           {#if item.icon}<span class="ant-dropdown-menu-item-icon" aria-hidden="true">{@render item.icon()}</span>{/if}
           <span class="ant-dropdown-menu-title-content">{#if typeof item.label === 'function'}{@render item.label()}{:else}{item.label}{/if}</span>
         </svelte:element></li>

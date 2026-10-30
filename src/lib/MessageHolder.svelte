@@ -12,18 +12,29 @@
   let surface = $state<HTMLDivElement>();
   let runtime = $derived(message[messageHolderKey]);
   let notices = $derived(runtime.notices);
-  let resolvedTop = $derived(typeof top === 'number' ? `${Number.isFinite(top) && top >= 0 ? top : 8}px` : top.trim() || '8px');
+  let resolvedTop = $derived(
+    typeof top === 'number'
+      ? `${Number.isFinite(top) && top >= 0 ? top : 8}px`
+      : top.trim() || '8px'
+  );
 
   function connectHost(node: HTMLSpanElement) {
     const view = node.ownerDocument.defaultView!;
-    return runtime.connect({ now: () => view.performance.now(), schedule(callback, milliseconds) { const timer = view.setTimeout(callback, milliseconds); return () => view.clearTimeout(timer); } });
+    return runtime.connect({
+      now: () => view.performance.now(),
+      schedule(callback, milliseconds) {
+        const timer = view.setTimeout(callback, milliseconds);
+        return () => view.clearTimeout(timer);
+      }
+    });
   }
 
   $effect(() => {
     const node = surface;
     const origin = anchor;
     const current = runtime;
-    if (node && origin) return untrack(() => connectMessageSurface(node, origin, current.setVisible));
+    if (node
+      && origin) return untrack(() => connectMessageSurface(node, origin, current.setVisible));
   });
 </script>
 
@@ -38,7 +49,11 @@
 <span bind:this={anchor} class="ant-message-anchor" aria-hidden="true" {@attach connectHost}></span>
 {#key message}
   {#if notices.length}
-    <div bind:this={surface} popover="manual" {id} dir={config.direction} class={['ant-message ant-message-css-var ant-message-list ant-message-top', config.direction === 'rtl' && 'ant-message-rtl', className]} {style} style:--notification-top={resolvedTop}>
+    <div bind:this={surface} popover="manual" {id} dir={config.direction} class={[
+        'ant-message ant-message-css-var ant-message-list ant-message-top',
+        config.direction === 'rtl' && 'ant-message-rtl',
+        className
+      ]} {style} style:--notification-top={resolvedTop}>
       <div class="ant-message-list-content">{#each notices as notice (notice.id)}<MessageNotice {notice} {message} />{/each}</div>
     </div>
   {/if}

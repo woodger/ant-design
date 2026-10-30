@@ -13,9 +13,44 @@
   import { connectButtonText } from './button.dom';
   import Icon from './Icon.svelte';
   import type { ButtonColor, ButtonContent, ButtonElementProps } from './button.types';
-  let { children, icon, type, htmlType = 'button', color, variant, size, loading = false, danger = false, block = false, shape, ghost = false,
-    disabled, iconPlacement, iconPosition, autoInsertSpace, autoFocus, href, target, rel, download, hreflang, referrerpolicy, onclick, onClick, classNames, styles,
-    class: className = '', rootClassName = '', style, nativeElement = $bindable(), _skipSemantic, _skipContentWrapper, ...attributes }: ButtonElementProps<Href> = $props();
+  let {
+    children,
+    icon,
+    type,
+    htmlType = 'button',
+    color,
+    variant,
+    size,
+    loading = false,
+    danger = false,
+    block = false,
+    shape,
+    ghost = false,
+    disabled,
+    iconPlacement,
+    iconPosition,
+    autoInsertSpace,
+    autoFocus,
+    href,
+    target,
+    rel,
+    download,
+    hreflang,
+    referrerpolicy,
+    onclick,
+    onClick,
+    classNames,
+    styles,
+    class: className = '',
+    rootClassName = '',
+    style,
+    nativeElement = $bindable(),
+    _skipSemantic,
+    _skipContentWrapper,
+    ...attributes
+  }: ButtonElementProps<
+    Href
+  > = $props();
   const config = useConfig();
   const compact = useCompact();
   const group = useButtonGroup();
@@ -29,42 +64,147 @@
   let immediateLoading = $derived(buttonLoading(loading).loading);
   let delayedLoading = $state(untrack(() => buttonLoading(loading).loading));
   let innerLoading = $derived(delay > 0 ? delayedLoading : immediateLoading);
-  let loadingIcon = $derived(typeof loading === 'object' && loading.icon ? loading.icon : config.button?.loadingIcon);
+  let loadingIcon = $derived(
+    typeof loading === 'object' && loading.icon ? loading.icon : config.button?.loadingIcon
+  );
   let placement = $derived(iconPlacement ?? iconPosition ?? 'start');
-  let insert = $derived((autoInsertSpace ?? config.button?.autoInsertSpace ?? true) && !icon && appearance.variant !== 'link' && appearance.variant !== 'text');
+  let insert = $derived(
+    (autoInsertSpace
+      ?? config.button?.autoInsertSpace
+      ?? true)
+    && !icon
+    && appearance.variant !== 'link'
+    && appearance.variant !== 'text'
+  );
   let content = $state<HTMLSpanElement>();
   let twoCN = $state(false);
   let textRuntime = $state.raw<ReturnType<typeof connectButtonText>>();
-  let info = $derived({ props: { ...attributes, children, icon, type: type || 'default', color: appearance.color as ButtonColor, variant: appearance.variant, danger: appearance.color === 'danger', shape: resolvedShape, size: resolvedSize,
-    disabled: blocked, loading: innerLoading, block, ghost, htmlType, href, target, rel, download, hreflang, referrerpolicy, iconPlacement: placement, iconPosition, autoInsertSpace, autoFocus, classNames, styles, class: className, rootClassName, style, onclick, onClick } });
-  let contextClasses = $derived(_skipSemantic ? {} : typeof config.button?.classNames === 'function' ? config.button.classNames(info) ?? {} : config.button?.classNames ?? {});
-  let contextStyles = $derived(_skipSemantic ? {} : typeof config.button?.styles === 'function' ? config.button.styles(info) ?? {} : config.button?.styles ?? {});
-  let classes = $derived(typeof classNames === 'function' ? classNames(info) ?? {} : classNames ?? {});
+  let info = $derived({
+    props: {
+      ...attributes,
+      children,
+      icon,
+      type: type || 'default',
+      color: appearance.color as ButtonColor,
+      variant: appearance.variant,
+      danger: appearance.color === 'danger',
+      shape: resolvedShape,
+      size: resolvedSize,
+      disabled: blocked,
+      loading: innerLoading,
+      block,
+      ghost,
+      htmlType,
+      href,
+      target,
+      rel,
+      download,
+      hreflang,
+      referrerpolicy,
+      iconPlacement: placement,
+      iconPosition,
+      autoInsertSpace,
+      autoFocus,
+      classNames,
+      styles,
+      class: className,
+      rootClassName,
+      style,
+      onclick,
+      onClick
+    }
+  });
+  let contextClasses = $derived(
+    _skipSemantic
+      ? {}
+      : typeof config.button?.classNames === 'function'
+        ? config.button.classNames(info) ?? {}
+        : config.button?.classNames ?? {}
+  );
+  let contextStyles = $derived(
+    _skipSemantic
+      ? {}
+      : typeof config.button?.styles === 'function'
+        ? config.button.styles(info) ?? {}
+        : config.button?.styles ?? {}
+  );
+  let classes = $derived(
+    typeof classNames === 'function' ? classNames(info) ?? {} : classNames ?? {}
+  );
   let slots = $derived(typeof styles === 'function' ? styles(info) ?? {} : styles ?? {});
-  let rootClasses = $derived(['ant-btn', `ant-btn-${type || 'default'}`, `ant-btn-color-${appearance.color === 'danger' ? 'dangerous' : appearance.color}`, `ant-btn-variant-${appearance.variant}`,
-    resolvedSize === 'large' && 'ant-btn-lg', resolvedSize === 'small' && 'ant-btn-sm', innerLoading && 'ant-btn-loading', danger && 'ant-btn-dangerous', block && 'ant-btn-block',
-    resolvedShape !== 'default' && resolvedShape !== 'square' && `ant-btn-${resolvedShape}`, !children && children !== 0 && Boolean(innerLoading || icon) && 'ant-btn-icon-only',
-    ghost && appearance.variant !== 'text' && appearance.variant !== 'link' && 'ant-btn-background-ghost', twoCN && insert && !innerLoading && 'ant-btn-two-chinese-chars',
-    config.direction === 'rtl' && 'ant-btn-rtl', placement === 'end' && 'ant-btn-icon-end', href !== undefined && blocked && 'ant-btn-disabled', compactItemClasses,
-    className, rootClassName, config.button?.class, contextClasses.root, classes.root]);
-  let rootStyle = $derived([contextStyles.root, config.button?.style, slots.root, style].filter(Boolean).join(';'));
+  let rootClasses = $derived(
+    [
+      'ant-btn',
+      `ant-btn-${type || 'default'}`,
+      `ant-btn-color-${appearance.color === 'danger' ? 'dangerous' : appearance.color}`,
+      `ant-btn-variant-${appearance.variant}`,
+      resolvedSize === 'large' && 'ant-btn-lg',
+      resolvedSize === 'small' && 'ant-btn-sm',
+      innerLoading && 'ant-btn-loading',
+      danger && 'ant-btn-dangerous',
+      block && 'ant-btn-block',
+      resolvedShape !== 'default' && resolvedShape !== 'square' && `ant-btn-${resolvedShape}`,
+      !children && children !== 0 && Boolean(innerLoading || icon) && 'ant-btn-icon-only',
+      ghost
+      && appearance.variant !== 'text'
+      && appearance.variant !== 'link'
+      && 'ant-btn-background-ghost',
+      twoCN && insert && !innerLoading && 'ant-btn-two-chinese-chars',
+      config.direction === 'rtl' && 'ant-btn-rtl',
+      placement === 'end' && 'ant-btn-icon-end',
+      href !== undefined && blocked && 'ant-btn-disabled',
+      compactItemClasses,
+      className,
+      rootClassName,
+      config.button?.class,
+      contextClasses.root,
+      classes.root
+    ]
+  );
+  let rootStyle = $derived(
+    [contextStyles.root, config.button?.style, slots.root, style].filter(Boolean).join(';')
+  );
 
   $effect(() => {
-    if (delay > 0) { const timeout = setTimeout(() => { delayedLoading = true; }, delay); return () => clearTimeout(timeout); }
+    if (delay > 0) {
+      const timeout = setTimeout(() => {
+        delayedLoading = true;
+      }, delay);
+      return () => clearTimeout(timeout);
+    }
     delayedLoading = immediateLoading;
   });
   $effect(() => {
-    if (!content || typeof children !== 'function') { twoCN = false; return; }
-    const runtime = connectButtonText(content, () => insert, value => { twoCN = value; });
+    if (!content || typeof children !== 'function') {
+      twoCN = false;
+      return;
+    }
+    const runtime = connectButtonText(content, () => insert, value => {
+      twoCN = value;
+    });
     textRuntime = runtime;
-    return () => { runtime.destroy(); textRuntime = undefined; };
+    return () => {
+      runtime.destroy();
+      textRuntime = undefined;
+    };
   });
-  $effect(() => { if (!insert) twoCN = false; textRuntime?.refresh(); });
-  onMount(() => { if (autoFocus) nativeElement?.focus(); });
+  $effect(() => {
+    if (!insert)
+      twoCN = false;
+    textRuntime?.refresh();
+  });
+  onMount(() => {
+    if (autoFocus)
+      nativeElement?.focus();
+  });
 
   function click(event: MouseEvent) {
-    if (blocked || innerLoading) { event.preventDefault(); return; }
-    (onclick ?? onClick)?.(event as Parameters<NonNullable<ButtonElementProps<Href>['onclick']>>[0]);
+    if (blocked || innerLoading) {
+      event.preventDefault();
+      return;
+    }
+    (onclick
+      ?? onClick)?.(event as Parameters<NonNullable<ButtonElementProps<Href>['onclick']>>[0]);
   }
 </script>
 
@@ -76,7 +216,12 @@
   disabled={href === undefined ? innerLoading || blocked : undefined} aria-disabled={href !== undefined ? blocked : undefined} aria-busy={innerLoading || undefined}
   tabindex={href !== undefined ? blocked ? -1 : 0 : attributes.tabindex} class={rootClasses} style={rootStyle} onclick={click}>
   {#if innerLoading || icon}
-    <span class={['ant-btn-icon', innerLoading && !loadingIcon && 'ant-btn-loading-icon', contextClasses.icon, classes.icon]} style={[contextStyles.icon, slots.icon].filter(Boolean).join(';')}>
+    <span class={[
+        'ant-btn-icon',
+        innerLoading && !loadingIcon && 'ant-btn-loading-icon',
+        contextClasses.icon,
+        classes.icon
+      ]} style={[contextStyles.icon, slots.icon].filter(Boolean).join(';')}>
       {#if innerLoading}{#if loadingIcon}{@render value(loadingIcon)}{:else}<Icon name="loading" />{/if}{:else}{@render value(icon)}{/if}
     </span>
   {/if}

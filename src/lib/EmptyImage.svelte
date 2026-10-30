@@ -1,10 +1,25 @@
 <script lang="ts">
   // Геометрия Ant Design 6.6.8, es/empty/{empty,simple}.js — MIT, vendor/LICENSE.ant-design.
   // SHA-256 архива antd-6.6.8.tgz: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa.
-  let { simple = false }: { simple?: boolean } = $props();
+  let { simple = false }: { simple?: boolean; } = $props();
   const id = $props.id();
-  let colors = $derived(simple ? [['border', '--ant-color-fill'], ['shadow', '--ant-color-fill-tertiary'], ['content', '--ant-color-fill-quaternary']] : [['panel', '--ant-color-fill-tertiary'], ['border', '--ant-color-text-quaternary'], ['detail', '--ant-color-fill'], ['shadow', '--ant-color-fill-secondary']]);
-  function paint(name: string) { return `url(#${id}-${name})`; }
+  let colors = $derived(
+    simple
+      ? [
+        ['border', '--ant-color-fill'],
+        ['shadow', '--ant-color-fill-tertiary'],
+        ['content', '--ant-color-fill-quaternary']
+      ]
+      : [
+        ['panel', '--ant-color-fill-tertiary'],
+        ['border', '--ant-color-text-quaternary'],
+        ['detail', '--ant-color-fill'],
+        ['shadow', '--ant-color-fill-secondary']
+      ]
+  );
+  function paint(name: string) {
+    return `url(#${id}-${name})`;
+  }
 </script>
 
 <svg width={simple ? 64 : 184} height={simple ? 41 : 152} viewBox={simple ? '0 0 64 41' : '0 0 184 152'} xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">

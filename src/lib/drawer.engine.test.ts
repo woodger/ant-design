@@ -16,7 +16,8 @@ describe('Drawer dimensions', () => {
   });
 
   it('falls back for empty, nonpositive or nonfinite dimensions', () => {
-    for (const size of ['', '  ', 0, -1, NaN, Infinity]) expect(getDrawerSize(size)).toBe('378px');
+    for (const size of ['', '  ', 0, -1, NaN, Infinity])
+      expect(getDrawerSize(size)).toBe('378px');
   });
 });
 
@@ -36,6 +37,7 @@ describe('Drawer motion', () => {
   });
 
   it('uses the standard duration for missing or malformed tokens', () => {
-    for (const value of ['', '-1s', 'auto', 'NaNms', '0.3']) expect(getDrawerMotionDuration(value)).toBe(300);
+    for (const value of ['', '-1s', 'auto', 'NaNms', '0.3'])
+      expect(getDrawerMotionDuration(value)).toBe(300);
   });
 });

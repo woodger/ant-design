@@ -1,14 +1,34 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
-  let { id, labelledBy, itemKey, open, region, children, forceRender = false, destroyOnHidden = false }: { id: string; labelledBy: string; itemKey: string; open: boolean; region: boolean; children?: Snippet; forceRender?: boolean; destroyOnHidden?: boolean } = $props();
+  let {
+    id,
+    labelledBy,
+    itemKey,
+    open,
+    region,
+    children,
+    forceRender = false,
+    destroyOnHidden = false
+  }: {
+    id: string;
+    labelledBy: string;
+    itemKey: string;
+    open: boolean;
+    region: boolean;
+    children?: Snippet;
+    forceRender?: boolean;
+    destroyOnHidden?: boolean;
+  } = $props();
   let mounted = $state(false);
   let renderContent = $derived(open || forceRender || mounted && !destroyOnHidden);
 
   // История фактического монтирования сохраняет панель без копирования open через effect.
   function rememberContent() {
     mounted = true;
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }
 </script>
 

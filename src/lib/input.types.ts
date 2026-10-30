@@ -20,7 +20,7 @@ export type InputSemanticSlots = Partial<
 /** Callback получает Props с разрешёнными size и disabled; root — внешняя обёртка. */
 export type InputSemantic =
   | InputSemanticSlots
-  | ((info: { props: InputProps }) => InputSemanticSlots | undefined);
+  | ((info: { props: InputProps; }) => InputSemanticSlots | undefined);
 
 /**
  * Адаптация DOM Event для onChange. target и currentTarget — копия input со значением

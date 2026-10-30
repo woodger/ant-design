@@ -1,6 +1,9 @@
 import type { TableFixed } from './table.types';
 
-export function getTableFixedOffsets(fixed: readonly (TableFixed | undefined)[], widths: readonly number[]): (number | undefined)[] {
+export function getTableFixedOffsets(
+  fixed: readonly (TableFixed | undefined)[],
+  widths: readonly number[]
+): (number | undefined)[] {
   const offsets: (number | undefined)[] = Array.from({ length: fixed.length }, () => undefined);
   let start = 0;
   let end = 0;

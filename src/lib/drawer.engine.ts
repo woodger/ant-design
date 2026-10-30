@@ -9,7 +9,12 @@ export function getDrawerSize(size: DrawerSize = 'default'): string {
 }
 
 export function getDrawerTransform(placement: DrawerPlacement): string {
-  return { left: 'translateX(-100%)', right: 'translateX(100%)', top: 'translateY(-100%)', bottom: 'translateY(100%)' }[placement];
+  return {
+    left: 'translateX(-100%)',
+    right: 'translateX(100%)',
+    top: 'translateY(-100%)',
+    bottom: 'translateY(100%)'
+  }[placement];
 }
 
 export function getDrawerMotionDuration(value: string): number {

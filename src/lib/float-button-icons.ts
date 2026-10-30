@@ -1,5 +1,5 @@
 // @ant-design/icons-svg 4.6.0 — MIT; see vendor/LICENSE.ant-design-icons.
-// Pinned definitions for FloatButton, Group and BackTop; geometry unchanged.
+// Закреплённые SVG FloatButton, Group и BackTop; геометрия соответствует источнику.
 export const floatButtonIcons = {
   "file-text": {
     "viewBox": "64 64 896 896",

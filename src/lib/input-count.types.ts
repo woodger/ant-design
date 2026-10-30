@@ -23,7 +23,7 @@ export interface InputCountConfig {
   /** Имеет приоритет над showCount; formatter может вернуть snippet с InputCountInfo. */
   show?: boolean | InputCountFormatter;
   /** Преобразует пользовательский ввод при превышении max после завершения composition. */
-  exceedFormatter?: (value: string, info: { max: number }) => string;
+  exceedFormatter?: (value: string, info: { max: number; }) => string;
 }
 
 /** Настройки кнопки очистки; disabled скрывает кнопку, сохраняя её в DOM. */
@@ -32,4 +32,4 @@ export interface InputAllowClear {
   clearIcon?: string | number | false | null | Snippet;
 }
 
-export type InputShowCount = boolean | { formatter: InputCountFormatter };
+export type InputShowCount = boolean | { formatter: InputCountFormatter; };

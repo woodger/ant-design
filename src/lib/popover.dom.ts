@@ -1,8 +1,14 @@
-export function connectPopoverTrigger(element: Element, id: string, expanded: boolean, kind: 'dialog' | 'menu' = 'dialog'): () => void {
+export function connectPopoverTrigger(
+  element: Element,
+  id: string,
+  expanded: boolean,
+  kind: 'dialog' | 'menu' = 'dialog'
+): () => void {
   const values = { 'aria-haspopup': kind, 'aria-expanded': String(expanded) };
   const previous = new Map<string, string | null>();
 
-  for (const attribute of Object.keys(values)) previous.set(attribute, element.getAttribute(attribute));
+  for (const attribute of Object.keys(values))
+    previous.set(attribute, element.getAttribute(attribute));
 
   function update() {
     for (const [attribute, value] of Object.entries(values)) {
@@ -15,35 +21,50 @@ export function connectPopoverTrigger(element: Element, id: string, expanded: bo
     }
     const tokens = (element.getAttribute('aria-controls') ?? '').split(/\s+/).filter(Boolean);
 
-    if (!tokens.includes(id)) element.setAttribute('aria-controls', [...tokens, id].join(' '));
+    if (!tokens.includes(id))
+      element.setAttribute('aria-controls', [...tokens, id].join(' '));
   }
 
   update();
   const observer = new MutationObserver(update);
-  observer.observe(element, { attributes: true, attributeFilter: ['aria-controls', 'aria-haspopup', 'aria-expanded'] });
+  observer.observe(
+    element,
+    { attributes: true, attributeFilter: ['aria-controls', 'aria-haspopup', 'aria-expanded'] }
+  );
 
   return () => {
     observer.disconnect();
     for (const [attribute, value] of Object.entries(values)) {
-      if (element.getAttribute(attribute) !== value) continue;
+      if (element.getAttribute(attribute) !== value)
+        continue;
 
       const original = previous.get(attribute);
 
-      if (original === null || original === undefined) element.removeAttribute(attribute);
+      if (original === null || original === undefined)
+        element.removeAttribute(attribute);
       else element.setAttribute(attribute, original);
     }
-    const tokens = (element.getAttribute('aria-controls') ?? '').split(/\s+/).filter((token) => token && token !== id);
+    const tokens = (element.getAttribute('aria-controls') ?? '').split(/\s+/).filter(
+      (token) => token && token !== id
+    );
 
-    if (tokens.length) element.setAttribute('aria-controls', tokens.join(' '));
+    if (tokens.length)
+      element.setAttribute('aria-controls', tokens.join(' '));
     else element.removeAttribute('aria-controls');
   };
 }
 
 export function focusPopover(popup: HTMLElement): void {
-  const candidates = popup.querySelectorAll<HTMLElement>('button, input, select, textarea, a[href], [tabindex], [contenteditable="true"]');
+  const candidates = popup.querySelectorAll<HTMLElement>(
+    'button, input, select, textarea, a[href], [tabindex], [contenteditable="true"]'
+  );
 
   for (const element of candidates) {
-    if (element.tabIndex < 0 || element.matches(':disabled') || element.closest('[inert]') || !element.getClientRects().length) continue;
+    if (element.tabIndex < 0
+      || element.matches(':disabled')
+      || element.closest('[inert]')
+      || !element.getClientRects().length)
+      continue;
 
     element.focus({ preventScroll: true });
     if (popup.ownerDocument.activeElement === element) return;

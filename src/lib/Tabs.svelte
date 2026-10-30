@@ -3,10 +3,31 @@
   import TabsPanel from './TabsPanel.svelte';
   import { useConfig } from './config-context';
   import { connectTabsNav, revealTab } from './tabs.dom';
-  import { getTabsActiveKey, getTabsNavigationKey, getTabsPlacement, normalizeTabsItems } from './tabs.engine';
+  import {
+    getTabsActiveKey,
+    getTabsNavigationKey,
+    getTabsPlacement,
+    normalizeTabsItems
+  } from './tabs.engine';
   import type { TabsContent, TabsProps } from './tabs.types';
 
-  let { items: sourceItems, activeKey = $bindable<string | undefined>(), defaultActiveKey, onChange, onTabClick, type = 'line', tabPlacement = 'top', size, destroyOnHidden = false, tabBarExtraContent, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, class: className = '', style }: TabsProps = $props();
+  let {
+    items: sourceItems,
+    activeKey = $bindable<string | undefined>(),
+    defaultActiveKey,
+    onChange,
+    onTabClick,
+    type = 'line',
+    tabPlacement = 'top',
+    size,
+    destroyOnHidden = false,
+    tabBarExtraContent,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    class: className = '',
+    style
+  }: TabsProps = $props();
 
   const config = useConfig();
   const generatedId = $props.id();
@@ -28,12 +49,22 @@
   let resolvedSize = $derived(size ?? config.componentSize);
   let placement = $derived(getTabsPlacement(tabPlacement, config.direction, mobile));
   let vertical = $derived(placement === 'left' || placement === 'right');
-  let extraLeft = $derived(tabBarExtraContent && typeof tabBarExtraContent === 'object' ? tabBarExtraContent.left : undefined);
-  let extraRight = $derived(tabBarExtraContent && typeof tabBarExtraContent === 'object' ? tabBarExtraContent.right : tabBarExtraContent);
+  let extraLeft = $derived(
+    tabBarExtraContent && typeof tabBarExtraContent === 'object'
+      ? tabBarExtraContent.left
+      : undefined
+  );
+  let extraRight = $derived(
+    tabBarExtraContent && typeof tabBarExtraContent === 'object'
+      ? tabBarExtraContent.right
+      : tabBarExtraContent
+  );
 
   $effect(() => {
     const media = window.matchMedia('(max-width: 575px)');
-    const update = () => { mobile = media.matches; };
+    const update = () => {
+      mobile = media.matches;
+    };
 
     update();
     media.addEventListener('change', update);
@@ -48,17 +79,31 @@
     retainedFocus = undefined;
     if (!nav || !panels) return;
 
-    const currentKeys = Array.from(nav.querySelectorAll<HTMLElement>('[role="tab"]'), (element) => element.dataset.tabsKey);
-    const moving = currentKeys.length !== items.length || items.some((item, index) => item.key !== currentKeys[index]);
+    const currentKeys = Array.from(
+      nav.querySelectorAll<HTMLElement>('[role="tab"]'),
+      (element) => element.dataset.tabsKey
+    );
+    const moving = currentKeys.length !== items.length
+      || items.some(
+        (item, index) => item.key !== currentKeys[index]
+      );
     const focused = nav.ownerDocument.activeElement;
     if (nav.contains(focused)) {
-      if (focused === nav) repairFocus = key !== undefined;
-      else if (focused instanceof HTMLElement && !available.some((item) => item.key === focused.dataset.tabsKey)) repairFocus = true;
-      else if (moving && focused instanceof HTMLElement) retainedFocus = focused;
+      if (focused === nav)
+        repairFocus = key !== undefined;
+      else if (focused instanceof HTMLElement
+        && !available.some(
+          (item) => item.key === focused.dataset.tabsKey
+        ))
+        repairFocus = true;
+      else if (moving && focused instanceof HTMLElement)
+        retainedFocus = focused;
     } else if (panels.contains(focused)) {
       const panel = Array.from(panels.children).find((element) => element.contains(focused));
-      if (panel instanceof HTMLElement && panel.dataset.tabsKey !== key) repairFocus = true;
-      else if (moving && focused instanceof HTMLElement) retainedFocus = focused;
+      if (panel instanceof HTMLElement && panel.dataset.tabsKey !== key)
+        repairFocus = true;
+      else if (moving && focused instanceof HTMLElement)
+        retainedFocus = focused;
     }
   });
 
@@ -69,9 +114,18 @@
     retainedFocus = undefined;
     if (!nav) return;
 
-    if (repairFocus) { repairFocus = false; untrack(() => focusTab(key)); }
+    if (repairFocus) {
+      repairFocus = false;
+      untrack(() => focusTab(key));
+    }
     // Перемещение keyed DOM сохраняет экземпляр панели, но браузер сбрасывает её фокус.
-    else if (previous?.isConnected && previous.getClientRects().length && !previous.matches(':disabled') && nav.ownerDocument.activeElement === nav.ownerDocument.body) untrack(() => previous.focus({ preventScroll: true }));
+    else if (previous?.isConnected
+      && previous.getClientRects().length
+      && !previous.matches(
+        ':disabled'
+      )
+      && nav.ownerDocument.activeElement === nav.ownerDocument.body)
+      untrack(() => previous.focus({ preventScroll: true }));
   });
 
   $effect(() => {
@@ -83,31 +137,59 @@
     const isVertical = vertical;
     const showIndicator = type === 'line';
 
-    if (container && scroller && nav && line) return untrack(() => connectTabsNav(container, scroller, nav, line, { key: selected?.key, vertical: isVertical, showIndicator }));
+    if (container
+      && scroller
+      && nav
+      && line) return untrack(
+        () => connectTabsNav(
+          container,
+          scroller,
+          nav,
+          line,
+          { key: selected?.key, vertical: isVertical, showIndicator }
+        )
+      );
   });
 
-  onDestroy(() => { active = false; });
+  onDestroy(() => {
+    active = false;
+  });
 
   function itemId(key: string, kind: 'tab' | 'panel') {
-    const encoded = Array.from(key, (character) => character.codePointAt(0)!.toString(16)).join('-');
+    const encoded = Array.from(key, (character) => character.codePointAt(0)!.toString(16)).join(
+      '-'
+    );
     return `${rootId}-${kind}-${encoded || 'empty'}`;
   }
 
   function focusTab(key: string | undefined) {
     if (!list) return;
 
-    const tab = Array.from(list.querySelectorAll<HTMLButtonElement>('[role="tab"]')).find((element) => element.dataset.tabsKey === key && !element.disabled);
+    const tab = Array.from(list.querySelectorAll<HTMLButtonElement>('[role="tab"]')).find(
+      (element) => element.dataset.tabsKey === key && !element.disabled
+    );
     focusKey = tab?.dataset.tabsKey;
     (tab ?? list).focus({ preventScroll: true });
-    if (tab && viewport) revealTab(viewport, tab, vertical);
+    if (tab && viewport)
+      revealTab(viewport, tab, vertical);
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.defaultPrevented || event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.defaultPrevented
+      || event.isComposing
+      || event.ctrlKey
+      || event.metaKey
+      || event.altKey) return;
 
-    const forward = vertical ? 'ArrowDown' : config.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
+    const forward = vertical
+      ? 'ArrowDown'
+      : config.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
     const backward = vertical ? 'ArrowUp' : config.direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
-    const direction = event.key === 'Home' ? 'first' : event.key === 'End' ? 'last' : event.key === forward ? 'next' : event.key === backward ? 'previous' : null;
+    const direction = event.key === 'Home'
+      ? 'first'
+      : event.key === 'End'
+        ? 'last'
+        : event.key === forward ? 'next' : event.key === backward ? 'previous' : null;
     if (!direction) return;
 
     event.preventDefault();
@@ -118,19 +200,26 @@
     if (event.defaultPrevented || !items.some((item) => item.key === key && !item.disabled)) return;
 
     onTabClick?.(key, event);
-    if (!active || event.defaultPrevented || !items.some((item) => item.key === key && !item.disabled) || key === selectedKey) return;
+    if (!active
+      || event.defaultPrevented
+      || !items.some(
+        (item) => item.key === key && !item.disabled
+      )
+      || key === selectedKey) return;
 
     activeKey = key;
     onChange?.(key);
   }
 
   function handleFocusout(event: FocusEvent) {
-    if (event.relatedTarget instanceof Node && !list?.contains(event.relatedTarget)) focusKey = undefined;
+    if (event.relatedTarget instanceof Node && !list?.contains(event.relatedTarget))
+      focusKey = undefined;
   }
 
   function handleTabFocus(key: string, element: HTMLButtonElement) {
     focusKey = key;
-    if (viewport) revealTab(viewport, element, vertical);
+    if (viewport)
+      revealTab(viewport, element, vertical);
   }
 </script>
 
@@ -153,13 +242,24 @@
   {#if typeof node === 'function'}{@render node()}{:else if node !== true && node !== false}{node ?? ''}{/if}
 {/snippet}
 
-<div bind:this={root} id={rootId} dir={config.direction} class={['ant-tabs ant-tabs-css-var', `ant-tabs-${placement}`, type === 'card' && 'ant-tabs-card', resolvedSize !== 'middle' && `ant-tabs-${resolvedSize}`, config.direction === 'rtl' && 'ant-tabs-rtl', className]} {style}>
+<div bind:this={root} id={rootId} dir={config.direction} class={[
+    'ant-tabs ant-tabs-css-var',
+    `ant-tabs-${placement}`,
+    type === 'card' && 'ant-tabs-card',
+    resolvedSize !== 'middle' && `ant-tabs-${resolvedSize}`,
+    config.direction === 'rtl' && 'ant-tabs-rtl',
+    className
+  ]} {style}>
   <div class="ant-tabs-nav" role="presentation">
     {#if extraLeft}<div class="ant-tabs-extra-content">{@render value(extraLeft)}</div>{/if}
     <div bind:this={viewport} class="ant-tabs-nav-wrap">
       <div bind:this={list} role="tablist" aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-orientation={vertical ? 'vertical' : 'horizontal'} tabindex={tabStop === undefined ? 0 : undefined} class="ant-tabs-nav-list" onkeydown={handleKeydown} onfocusout={handleFocusout}>
         {#each items as item (item.key)}
-          <button type="button" role="tab" id={itemId(item.key, 'tab')} data-tabs-key={item.key} aria-controls={itemId(item.key, 'panel')} aria-selected={selectedKey === item.key} disabled={item.disabled} tabindex={tabStop === item.key ? 0 : -1} class={['ant-tabs-tab', selectedKey === item.key && 'ant-tabs-tab-active', item.disabled && 'ant-tabs-tab-disabled']} onfocus={(event) => handleTabFocus(item.key, event.currentTarget)} onclick={(event) => activate(item.key, event)}>
+          <button type="button" role="tab" id={itemId(item.key, 'tab')} data-tabs-key={item.key} aria-controls={itemId(item.key, 'panel')} aria-selected={selectedKey === item.key} disabled={item.disabled} tabindex={tabStop === item.key ? 0 : -1} class={[
+              'ant-tabs-tab',
+              selectedKey === item.key && 'ant-tabs-tab-active',
+              item.disabled && 'ant-tabs-tab-disabled'
+            ]} onfocus={(event) => handleTabFocus(item.key, event.currentTarget)} onclick={(event) => activate(item.key, event)}>
             <span class="ant-tabs-tab-btn">{#if item.icon}<span class="ant-tabs-tab-icon" aria-hidden="true">{@render item.icon()}</span>{/if}<span class="ant-tabs-tab-label">{@render value(item.label)}</span></span>
           </button>
         {/each}

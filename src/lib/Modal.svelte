@@ -7,15 +7,22 @@
   import Button from './Button.svelte';
   import Icon from './Icon.svelte';
 
+  /** Модальный native dialog с управлением open и snippets содержимого/footer. */
   export interface ModalProps {
+    /** Поддерживает bind:open. */
     open?: boolean;
     title: string;
     children: Snippet;
     footer?: Snippet | null;
+    /** @defaultValue 520 */
     width?: number;
+    /** @defaultValue true */
     closable?: boolean;
+    /** @defaultValue true */
     keyboard?: boolean;
+    /** @defaultValue true */
     maskClosable?: boolean;
+    /** @defaultValue false */
     confirmLoading?: boolean;
     okText?: string;
     cancelText?: string;
@@ -103,7 +110,11 @@
   }
 
   function handleOk() {
-    if (onOk) { onOk(); } else { open = false; }
+    if (onOk) {
+      onOk();
+    } else {
+      open = false;
+    }
   }
 </script>
 
@@ -126,8 +137,13 @@
   aria-labelledby={titleId}
   aria-modal="true"
   oncancel={handleCancel}
-  onclose={() => { if (!dialog?.open) open = false; }}
-  onpointerdown={(event) => { backdropPointer = isBackdrop(event); }}
+  onclose={() => {
+      if (!dialog?.open)
+        open = false;
+    }}
+  onpointerdown={(event) => {
+      backdropPointer = isBackdrop(event);
+    }}
   onpointerup={handlePointerUp}
 >
   <div class="ant-modal">

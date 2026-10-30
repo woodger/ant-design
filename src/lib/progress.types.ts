@@ -1,9 +1,13 @@
 export type ProgressType = 'line' | 'circle';
 export type ProgressStatus = 'normal' | 'active' | 'exception' | 'success';
 export type ProgressCircleSize = 'small' | 'medium' | number;
-export type ProgressLineSize = ProgressCircleSize | [number | string, number] | { width?: number | string; height?: number };
+export type ProgressLineSize =
+  ProgressCircleSize
+  | [number | string, number]
+  | { width?: number | string; height?: number; };
 export type ProgressSize = ProgressLineSize;
 
+/** Общие параметры управляемого прогресса для line и circle. */
 interface ProgressBaseProps {
   percent?: number;
   showInfo?: boolean;
@@ -20,7 +24,13 @@ interface ProgressBaseProps {
   style?: string;
 }
 
+/** Прогресс line/circle с percent, состоянием, форматированием и доступным именем. */
 export type ProgressProps = ProgressBaseProps & (
-  | { type?: 'line'; status?: ProgressStatus; size?: ProgressLineSize; strokeWidth?: never }
-  | { type: 'circle'; status?: Exclude<ProgressStatus, 'active'>; size?: ProgressCircleSize; strokeWidth?: number }
+  | { type?: 'line'; status?: ProgressStatus; size?: ProgressLineSize; strokeWidth?: never; }
+  | {
+    type: 'circle';
+    status?: Exclude<ProgressStatus, 'active'>;
+    size?: ProgressCircleSize;
+    strokeWidth?: number;
+  }
 );

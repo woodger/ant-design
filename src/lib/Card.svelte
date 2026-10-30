@@ -9,9 +9,35 @@
   import Tabs from './Tabs.svelte';
   import type { CardContent, CardProps } from './card.types';
 
-  let { children, title, extra, cover, actions, loading = false, hoverable = false, size, type, variant, bordered,
-    headStyle, bodyStyle, containGrid, tabList, activeTabKey = $bindable(), defaultActiveTabKey, tabBarExtraContent, tabProps = {}, onTabChange,
-    classNames, styles, class: className = '', rootClassName = '', style, nativeElement = $bindable(), ...rest }: CardProps = $props();
+  let {
+    children,
+    title,
+    extra,
+    cover,
+    actions,
+    loading = false,
+    hoverable = false,
+    size,
+    type,
+    variant,
+    bordered,
+    headStyle,
+    bodyStyle,
+    containGrid,
+    tabList,
+    activeTabKey = $bindable(),
+    defaultActiveTabKey,
+    tabBarExtraContent,
+    tabProps = {},
+    onTabChange,
+    classNames,
+    styles,
+    class: className = '',
+    rootClassName = '',
+    style,
+    nativeElement = $bindable(),
+    ...rest
+  }: CardProps = $props();
   const config = useConfig();
   const focus = createSkeletonFocus();
   let body = $state<HTMLDivElement>();
@@ -20,22 +46,61 @@
   let mergedVariant = $derived(variant ?? (bordered === false ? 'borderless' : 'outlined'));
   let hasGrid = $derived(containGrid ?? detectedGrid);
   let tabs = $derived(cardTabItems(tabList));
-  let info = $derived({ props: { ...rest, children, title, extra, cover, actions, loading, hoverable, size: mergedSize, type, variant: mergedVariant, bordered, headStyle, bodyStyle, containGrid, tabList, activeTabKey, defaultActiveTabKey, tabBarExtraContent, tabProps, onTabChange, classNames, styles, class: className, rootClassName, style } });
+  let info = $derived(
+    {
+      props: {
+        ...rest,
+        children,
+        title,
+        extra,
+        cover,
+        actions,
+        loading,
+        hoverable,
+        size: mergedSize,
+        type,
+        variant: mergedVariant,
+        bordered,
+        headStyle,
+        bodyStyle,
+        containGrid,
+        tabList,
+        activeTabKey,
+        defaultActiveTabKey,
+        tabBarExtraContent,
+        tabProps,
+        onTabChange,
+        classNames,
+        styles,
+        class: className,
+        rootClassName,
+        style
+      }
+    }
+  );
   let classes = $derived(typeof classNames === 'function' ? classNames(info) : classNames ?? {});
   let slots = $derived(typeof styles === 'function' ? styles(info) : styles ?? {});
-  $effect(() => { if (nativeElement) return connectFeedbackFocus(nativeElement); });
+  $effect(() => {
+    if (nativeElement) return connectFeedbackFocus(nativeElement);
+  });
   $effect(() => {
     const node = body;
-    if (node && !loading) return untrack(() => connectCardGrid(node, value => { detectedGrid = value; }));
+    if (node && !loading) return untrack(() => connectCardGrid(node, value => {
+      detectedGrid = value;
+    }));
   });
   $effect.pre(() => {
     const node = body;
     const busy = loading;
-    if (node) untrack(() => focus.update(node, node, busy));
+    if (node)
+      untrack(() => focus.update(node, node, busy));
   });
   onDestroy(() => focus.destroy());
 
-  function selectTab(key: string) { activeTabKey = key; onTabChange?.(key); }
+  function selectTab(key: string) {
+    activeTabKey = key;
+    onTabChange?.(key);
+  }
 </script>
 
 <style>
@@ -49,7 +114,20 @@
   {#if typeof node === 'function'}{@render node()}{:else if node !== true && node !== false}{node ?? ''}{/if}
 {/snippet}
 <div {...rest} bind:this={nativeElement} dir={config.direction} data-ant-contain-grid={containGrid === false ? 'false' : undefined}
-  class={['ant-card ant-card-css-var', loading && 'ant-card-loading', mergedVariant !== 'borderless' && 'ant-card-bordered', hoverable && 'ant-card-hoverable', hasGrid && 'ant-card-contain-grid', tabList?.length && 'ant-card-contain-tabs', mergedSize === 'small' && 'ant-card-small', type && `ant-card-type-${type}`, config.direction === 'rtl' && 'ant-card-rtl', className, rootClassName, classes.root]}
+  class={[
+      'ant-card ant-card-css-var',
+      loading && 'ant-card-loading',
+      mergedVariant !== 'borderless' && 'ant-card-bordered',
+      hoverable && 'ant-card-hoverable',
+      hasGrid && 'ant-card-contain-grid',
+      tabList?.length && 'ant-card-contain-tabs',
+      mergedSize === 'small' && 'ant-card-small',
+      type && `ant-card-type-${type}`,
+      config.direction === 'rtl' && 'ant-card-rtl',
+      className,
+      rootClassName,
+      classes.root
+    ]}
   style={[slots.root, style].filter(Boolean).join(';')}>
   {#if cardHasContent(title) || cardHasContent(extra) || tabList}
     <div class={['ant-card-head', classes.header]} style={[headStyle, slots.header].filter(Boolean).join(';')}>

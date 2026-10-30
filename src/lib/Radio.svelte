@@ -32,13 +32,19 @@
   let control = $state<HTMLInputElement>();
   let resolvedChecked = $derived(group ? group.value === value : checked ?? initialDefault);
   let resolvedDefault = $derived(group ? group.defaultValue === value : initialDefault);
-  let resolvedDisabled = $derived(group ? group.disabled || Boolean(disabled) : disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled);
+  let resolvedDisabled = $derived(
+    group
+      ? group.disabled || Boolean(disabled)
+      : disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled
+  );
   let nativeGroup = $derived({ name: group?.name ?? name ?? field?.name, form: attributes.form });
 
   $effect(() => {
     if (!control || group) return;
 
-    return connectRadio(control, (next) => { checked = next; });
+    return connectRadio(control, (next) => {
+      checked = next;
+    });
   });
 
   $effect(() => {
@@ -50,15 +56,19 @@
     }
   });
 
-  onDestroy(() => { for (const reset of resets) clearTimeout(reset); });
+  onDestroy(() => {
+    for (const reset of resets)
+      clearTimeout(reset);
+  });
 
-  function handleChange(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleChange(event: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
     if (resolvedDisabled) return;
 
     const next = event.currentTarget.checked;
 
     if (group) {
-      if (next) group.select(value);
+      if (next)
+        group.select(value);
     } else {
       checked = next;
       onCheckedChange?.(next);
@@ -67,7 +77,7 @@
     onchange?.(event);
   }
 
-  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement }) {
+  function handleBlur(event: FocusEvent & { currentTarget: EventTarget & HTMLInputElement; }) {
     field?.onBlur();
     onblur?.(event);
   }
@@ -94,8 +104,18 @@
 
 <svelte:document onreset={handleReset} />
 
-<label class={['ant-radio-wrapper ant-radio-css-var', resolvedChecked && 'ant-radio-wrapper-checked', resolvedDisabled && 'ant-radio-wrapper-disabled', config.direction === 'rtl' && 'ant-radio-wrapper-rtl', className]} {style}>
-  <span class={['ant-radio', resolvedChecked && 'ant-radio-checked', resolvedDisabled && 'ant-radio-disabled']}>
+<label class={[
+    'ant-radio-wrapper ant-radio-css-var',
+    resolvedChecked && 'ant-radio-wrapper-checked',
+    resolvedDisabled && 'ant-radio-wrapper-disabled',
+    config.direction === 'rtl' && 'ant-radio-wrapper-rtl',
+    className
+  ]} {style}>
+  <span class={[
+      'ant-radio',
+      resolvedChecked && 'ant-radio-checked',
+      resolvedDisabled && 'ant-radio-disabled'
+    ]}>
     <input
       {...attributes}
       bind:this={control}
@@ -110,8 +130,18 @@
       disabled={resolvedDisabled}
       required={group?.required ?? attributes.required ?? field?.required}
       aria-checked={resolvedChecked}
-      data-ant-form-invalid={!group && (field?.status === 'error' || ariaInvalid === true || ariaInvalid === 'true') || undefined}
-      aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined}
+      data-ant-form-invalid={!group
+          && (field?.status === 'error'
+            || ariaInvalid === true
+            || ariaInvalid === 'true')
+          || undefined}
+      aria-describedby={[attributes['aria-describedby'], field?.describedBy].filter(
+          Boolean
+        )
+          .join(
+            ' '
+          )
+          || undefined}
       onchange={handleChange}
       onblur={handleBlur}
     />

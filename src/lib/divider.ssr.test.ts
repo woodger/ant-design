@@ -6,9 +6,13 @@ import type { DividerProps } from './divider.types';
 
 describe('Divider server rendering', () => {
   it('keeps the upstream default spacing without an explicit size', () => {
-    const body = render(Divider, { props: {
-      classNames: ({ props }) => ({ root: props.size === undefined ? 'default-size' : 'explicit-size' })
-    } }).body;
+    const body = render(Divider, {
+      props: {
+        classNames: ({ props }) => ({
+          root: props.size === undefined ? 'default-size' : 'explicit-size'
+        })
+      }
+    }).body;
 
     expect(body).toContain('ant-divider-horizontal');
     expect(body).toContain('default-size');
@@ -16,7 +20,18 @@ describe('Divider server rendering', () => {
   });
 
   it('renders an empty separator without content rails and preserves native attributes', () => {
-    const body = render(Divider, { props: { id: 'divider', 'aria-label': 'Sections', title: 'Title', class: 'custom', style: 'opacity:0.5' } }).body;
+    const body = render(
+      Divider,
+      {
+        props: {
+          id: 'divider',
+          'aria-label': 'Sections',
+          title: 'Title',
+          class: 'custom',
+          style: 'opacity:0.5'
+        }
+      }
+    ).body;
 
     expect(body).toContain('role="separator"');
     expect(body).toContain('aria-orientation="horizontal"');
@@ -29,12 +44,15 @@ describe('Divider server rendering', () => {
     expect(body).not.toContain('tabindex');
   });
 
-  it.each([undefined, null, false, ''] as const)('keeps %s content as an empty divider', children => {
-    const body = render(Divider, { props: { children } }).body;
+  it.each([undefined, null, false, ''] as const)(
+    'keeps %s content as an empty divider',
+    children => {
+      const body = render(Divider, { props: { children } }).body;
 
-    expect(body).not.toContain('ant-divider-with-text');
-    expect(body).not.toContain('ant-divider-inner-text');
-  });
+      expect(body).not.toContain('ant-divider-with-text');
+      expect(body).not.toContain('ant-divider-inner-text');
+    }
+  );
 
   it('renders numeric zero and escapes string content', () => {
     const zero = render(Divider, { props: { children: 0 } }).body;
@@ -81,8 +99,14 @@ describe('Divider server rendering', () => {
   });
 
   it('supports legacy placement and normalizes numeric margins to pixels', () => {
-    const body = render(Divider, { props: { orientation: 'right', orientationMargin: '10', children: 'Title' } }).body;
-    const centered = render(Divider, { props: { titlePlacement: 'center', orientationMargin: 20, children: 'Title' } }).body;
+    const body = render(
+      Divider,
+      { props: { orientation: 'right', orientationMargin: '10', children: 'Title' } }
+    ).body;
+    const centered = render(
+      Divider,
+      { props: { titlePlacement: 'center', orientationMargin: 20, children: 'Title' } }
+    ).body;
 
     expect(body).toContain('ant-divider-with-text-end');
     expect(body).toContain('ant-divider-no-default-orientation-margin-end');
@@ -91,20 +115,44 @@ describe('Divider server rendering', () => {
     expect(centered).not.toContain('margin-inline-');
   });
 
-  it('passes normalized props to semantic callbacks and merges slot styles in upstream order', () => {
-    const body = render(Divider, { props: {
-      size: 'small', titlePlacement: 'left', children: 'Title', orientationMargin: 10,
-      classNames: ({ props }) => ({ root: `root-${props.orientation}-${props.titlePlacement}-${props.size}`, rail: 'custom-rail', content: 'custom-content' }),
-      styles: { root: 'opacity:0.5', rail: 'border-color:red', content: 'margin-inline-start:20px' },
-      style: 'opacity:1'
-    } }).body;
-    const empty = render(Divider, { props: { styles: () => ({ root: 'opacity:0.5', rail: 'opacity:0.8' }), style: 'opacity:1' } }).body;
+  it(
+    'passes normalized props to semantic callbacks and merges slot styles in upstream order',
+    () => {
+      const body = render(Divider, {
+        props: {
+          size: 'small',
+          titlePlacement: 'left',
+          children: 'Title',
+          orientationMargin: 10,
+          classNames: ({ props }) => ({
+            root: `root-${props.orientation}-${props.titlePlacement}-${props.size}`,
+            rail: 'custom-rail',
+            content: 'custom-content'
+          }),
+          styles: {
+            root: 'opacity:0.5',
+            rail: 'border-color:red',
+            content: 'margin-inline-start:20px'
+          },
+          style: 'opacity:1'
+        }
+      }).body;
+      const empty = render(
+        Divider,
+        {
+          props: {
+            styles: () => ({ root: 'opacity:0.5', rail: 'opacity:0.8' }),
+            style: 'opacity:1'
+          }
+        }
+      ).body;
 
-    expect(body).toContain('root-horizontal-start-small');
-    expect(body).toContain('custom-rail');
-    expect(body).toContain('custom-content');
-    expect(body).toContain('opacity:0.5;opacity:1');
-    expect(body).toContain('margin-inline-start:10px;margin-inline-start:20px');
-    expect(empty).toContain('opacity:0.5;opacity:0.8;opacity:1');
-  });
+      expect(body).toContain('root-horizontal-start-small');
+      expect(body).toContain('custom-rail');
+      expect(body).toContain('custom-content');
+      expect(body).toContain('opacity:0.5;opacity:1');
+      expect(body).toContain('margin-inline-start:10px;margin-inline-start:20px');
+      expect(empty).toContain('opacity:0.5;opacity:0.8;opacity:1');
+    }
+  );
 });

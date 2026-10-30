@@ -1,6 +1,6 @@
 <script lang="ts">
   import { floatButtonIcons } from './float-button-icons';
-  let { name }: { name: keyof typeof floatButtonIcons } = $props();
+  let { name }: { name: keyof typeof floatButtonIcons; } = $props();
   let icon = $derived(floatButtonIcons[name]);
 </script>
 <style>

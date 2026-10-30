@@ -3,17 +3,10 @@
 > Type: Reference. Первая версия community-переноса компонентов Ant Design
 > 6.6.8 на Svelte 5 и TypeScript.
 
-Модуль содержит ConfigProvider, Button, Input, TextArea, AutoComplete, Mentions, Image, ImagePreviewGroup, DatePicker, RangePicker, Upload, UploadDragger, Tree, TreeSelect, InputNumber, Slider, Select, Checkbox, CheckboxGroup,
-Radio, RadioGroup, Switch, Pagination, Table,
-Modal, Tooltip, Popover, Popconfirm, Dropdown, Tabs, Collapse, Drawer, Alert,
-MessageHolder, NotificationHolder, Progress, Spin, Skeleton, Empty, Result, Steps,
-Tag, CheckableTag, Badge, Avatar, AvatarGroup, Divider, Flex, Statistic,
-StatisticTimer, StatisticCountdown, Segmented, Row, Col, Layout, LayoutHeader,
-LayoutContent, LayoutFooter, LayoutSider, Descriptions, Card, CardGrid, CardMeta,
-Breadcrumb, Menu, Space, SpaceCompact, SpaceAddon, FloatButton, FloatButtonGroup,
-FloatButtonBackTop, Form и FormItem.
-Интерактивные примеры доступны на маршруте `/ant-design`. Публичная точка
-входа — [index.ts](./src/lib/index.ts). Компоненты работают без React и SvelteKit API.
+Библиотека содержит компоненты, модели форм, темы и локализацию. Подтверждённый
+объём переноса и известные пробелы описаны в [реестре покрытия](docs/reference/ant-design-porting/status.md).
+Публичная точка входа — [index.ts](./src/lib/index.ts). Компоненты работают без
+React и SvelteKit API. Живые примеры доступны на [домашней странице](https://woodger.org/ant-design).
 
 ## Подключение
 
@@ -104,8 +97,10 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 
 ## Компоненты
 
-Точные типы props принадлежат определениям рядом с компонентами и экспортируются
-через [index.ts](./src/lib/index.ts).
+Точные Props, callbacks, snippets и refs определены рядом с компонентами и
+экспортируются через [index.ts](./src/lib/index.ts). JSDoc у исходных объявлений
+описывает defaults, приоритеты и ограничения; сборка сохраняет его в декларациях
+пакета. Таблица ниже описывает поведение и не заменяет эти объявления.
 
 | Компонент | Поддерживаемое поведение |
 | --- | --- |

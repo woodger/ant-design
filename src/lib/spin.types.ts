@@ -2,8 +2,11 @@ import type { Snippet } from 'svelte';
 
 export type SpinSize = 'small' | 'medium' | 'large';
 
+/** Standalone или вложенный индикатор ожидания с задержкой и блокировкой busy children. */
 export interface SpinProps {
+  /** @defaultValue true */
   spinning?: boolean;
+  /** @defaultValue 0 */
   delay?: number;
   size?: SpinSize;
   description?: string | Snippet;

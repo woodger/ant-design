@@ -17,23 +17,62 @@ dayjs.extend(weekOfYear);
 dayjs.extend(weekYear);
 dayjs.extend((_options, constructor) => {
   const original = constructor.prototype.format;
-  constructor.prototype.format = function (format) { return original.call(this, (format ?? '').replace('Wo', 'wo')); };
+  constructor.prototype.format = function(format) {
+    // Оригинальный formatter использует текущий экземпляр Dayjs как receiver.
+    return original.call(this, (format ?? '').replace('Wo', 'wo'));
+  };
 });
-const localeMap: Record<string, string> = { bn_BD: 'bn-bd', by_BY: 'be', en_GB: 'en-gb', en_US: 'en', fr_BE: 'fr', fr_CA: 'fr-ca', hy_AM: 'hy-am', km_KH: 'km', kmr_IQ: 'ku', nl_BE: 'nl-be', pt_BR: 'pt-br', zh_CN: 'zh-cn', zh_HK: 'zh-hk', zh_TW: 'zh-tw' };
+const localeMap: Record<string, string> = {
+  bn_BD: 'bn-bd',
+  by_BY: 'be',
+  en_GB: 'en-gb',
+  en_US: 'en',
+  fr_BE: 'fr',
+  fr_CA: 'fr-ca',
+  hy_AM: 'hy-am',
+  km_KH: 'km',
+  kmr_IQ: 'ku',
+  nl_BE: 'nl-be',
+  pt_BR: 'pt-br',
+  zh_CN: 'zh-cn',
+  zh_HK: 'zh-hk',
+  zh_TW: 'zh-tw'
+};
 const localeName = (locale: string) => localeMap[locale] || locale.split('_')[0];
 // Сохраняем поведение адаптера при нескольких экземплярах библиотеки Day.js.
-const own = (value: Dayjs) => !dayjs.isDayjs(value) || value instanceof dayjs ? value : dayjs(value.valueOf());
+const own = (value: Dayjs) => !dayjs.isDayjs(value) || value instanceof dayjs
+  ? value
+  : dayjs(value.valueOf());
 export const dayjsGenerateConfig: GenerateConfig<Dayjs> = {
-  getNow: () => { const now = dayjs() as Dayjs & { tz?: () => Dayjs }; return typeof now.tz === 'function' ? now.tz() : now; },
+  getNow: () => {
+    const now = dayjs() as Dayjs & { tz?: () => Dayjs; };
+    return typeof now.tz === 'function' ? now.tz() : now;
+  },
   getFixedDate: text => dayjs(text, ['YYYY-M-DD', 'YYYY-MM-DD']),
   getEndDate: value => own(value).endOf('month'),
-  getWeekDay: value => { const date = own(value).locale('en'); return date.weekday() + date.localeData().firstDayOfWeek(); },
-  getYear: value => own(value).year(), getMonth: value => own(value).month(), getDate: value => own(value).date(),
-  getHour: value => own(value).hour(), getMinute: value => own(value).minute(), getSecond: value => own(value).second(), getMillisecond: value => own(value).millisecond(),
-  addYear: (value, amount) => own(value).add(amount, 'year'), addMonth: (value, amount) => own(value).add(amount, 'month'), addDate: (value, amount) => own(value).add(amount, 'day'),
-  setYear: (value, year) => own(value).year(year), setMonth: (value, month) => own(value).month(month), setDate: (value, date) => own(value).date(date),
-  setHour: (value, hour) => own(value).hour(hour), setMinute: (value, minute) => own(value).minute(minute), setSecond: (value, second) => own(value).second(second), setMillisecond: (value, millisecond) => own(value).millisecond(millisecond),
-  isAfter: (a, b) => own(a).isAfter(own(b)), isValidate: value => own(value).isValid(),
+  getWeekDay: value => {
+    const date = own(value).locale('en');
+    return date.weekday() + date.localeData().firstDayOfWeek();
+  },
+  getYear: value => own(value).year(),
+  getMonth: value => own(value).month(),
+  getDate: value => own(value).date(),
+  getHour: value => own(value).hour(),
+  getMinute: value => own(value).minute(),
+  getSecond: value => own(value).second(),
+  getMillisecond: value => own(value).millisecond(),
+  addYear: (value, amount) => own(value).add(amount, 'year'),
+  addMonth: (value, amount) => own(value).add(amount, 'month'),
+  addDate: (value, amount) => own(value).add(amount, 'day'),
+  setYear: (value, year) => own(value).year(year),
+  setMonth: (value, month) => own(value).month(month),
+  setDate: (value, date) => own(value).date(date),
+  setHour: (value, hour) => own(value).hour(hour),
+  setMinute: (value, minute) => own(value).minute(minute),
+  setSecond: (value, second) => own(value).second(second),
+  setMillisecond: (value, millisecond) => own(value).millisecond(millisecond),
+  isAfter: (a, b) => own(a).isAfter(own(b)),
+  isValidate: value => own(value).isValid(),
   locale: {
     getWeekFirstDay: locale => dayjs().locale(localeName(locale)).localeData().firstDayOfWeek(),
     getWeekFirstDate: (locale, value) => own(value).locale(localeName(locale)).weekday(0),
@@ -46,7 +85,10 @@ export const dayjsGenerateConfig: GenerateConfig<Dayjs> = {
         if (format.includes('wo') || format.includes('Wo')) {
           const [year, week] = text.split('-');
           const first = dayjs(year, 'YYYY').startOf('year').locale(localeName(locale));
-          for (let n = 0; n <= 52; n++) { const date = first.add(n, 'week'); if (date.format('Wo') === week) return date; }
+          for (let n = 0; n <= 52; n++) {
+            const date = first.add(n, 'week');
+            if (date.format('Wo') === week) return date;
+          }
           return null;
         }
         const date = dayjs(text, format, true).locale(localeName(locale));

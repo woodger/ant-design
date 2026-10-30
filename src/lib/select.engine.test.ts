@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { filterOptions, getEnabledIndex, getSelectValues, resolveSelectedOptions } from './select.engine';
+import {
+  filterOptions,
+  getEnabledIndex,
+  getSelectValues,
+  resolveSelectedOptions
+} from './select.engine';
 
 const options = [
   { value: 0, label: 'Svelte 5' },
@@ -68,16 +73,42 @@ describe('getEnabledIndex', () => {
 
 
 describe('remote Select options', () => {
-  it('bypasses filtering for remote results and supports a custom predicate without normalizing its query', () => {
-    expect(filterOptions(options, 'unmatched', false)).toBe(options);
-    expect(filterOptions(options, '2', (search, option) => String(option.value) === search)).toEqual([options[2]]);
-  });
-  it('retains labels and disabled state only for selected values, refreshes labels and separates numeric keys', () => {
-    const map = new Map<string | number, { value: string | number; label: string; disabled?: boolean }>([[0, { value: 0, label: 'Zero', disabled: true }], ['0', { value: '0', label: 'String zero' }]]);
-    const cached = resolveSelectedOptions([0, '0'], map, new Map());
-    expect(resolveSelectedOptions([0, '0'], new Map(), cached)).toBe(cached);
-    const replaced = resolveSelectedOptions([0], new Map([[0, { value: 0, label: 'Renamed' }]]), cached);
-    expect(replaced.size).toBe(1); expect(replaced.get(0)?.label).toBe('Renamed'); expect(replaced.has('0')).toBe(false);
-    expect(resolveSelectedOptions([99], new Map(), replaced).get(99)?.label).toBe('99');
-  });
+  it(
+    'bypasses filtering for remote results and supports a custom predicate without normalizing its query',
+    () => {
+      expect(filterOptions(options, 'unmatched', false)).toBe(options);
+      expect(filterOptions(options, '2', (search, option) => String(option
+        .value) === search))
+        .toEqual(
+          [options[2]]
+        );
+    }
+  );
+  it(
+    'retains labels and disabled state only for selected values, refreshes labels and separates numeric keys',
+    () => {
+      const map = new Map<
+        string | number,
+        { value: string | number; label: string; disabled?: boolean; }
+      >(
+        [
+          [0, { value: 0, label: 'Zero', disabled: true }],
+          ['0', { value: '0', label: 'String zero' }]
+        ]
+      );
+      const cached = resolveSelectedOptions([0, '0'], map, new Map());
+
+      expect(resolveSelectedOptions([0, '0'], new Map(), cached)).toBe(cached);
+      const replaced = resolveSelectedOptions(
+        [0],
+        new Map([[0, { value: 0, label: 'Renamed' }]]),
+        cached
+      );
+
+      expect(replaced.size).toBe(1);
+      expect(replaced.get(0)?.label).toBe('Renamed');
+      expect(replaced.has('0')).toBe(false);
+      expect(resolveSelectedOptions([99], new Map(), replaced).get(99)?.label).toBe('99');
+    }
+  );
 });

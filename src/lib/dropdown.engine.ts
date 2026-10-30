@@ -12,16 +12,25 @@ export function normalizeDropdownItems(items: readonly DropdownItem[]): Dropdown
 }
 
 export function getDropdownCommands(items: readonly DropdownItem[]): DropdownMenuItem[] {
-  return items.filter((item): item is DropdownMenuItem => item.type !== 'divider' && !item.disabled);
+  return items.filter((item): item is DropdownMenuItem => item.type !== 'divider'
+    && !item.disabled);
 }
 
-export function getDropdownActiveKey(items: readonly DropdownItem[], key: string | null): string | null {
+export function getDropdownActiveKey(items: readonly DropdownItem[], key:
+  string
+  | null):
+  string
+  | null {
   const commands = getDropdownCommands(items);
 
   return commands.find((item) => item.key === key)?.key ?? commands[0]?.key ?? null;
 }
 
-export function getDropdownNavigationKey(items: readonly DropdownItem[], current: string | null, direction: 'next' | 'previous' | 'first' | 'last'): string | null {
+export function getDropdownNavigationKey(
+  items: readonly DropdownItem[],
+  current: string | null,
+  direction: 'next' | 'previous' | 'first' | 'last'
+): string | null {
   const commands = getDropdownCommands(items);
   if (!commands.length) return null;
   if (direction === 'first') return commands[0].key;
@@ -30,10 +39,16 @@ export function getDropdownNavigationKey(items: readonly DropdownItem[], current
   const index = commands.findIndex((item) => item.key === current);
   if (index === -1) return direction === 'next' ? commands[0].key : commands.at(-1)!.key;
 
-  return commands[(index + (direction === 'next' ? 1 : -1) + commands.length) % commands.length].key;
+  return commands[(index + (direction === 'next'
+    ? 1
+    : -1) + commands.length) % commands.length].key;
 }
 
-export function getDropdownMatch(commands: readonly { key: string; text: string }[], current: string | null, query: string): string | null {
+export function getDropdownMatch(
+  commands: readonly { key: string; text: string; }[],
+  current: string | null,
+  query: string
+): string | null {
   const search = query.trim().toLocaleLowerCase();
   if (!search || !commands.length) return null;
 

@@ -18,9 +18,15 @@ export interface StepsItem {
   disabled?: boolean;
 }
 
-export interface StepsProps extends Omit<HTMLAttributes<HTMLOListElement>, 'children' | 'class' | 'style' | 'onchange'> {
+/** Управляемые этапы с current, items, статусами и вариантами размещения. */
+export interface StepsProps extends Omit<
+  HTMLAttributes<HTMLOListElement>,
+  'children' | 'class' | 'style' | 'onchange'
+> {
   items?: readonly (StepsItem | StepsDataItem | false | null | undefined)[];
+  /** @defaultValue 0 */
   initial?: number;
+  /** @defaultValue 'filled' */
   variant?: 'filled' | 'outlined';
   type?: StepsType;
   direction?: StepsOrientation;
@@ -30,17 +36,22 @@ export interface StepsProps extends Omit<HTMLAttributes<HTMLOListElement>, 'chil
   percent?: number;
   maxCount?: number;
   ellipsis?: boolean;
+  /** @defaultValue 0 */
   offset?: number;
   iconRender?: StepsIconRender;
-  classNames?: StepsSemanticSlots | ((info: { props: StepsProps }) => StepsSemanticSlots);
-  styles?: StepsSemanticSlots | ((info: { props: StepsProps }) => StepsSemanticSlots);
+  classNames?: StepsSemanticSlots | ((info: { props: StepsProps; }) => StepsSemanticSlots);
+  styles?: StepsSemanticSlots | ((info: { props: StepsProps; }) => StepsSemanticSlots);
   rootClassName?: string;
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLOListElement;
+  /** @defaultValue 0 */
   current?: number;
+  /** @defaultValue 'process' */
   status?: StepsStatus;
   onChange?: (current: number) => void;
   orientation?: StepsOrientation;
   size?: StepsSize | 'default';
+  /** @defaultValue true */
   responsive?: boolean;
   disabled?: boolean;
   id?: string;

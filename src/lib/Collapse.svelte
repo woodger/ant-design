@@ -3,10 +3,34 @@
   import Icon from './Icon.svelte';
   import CollapsePanel from './CollapsePanel.svelte';
   import { useConfig } from './config-context';
-  import { getCollapseFocusKey, getCollapseKeys, getCollapseTrigger, normalizeCollapseItems, toggleCollapseKey } from './collapse.engine';
+  import {
+    getCollapseFocusKey,
+    getCollapseKeys,
+    getCollapseTrigger,
+    normalizeCollapseItems,
+    toggleCollapseKey
+  } from './collapse.engine';
   import type { CollapseActiveKey, CollapseProps } from './collapse.types';
 
-  let { items: sourceItems, activeKey = $bindable<CollapseActiveKey | undefined>(), defaultActiveKey, onChange, accordion = false, collapsible = 'header', expandIconPlacement = 'start', size, bordered = true, ghost = false, destroyOnHidden = false, headingLevel = 3, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, class: className = '', style }: CollapseProps = $props();
+  let {
+    items: sourceItems,
+    activeKey = $bindable<CollapseActiveKey | undefined>(),
+    defaultActiveKey,
+    onChange,
+    accordion = false,
+    collapsible = 'header',
+    expandIconPlacement = 'start',
+    size,
+    bordered = true,
+    ghost = false,
+    destroyOnHidden = false,
+    headingLevel = 3,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    class: className = '',
+    style
+  }: CollapseProps = $props();
 
   const config = useConfig();
   const generatedId = $props.id();
@@ -38,7 +62,12 @@
       return;
     }
 
-    const panels = Array.from(container.children).filter((element): element is HTMLElement => element instanceof HTMLElement && element.hasAttribute('data-collapse-key'));
+    const panels = Array.from(container.children).filter(
+      (element): element is HTMLElement => element instanceof HTMLElement
+        && element.hasAttribute(
+          'data-collapse-key'
+        )
+    );
     const previous = panels.find((element) => element.contains(focused));
     if (!previous || !(focused instanceof HTMLElement)) return;
 
@@ -47,10 +76,26 @@
     const trigger = previous.querySelector('[data-collapse-trigger]');
     const content = previous.querySelector(':scope > [data-collapse-panel]');
     const extra = previous.querySelector(':scope > .ant-collapse-header > .ant-collapse-extra');
-    if (index === -1 || focused === trigger && modes[index] === 'disabled' || content?.contains(focused) && !open.includes(key!) || extra?.contains(focused) && !current[index]?.extra) {
+    if (index === -1
+      || focused === trigger
+      && modes[index] === 'disabled'
+      || content?.contains(
+        focused
+      )
+      && !open.includes(
+        key!
+      )
+      || extra?.contains(
+        focused
+      )
+      && !current[index]?.extra) {
       repairFocus = true;
       repairKey = key;
-    } else if (panels.length !== current.length || current.some((item, position) => item.key !== panels[position]?.dataset.collapseKey)) retainedFocus = focused;
+    } else if (panels.length !== current.length
+      || current.some(
+        (item, position) => item.key !== panels[position]?.dataset.collapseKey
+      ))
+      retainedFocus = focused;
   });
 
   $effect(() => {
@@ -60,26 +105,44 @@
     retainedFocus = undefined;
     if (!container) return;
 
-    if (repairFocus) { repairFocus = false; untrack(() => focusHeader(target)); }
-    else if (previous?.isConnected && previous.getClientRects().length && !previous.matches(':disabled') && container.ownerDocument.activeElement === container.ownerDocument.body) untrack(() => previous.focus({ preventScroll: true }));
+    if (repairFocus) {
+      repairFocus = false;
+      untrack(() => focusHeader(target));
+    }
+    else if (previous?.isConnected
+      && previous.getClientRects().length
+      && !previous.matches(
+        ':disabled'
+      )
+      && container.ownerDocument.activeElement === container.ownerDocument.body)
+      untrack(() => previous.focus({ preventScroll: true }));
   });
 
-  onDestroy(() => { active = false; });
+  onDestroy(() => {
+    active = false;
+  });
 
   function itemId(key: string, kind: 'header' | 'panel' | 'label') {
-    const encoded = Array.from(key, (character) => character.codePointAt(0)!.toString(16)).join('-');
+    const encoded = Array.from(key, (character) => character.codePointAt(0)!.toString(16)).join(
+      '-'
+    );
     return `${rootId}-${kind}-${encoded || 'empty'}`;
   }
 
   function focusHeader(key: string | undefined) {
-    const panel = Array.from(root?.children ?? []).find((element) => element instanceof HTMLElement && element.dataset.collapseKey === key);
+    const panel = Array.from(root?.children ?? []).find(
+      (element) => element instanceof HTMLElement && element.dataset.collapseKey === key
+    );
     const button = panel?.querySelector<HTMLButtonElement>('[data-collapse-trigger]');
     (button && !button.disabled ? button : root)?.focus({ preventScroll: true });
   }
 
   function toggle(key: string, event: MouseEvent) {
     const item = items.find((entry) => entry.key === key);
-    if (!active || event.defaultPrevented || !item || getCollapseTrigger(item, collapsible) === 'disabled') return;
+    if (!active
+      || event.defaultPrevented
+      || !item
+      || getCollapseTrigger(item, collapsible) === 'disabled') return;
 
     const next = toggleCollapseKey(activeKey ?? initialDefault, key, accordion);
     activeKey = [...next];
@@ -107,15 +170,35 @@
   @media (prefers-reduced-motion: reduce) { .ant-collapse > .ant-collapse-item > .ant-collapse-header, .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow { animation: none; transition: none; } }
 </style>
 
-<div bind:this={root} id={rootId} role="group" aria-label={ariaLabel} aria-labelledby={ariaLabelledby} tabindex="-1" dir={config.direction} class={['ant-collapse ant-collapse-css-var', `ant-collapse-icon-placement-${expandIconPlacement}`, resolvedSize !== 'middle' && `ant-collapse-${resolvedSize}`, !bordered && 'ant-collapse-borderless', ghost && 'ant-collapse-ghost', config.direction === 'rtl' && 'ant-collapse-rtl', className]} {style}>
+<div bind:this={root} id={rootId} role="group" aria-label={ariaLabel} aria-labelledby={ariaLabelledby} tabindex="-1" dir={config.direction} class={[
+    'ant-collapse ant-collapse-css-var',
+    `ant-collapse-icon-placement-${expandIconPlacement}`,
+    resolvedSize !== 'middle' && `ant-collapse-${resolvedSize}`,
+    !bordered && 'ant-collapse-borderless',
+    ghost && 'ant-collapse-ghost',
+    config.direction === 'rtl' && 'ant-collapse-rtl',
+    className
+  ]} {style}>
   {#each items as item (item.key)}
     {@const mode = getCollapseTrigger(item, collapsible)}
     {@const open = openKeys.includes(item.key)}
-    <div data-collapse-key={item.key} class={['ant-collapse-item', open && 'ant-collapse-item-active', mode === 'disabled' && 'ant-collapse-item-disabled']}>
-      <div class={['ant-collapse-header', mode === 'icon' && 'ant-collapse-collapsible-icon']}>
+    <div data-collapse-key={item.key} class={[
+        'ant-collapse-item',
+        open && 'ant-collapse-item-active',
+        mode === 'disabled' && 'ant-collapse-item-disabled'
+      ]}>
+      <div class={[
+          'ant-collapse-header',
+          mode === 'icon' && 'ant-collapse-collapsible-icon'
+        ]}>
         <svelte:element this={`h${headingLevel}`} class="ant-collapse-heading">
-          <button type="button" id={itemId(item.key, 'header')} data-collapse-trigger={item.key} aria-expanded={open} aria-controls={itemId(item.key, 'panel')} disabled={mode === 'disabled'} class={['ant-collapse-trigger', mode === 'icon' && 'ant-collapse-trigger-icon']} onclick={(event) => toggle(item.key, event)}>
-            {#if item.showArrow !== false}<span class="ant-collapse-expand-icon" aria-hidden="true"><span class="ant-collapse-arrow" style:transform={`rotate(${open ? 90 : config.direction === 'rtl' ? 180 : 0}deg)`}><Icon name="right" /></span></span>{/if}
+          <button type="button" id={itemId(item.key, 'header')} data-collapse-trigger={item.key} aria-expanded={open} aria-controls={itemId(item.key, 'panel')} disabled={mode === 'disabled'} class={[
+              'ant-collapse-trigger',
+              mode === 'icon' && 'ant-collapse-trigger-icon'
+            ]} onclick={(event) => toggle(item.key, event)}>
+            {#if item.showArrow !== false}<span class="ant-collapse-expand-icon" aria-hidden="true"><span class="ant-collapse-arrow" style:transform={`rotate(${open
+                ? 90
+                : config.direction === 'rtl' ? 180 : 0}deg)`}><Icon name="right" /></span></span>{/if}
             <span id={itemId(item.key, 'label')} class="ant-collapse-title">{#if typeof item.label === 'function'}{@render item.label()}{:else}{item.label}{/if}</span>
           </button>
         </svelte:element>

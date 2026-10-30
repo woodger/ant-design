@@ -21,7 +21,11 @@ describe('Alert server rendering', () => {
 
   it('uses warning and an icon for banners while respecting explicit overrides', () => {
     const banner = render(Alert, { props: { banner: true, title: 'Maintenance' } }).body;
-    const overridden = render(Alert, { props: { banner: true, type: 'success', showIcon: false } }).body;
+    const overridden = render(
+      Alert,
+      { props: { banner: true, type: 'success', showIcon: false } }
+    )
+      .body;
 
     expect(banner).toContain('ant-alert-warning');
     expect(banner).toContain('ant-alert-banner');
@@ -42,25 +46,57 @@ describe('Alert server rendering', () => {
   });
 
   it('renders title, description, icon and independent action snippets', () => {
-    const { body } = render(Alert, { props: { title: snippet('<strong>Upload failed</strong>'), description: snippet('<p>Try another file.</p>'), showIcon: true, icon: snippet('<span>Custom icon</span>'), action: snippet('<button type="button">Retry</button>'), variant: 'filled' } });
+    const { body } = render(
+      Alert,
+      {
+        props: {
+          title: snippet('<strong>Upload failed</strong>'),
+          description: snippet('<p>Try another file.</p>'),
+          showIcon: true,
+          icon: snippet('<span>Custom icon</span>'),
+          action: snippet('<button type="button">Retry</button>'),
+          variant: 'filled'
+        }
+      }
+    );
 
-    for (const value of ['Upload failed', 'Try another file.', 'Custom icon', 'Retry', 'ant-alert-filled', 'ant-alert-with-description']) expect(body).toContain(value);
+    for (const value of [
+      'Upload failed',
+      'Try another file.',
+      'Custom icon',
+      'Retry',
+      'ant-alert-filled',
+      'ant-alert-with-description'
+    ])
+      expect(body).toContain(value);
+
     expect(body).not.toContain('<svg');
     expect(body.match(/<button\b/g)).toHaveLength(1);
     expect(body.indexOf('Retry')).toBeGreaterThan(body.indexOf('Try another file.'));
   });
 
-  it('keeps custom icons hidden when showIcon is false and ignores empty string content', () => {
-    const { body } = render(Alert, { props: { title: '', description: '', icon: snippet('<span>Unused icon</span>') } });
+  it(
+    'keeps custom icons hidden when showIcon is false and ignores empty string content',
+    () => {
+      const { body } = render(
+        Alert,
+        { props: { title: '', description: '', icon: snippet('<span>Unused icon</span>') } }
+      );
 
-    expect(body).not.toContain('Unused icon');
-    expect(body).not.toContain('ant-alert-with-description');
-    expect(body).not.toContain('class="ant-alert-title');
-    expect(body).not.toContain('class="ant-alert-description');
-  });
+      expect(body).not.toContain('Unused icon');
+      expect(body).not.toContain('ant-alert-with-description');
+      expect(body).not.toContain('class="ant-alert-title');
+      expect(body).not.toContain('class="ant-alert-description');
+    }
+  );
 
   it('escapes string content and creates a non-submitting localized close button', () => {
-    const { body } = render(Alert, { props: { title: '<script>Title</script>', description: '<b>Details</b>', closable: true } });
+    const { body } = render(
+      Alert,
+      {
+        props: { title: '<script>Title</script>', description: '<b>Details</b>', closable: true }
+      }
+    );
 
     expect(body).toContain('&lt;script>');
     expect(body).toContain('&lt;b>');
@@ -71,8 +107,25 @@ describe('Alert server rendering', () => {
   });
 
   it('supports disabled custom closing controls and never calls callbacks in SSR', () => {
-    const fail = () => { throw new Error('Unexpected callback'); };
-    const { body } = render(Alert, { props: { title: 'Notice', closable: { disabled: true, closeIcon: 'Dismiss', 'aria-label': 'Hide notice', 'aria-describedby': 'close-help', onClose: fail, afterClose: fail } } });
+    const fail = () => {
+      throw new Error('Unexpected callback');
+    };
+    const { body } = render(
+      Alert,
+      {
+        props: {
+          title: 'Notice',
+          closable: {
+            disabled: true,
+            closeIcon: 'Dismiss',
+            'aria-label': 'Hide notice',
+            'aria-describedby': 'close-help',
+            onClose: fail,
+            afterClose: fail
+          }
+        }
+      }
+    );
 
     expect(body).toContain('Dismiss');
     expect(body).toContain('aria-label="Hide notice"');
@@ -81,7 +134,22 @@ describe('Alert server rendering', () => {
   });
 
   it('supports a polite named status and root attributes', () => {
-    const { body } = render(Alert, { props: { role: 'status', title: 'Saved', id: 'saved-alert', 'aria-label': 'Save result', 'aria-live': 'polite', 'aria-atomic': false, 'aria-describedby': 'save-help', class: 'custom', style: 'margin-bottom: 16px' } });
+    const { body } = render(
+      Alert,
+      {
+        props: {
+          role: 'status',
+          title: 'Saved',
+          id: 'saved-alert',
+          'aria-label': 'Save result',
+          'aria-live': 'polite',
+          'aria-atomic': false,
+          'aria-describedby': 'save-help',
+          class: 'custom',
+          style: 'margin-bottom: 16px'
+        }
+      }
+    );
 
     expect(body).toContain('role="status"');
     expect(body).toContain('aria-label="Save result"');

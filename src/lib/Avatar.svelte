@@ -5,7 +5,27 @@
   import { connectAvatarText } from './avatar.dom';
   import type { AvatarProps } from './avatar.types';
 
-  let { src, srcSet, alt, crossOrigin, draggable, shape = 'circle', size, gap = 4, icon, children, onError, id, title, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, 'aria-hidden': ariaHidden = false, class: className = '', style }: AvatarProps = $props();
+  let {
+    src,
+    srcSet,
+    alt,
+    crossOrigin,
+    draggable,
+    shape = 'circle',
+    size,
+    gap = 4,
+    icon,
+    children,
+    onError,
+    id,
+    title,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    'aria-hidden': ariaHidden = false,
+    class: className = '',
+    style
+  }: AvatarProps = $props();
   const config = useConfig();
   let host = $state<HTMLSpanElement>();
   let sourceSrc = $derived(src);
@@ -14,7 +34,21 @@
   let failed = $state.raw<typeof source>();
   let hasImage = $derived(Boolean(source.src) && failed !== source);
   let resolvedSize = $derived(resolveAvatarSize(size, config.componentSize));
-  let rootStyle = $derived([typeof resolvedSize === 'number' ? `width: ${resolvedSize}px; height: ${resolvedSize}px; font-size: ${icon ? resolvedSize / 2 : 18}px;` : '', style].filter(Boolean).join(' ') || undefined);
+  let rootStyle = $derived(
+    [
+      typeof resolvedSize === 'number'
+        ? `width: ${resolvedSize}px; height: ${resolvedSize}px; font-size: ${icon
+          ? resolvedSize / 2
+          : 18}px;`
+        : '',
+      style
+    ].filter(
+      Boolean
+    ).join(
+      ' '
+    )
+    || undefined
+  );
   let resolvedGap = $derived(normalizeAvatarGap(gap));
   let named = $derived(Boolean(ariaLabel || ariaLabelledby || alt));
   let hidden = $derived(ariaHidden || !named);
@@ -26,11 +60,16 @@
 
       reported = true;
       const fallback = onError?.() !== false;
-      if (fallback && request === source) failed = request;
+      if (fallback && request === source)
+        failed = request;
     };
     node.addEventListener('error', error);
-    if (node.complete && node.naturalWidth === 0) untrack(error);
-    return () => { reported = true; node.removeEventListener('error', error); };
+    if (node.complete && node.naturalWidth === 0)
+      untrack(error);
+    return () => {
+      reported = true;
+      node.removeEventListener('error', error);
+    };
   }
   function fitText(node: HTMLSpanElement) {
     const container = host;
@@ -47,6 +86,14 @@
   @media (prefers-reduced-motion: reduce) { .ant-avatar, .ant-avatar-string { animation: none; transition: none; } }
 </style>
 
-<span bind:this={host} {id} {title} role={!hidden ? 'img' : undefined} aria-label={ariaLabel ?? (ariaLabelledby ? undefined : alt || undefined)} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} aria-hidden={hidden || undefined} dir={config.direction} class={['ant-avatar ant-avatar-css-var', `ant-avatar-${shape}`, resolvedSize === 'small' && 'ant-avatar-sm', resolvedSize === 'large' && 'ant-avatar-lg', hasImage && 'ant-avatar-image', icon && 'ant-avatar-icon', className]} style={rootStyle}>
+<span bind:this={host} {id} {title} role={!hidden ? 'img' : undefined} aria-label={ariaLabel ?? (ariaLabelledby ? undefined : alt || undefined)} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} aria-hidden={hidden || undefined} dir={config.direction} class={[
+    'ant-avatar ant-avatar-css-var',
+    `ant-avatar-${shape}`,
+    resolvedSize === 'small' && 'ant-avatar-sm',
+    resolvedSize === 'large' && 'ant-avatar-lg',
+    hasImage && 'ant-avatar-image',
+    icon && 'ant-avatar-icon',
+    className
+  ]} style={rootStyle}>
   {#if hasImage}{#key source}{@const request = source}<img src={request.src} srcset={request.srcSet} alt="" aria-hidden="true" {draggable} crossorigin={crossOrigin} {@attach node => watchImage(node, request)} />{/key}{:else if icon}<span class="ant-avatar-icon-content" aria-hidden="true" inert>{@render icon()}</span>{:else}<span class="ant-avatar-string" aria-hidden="true" inert {@attach fitText}>{@render children?.()}</span>{/if}
 </span>

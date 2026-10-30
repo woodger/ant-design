@@ -3,14 +3,30 @@
   import { connectFeedbackFocus } from './feedback.dom';
   import type { CheckableTagProps } from './tag.types';
 
-  let { children, checked = false, disabled, icon, onChange, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, class: className = '', style }: CheckableTagProps = $props();
+  let {
+    children,
+    checked = false,
+    disabled,
+    icon,
+    onChange,
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    class: className = '',
+    style
+  }: CheckableTagProps = $props();
   const config = useConfig();
   let host = $state<HTMLButtonElement>();
   let blocked = $derived(disabled ?? config.componentDisabled);
-  $effect(() => { const node = host; if (node) return connectFeedbackFocus(node); });
+  $effect(() => {
+    const node = host;
+    if (node) return connectFeedbackFocus(node);
+  });
 
   function handleClick(event: MouseEvent) {
-    if (!blocked && !event.defaultPrevented) onChange?.(!checked);
+    if (!blocked && !event.defaultPrevented)
+      onChange?.(!checked);
   }
 </script>
 
@@ -23,6 +39,12 @@
   @media (prefers-reduced-motion: reduce) { .ant-tag { transition: none; } }
 </style>
 
-<button bind:this={host} {id} type="button" aria-pressed={checked} disabled={blocked} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction} class={['ant-tag ant-tag-css-var ant-tag-checkable', checked && 'ant-tag-checkable-checked', blocked && 'ant-tag-checkable-disabled', config.direction === 'rtl' && 'ant-tag-rtl', className]} {style} onclick={handleClick}>
+<button bind:this={host} {id} type="button" aria-pressed={checked} disabled={blocked} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} dir={config.direction} class={[
+    'ant-tag ant-tag-css-var ant-tag-checkable',
+    checked && 'ant-tag-checkable-checked',
+    blocked && 'ant-tag-checkable-disabled',
+    config.direction === 'rtl' && 'ant-tag-rtl',
+    className
+  ]} {style} onclick={handleClick}>
   {#if icon}<span class="ant-tag-icon anticon" aria-hidden="true" inert>{@render icon()}</span>{/if}<span class="ant-tag-content">{@render children()}</span>
 </button>

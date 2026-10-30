@@ -12,16 +12,24 @@ describe('InputNumber server rendering', () => {
     expect(body).not.toContain('aria-valuenow=');
     expect(body).toMatch(/<input[^>]*type="hidden"[^>]*name="amount"[^>]*value=""/);
     expect(body.match(/name="amount"/g)).toHaveLength(1);
-    expectTypeOf<NonNullable<InputNumberProps['onValueChange']>>().parameter(0).toEqualTypeOf<number | null>();
+    expectTypeOf<NonNullable<InputNumberProps['onValueChange']>>().parameter(0).toEqualTypeOf<
+      number | null
+    >();
   });
 
-  it('preserves zero instead of a default and formats precision without changing the native number', () => {
-    const { body } = render(InputNumber, { props: { value: 0, defaultValue: 5, precision: 2, name: 'amount' } });
+  it(
+    'preserves zero instead of a default and formats precision without changing the native number',
+    () => {
+      const { body } = render(
+        InputNumber,
+        { props: { value: 0, defaultValue: 5, precision: 2, name: 'amount' } }
+      );
 
-    expect(body).toContain('aria-valuenow="0"');
-    expect(body).toContain('value="0.00"');
-    expect(body).toMatch(/<input[^>]*type="hidden"[^>]*value="0"/);
-  });
+      expect(body).toContain('aria-valuenow="0"');
+      expect(body).toContain('value="0.00"');
+      expect(body).toMatch(/<input[^>]*type="hidden"[^>]*value="0"/);
+    }
+  );
 
   it('uses a snapshotted default and respects an explicit empty owner value', () => {
     const defaults = render(InputNumber, { props: { defaultValue: 1.5 } }).body;
@@ -31,22 +39,36 @@ describe('InputNumber server rendering', () => {
     expect(empty).not.toContain('aria-valuenow=');
   });
 
-  it('retains an out-of-range owner value and exposes numeric bounds without notifying the owner', () => {
-    const { body } = render(InputNumber, { props: {
-      value: 12.001, min: 0, max: 12, precision: 2, name: 'amount',
-      onValueChange: () => { throw new Error('Unexpected value callback'); }
-    } });
+  it(
+    'retains an out-of-range owner value and exposes numeric bounds without notifying the owner',
+    () => {
+      const { body } = render(InputNumber, {
+        props: {
+          value: 12.001,
+          min: 0,
+          max: 12,
+          precision: 2,
+          name: 'amount',
+          onValueChange: () => {
+            throw new Error('Unexpected value callback');
+          }
+        }
+      });
 
-    expect(body).toContain('value="12.00"');
-    expect(body).toContain('aria-valuenow="12.001"');
-    expect(body).toContain('aria-valuemin="0"');
-    expect(body).toContain('aria-valuemax="12"');
-    expect(body).toContain('ant-input-number-out-of-range');
-    expect(body).toMatch(/ant-input-number-action-up[^>]*\sdisabled(?:[\s=>])/);
-  });
+      expect(body).toContain('value="12.00"');
+      expect(body).toContain('aria-valuenow="12.001"');
+      expect(body).toContain('aria-valuemin="0"');
+      expect(body).toContain('aria-valuemax="12"');
+      expect(body).toContain('ant-input-number-out-of-range');
+      expect(body).toMatch(/ant-input-number-action-up[^>]*\sdisabled(?:[\s=>])/);
+    }
+  );
 
   it('disables native submission and removes handlers while disabled', () => {
-    const { body } = render(InputNumber, { props: { value: 3, disabled: true, name: 'amount', form: 'external' } });
+    const { body } = render(
+      InputNumber,
+      { props: { value: 3, disabled: true, name: 'amount', form: 'external' } }
+    );
 
     expect(body).toMatch(/<input[^>]*type="text"[^>]*\sdisabled(?:[\s=>])/);
     expect(body).toMatch(/<input[^>]*type="hidden"[^>]*\sdisabled(?:[\s=>])/);
@@ -55,7 +77,10 @@ describe('InputNumber server rendering', () => {
   });
 
   it('keeps readonly values submittable and exposes size and validation status', () => {
-    const { body } = render(InputNumber, { props: { value: -2, readonly: true, name: 'amount', size: 'small', status: 'error' } });
+    const { body } = render(
+      InputNumber,
+      { props: { value: -2, readonly: true, name: 'amount', size: 'small', status: 'error' } }
+    );
 
     expect(body).toMatch(/<input[^>]*type="text"[^>]*\sreadonly(?:[\s=>])/);
     expect(body).toContain('ant-input-number-sm');
@@ -64,12 +89,25 @@ describe('InputNumber server rendering', () => {
     expect(body).not.toMatch(/<input[^>]*type="hidden"[^>]*\sdisabled(?:[\s=>])/);
   });
 
-  it('escapes caller content and keeps non-finite values out of the rendered numeric field', () => {
-    const { body } = render(InputNumber, { props: { value: NaN, 'aria-label': '"><script>alert(1)</script>', name: 'amount', controls: false } });
+  it(
+    'escapes caller content and keeps non-finite values out of the rendered numeric field',
+    () => {
+      const { body } = render(
+        InputNumber,
+        {
+          props: {
+            value: NaN,
+            'aria-label': '"><script>alert(1)</script>',
+            name: 'amount',
+            controls: false
+          }
+        }
+      );
 
-    expect(body).not.toContain('<script>alert(1)</script>');
-    expect(body).not.toContain('value="NaN"');
-    expect(body).not.toContain('<button');
-    expect(body).toContain('&quot;');
-  });
+      expect(body).not.toContain('<script>alert(1)</script>');
+      expect(body).not.toContain('value="NaN"');
+      expect(body).not.toContain('<button');
+      expect(body).toContain('&quot;');
+    }
+  );
 });

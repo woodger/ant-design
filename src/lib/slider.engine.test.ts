@@ -1,11 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { getSliderDirection, getSliderKeyValue, getSliderRatio, normalizeSliderValue, resolveSliderOptions } from './slider.engine';
+import {
+  getSliderDirection,
+  getSliderKeyValue,
+  getSliderRatio,
+  normalizeSliderValue,
+  resolveSliderOptions
+} from './slider.engine';
 
 describe('Slider engine', () => {
   it('uses finite defaults and a positive step and collapses an inverted range', () => {
     expect(resolveSliderOptions()).toEqual({ min: 0, max: 100, step: 1 });
-    expect(resolveSliderOptions({ min: NaN, max: Infinity, step: 0 })).toEqual({ min: 0, max: 100, step: 1 });
-    expect(resolveSliderOptions({ min: 5, max: 2, step: -1 })).toEqual({ min: 5, max: 5, step: 1 });
+    expect(resolveSliderOptions({ min: NaN, max: Infinity, step: 0 })).toEqual(
+      { min: 0, max: 100, step: 1 }
+    );
+    expect(resolveSliderOptions({ min: 5, max: 2, step: -1 })).toEqual(
+      { min: 5, max: 5, step: 1 }
+    );
   });
 
   it('keeps zero and uses the minimum for absent and non-finite values', () => {
@@ -33,7 +43,10 @@ describe('Slider engine', () => {
     expect(normalizeSliderValue(0.30000000000000004, options)).toBe(0.3);
     expect(getSliderKeyValue('ArrowRight', 0.2, options, 'ltr')).toBe(0.3);
     expect(getSliderKeyValue('ArrowLeft', 0.3, options, 'ltr')).toBe(0.2);
-    expect(normalizeSliderValue(0.24, resolveSliderOptions({ min: 0.05, max: 0.95, step: 0.1 }))).toBe(0.25);
+    expect(normalizeSliderValue(0.24, resolveSliderOptions({ min: 0.05, max: 0.95, step: 0.1 })))
+      .toBe(
+        0.25
+      );
   });
 
   it('uses only reachable steps when max is not aligned and supports a fixed range', () => {
@@ -67,20 +80,29 @@ describe('Slider engine', () => {
   });
 
   it.each([
-    ['horizontal', false, false, 'ltr'], ['horizontal', false, true, 'rtl'],
-    ['horizontal', true, false, 'rtl'], ['horizontal', true, true, 'ltr'],
-    ['vertical', false, false, 'btt'], ['vertical', false, true, 'btt'],
-    ['vertical', true, false, 'ttb'], ['vertical', true, true, 'ttb']
+    ['horizontal', false, false, 'ltr'],
+    ['horizontal', false, true, 'rtl'],
+    ['horizontal', true, false, 'rtl'],
+    ['horizontal', true, true, 'ltr'],
+    ['vertical', false, false, 'btt'],
+    ['vertical', false, true, 'btt'],
+    ['vertical', true, false, 'ttb'],
+    ['vertical', true, true, 'ttb']
   ] as const)('resolves %s reverse=%s rtl=%s as %s', (orientation, reverse, rtl, expected) => {
     expect(getSliderDirection(orientation, reverse, rtl)).toBe(expected);
   });
 
   it.each([
-    ['ltr', 'ArrowRight', 6], ['rtl', 'ArrowRight', 4],
-    ['btt', 'ArrowUp', 6], ['ttb', 'ArrowUp', 4],
-    ['rtl', 'ArrowUp', 6], ['btt', 'ArrowLeft', 4]
+    ['ltr', 'ArrowRight', 6],
+    ['rtl', 'ArrowRight', 4],
+    ['btt', 'ArrowUp', 6],
+    ['ttb', 'ArrowUp', 4],
+    ['rtl', 'ArrowUp', 6],
+    ['btt', 'ArrowLeft', 4]
   ] as const)('maps %s %s to the expected numeric direction', (direction, key, expected) => {
-    expect(getSliderKeyValue(key, 5, resolveSliderOptions({ max: 10 }), direction)).toBe(expected);
+    expect(getSliderKeyValue(key, 5, resolveSliderOptions({ max: 10 }), direction)).toBe(
+      expected
+    );
   });
 
   it('supports Home, End and larger page steps and leaves unrelated keys untouched', () => {

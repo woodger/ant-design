@@ -10,8 +10,10 @@
   import type { ComponentSize, Locale, ThemeConfig } from './types';
   import './styles.css';
 
+  /** Наследуемые настройки темы, локали и компонентов для дочернего дерева Svelte. */
   export interface ConfigProviderProps {
     children: Snippet;
+    /** Частично переопределяет родительскую тему; остальные поля наследуются. */
     theme?: ThemeConfig;
     button?: ButtonConfig;
     rate?: RateConfig;
@@ -20,9 +22,12 @@
     input?: InputConfig;
     floatButton?: FloatButtonConfig;
     floatButtonGroup?: FloatButtonGroupConfig;
+    /** Наследуемый размер controls; локальный size и Compact имеют приоритет. */
     componentSize?: ComponentSize;
+    /** Наследуемое disabled для controls; явное локальное значение уточняет его. */
     componentDisabled?: boolean;
     direction?: 'ltr' | 'rtl';
+    /** Частичный словарь с наследованием родительской локали и её подразделов. */
     locale?: Partial<Locale>;
     class?: string;
     style?: string;
@@ -48,18 +53,42 @@
 
   const parent = useConfig();
   const config: ConfigContext = {
-    get button() { return button ?? parent.button; },
-    get rate() { return rate ?? parent.rate; },
-    get watermark() { return watermark ?? parent.watermark; },
-    get input() { return input ?? parent.input; },
-    get textArea() { return textArea ?? parent.textArea; },
-    get floatButton() { return floatButton ?? parent.floatButton; },
-    get floatButtonGroup() { return floatButtonGroup ?? parent.floatButtonGroup; },
-    get componentSize() { return componentSize ?? parent.componentSize; },
-    get explicitComponentSize() { return componentSize ?? parent.explicitComponentSize; },
-    get componentDisabled() { return componentDisabled ?? parent.componentDisabled; },
-    get direction() { return direction ?? parent.direction; },
-    get theme() { return { ...parent.theme, ...theme }; },
+    get button() {
+      return button ?? parent.button;
+    },
+    get rate() {
+      return rate ?? parent.rate;
+    },
+    get watermark() {
+      return watermark ?? parent.watermark;
+    },
+    get input() {
+      return input ?? parent.input;
+    },
+    get textArea() {
+      return textArea ?? parent.textArea;
+    },
+    get floatButton() {
+      return floatButton ?? parent.floatButton;
+    },
+    get floatButtonGroup() {
+      return floatButtonGroup ?? parent.floatButtonGroup;
+    },
+    get componentSize() {
+      return componentSize ?? parent.componentSize;
+    },
+    get explicitComponentSize() {
+      return componentSize ?? parent.explicitComponentSize;
+    },
+    get componentDisabled() {
+      return componentDisabled ?? parent.componentDisabled;
+    },
+    get direction() {
+      return direction ?? parent.direction;
+    },
+    get theme() {
+      return { ...parent.theme, ...theme };
+    },
     get locale() {
       return {
         ...parent.locale,

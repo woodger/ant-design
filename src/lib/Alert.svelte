@@ -5,7 +5,26 @@
   import { closeAlert, focusAfterAlert } from './alert.dom';
   import type { AlertProps } from './alert.types';
 
-  let { type, variant = 'outlined', title, description, showIcon, icon, action, banner = false, closable = false, role = 'alert', id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, 'aria-live': ariaLive, 'aria-atomic': ariaAtomic = true, class: className = '', style }: AlertProps = $props();
+  let {
+    type,
+    variant = 'outlined',
+    title,
+    description,
+    showIcon,
+    icon,
+    action,
+    banner = false,
+    closable = false,
+    role = 'alert',
+    id,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    'aria-live': ariaLive,
+    'aria-atomic': ariaAtomic = true,
+    class: className = '',
+    style
+  }: AlertProps = $props();
 
   const config = useConfig();
   let root = $state<HTMLDivElement>();
@@ -17,9 +36,17 @@
   let hasTitle = $derived(typeof title === 'function' || Boolean(title));
   let hasDescription = $derived(typeof description === 'function' || Boolean(description));
   let closeConfig = $derived(typeof closable === 'object' ? closable : undefined);
-  const statusIcon = { success: 'check-circle-filled', info: 'info-circle-filled', warning: 'exclamation-circle-filled', error: 'close-circle-filled' } as const;
+  const statusIcon = {
+    success: 'check-circle-filled',
+    info: 'info-circle-filled',
+    warning: 'exclamation-circle-filled',
+    error: 'close-circle-filled'
+  } as const;
 
-  onDestroy(() => { active = false; disposeMotion?.(); });
+  onDestroy(() => {
+    active = false;
+    disposeMotion?.();
+  });
 
   function handleClose(event: MouseEvent) {
     const node = root;
@@ -29,14 +56,19 @@
     const onClose = closeConfig?.onClose;
     const afterClose = closeConfig?.afterClose;
     phase = 'closing';
-    try { onClose?.(event); }
+    try {
+      onClose?.(event);
+    }
     finally {
       if (active && node.isConnected) {
         focusAfterAlert(node, ownedFocus);
         disposeMotion = closeAlert(node, () => {
           phase = 'closed';
           // afterClose видит уже удалённое содержимое и не вызывается после unmount.
-          void tick().then(() => { if (active) afterClose?.(); });
+          void tick().then(() => {
+            if (active)
+              afterClose?.();
+          });
         });
       }
     }
@@ -58,7 +90,17 @@
 </style>
 
 {#if phase !== 'closed'}
-  <div bind:this={root} {id} {role} dir={config.direction} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} aria-live={ariaLive} aria-atomic={ariaAtomic} aria-hidden={phase === 'closing' || undefined} inert={phase === 'closing'} data-show={phase === 'open'} class={['ant-alert ant-alert-css-var', `ant-alert-${resolvedType}`, `ant-alert-${variant}`, hasDescription && 'ant-alert-with-description', !hasIcon && 'ant-alert-no-icon', banner && 'ant-alert-banner', config.direction === 'rtl' && 'ant-alert-rtl', phase === 'closing' && 'ant-alert-closing', className]} {style}>
+  <div bind:this={root} {id} {role} dir={config.direction} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} aria-describedby={ariaDescribedby} aria-live={ariaLive} aria-atomic={ariaAtomic} aria-hidden={phase === 'closing' || undefined} inert={phase === 'closing'} data-show={phase === 'open'} class={[
+      'ant-alert ant-alert-css-var',
+      `ant-alert-${resolvedType}`,
+      `ant-alert-${variant}`,
+      hasDescription && 'ant-alert-with-description',
+      !hasIcon && 'ant-alert-no-icon',
+      banner && 'ant-alert-banner',
+      config.direction === 'rtl' && 'ant-alert-rtl',
+      phase === 'closing' && 'ant-alert-closing',
+      className
+    ]} {style}>
     {#if hasIcon}<span class="ant-alert-icon" aria-hidden="true">{#if icon}{@render icon()}{:else}<Icon name={statusIcon[resolvedType]} />{/if}</span>{/if}
     <div class="ant-alert-section">
       {#if hasTitle}<div class="ant-alert-title">{#if typeof title === 'function'}{@render title()}{:else}{title}{/if}</div>{/if}

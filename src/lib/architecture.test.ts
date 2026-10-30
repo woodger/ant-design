@@ -16,11 +16,18 @@ function sourceFiles(directory: string): string[] {
 describe('Library dependencies', () => {
   it('keeps runtime imports independent of the homepage and SvelteKit', () => {
     const violations = sourceFiles(sourceRoot).flatMap(file => {
-      const imports = readFileSync(file, 'utf8').matchAll(/(?:from\s+|import\s*)['"]([^'"]+)['"]/g);
+      const imports = readFileSync(file, 'utf8').matchAll(
+        /(?:from\s+|import\s*)['"]([^'"]+)['"]/g
+      );
       return [...imports].flatMap(([, dependency]) => {
         const frameworkAlias = /^(?:\$(?:app|env|lib)|@sveltejs\/kit)(?:\/|$)/.test(dependency);
-        const outsideLibrary = dependency.startsWith('.') && relative(sourceRoot, resolve(dirname(file), dependency)).startsWith('..');
-        return frameworkAlias || outsideLibrary ? [`${relative(sourceRoot, file)} imports ${dependency}`] : [];
+        const outsideLibrary = dependency.startsWith('.')
+          && relative(sourceRoot, resolve(dirname(file), dependency)).startsWith(
+            '..'
+          );
+        return frameworkAlias || outsideLibrary
+          ? [`${relative(sourceRoot, file)} imports ${dependency}`]
+          : [];
       });
     });
 

@@ -1,8 +1,21 @@
 <script lang="ts">
   import { statusIcons } from './status-icons';
 
-  let { name }: { name: 'down' | 'left' | 'right' | 'close' | 'check' | 'loading' | 'filter' | 'warning' | keyof typeof statusIcons } = $props();
-  let statusPath = $derived(name in statusIcons ? statusIcons[name as keyof typeof statusIcons] : undefined);
+  let { name }: {
+    name:
+    'down'
+    | 'left'
+    | 'right'
+    | 'close'
+    | 'check'
+    | 'loading'
+    | 'filter'
+    | 'warning'
+    | keyof typeof statusIcons;
+  } = $props();
+  let statusPath = $derived(
+    name in statusIcons ? statusIcons[name as keyof typeof statusIcons] : undefined
+  );
 </script>
 
 <style>

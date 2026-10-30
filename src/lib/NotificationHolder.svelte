@@ -6,7 +6,14 @@
   import { connectNoticeSurface } from './notice.dom';
   import type { NotificationHolderProps } from './notification.types';
 
-  let { notification, top = 24, bottom = 24, id, class: className = '', style }: NotificationHolderProps = $props();
+  let {
+    notification,
+    top = 24,
+    bottom = 24,
+    id,
+    class: className = '',
+    style
+  }: NotificationHolderProps = $props();
   const config = useConfig();
   let anchor = $state<HTMLSpanElement>();
   let surface = $state<HTMLDivElement>();
@@ -17,14 +24,21 @@
 
   function connectHost(node: HTMLSpanElement) {
     const view = node.ownerDocument.defaultView!;
-    return runtime.connect({ now: () => view.performance.now(), schedule(callback, milliseconds) { const timer = view.setTimeout(callback, milliseconds); return () => view.clearTimeout(timer); } });
+    return runtime.connect({
+      now: () => view.performance.now(),
+      schedule(callback, milliseconds) {
+        const timer = view.setTimeout(callback, milliseconds);
+        return () => view.clearTimeout(timer);
+      }
+    });
   }
 
   $effect(() => {
     const node = surface;
     const origin = anchor;
     const current = runtime;
-    if (node && origin) return untrack(() => connectNoticeSurface(node, origin, current.setVisible));
+    if (node
+      && origin) return untrack(() => connectNoticeSurface(node, origin, current.setVisible));
   });
 </script>
 
@@ -46,7 +60,11 @@
       {#each notificationPlacements as placement}
         {@const items = notices.filter((notice) => notice.placement === placement)}
         {#if items.length}
-          <div class={['ant-notification ant-notification-list', `ant-notification-${placement}`, config.direction === 'rtl' && 'ant-notification-rtl']} data-placement={placement}>
+          <div class={[
+              'ant-notification ant-notification-list',
+              `ant-notification-${placement}`,
+              config.direction === 'rtl' && 'ant-notification-rtl'
+            ]} data-placement={placement}>
             <div class="ant-notification-list-content">{#each items as notice (notice.id)}<NotificationNotice {notice} {notification} />{/each}</div>
           </div>
         {/if}

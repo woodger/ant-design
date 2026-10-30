@@ -36,16 +36,30 @@
   let nativeName = $derived(name ?? field?.name ?? `ant-radio-name-${generatedId}`);
   let selected = $derived(value ?? (useDefault ? initialDefault : undefined));
   let items = $derived(getRadioOptions(options));
-  let resolvedDisabled = $derived(disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled);
+  let resolvedDisabled = $derived(
+    disabled ?? field?.disabled ?? form?.disabled ?? config.componentDisabled
+  );
   let resolvedRequired = $derived(required ?? field?.required ?? false);
-  let describedBy = $derived([attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined);
+  let describedBy = $derived(
+    [attributes['aria-describedby'], field?.describedBy].filter(Boolean).join(' ') || undefined
+  );
 
   provideRadioGroup({
-    get value() { return selected; },
-    get defaultValue() { return initialDefault; },
-    get name() { return nativeName; },
-    get disabled() { return resolvedDisabled; },
-    get required() { return resolvedRequired; },
+    get value() {
+      return selected;
+    },
+    get defaultValue() {
+      return initialDefault;
+    },
+    get name() {
+      return nativeName;
+    },
+    get disabled() {
+      return resolvedDisabled;
+    },
+    get required() {
+      return resolvedRequired;
+    },
     select(next) {
       const option = items.find((item) => item.value === next);
 
@@ -57,12 +71,20 @@
     }
   });
 
-  onDestroy(() => { for (const reset of resets) clearTimeout(reset); });
+  onDestroy(() => {
+    for (const reset of resets)
+      clearTimeout(reset);
+  });
 
-  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLFieldSetElement }) {
+  function handleFocus(event: FocusEvent & { currentTarget: EventTarget & HTMLFieldSetElement; }) {
     if (!event.defaultPrevented && event.target === event.currentTarget) {
       const element = event.currentTarget;
-      const input = element.querySelector<HTMLInputElement>('input:checked:not(:disabled)') ?? element.querySelector<HTMLInputElement>('input:not(:disabled)');
+      const input = element.querySelector<HTMLInputElement>('input:checked:not(:disabled)')
+        ?? element.querySelector<
+          HTMLInputElement
+        >(
+          'input:not(:disabled)'
+        );
 
       input?.focus();
     }
@@ -103,14 +125,25 @@
   {name}
   {style}
   role="radiogroup"
-  class={['ant-radio-group ant-radio-css-var', orientation === 'vertical' && 'ant-radio-group-vertical', config.direction === 'rtl' && 'ant-radio-group-rtl', className]}
+  class={[
+      'ant-radio-group ant-radio-css-var',
+      orientation === 'vertical' && 'ant-radio-group-vertical',
+      config.direction === 'rtl' && 'ant-radio-group-rtl',
+      className
+    ]}
   disabled={resolvedDisabled}
-  aria-label={attributes['aria-label'] ?? (attributes['aria-labelledby'] ? undefined : field?.label)}
+  aria-label={attributes['aria-label']
+      ?? (attributes['aria-labelledby']
+        ? undefined
+        : field?.label)}
   aria-required={resolvedRequired || undefined}
   aria-invalid={field?.status === 'error' || ariaInvalid || undefined}
   aria-orientation={orientation}
   aria-describedby={describedBy}
-  data-ant-form-invalid={field?.status === 'error' || ariaInvalid === true || ariaInvalid === 'true' || undefined}
+  data-ant-form-invalid={field?.status === 'error'
+      || ariaInvalid === true
+      || ariaInvalid === 'true'
+      || undefined}
   tabindex="-1"
   onfocus={handleFocus}
 >

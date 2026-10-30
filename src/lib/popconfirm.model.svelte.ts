@@ -2,7 +2,7 @@ export function createPopconfirmAction(getSession: () => object | null, handlers
   onSuccess: () => void;
   onError: (error: unknown) => void;
 }) {
-  let active = $state.raw<{ session: object }>();
+  let active = $state.raw<{ session: object; }>();
   let disposed = false;
 
   function isCurrent(task: NonNullable<typeof active>) {
@@ -13,12 +13,15 @@ export function createPopconfirmAction(getSession: () => object | null, handlers
     if (!isCurrent(task)) return;
 
     active = undefined;
-    if (success) handlers.onSuccess();
+    if (success)
+      handlers.onSuccess();
     else handlers.onError(error);
   }
 
   return {
-    get loading() { return active !== undefined && isCurrent(active); },
+    get loading() {
+      return active !== undefined && isCurrent(active);
+    },
     run(action: () => void | PromiseLike<unknown>): void | Promise<void> {
       const session = getSession();
 
@@ -28,12 +31,23 @@ export function createPopconfirmAction(getSession: () => object | null, handlers
       active = task;
       let result: void | PromiseLike<unknown>;
 
-      try { result = action(); }
-      catch (error) { finish(task, false, error); return; }
+      try {
+        result = action();
+      }
+      catch (error) {
+        finish(task, false, error);
+        return;
+      }
 
-      if (result === undefined || result === null) { finish(task, true); return; }
+      if (result === undefined || result === null) {
+        finish(task, true);
+        return;
+      }
 
-      return Promise.resolve(result).then(() => finish(task, true), (error: unknown) => finish(task, false, error));
+      return Promise.resolve(result).then(
+        () => finish(task, true),
+        (error: unknown) => finish(task, false, error)
+      );
     },
     dispose() {
       disposed = true;

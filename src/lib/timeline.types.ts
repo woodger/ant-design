@@ -22,19 +22,27 @@ export interface TimelineItem {
   classNames?: StepsItemSlots;
   styles?: StepsItemSlots;
 }
-export interface TimelineProps extends Omit<HTMLAttributes<HTMLOListElement>, 'children' | 'class' | 'style'> {
+/** Лента событий с pending, reverse и управлением положением title/content. */
+export interface TimelineProps extends Omit<
+  HTMLAttributes<HTMLOListElement>,
+  'children' | 'class' | 'style'
+> {
   items?: readonly TimelineItem[];
+  /** @defaultValue 'outlined' */
   variant?: 'filled' | 'outlined';
   mode?: TimelineMode;
+  /** @defaultValue 'vertical' */
   orientation?: 'horizontal' | 'vertical';
   titleSpan?: number | string;
   pending?: TimelineContent;
   pendingDot?: TimelineContent;
+  /** @defaultValue false */
   reverse?: boolean;
-  classNames?: TimelineSlots | ((info: { props: TimelineProps }) => TimelineSlots);
-  styles?: TimelineSlots | ((info: { props: TimelineProps }) => TimelineSlots);
+  classNames?: TimelineSlots | ((info: { props: TimelineProps; }) => TimelineSlots);
+  styles?: TimelineSlots | ((info: { props: TimelineProps; }) => TimelineSlots);
   class?: string;
   rootClassName?: string;
   style?: string;
+  /** Нативный ref доступен после mount и очищается при unmount. */
   nativeElement?: HTMLOListElement;
 }

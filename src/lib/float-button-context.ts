@@ -8,5 +8,9 @@ export interface FloatButtonContext {
   readonly styles: ButtonSlots;
 }
 const key = Symbol('ant-float-button');
-export function provideFloatButton(context: FloatButtonContext) { setContext(key, context); }
-export function useFloatButton() { return getContext<FloatButtonContext | undefined>(key); }
+export function provideFloatButton(context: FloatButtonContext) {
+  setContext(key, context);
+}
+export function useFloatButton() {
+  return getContext<FloatButtonContext | undefined>(key);
+}

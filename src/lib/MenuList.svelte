@@ -6,18 +6,25 @@
   import MenuList from './MenuList.svelte';
   import MenuSubMenu from './MenuSubMenu.svelte';
 
-  let { entries, theme }: { entries: readonly MenuEntry[]; theme: MenuTheme } = $props();
+  let { entries, theme }: { entries: readonly MenuEntry[]; theme: MenuTheme; } = $props();
   const context = useMenu();
-  function register(element: HTMLLIElement, key: string) { return { destroy: context.register(key, element) }; }
+  function register(element: HTMLLIElement, key: string) {
+    return { destroy: context.register(key, element) };
+  }
 
   function activate(event: MouseEvent, entry: MenuEntry) {
-    if (context.disabled || menuItem(entry).disabled) { event.preventDefault(); event.stopPropagation(); return; }
+    if (context.disabled || menuItem(entry).disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     context.click(entry, event);
   }
 
   function keyboard(event: KeyboardEvent, entry: MenuEntry) {
     if (context.disabled || menuItem(entry).disabled) {
-      if (event.key === 'Enter') event.preventDefault();
+      if (event.key === 'Enter')
+        event.preventDefault();
       return;
     }
     if (event.key === 'Enter') {
@@ -37,7 +44,11 @@
 {#snippet content(value: MenuContent | undefined)}{#if typeof value === 'function'}{@render value()}{:else}{value ?? ''}{/if}{/snippet}
 {#each entries as entry (entry.key)}
   {#if entry.kind === 'divider'}
-    <li role="separator" class={['ant-menu-item-divider', 'dashed' in entry.item && entry.item.dashed && 'ant-menu-item-divider-dashed', entry.item.class]} style={entry.item.style}></li>
+    <li role="separator" class={[
+        'ant-menu-item-divider',
+        'dashed' in entry.item && entry.item.dashed && 'ant-menu-item-divider-dashed',
+        entry.item.class
+      ]} style={entry.item.style}></li>
   {:else if entry.kind === 'group'}
     <li role="presentation" class={['ant-menu-item-group', entry.item.class]} style={entry.item.style}>
       <div class="ant-menu-item-group-title" role="presentation">{@render content('label' in entry.item ? entry.item.label : undefined)}</div>
@@ -48,16 +59,49 @@
     {@const item = menuItem(entry)}{@const blocked = context.disabled || item.disabled}
     <li use:register={entry.key} id={context.id(entry.key)} data-menu-id={context.id(entry.key)} role="menuitem"
       tabindex={blocked ? undefined : -1} aria-disabled={blocked || undefined}
-      title={item.title ?? (context.collapsed && typeof item.label === 'string' ? item.label : undefined)}
-      aria-label={context.collapsed && !entry.parent ? (item.title ?? (typeof item.label === 'string' ? item.label : undefined)) : undefined}
-      class={['ant-menu-item', context.active === entry.key && 'ant-menu-item-active', context.selected.includes(entry.key) && 'ant-menu-item-selected',
-        blocked && 'ant-menu-item-disabled', item.danger && 'ant-menu-item-danger', item.class]}
-      style={[context.mode === 'inline' && `padding-${context.direction === 'rtl' ? 'right' : 'left'}:${entry.level * context.inlineIndent}px`, item.style].filter(Boolean).join(';')}
+      title={item.title
+          ?? (context.collapsed && typeof item.label === 'string'
+            ? item.label
+            : undefined)}
+      aria-label={context.collapsed && !entry.parent
+          ? (item.title ?? (typeof item.label === 'string' ? item.label : undefined))
+          : undefined}
+      class={[
+          'ant-menu-item',
+          context.active === entry.key && 'ant-menu-item-active',
+          context.selected.includes(entry.key) && 'ant-menu-item-selected',
+          blocked && 'ant-menu-item-disabled',
+          item.danger && 'ant-menu-item-danger',
+          item.class
+        ]}
+      style={[
+          context.mode === 'inline'
+          && `padding-${context.direction === 'rtl'
+            ? 'right'
+            : 'left'}:${entry.level * context.inlineIndent}px`,
+          item.style
+        ].filter(
+          Boolean
+        ).join(
+          ';'
+        )}
       onclick={event => activate(event, entry)} onkeydown={event => keyboard(event, entry)}
-      onfocusin={() => { if (!blocked) context.activate(entry.key); }} onmouseenter={() => { if (!blocked) context.activate(entry.key); }}
-      onmouseleave={() => { if (context.active === entry.key) context.activate(null); }}>
+      onfocusin={() => {
+          if (!blocked)
+            context.activate(entry.key);
+        }} onmouseenter={() => {
+            if (!blocked)
+              context.activate(entry.key);
+          }}
+      onmouseleave={() => {
+          if (context.active === entry.key)
+            context.activate(null);
+        }}>
       {#if item.icon}<span class="ant-menu-item-icon">{@render item.icon()}</span>{/if}
-      <span class={['ant-menu-title-content', item.extra !== undefined && 'ant-menu-title-content-with-extra']}>
+      <span class={[
+          'ant-menu-title-content',
+          item.extra !== undefined && 'ant-menu-title-content-with-extra'
+        ]}>
         {#if context.collapsed && !entry.parent && !item.icon && typeof item.label === 'string'}
           <span class="ant-menu-inline-collapsed-noicon">{item.label.charAt(0)}</span>
         {:else if item.extra !== undefined}

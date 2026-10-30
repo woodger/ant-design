@@ -1,5 +1,15 @@
 // Переходы useRangeValueChange из rc-picker 1.12.2; MIT, vendor/LICENSE.rc-picker.
-export type RangeInteractionSource = 'field-switch' | 'input' | 'panel-intermediate' | 'panel-final' | 'keyboard-submit-weak' | 'keyboard-submit' | 'confirm' | 'remove' | 'popupClose' | 'esc';
+export type RangeInteractionSource =
+  'field-switch'
+  | 'input'
+  | 'panel-intermediate'
+  | 'panel-final'
+  | 'keyboard-submit-weak'
+  | 'keyboard-submit'
+  | 'confirm'
+  | 'remove'
+  | 'popupClose'
+  | 'esc';
 export function createRangeInteraction<Value>(options: {
   fieldCount: () => number;
   needConfirm: () => boolean;
@@ -11,15 +21,21 @@ export function createRangeInteraction<Value>(options: {
 }) {
   const { getCalendarValue, triggerCalendarChange, flushSubmit, resetValue } = options;
 
-  let triggeredFields: { index: number; modified: boolean }[] = [];
+  let triggeredFields: { index: number; modified: boolean; }[] = [];
   let confirmedIndex: number | null = null;
   let isLastInput = false;
   let current: number | null = null;
   let lastValid = 0;
   const getCurrentIndex = () => current;
-  const setCurrentIndex = (value: number | null) => { current = value; if (value !== null) lastValid = value; };
+  const setCurrentIndex = (value: number | null) => {
+    current = value;
+    if (value !== null)
+      lastValid = value;
+  };
   let forceFocus = false;
-  const setForceFocus = (value: boolean) => { forceFocus = value; };
+  const setForceFocus = (value: boolean) => {
+    forceFocus = value;
+  };
 
   const reset = () => {
     triggeredFields = [];
@@ -50,7 +66,12 @@ export function createRangeInteraction<Value>(options: {
     }
     return allFieldsTriggered;
   };
-  const resolveAction = (currentIndex: number | null, index: number, source: RangeInteractionSource, value?: Value | null) => {
+  const resolveAction = (
+    currentIndex: number | null,
+    index: number,
+    source: RangeInteractionSource,
+    value?: Value | null
+  ) => {
     if (source === 'esc') {
       return 'resetAll';
     }
@@ -90,7 +111,9 @@ export function createRangeInteraction<Value>(options: {
         return 'finish';
       }
       if (options.needConfirm()) {
-        const currentModified = triggeredFields.some(field => field.index === currentIndex && field.modified);
+        const currentModified = triggeredFields.some(
+          field => field.index === currentIndex && field.modified
+        );
         const allFieldsTriggered = triggeredFields.length >= options.fieldCount();
         if (!allFieldsTriggered || !canSwitch) {
           return 'resetAll';
@@ -159,7 +182,11 @@ export function createRangeInteraction<Value>(options: {
           if (options.needConfirm() && (source === 'keyboard-submit' || source === 'confirm')) {
             confirmedIndex = actionIndex;
           }
-          const forceFocus = source === 'confirm' || source === 'keyboard-submit' || source === 'panel-final' || source === 'popupClose' && !isLastInput;
+          const forceFocus = source === 'confirm'
+            || source === 'keyboard-submit'
+            || source === 'panel-final'
+            || source === 'popupClose'
+            && !isLastInput;
           const allFieldsTriggered = submitField(actionIndex);
           if (allFieldsTriggered && source === 'field-switch') {
             setCurrentIndex(index);
@@ -216,10 +243,18 @@ export function createRangeInteraction<Value>(options: {
   };
 
   return {
-    get currentIndex() { return current; },
-    get activeIndex() { return current ?? lastValid; },
-    get forceFocus() { return forceFocus; },
-    get triggeredFields() { return triggeredFields.map(field => field.index); },
+    get currentIndex() {
+      return current;
+    },
+    get activeIndex() {
+      return current ?? lastValid;
+    },
+    get forceFocus() {
+      return forceFocus;
+    },
+    get triggeredFields() {
+      return triggeredFields.map(field => field.index);
+    },
     trigger: triggerChange,
     reset
   };
