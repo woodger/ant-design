@@ -9,6 +9,9 @@
 
 ### Changed
 
+- Input расширен изменениями из `woodger/ant-design@cf3e20c`: prefix/suffix/addons,
+  clear/count/IME, variants, semantic slots, ConfigProvider.input, native refs и
+  focus/Enter. Сохранены string bind:value, onValueChange и нативные события.
 - Служебные команды объединены в `npm run cli -- ...` на `icore`: `registry check`,
   `registry report`, `registry show` и `css`. Сохранены форматы вывода, код ошибки 1,
   проверка SHA-256 и явные флаги загрузки/записи. CLI остаётся dev-инструментом.
