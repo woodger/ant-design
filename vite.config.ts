@@ -1,12 +1,11 @@
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vitest/config';
-import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
-	plugins: [sveltekit()],
-
-	test: {
-		expect: { requireAssertions: true },
-		environment: 'node',
-		include: ['src/**/*.{test,spec}.{js,ts}', 'tools/**/*.{test,spec}.mjs']
-	}
+  plugins: [svelte({ configFile: false })],
+  test: {
+    expect: { requireAssertions: true },
+    environment: 'node',
+    include: ['src/**/*.{test,spec}.{js,ts}', 'tools/**/*.{test,spec}.mjs']
+  }
 });

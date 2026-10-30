@@ -4,11 +4,10 @@ import { join, dirname } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { componentExportNames, coverage, inspectRegistry, publicExports, renderReport, validateRegistry } from './ant-design-registry-core.mjs';
 import { projectPath, registryFile } from './ant-design-common.mjs';
-import { resolveFixtureRoute } from '../e2e/fixtures/fixture-route';
 
 const revision = 'a'.repeat(40);
 function sample() {
-  return { schemaVersion: 1, upstream: { version: '6.6.8', revision, archiveUrl: 'https://registry.npmjs.org/antd/-/antd-6.6.8.tgz', archiveSha256: 'b'.repeat(64) }, supportingExports: [], components: [{ id: 'avatar', name: 'Avatar', category: 'data-display', scope: 'target', scopeReason: 'Reviewed example', upstreamPath: 'components/avatar', reviewedRevision: revision, exports: [{ upstream: 'Avatar', local: ['Avatar'] }], dependencies: [], upstreamPackages: [], priority: 'unassigned', effort: 'unknown', fixtures: [], evidence: [], features: [{ id: 'image', title: 'Image fallback', state: 'supported', requiredForV1: true, evidence: ['src/lib/components/ant-design/Avatar.svelte'], note: '' }] }] };
+  return { schemaVersion: 2, upstream: { version: '6.6.8', revision, archiveUrl: 'https://registry.npmjs.org/antd/-/antd-6.6.8.tgz', archiveSha256: 'b'.repeat(64) }, supportingExports: [], components: [{ id: 'avatar', name: 'Avatar', category: 'data-display', scope: 'target', scopeReason: 'Reviewed example', upstreamPath: 'components/avatar', reviewedRevision: revision, exports: [{ upstream: 'Avatar', local: ['Avatar'] }], dependencies: [], upstreamPackages: [], priority: 'unassigned', effort: 'unknown', fixtures: [], evidence: [], features: [{ id: 'image', title: 'Image fallback', state: 'supported', requiredForV1: true, evidence: ['src/lib/Avatar.svelte'], note: '' }] }] };
 }
 const roots = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true }))); });
@@ -51,18 +50,28 @@ describe('Ant Design registry', () => {
   it('validates offline without a clone and detects missing files and unregistered exports', async () => {
     const root = await mkdtemp(join(tmpdir(), 'antd-registry-')); roots.push(root);
     const put = async (path, content) => { const target = join(root, path); await mkdir(dirname(target), { recursive: true }); await writeFile(target, content); };
-    await put(registryFile, JSON.stringify(sample())); await put('src/lib/components/ant-design/index.ts', "export { default as Avatar } from './Avatar.svelte';"); await put('src/lib/components/ant-design/Avatar.svelte', '<span />'); await put('e2e/fixtures/catalog.json', '[]');
+    const data = sample(); data.supportingExports = ['createForm'];
+    await put(registryFile, JSON.stringify(data)); await put('src/lib/index.ts', "export { default as Avatar } from './Avatar.svelte'; export { createForm } from './form.model.svelte.js';"); await put('src/lib/Avatar.svelte', '<span />'); await put('src/lib/form.model.svelte.ts', 'export function createForm() {}');
     expect((await inspectRegistry(root)).errors).toEqual([]); expect((await inspectRegistry(root, { requireUpstream: true })).errors).toContain('Pinned upstream checkout is required but absent');
-    await put('src/lib/components/ant-design/index.ts', "export { default as Avatar } from './Avatar.svelte'; export { extra } from './missing';");
+    await put('src/lib/index.ts', "export { default as Avatar } from './Avatar.svelte'; export { createForm } from './form.model.svelte.js'; export { extra } from './missing';");
     const result = await inspectRegistry(root); expect(result.errors).toContain('Unregistered local export: extra'); expect(result.errors).toContain('Missing source for export: extra');
   });
-});
-
-describe('Isolated fixture routes', () => {
-  it('preserves the existing full-page address and selects only a whitelisted fixture', () => {
-    expect(resolveFixtureRoute('').mode).toBe('all'); expect(resolveFixtureRoute('?fixture=all').mode).toBe('all'); expect(resolveFixtureRoute('?fixture=avatar').entry.id).toBe('avatar'); expect(resolveFixtureRoute('?fixture=form').entry.kind).toBe('form');
-  });
-  it('rejects unknown empty duplicate and path-like fixture identifiers', () => {
-    for (const query of ['?fixture=unknown', '?fixture=', '?fixture=avatar&fixture=badge', '?fixture=../Components.svelte']) expect(resolveFixtureRoute(query).mode).toBe('invalid');
+  it('keeps integration evidence separate from local files without requiring a consuming checkout', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'antd-registry-')); roots.push(root);
+    const put = async (path, content) => { const target = join(root, path); await mkdir(dirname(target), { recursive: true }); await writeFile(target, content); };
+    const data = sample();
+    data.components[0].evidence = ['integration:avatar'];
+    data.components[0].features[0].evidence = ['integration:avatar/image'];
+    await put(registryFile, JSON.stringify(data));
+    await put('src/lib/index.ts', "export { default as Avatar } from './Avatar.svelte';");
+    await put('src/lib/Avatar.svelte', '<span />');
+    const result = await inspectRegistry(root);
+    expect(result.errors).toEqual([]);
+    expect(result.integrationEvidence).toEqual(['avatar', 'avatar/image']);
+    for (const ref of ['integration:other/image', 'integration:avatar/missing', 'integration:avatar/image/extra']) {
+      data.components[0].features[0].evidence = [ref];
+      await put(registryFile, JSON.stringify(data));
+      expect((await inspectRegistry(root)).errors).toContain(`avatar: invalid integration evidence ${ref}`);
+    }
   });
 });

@@ -1,7 +1,8 @@
 # Покрытие переноса Ant Design
 
-> Type: Reference. Сгенерировано командой `npm run antd:registry:report`.
+> Type: Reference. Сгенерировано командой `npm run cli -- registry report`.
 > Изменяйте registry.json; результаты запуска тестов здесь не хранятся.
+> Ссылки integration: проверяются потребителем npm-пакета; локальная проверка их не подтверждает.
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 

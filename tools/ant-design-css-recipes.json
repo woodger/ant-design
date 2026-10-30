@@ -1,7 +1,7 @@
 [
   {
     "id": "avatar",
-    "output": "src/lib/components/ant-design/vendor/avatar.css",
+    "output": "src/lib/vendor/avatar.css",
     "expectedRules": 16,
     "include": [
       "\\.ant-avatar(?![\\w])"
@@ -26,7 +26,7 @@
   },
   {
     "id": "avatar-group",
-    "output": "src/lib/components/ant-design/vendor/avatar-group.css",
+    "output": "src/lib/vendor/avatar-group.css",
     "expectedRules": 3,
     "include": [
       "^\\.ant-avatar-group(?:\\s|>|$)"
@@ -38,7 +38,7 @@
   },
   {
     "id": "badge",
-    "output": "src/lib/components/ant-design/vendor/badge.css",
+    "output": "src/lib/vendor/badge.css",
     "expectedRules": 52,
     "include": [
       "\\.ant-badge(?![\\w])"
@@ -68,7 +68,7 @@
   },
   {
     "id": "divider",
-    "output": "src/lib/components/ant-design/vendor/divider.css",
+    "output": "src/lib/vendor/divider.css",
     "expectedRules": 33,
     "include": [
       "\\.ant-divider(?![\\w])"
@@ -91,7 +91,7 @@
   },
   {
     "id": "flex",
-    "output": "src/lib/components/ant-design/vendor/flex.css",
+    "output": "src/lib/vendor/flex.css",
     "expectedRules": 32,
     "include": [
       "\\.ant-flex(?![\\w])"
@@ -108,7 +108,7 @@
   },
   {
     "id": "statistic",
-    "output": "src/lib/components/ant-design/vendor/statistic.css",
+    "output": "src/lib/vendor/statistic.css",
     "expectedRules": 14,
     "include": [
       "\\.ant-statistic(?![\\w])"
@@ -129,7 +129,7 @@
   },
   {
     "id": "segmented",
-    "output": "src/lib/components/ant-design/vendor/segmented.css",
+    "output": "src/lib/vendor/segmented.css",
     "expectedRules": 38,
     "include": [
       "\\.ant-segmented(?![\\w])"
@@ -150,7 +150,7 @@
   },
   {
     "id": "grid",
-    "output": "src/lib/components/ant-design/vendor/grid.css",
+    "output": "src/lib/vendor/grid.css",
     "expectedRules": 1043,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-(?:row|col)(?![\\w])"
@@ -171,7 +171,7 @@
   },
   {
     "id": "layout",
-    "output": "src/lib/components/ant-design/vendor/layout.css",
+    "output": "src/lib/vendor/layout.css",
     "expectedRules": 35,
     "include": [
       "\\.ant-layout(?![\\w])"
@@ -192,7 +192,7 @@
   },
   {
     "id": "descriptions",
-    "output": "src/lib/components/ant-design/vendor/descriptions.css",
+    "output": "src/lib/vendor/descriptions.css",
     "expectedRules": 40,
     "include": [
       "\\.ant-descriptions(?![\\w])"
@@ -213,7 +213,7 @@
   },
   {
     "id": "card",
-    "output": "src/lib/components/ant-design/vendor/card.css",
+    "output": "src/lib/vendor/card.css",
     "expectedRules": 59,
     "include": [
       "\\.ant-card(?![\\w])"
@@ -234,7 +234,7 @@
   },
   {
     "id": "breadcrumb",
-    "output": "src/lib/components/ant-design/vendor/breadcrumb.css",
+    "output": "src/lib/vendor/breadcrumb.css",
     "expectedRules": 21,
     "include": [
       "\\.ant-breadcrumb(?![\\w])"
@@ -255,7 +255,7 @@
   },
   {
     "id": "space",
-    "output": "src/lib/components/ant-design/vendor/space.css",
+    "output": "src/lib/vendor/space.css",
     "expectedRules": 16,
     "include": [
       "^\\.ant-space(?![\\w])"
@@ -274,7 +274,7 @@
   },
   {
     "id": "space-compact",
-    "output": "src/lib/components/ant-design/vendor/space-compact.css",
+    "output": "src/lib/vendor/space-compact.css",
     "expectedRules": 4,
     "include": [
       "^\\.ant-space-compact(?![\\w])"
@@ -291,7 +291,7 @@
   },
   {
     "id": "space-addon",
-    "output": "src/lib/components/ant-design/vendor/space-addon.css",
+    "output": "src/lib/vendor/space-addon.css",
     "expectedRules": 29,
     "include": [
       "\\.ant-space-addon(?![\\w])"
@@ -308,7 +308,7 @@
   },
   {
     "id": "input-number-compact",
-    "output": "src/lib/components/ant-design/vendor/input-number-compact.css",
+    "output": "src/lib/vendor/input-number-compact.css",
     "expectedRules": 8,
     "include": [
       "\\.ant-input-number-compact(?![\\w])"
@@ -325,7 +325,7 @@
   },
   {
     "id": "affix",
-    "output": "src/lib/components/ant-design/vendor/affix.css",
+    "output": "src/lib/vendor/affix.css",
     "expectedRules": 6,
     "include": [
       "\\.ant-affix(?![\\w])"
@@ -346,7 +346,7 @@
   },
   {
     "id": "anchor",
-    "output": "src/lib/components/ant-design/vendor/anchor.css",
+    "output": "src/lib/vendor/anchor.css",
     "expectedRules": 22,
     "include": [
       "\\.ant-anchor(?![\\w])"
@@ -367,7 +367,7 @@
   },
   {
     "id": "steps",
-    "output": "src/lib/components/ant-design/vendor/steps.css",
+    "output": "src/lib/vendor/steps.css",
     "expectedRules": 147,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-steps(?![\\w])"
@@ -392,7 +392,7 @@
   },
   {
     "id": "timeline",
-    "output": "src/lib/components/ant-design/vendor/timeline.css",
+    "output": "src/lib/vendor/timeline.css",
     "expectedRules": 43,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-timeline(?![\\w])"
@@ -413,7 +413,7 @@
   },
   {
     "id": "float-button",
-    "output": "src/lib/components/ant-design/vendor/float-button.css",
+    "output": "src/lib/vendor/float-button.css",
     "expectedRules": 42,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-float-btn(?![\\w])"
@@ -434,7 +434,7 @@
   },
   {
     "id": "date-picker",
-    "output": "src/lib/components/ant-design/vendor/date-picker.css",
+    "output": "src/lib/vendor/date-picker.css",
     "expectedRules": 262,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-picker(?![\\w])"
@@ -461,7 +461,7 @@
   },
   {
     "id": "upload",
-    "output": "src/lib/components/ant-design/vendor/upload.css",
+    "output": "src/lib/vendor/upload.css",
     "expectedRules": 82,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-upload(?![\\w])"
@@ -488,7 +488,7 @@
   },
   {
     "id": "tree",
-    "output": "src/lib/components/ant-design/vendor/tree.css",
+    "output": "src/lib/vendor/tree.css",
     "expectedRules": 98,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-tree(?![\\w])"
@@ -512,7 +512,7 @@
   },
   {
     "id": "tree-select",
-    "output": "src/lib/components/ant-design/vendor/tree-select.css",
+    "output": "src/lib/vendor/tree-select.css",
     "expectedRules": 92,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-tree-select"
@@ -535,7 +535,7 @@
   },
   {
     "id": "menu",
-    "output": "src/lib/components/ant-design/vendor/menu.css",
+    "output": "src/lib/vendor/menu.css",
     "expectedRules": 201,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-menu(?![\\w])"
@@ -558,7 +558,7 @@
   },
   {
     "id": "mentions",
-    "output": "src/lib/components/ant-design/vendor/mentions.css",
+    "output": "src/lib/vendor/mentions.css",
     "expectedRules": 102,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-mentions(?![\\w])"
@@ -581,7 +581,7 @@
   },
   {
     "id": "image",
-    "output": "src/lib/components/ant-design/vendor/image.css",
+    "output": "src/lib/vendor/image.css",
     "expectedRules": 48,
     "include": [
       "^(?:\\.css-var-_R_0_)?\\.ant-image(?![\\w])"

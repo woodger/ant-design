@@ -1,26 +1,21 @@
 import { readFile } from 'node:fs/promises';
-import { projectRoot, projectPath, reportFile, writeAtomic, runCli } from './ant-design-common.mjs';
+import { projectPath, reportFile, writeAtomic } from './ant-design-common.mjs';
 import { inspectRegistry, renderReport, coverage } from './ant-design-registry-core.mjs';
 
-await runCli(async () => {
-  const [command = 'check', ...args] = process.argv.slice(2);
-  if (!['check', 'report', 'show'].includes(command)) throw new Error('Usage: antd:registry:{check|report|show} [component] [--upstream]');
-  if (args.some(arg => arg.startsWith('--') && arg !== '--upstream')) throw new Error('Unknown registry option');
-  if (args.filter(arg => !arg.startsWith('--')).length !== (command === 'show' ? 1 : 0)) throw new Error('Only show accepts a single component identifier');
-  const result = await inspectRegistry(projectRoot, { requireUpstream: args.includes('--upstream') });
+export async function runRegistry(command, { component, upstream }, { root, stdout }) {
+  const result = await inspectRegistry(root, { requireUpstream: upstream === true });
   if (result.errors.length) throw new Error(result.errors.join('\n'));
   const report = renderReport(result.data, result.componentExports);
   if (command === 'report') {
-    await writeAtomic(projectPath(projectRoot, reportFile), report);
-    process.stdout.write(`Updated ${reportFile}\n`);
+    await writeAtomic(projectPath(root, reportFile), report);
+    stdout.write(`Updated ${reportFile}\n`);
   } else if (command === 'show') {
-    const id = args.find(arg => !arg.startsWith('--'));
-    const item = result.data.components.find(component => component.id === id);
-    if (!item) throw new Error(`Unknown component: ${id}`);
-    process.stdout.write(`${JSON.stringify({ ...item, coverage: coverage(item, result.data.upstream.revision) }, null, 2)}\n`);
+    const item = result.data.components.find(item => item.id === component);
+    if (!item) throw new Error(`Unknown component: ${component}`);
+    stdout.write(`${JSON.stringify({ ...item, coverage: coverage(item, result.data.upstream.revision) }, null, 2)}\n`);
   } else {
-    const actual = await readFile(projectPath(projectRoot, reportFile), 'utf8').catch(() => '');
-    if (actual !== report) throw new Error('Registry report is stale. Run npm run antd:registry:report');
-    process.stdout.write(`Registry valid: ${result.data.components.length} families, ${result.componentExports} Svelte component exports. Upstream: ${result.upstream}. Test execution was not checked.\n`);
+    const actual = await readFile(projectPath(root, reportFile), 'utf8').catch(() => '');
+    if (actual !== report) throw new Error('Registry report is stale. Run npm run cli -- registry report');
+    stdout.write(`Local registry valid: ${result.data.components.length} families, ${result.componentExports} Svelte component exports. Upstream: ${result.upstream}. Integration evidence (${result.integrationEvidence.length} contracts) must be checked by the consuming project. Test execution was not checked.\n`);
   }
-});
+}

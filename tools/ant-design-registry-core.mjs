@@ -4,6 +4,7 @@ import ts from 'typescript';
 import { projectPath, readJson, registryFile } from './ant-design-common.mjs';
 
 export const featureStates = ['unreviewed', 'missing', 'partial', 'supported'];
+export const integrationPrefix = 'integration:';
 const scopes = ['target', 'candidate', 'excluded'];
 const exists = path => access(path).then(() => true, () => false);
 
@@ -28,7 +29,7 @@ export function componentExportNames(source) {
 export function validateRegistry(data) {
   const errors = [];
   const require = (condition, message) => { if (!condition) errors.push(message); };
-  require(data?.schemaVersion === 1, 'schemaVersion must be 1');
+  require(data?.schemaVersion === 2, 'schemaVersion must be 2');
   require(typeof data?.upstream?.version === 'string' && /^\d+\.\d+\.\d+$/.test(data.upstream.version), 'Invalid upstream version');
   require(/^[a-f0-9]{40}$/.test(data?.upstream?.revision ?? ''), 'Invalid upstream revision');
   require(/^[a-f0-9]{64}$/.test(data?.upstream?.archiveSha256 ?? ''), 'Invalid archive SHA-256');
@@ -52,8 +53,8 @@ export function validateRegistry(data) {
     require(item.reviewedRevision === null || /^[a-f0-9]{40}$/.test(item.reviewedRevision), `${label}: invalid reviewed revision`);
     require(['S', 'M', 'L', 'unknown'].includes(item.effort), `${label}: invalid effort`);
     require(['p1', 'p2', 'p3', 'unassigned'].includes(item.priority), `${label}: invalid priority`);
-    for (const field of ['exports', 'dependencies', 'features', 'fixtures', 'evidence', 'upstreamPackages']) require(Array.isArray(item[field]), `${label}: ${field} must be an array`);
-    for (const field of ['dependencies', 'fixtures', 'evidence']) if (Array.isArray(item[field])) require(item[field].every(value => typeof value === 'string' && value.length > 0), `${label}: ${field} must contain nonempty strings`);
+    for (const field of ['exports', 'dependencies', 'features', 'evidence', 'upstreamPackages']) require(Array.isArray(item[field]), `${label}: ${field} must be an array`);
+    for (const field of ['dependencies', 'evidence']) if (Array.isArray(item[field])) require(item[field].every(value => typeof value === 'string' && value.length > 0), `${label}: ${field} must contain nonempty strings`);
     if (Array.isArray(item.upstreamPackages)) for (const dependency of item.upstreamPackages) require(typeof dependency?.name === 'string' && typeof dependency.range === 'string' && (dependency.referenceVersion === null || /^\d+\.\d+\.\d+(?:[-+].+)?$/.test(dependency.referenceVersion)), `${label}: invalid upstream package reference`);
     try { projectPath('/project', item.upstreamPath); } catch (error) { errors.push(`${label}: ${error.message}`); }
     if (!Array.isArray(item.exports) || !Array.isArray(item.features)) continue;
@@ -103,24 +104,19 @@ export async function inspectRegistry(root, { requireUpstream = false } = {}) {
   const data = await readJson(projectPath(root, registryFile));
   const errors = validateRegistry(data);
   if (errors.length) return { data, errors, upstream: 'not checked' };
-  const index = await readFile(projectPath(root, 'src/lib/components/ant-design/index.ts'), 'utf8');
+  const index = await readFile(projectPath(root, 'src/lib/index.ts'), 'utf8');
   const exports = publicExports(index);
   const registered = new Set([...data.supportingExports, ...data.components.flatMap(item => item.exports.flatMap(entry => entry.local))]);
   for (const name of registered) if (!exports.has(name)) errors.push(`Missing local export: ${name}`);
   for (const name of exports.keys()) if (!registered.has(name)) errors.push(`Unregistered local export: ${name}`);
   for (const [name, source] of exports) {
     if (!source?.startsWith('./')) { errors.push(`Export source must be local: ${name}`); continue; }
-    const base = `src/lib/components/ant-design/${source.slice(2)}`;
-    if (!(await Promise.all(['', '.ts', '.svelte.ts', '/index.ts'].map(suffix => exists(projectPath(root, base + suffix))))).some(Boolean)) errors.push(`Missing source for export: ${name}`);
+    const base = `src/lib/${source.slice(2)}`;
+    const candidates = ['', '.ts', '.svelte.ts', '/index.ts'].map(suffix => base + suffix);
+    if (base.endsWith('.js')) candidates.push(base.slice(0, -3) + '.ts');
+    if (!(await Promise.all(candidates.map(path => exists(projectPath(root, path))))).some(Boolean)) errors.push(`Missing source for export: ${name}`);
   }
-  const fixtures = await readJson(projectPath(root, 'e2e/fixtures/catalog.json'));
-  const fixtureIds = new Set();
-  for (const entry of fixtures) {
-    if (fixtureIds.has(entry.id)) errors.push(`Duplicate fixture: ${entry.id}`);
-    fixtureIds.add(entry.id);
-    try { if (!await exists(projectPath(root, `e2e/fixtures/${entry.module.replace(/^\.\//, '')}`))) errors.push(`Missing fixture module: ${entry.id}`); }
-    catch (error) { errors.push(error.message); }
-  }
+  const integrationEvidence = new Set();
   const upstreamRoot = projectPath(root, '.upstream/ant-design');
   let upstream = 'absent (offline local checks only)';
   if (await exists(upstreamRoot)) {
@@ -134,9 +130,15 @@ export async function inspectRegistry(root, { requireUpstream = false } = {}) {
     } catch { errors.push('Cannot verify upstream Git revision'); }
   } else if (requireUpstream) errors.push('Pinned upstream checkout is required but absent');
   for (const item of data.components) {
-    for (const id of item.fixtures) if (!fixtureIds.has(id)) errors.push(`${item.id}: unknown fixture ${id}`);
     const refs = [...item.evidence, ...item.features.flatMap(feature => feature.evidence)];
     for (const ref of new Set(refs)) {
+      if (ref.startsWith(integrationPrefix)) {
+        const key = ref.slice(integrationPrefix.length);
+        const [componentId, featureId, extra] = key.split('/');
+        if (componentId !== item.id || extra !== undefined || (featureId !== undefined && !item.features.some(feature => feature.id === featureId))) errors.push(`${item.id}: invalid integration evidence ${ref}`);
+        else integrationEvidence.add(key);
+        continue;
+      }
       try { if (!await exists(projectPath(root, ref.split('#')[0]))) errors.push(`${item.id}: missing evidence ${ref}`); }
       catch (error) { errors.push(`${item.id}: ${error.message}`); }
     }
@@ -145,7 +147,7 @@ export async function inspectRegistry(root, { requireUpstream = false } = {}) {
       catch (error) { errors.push(error.message); }
     }
   }
-  return { data, errors, upstream, componentExports: componentExportNames(index).length };
+  return { data, errors, upstream, componentExports: componentExportNames(index).length, integrationEvidence: [...integrationEvidence] };
 }
 
 const states = { 'not-started': 'Нет публичной реализации', 'needs-review': 'Требуется аудит v1', 'v1-ready': 'Согласованный v1 покрыт', partial: 'Частично покрыт v1' };
@@ -153,7 +155,7 @@ const escape = text => String(text).replaceAll('|', '\\|').replaceAll('\n', ' ')
 
 export function renderReport(data, componentExports) {
   const counts = Object.fromEntries(Object.keys(states).map(state => [state, data.components.filter(item => coverage(item, data.upstream.revision) === state).length]));
-  const lines = ['# Покрытие переноса Ant Design', '', '> Type: Reference. Сгенерировано командой `npm run antd:registry:report`.', '> Изменяйте registry.json; результаты запуска тестов здесь не хранятся.', '', `Эталон: Ant Design ${data.upstream.version}, commit \`${data.upstream.revision}\`.`, '', `Каталог: **${data.components.length} семейств**, публичных Svelte-компонентов: **${componentExports}**.`, `Есть публичная реализация у **${data.components.length - counts['not-started']}** семейств; отсутствует у **${counts['not-started']}**.`, `Проверенный объём v1 покрыт у **${counts['v1-ready']}**; требуется аудит у **${counts['needs-review']}**; частично покрыт у **${counts.partial}**.`, '', 'Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.', 'Candidate означает запись каталога, для которой целевой объём ещё не согласован.', '', '| Семейство | Категория | Scope | Экспорты Svelte | Аудит v1 | Известные пробелы |', '| --- | --- | --- | --- | --- | --- |'];
+  const lines = ['# Покрытие переноса Ant Design', '', '> Type: Reference. Сгенерировано командой `npm run cli -- registry report`.', '> Изменяйте registry.json; результаты запуска тестов здесь не хранятся.', '> Ссылки integration: проверяются потребителем npm-пакета; локальная проверка их не подтверждает.', '', `Эталон: Ant Design ${data.upstream.version}, commit \`${data.upstream.revision}\`.`, '', `Каталог: **${data.components.length} семейств**, публичных Svelte-компонентов: **${componentExports}**.`, `Есть публичная реализация у **${data.components.length - counts['not-started']}** семейств; отсутствует у **${counts['not-started']}**.`, `Проверенный объём v1 покрыт у **${counts['v1-ready']}**; требуется аудит у **${counts['needs-review']}**; частично покрыт у **${counts.partial}**.`, '', 'Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.', 'Candidate означает запись каталога, для которой целевой объём ещё не согласован.', '', '| Семейство | Категория | Scope | Экспорты Svelte | Аудит v1 | Известные пробелы |', '| --- | --- | --- | --- | --- | --- |'];
   for (const item of data.components) {
     const source = `https://github.com/ant-design/ant-design/tree/${data.upstream.revision}/${item.upstreamPath}`;
     const gaps = item.features.filter(feature => feature.state !== 'supported').map(feature => `${feature.title} (${feature.state})`).join('; ');

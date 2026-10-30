@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "upstream": {
     "version": "6.6.8",
     "revision": "984592267de88fbf9cdaecc96a56629e721c709d",
@@ -8,6 +8,8 @@
     "archiveSha256": "8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa"
   },
   "supportingExports": [
+    "getTableData",
+    "getPaginationState",
     "ruRU",
     "enUS",
     "UPLOAD_LIST_IGNORE",
@@ -56,16 +58,11 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "button"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Button.svelte",
-        "src/lib/components/ant-design/ButtonGroup.svelte",
-        "src/lib/components/ant-design/button.engine.test.ts",
-        "src/lib/components/ant-design/button.ssr.test.ts",
-        "e2e/button.spec.ts",
-        "src/lib/presentation/ant-design/ButtonFeaturesExample.svelte"
+        "src/lib/Button.svelte",
+        "src/lib/ButtonGroup.svelte",
+        "src/lib/button.engine.test.ts",
+        "integration:button"
       ],
       "features": [
         {
@@ -74,9 +71,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/button.engine.test.ts",
-            "src/lib/components/ant-design/button.ssr.test.ts",
-            "e2e/button.spec.ts"
+            "src/lib/button.engine.test.ts",
+            "integration:button/core-v1"
           ],
           "note": "Сохранён type=link как action без href и native disabled loading v1; href создаёт a с guard и исходными disabled tabIndex/href. Href выводит anchor-тип callback, прежний ButtonProps остаётся native."
         },
@@ -86,9 +82,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/button.engine.test.ts",
-            "src/lib/components/ant-design/button.ssr.test.ts",
-            "e2e/button.spec.ts"
+            "src/lib/button.engine.test.ts",
+            "integration:button/source-api"
           ],
           "note": "Исходный приоритет полных/неполных color+variant, локальных/context semantic слоёв; Group size ниже Compact/explicit. Вложенный явно заданный config заменяет родительский целиком."
         },
@@ -98,8 +93,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:button/compact-context"
           ],
           "note": "Нативная структура и существующая геометрия Compact сохранены."
         },
@@ -109,9 +103,8 @@
           "state": "partial",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/button.engine.test.ts",
-            "src/lib/components/ant-design/button.ssr.test.ts",
-            "e2e/button.spec.ts"
+            "src/lib/button.engine.test.ts",
+            "integration:button/cjk-snippet"
           ],
           "note": "Scalar children воспроизводит SSR-пробел. Opaque Snippet использует проверку single rendered node и HOC CSS-spacing после hydration; его textContent не переписывается, SSR не анализирует Snippet."
         },
@@ -180,18 +173,13 @@
       ],
       "priority": "p2",
       "effort": "M",
-      "fixtures": [
-        "float-button"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/FloatButton.svelte",
-        "src/lib/components/ant-design/FloatButtonGroup.svelte",
-        "src/lib/components/ant-design/FloatButtonBackTop.svelte",
-        "src/lib/components/ant-design/float-button.engine.test.ts",
-        "src/lib/components/ant-design/float-button-back-top.dom.test.ts",
-        "src/lib/components/ant-design/float-button.ssr.test.ts",
-        "e2e/float-button.spec.ts",
-        "src/lib/presentation/ant-design/FloatButtonExample.svelte"
+        "src/lib/FloatButton.svelte",
+        "src/lib/FloatButtonGroup.svelte",
+        "src/lib/FloatButtonBackTop.svelte",
+        "src/lib/float-button.engine.test.ts",
+        "src/lib/float-button-back-top.dom.test.ts",
+        "integration:float-button"
       ],
       "features": [
         {
@@ -200,8 +188,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/float-button.ssr.test.ts",
-            "e2e/float-button.spec.ts"
+            "integration:float-button/core-v1"
           ],
           "note": "Сохранены renderable zero, shape/type, native forms/disabled, приоритет стилей. Snippet заменяет ReactNode; используются существующие Svelte Button/Badge/Tooltip контракты."
         },
@@ -211,8 +198,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "e2e/float-button.spec.ts",
-            "src/lib/components/ant-design/FloatButtonGroup.svelte"
+            "src/lib/FloatButtonGroup.svelte",
+            "integration:float-button/group"
           ],
           "note": "Owner rejection сохраняется; disabled блокирует открытие, не children. Structured items дают отдельные Compact slots; opaque children используют CSS siblings для геометрии краёв без точного воспроизведения Compact edge classes."
         },
@@ -222,8 +209,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/float-button-back-top.dom.test.ts",
-            "e2e/float-button.spec.ts"
+            "src/lib/float-button-back-top.dom.test.ts",
+            "integration:float-button/back-top"
           ],
           "note": "Window/Document/Element, visibilityHeight=400 и duration=450; resize обновляет progress. Reduced motion и отмена собственных RAF при unmount — адаптации проекта."
         },
@@ -234,7 +221,7 @@
           "requiredForV1": true,
           "evidence": [
             "tools/ant-design-css-recipes.json",
-            "e2e/float-button.spec.ts"
+            "integration:float-button/styles-config"
           ],
           "note": "42 правила; global fade заменён scoped WAAPI с исходными длительностями. Config floatButton.backTopIcon и floatButtonGroup closeIcon/class/style/slots. Как source FloatButton, глобальные floatButton class/style/slots не потребляются."
         },
@@ -261,7 +248,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -287,7 +273,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -328,14 +313,11 @@
       ],
       "priority": "p2",
       "effort": "S",
-      "fixtures": [
-        "divider"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Divider.svelte",
-        "src/lib/components/ant-design/divider.types.ts",
-        "src/lib/components/ant-design/readme.md",
-        "src/lib/presentation/ant-design/DividerExample.svelte"
+        "src/lib/Divider.svelte",
+        "src/lib/divider.types.ts",
+        "readme.md",
+        "integration:divider"
       ],
       "features": [
         {
@@ -344,8 +326,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/divider.ssr.test.ts",
-            "e2e/divider.spec.ts"
+            "src/lib/divider.ssr.test.ts",
+            "integration:divider/layout"
           ],
           "note": "Приоритет orientation → vertical → type; left/right физические, start/end логические."
         },
@@ -355,8 +337,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "e2e/divider.spec.ts",
-            "tools/ant-design-css-recipes.json"
+            "tools/ant-design-css-recipes.json",
+            "integration:divider/appearance"
           ],
           "note": "Без явного size/componentSize сохраняются стандартные отступы 24px без подписи и 16px с подписью; явно заданный размер наследуется через вложенные ConfigProvider. ClassNames/styles поддерживают объект и callback; CSS-стили передаются строками по соглашению Svelte-библиотеки."
         },
@@ -366,8 +348,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/divider.ssr.test.ts",
-            "e2e/divider.spec.ts"
+            "src/lib/divider.ssr.test.ts",
+            "integration:divider/rendering"
           ],
           "note": "0 сохраняется, пустые scalar children не создают подпись; переданный пустой Snippet считается наличием подписи без попытки вызвать его для проверки."
         },
@@ -409,14 +391,11 @@
       ],
       "priority": "p2",
       "effort": "S",
-      "fixtures": [
-        "flex"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Flex.svelte",
-        "src/lib/components/ant-design/flex.types.ts",
-        "src/lib/components/ant-design/readme.md",
-        "src/lib/presentation/ant-design/FlexExample.svelte"
+        "src/lib/Flex.svelte",
+        "src/lib/flex.types.ts",
+        "readme.md",
+        "integration:flex"
       ],
       "features": [
         {
@@ -425,8 +404,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/flex.ssr.test.ts",
-            "e2e/flex.spec.ts"
+            "src/lib/flex.ssr.test.ts",
+            "integration:flex/layout"
           ],
           "note": "Orientation имеет приоритет; vertical по умолчанию использует stretch; DOM-порядок и нативный Tab сохраняются."
         },
@@ -436,9 +415,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/flex.ssr.test.ts",
-            "e2e/flex.spec.ts",
-            "tools/ant-design-css-recipes.json"
+            "src/lib/flex.ssr.test.ts",
+            "tools/ant-design-css-recipes.json",
+            "integration:flex/spacing"
           ],
           "note": "Small/medium/middle/large; числовые интервалы в px; нулевые значения сохраняются. Числовой/CSS gap и flex имеют приоритет над style; preset gap задаёт класс, который уступает inline style."
         },
@@ -448,8 +427,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/flex.ssr.test.ts",
-            "e2e/flex.spec.ts"
+            "src/lib/flex.ssr.test.ts",
+            "integration:flex/native-root"
           ],
           "note": "Нативные HTML-теги, атрибуты и события; :empty скрывается как в upstream; reset типографики не добавляется."
         },
@@ -511,16 +490,13 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "grid"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Row.svelte",
-        "src/lib/components/ant-design/Col.svelte",
-        "src/lib/components/ant-design/grid.types.ts",
-        "src/lib/components/ant-design/grid.engine.ts",
-        "src/lib/components/ant-design/readme.md",
-        "src/lib/presentation/ant-design/GridExample.svelte"
+        "src/lib/Row.svelte",
+        "src/lib/Col.svelte",
+        "src/lib/grid.types.ts",
+        "src/lib/grid.engine.ts",
+        "readme.md",
+        "integration:grid"
       ],
       "features": [
         {
@@ -529,9 +505,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/grid.engine.test.ts",
-            "src/lib/components/ant-design/grid.ssr.test.ts",
-            "e2e/grid.spec.ts"
+            "src/lib/grid.engine.test.ts",
+            "src/lib/grid.ssr.test.ts",
+            "integration:grid/layout"
           ],
           "note": "Числовой/CSS gutter, логические отступы, wrap=false, flex=0 и span=0; style сохраняет upstream-приоритет."
         },
@@ -541,9 +517,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/grid.engine.test.ts",
-            "e2e/grid.spec.ts",
-            "tools/ant-design-css-recipes.json"
+            "src/lib/grid.engine.test.ts",
+            "tools/ant-design-css-recipes.json",
+            "integration:grid/responsive"
           ],
           "note": "Семь штатных breakpoints, включая xxxl=1920. CSS Col xs действует как default; Row xs-map совпадает только при ширине <576."
         },
@@ -553,9 +529,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/grid-breakpoint.test.ts",
-            "src/lib/components/ant-design/grid.ssr.test.ts",
-            "e2e/grid.spec.ts"
+            "src/lib/grid-breakpoint.test.ts",
+            "src/lib/grid.ssr.test.ts",
+            "integration:grid/breakpoint"
           ],
           "note": "CreateBreakpoint — Svelte-модель с screens и connect(window), возвращающим cleanup. SSR screens={}; внутренний Row до подключения использует null, как upstream."
         },
@@ -621,15 +597,12 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "layout"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Layout.svelte",
-        "src/lib/components/ant-design/LayoutSider.svelte",
-        "src/lib/components/ant-design/layout.types.ts",
-        "src/lib/components/ant-design/readme.md",
-        "src/lib/presentation/ant-design/LayoutExample.svelte"
+        "src/lib/Layout.svelte",
+        "src/lib/LayoutSider.svelte",
+        "src/lib/layout.types.ts",
+        "readme.md",
+        "integration:layout"
       ],
       "features": [
         {
@@ -638,9 +611,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/layout.test.ts",
-            "src/lib/components/ant-design/layout.ssr.test.ts",
-            "e2e/layout.spec.ts"
+            "src/lib/layout.test.ts",
+            "src/lib/layout.ssr.test.ts",
+            "integration:layout/structure"
           ],
           "note": "Нативные div/header/main/footer/aside. Явный hasSider сохраняет SSR-класс; для непрозрачного Snippet автоматический SSR-layout определяется :has, client registration добавляет класс после mount."
         },
@@ -650,8 +623,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/layout.ssr.test.ts",
-            "e2e/layout.spec.ts"
+            "src/lib/layout.ssr.test.ts",
+            "integration:layout/sider"
           ],
           "note": "Trigger — нативная кнопка; trigger Snippet содержит пассивное содержимое, trigger=null позволяет собственный внешний control. Нулевая ширина делает children inert с переносом фокуса; DOM и черновики сохраняются."
         },
@@ -661,8 +634,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/layout.test.ts",
-            "e2e/layout.spec.ts"
+            "src/lib/layout.test.ts",
+            "integration:layout/responsive"
           ],
           "note": "Сохранён dimensionMaxMap исходника: xxxl=1839.98px, хотя upstream docs указывают 1920. OnBreakpoint вызывается при подписке; responsive collapse не блокирует ручное раскрытие до следующего media change."
         },
@@ -672,9 +645,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/layout.ssr.test.ts",
-            "e2e/layout.spec.ts",
-            "tools/ant-design-css-recipes.json"
+            "src/lib/layout.ssr.test.ts",
+            "tools/ant-design-css-recipes.json",
+            "integration:layout/appearance"
           ],
           "note": "Строковые semantic styles root/body; locale.layout задаёт доступные имена trigger. Default sider theme=dark независим от общего режима."
         },
@@ -701,7 +674,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -759,17 +731,12 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "space",
-        "space-compact"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Space.svelte",
-        "src/lib/components/ant-design/space.test.ts",
-        "e2e/space.spec.ts",
-        "src/lib/presentation/ant-design/SpaceExample.svelte",
-        "src/lib/components/ant-design/SpaceCompact.svelte",
-        "src/lib/components/ant-design/SpaceAddon.svelte"
+        "src/lib/Space.svelte",
+        "src/lib/space.test.ts",
+        "src/lib/SpaceCompact.svelte",
+        "src/lib/SpaceAddon.svelte",
+        "integration:space"
       ],
       "features": [
         {
@@ -778,8 +745,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/space.test.ts",
-            "e2e/space.spec.ts"
+            "src/lib/space.test.ts",
+            "integration:space/layout"
           ],
           "note": "Default small независимо от componentSize; styles/root style перекрывают числовой gap, horizontal align=center. Без typography reset; compact spacing следует общей size map."
         },
@@ -789,8 +756,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/space.test.ts",
-            "e2e/space.spec.ts"
+            "src/lib/space.test.ts",
+            "integration:space/content"
           ],
           "note": "Items — Svelte-массив text/Snippet либо {key,children}; children Snippet представляет одну группу. React.Children boolean→null сохранён; пустой Snippet имеет скрытый wrapper. Separator=0 falsy, не создаёт span."
         },
@@ -800,9 +767,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.engine.test.ts",
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "src/lib/space-compact.engine.test.ts",
+            "integration:space/compact"
           ],
           "note": "Items/Snippet, размеры и крайние элементы, вложенность, block/vertical/RTL. Подключены существующие Button/Input/InputNumber/Select; Popup content изолирован. Внешний container Select сохранён."
         },
@@ -812,8 +778,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:space/addon"
           ],
           "note": "Outlined/filled/borderless/underlined, error/warning, explicit disabled appearance и compact size; disabled не отключает children и не наследуется автоматически."
         },
@@ -848,7 +813,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -901,17 +865,13 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "anchor"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Anchor.svelte",
-        "src/lib/components/ant-design/AnchorLink.svelte",
-        "src/lib/components/ant-design/anchor.engine.test.ts",
-        "src/lib/components/ant-design/anchor.dom.test.ts",
-        "src/lib/components/ant-design/anchor.ssr.test.ts",
-        "e2e/anchor.spec.ts",
-        "src/lib/presentation/ant-design/AnchorExample.svelte"
+        "src/lib/Anchor.svelte",
+        "src/lib/AnchorLink.svelte",
+        "src/lib/anchor.engine.test.ts",
+        "src/lib/anchor.dom.test.ts",
+        "src/lib/anchor.ssr.test.ts",
+        "integration:anchor"
       ],
       "features": [
         {
@@ -920,9 +880,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/anchor.engine.test.ts",
-            "src/lib/components/ant-design/anchor.dom.test.ts",
-            "e2e/anchor.spec.ts"
+            "src/lib/anchor.engine.test.ts",
+            "src/lib/anchor.dom.test.ts",
+            "integration:anchor/core-v1"
           ],
           "note": "Нативные ссылки, raw fragment regexp, 450ms cubic scroll, offset приоритеты, mapped highlight с raw callbacks и отмена анимации. Horizontal скрывает вложенность."
         },
@@ -932,8 +892,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/anchor.ssr.test.ts",
-            "e2e/anchor.spec.ts"
+            "src/lib/anchor.ssr.test.ts",
+            "integration:anchor/presentation"
           ],
           "note": "Affix включён по умолчанию; стили root уступают style. Indicator использует offset/client geometry и делегированный compute-scroll-into-view 3.0.2 под MIT."
         },
@@ -981,15 +941,11 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "breadcrumb"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Breadcrumb.svelte",
-        "src/lib/components/ant-design/breadcrumb.test.ts",
-        "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
-        "e2e/breadcrumb.spec.ts",
-        "src/lib/presentation/ant-design/BreadcrumbExample.svelte"
+        "src/lib/Breadcrumb.svelte",
+        "src/lib/breadcrumb.test.ts",
+        "src/lib/breadcrumb.ssr.test.ts",
+        "integration:breadcrumb"
       ],
       "features": [
         {
@@ -998,9 +954,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/breadcrumb.test.ts",
-            "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
-            "e2e/breadcrumb.spec.ts"
+            "src/lib/breadcrumb.test.ts",
+            "src/lib/breadcrumb.ssr.test.ts",
+            "integration:breadcrumb/routes"
           ],
           "note": "Сохраняет пустые сегменты, отсутствие URL encoding, однократную подстановку каждого path-param и глобальную подстановку title с исходным falsy fallback. Нативные nav/ol/li/a."
         },
@@ -1010,8 +966,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
-            "e2e/breadcrumb.spec.ts"
+            "src/lib/breadcrumb.ssr.test.ts",
+            "integration:breadcrumb/rendering"
           ],
           "note": "React children sugar заменён items. ItemRender — Svelte Snippet с route/params/routes/paths; непрозрачный пустой Snippet сохраняет li. Item.style не применяется в исходнике 6.6.8; styles.item используется на li."
         },
@@ -1021,10 +977,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/breadcrumb.ssr.test.ts",
-            "src/lib/components/ant-design/dropdown.ssr.test.ts",
-            "e2e/breadcrumb.spec.ts",
-            "e2e/dropdown.spec.ts"
+            "src/lib/breadcrumb.ssr.test.ts",
+            "src/lib/dropdown.ssr.test.ts",
+            "integration:breadcrumb/menu"
           ],
           "note": "Dropdown получает нативный href/target/rel вместо вложенного interactive label. Нативные кнопки вместо clickable span без href. Поддержан текущий Svelte Dropdown; произвольный React Menu API остаётся в полном объёме."
         },
@@ -1061,12 +1016,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "dropdown"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/dropdown.spec.ts"
+        "readme.md",
+        "integration:dropdown"
       ],
       "features": [
         {
@@ -1091,9 +1043,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/dropdown.ssr.test.ts",
-            "e2e/breadcrumb.spec.ts",
-            "e2e/dropdown.spec.ts"
+            "src/lib/dropdown.ssr.test.ts",
+            "integration:dropdown/native-links"
           ],
           "note": "Существующие commands сохраняют button; links используют a role=menuitem с Enter/Space и disabled без href. Основной подробный аудит Dropdown ещё не завершён."
         },
@@ -1103,8 +1054,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:dropdown/compact-isolation"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -1139,15 +1089,10 @@
       ],
       "priority": "p1",
       "effort": "L",
-      "fixtures": [
-        "menu"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Menu.svelte",
-        "src/lib/components/ant-design/menu.engine.test.ts",
-        "src/lib/components/ant-design/menu.ssr.test.ts",
-        "e2e/menu.spec.ts",
-        "src/lib/presentation/ant-design/MenuExample.svelte"
+        "src/lib/Menu.svelte",
+        "src/lib/menu.engine.test.ts",
+        "integration:menu"
       ],
       "features": [
         {
@@ -1156,9 +1101,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/menu.engine.test.ts",
-            "src/lib/components/ant-design/menu.ssr.test.ts",
-            "e2e/menu.spec.ts"
+            "src/lib/menu.engine.test.ts",
+            "integration:menu/core-v1"
           ],
           "note": "Single/multiple/selectable, selectedKeys/defaultSelectedKeys, item/parent/root onClick и onSelect/onDeselect. KeyPath идёт от листа к корню без групп; itemData сохраняет исходный numeric key. Повторный single click сохраняет выбранный key и вызывает onDeselect, как rc-menu 1.5.0. String/number/Snippet labels/extra, icons, danger и disabled. Native link Enter активирует callback один раз через native click; legacy React instance info.item не переносится."
         },
@@ -1168,8 +1112,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/Menu.svelte",
-            "e2e/menu.spec.ts"
+            "src/lib/Menu.svelte",
+            "integration:menu/modes-popup"
           ],
           "note": "Controlled/default openKeys, задержки по runtime rc-menu (open/close 0.1 s), ленивый popup и forceSubMenuRender. Native popover с outside/Escape, RTL и верхним выравниванием боковых подменю. Inline сохраняет descendant keys при закрытии, popup удаляет их. InlineCollapsed/Sider переводит меню в vertical и кэширует uncontrolled inline keys; controlled ключи остаются у владельца. Collapsed labels имеют native title вместо исходного Tooltip."
         },
@@ -1179,8 +1123,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/menu.ssr.test.ts",
-            "e2e/menu.spec.ts"
+            "integration:menu/keyboard-contexts"
           ],
           "note": "Стрелки по режиму/уровню, Home/End, Enter, возврат Escape к родителю popup; disabled пропускается. Заголовки — native button с role=menuitem, Space не раскрывает их, как upstream. Focus предпочитает a[href]; nativeElement/focus/findItem. Light/dark menu theme независимо от алгоритма страницы, primary/compact/RTL, 201 CSS-правило. Menu не наследует Form.disabled/ConfigProvider.componentDisabled, как Ant wrapper."
         },
@@ -1224,12 +1167,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "checkbox-pagination"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/checkbox-pagination.spec.ts"
+        "readme.md",
+        "integration:pagination"
       ],
       "features": [
         {
@@ -1289,19 +1229,14 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "steps",
-        "steps-variants"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Steps.svelte",
-        "src/lib/components/ant-design/steps.engine.test.ts",
-        "src/lib/components/ant-design/steps.ssr.test.ts",
-        "src/lib/components/ant-design/steps-data.engine.test.ts",
-        "src/lib/components/ant-design/steps-display.engine.test.ts",
-        "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
-        "e2e/steps.spec.ts",
-        "e2e/steps-variants.spec.ts"
+        "src/lib/Steps.svelte",
+        "src/lib/steps.engine.test.ts",
+        "src/lib/steps.ssr.test.ts",
+        "src/lib/steps-data.engine.test.ts",
+        "src/lib/steps-display.engine.test.ts",
+        "src/lib/steps-expanded.ssr.test.ts",
+        "integration:steps"
       ],
       "features": [
         {
@@ -1310,9 +1245,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/steps.engine.test.ts",
-            "src/lib/components/ant-design/steps.ssr.test.ts",
-            "e2e/steps.spec.ts"
+            "src/lib/steps.engine.test.ts",
+            "src/lib/steps.ssr.test.ts",
+            "integration:steps/core-v1"
           ],
           "note": "Сохранён существующий ol/li/button v1, first-wins string keys, clamp current, responsive 532px и componentDisabled; это согласованные адаптации к Svelte."
         },
@@ -1322,9 +1257,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/steps-data.engine.test.ts",
-            "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
-            "e2e/steps-variants.spec.ts"
+            "src/lib/steps-data.engine.test.ts",
+            "src/lib/steps-expanded.ssr.test.ts",
+            "integration:steps/variants"
           ],
           "note": "Native item buttons, rich inline Tooltip, root/item styles, iconRender/progressDot через Snippet и components.Icon. Title/content принимают также число/boolean. Navigation arrow наследует colorTextDisabled активной темы с сохранением inline override."
         },
@@ -1334,9 +1269,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/steps-display.engine.test.ts",
-            "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
-            "e2e/steps-variants.spec.ts"
+            "src/lib/steps-display.engine.test.ts",
+            "src/lib/steps-expanded.ssr.test.ts",
+            "integration:steps/collapsed-progress"
           ],
           "note": "MaxCount считает реальные шаги, исключая ellipses; номера и callbacks относятся к исходному индексу. Percent подавлен для inline."
         },
@@ -1378,12 +1313,9 @@
       ],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "tabs"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/tabs.spec.ts"
+        "readme.md",
+        "integration:tabs"
       ],
       "features": [
         {
@@ -1408,9 +1340,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/card.test.ts",
-            "e2e/card.spec.ts",
-            "e2e/tabs.spec.ts"
+            "src/lib/card.test.ts",
+            "integration:tabs/bar-extra"
           ],
           "note": "Слоты остаются вне tablist; truthiness extras соответствует @rc-component/tabs 1.13.0. Основной подробный аудит Tabs ещё не завершён."
         }
@@ -1447,15 +1378,10 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "auto-complete"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/AutoComplete.svelte",
-        "src/lib/components/ant-design/auto-complete.engine.test.ts",
-        "src/lib/components/ant-design/auto-complete.ssr.test.ts",
-        "e2e/auto-complete.spec.ts",
-        "src/lib/presentation/ant-design/AutoCompleteExample.svelte"
+        "src/lib/AutoComplete.svelte",
+        "src/lib/auto-complete.engine.test.ts",
+        "integration:auto-complete"
       ],
       "features": [
         {
@@ -1464,8 +1390,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/auto-complete.engine.test.ts",
-            "e2e/auto-complete.spec.ts"
+            "src/lib/auto-complete.engine.test.ts",
+            "integration:auto-complete/core-v1"
           ],
           "note": "String value/defaultValue, controlled/default open, groups и rich Snippet labels. Filter по умолчанию false, true фильтрует value без trim/accent folding; group match сохраняет всех детей. OnChange(value,option), onSearch только search-путь, onSelect только выбор. Clear сохраняет последовательность rc-select: onClear, change(undefined), затем change('')/search('') для непустого текста."
         },
@@ -1475,8 +1401,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/auto-complete.ssr.test.ts",
-            "e2e/auto-complete.spec.ts"
+            "integration:auto-complete/keyboard-input"
           ],
           "note": "Combobox с произвольным текстом, disabled/group skip, ArrowUp/Down, Enter/Tab выбор, Escape; IME Enter не выбирает. Backfill меняет preview без change/search. DefaultActiveFirstOption=false по runtime rc-select, prefix match активируется отдельно. Custom input задаётся children(control) Snippet с attributes/register; focus/blur/nativeElement/inputElement. Публичные режимы старого Select сохранены."
         },
@@ -1486,8 +1411,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/auto-complete.ssr.test.ts",
-            "e2e/auto-complete.spec.ts"
+            "integration:auto-complete/contexts-popup"
           ],
           "note": "Без options и notFoundContent popup скрыт даже при open=true; SSR всегда закрыт как rc-select useOpen. Native popover сохраняет фокус input, popupMatchSelectWidth/listHeight/onPopupScroll, outside/Escape и cleanup. Native FormData, FormItem/required/status/reset и disabled, размеры/variants, themes/RTL/Compact. CSS Select переиспользуется из vendor/antd.css, как upstream AutoComplete."
         },
@@ -1514,7 +1438,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -1555,14 +1478,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "checkbox-pagination",
-        "checkbox-group"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/checkbox-pagination.spec.ts",
-        "e2e/checkbox-group.spec.ts"
+        "readme.md",
+        "integration:checkbox"
       ],
       "features": [
         {
@@ -1588,7 +1506,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -1646,23 +1563,14 @@
       ],
       "priority": "p1",
       "effort": "L",
-      "fixtures": [
-        "date-picker",
-        "range-picker"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/DatePicker.svelte",
-        "src/lib/components/ant-design/date-picker-dayjs.engine.ts",
-        "src/lib/components/ant-design/date-picker.engine.test.ts",
-        "src/lib/components/ant-design/date-picker.ssr.test.ts",
-        "e2e/date-picker.spec.ts",
-        "src/lib/presentation/ant-design/DatePickerExample.svelte",
-        "src/lib/components/ant-design/RangePicker.svelte",
-        "src/lib/components/ant-design/range-picker-interaction.engine.test.ts",
-        "src/lib/components/ant-design/range-picker.engine.test.ts",
-        "src/lib/components/ant-design/range-picker.ssr.test.ts",
-        "e2e/range-picker.spec.ts",
-        "src/lib/presentation/ant-design/RangePickerExample.svelte"
+        "src/lib/DatePicker.svelte",
+        "src/lib/date-picker-dayjs.engine.ts",
+        "src/lib/date-picker.engine.test.ts",
+        "src/lib/RangePicker.svelte",
+        "src/lib/range-picker-interaction.engine.test.ts",
+        "src/lib/range-picker.engine.test.ts",
+        "integration:date-picker"
       ],
       "features": [
         {
@@ -1671,9 +1579,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/date-picker.engine.test.ts",
-            "src/lib/components/ant-design/date-picker.ssr.test.ts",
-            "e2e/date-picker.spec.ts"
+            "src/lib/date-picker.engine.test.ts",
+            "integration:date-picker/single"
           ],
           "note": "Dayjs|null, строгий формат/массив форматов, defaultValue, open, pickerValue, onChange(value,dateString), date/month/year/decade навигация панели, min/max/disabledDate, native name. Picker выбора только date; дополнительные picker modes отдельно."
         },
@@ -1683,8 +1590,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/date-picker.engine.test.ts",
-            "e2e/date-picker.spec.ts"
+            "src/lib/date-picker.engine.test.ts",
+            "integration:date-picker/datetime"
           ],
           "note": "Никакой принудительной UTC/ISO сериализации. Адаптер сохраняет режим входного Dayjs; parser локальный как rc-picker. Panel selection выравнивает скрытые units с default millisecondStep=100; явный step=1 и ввод SSS поддержаны. Date/time ограничения, Now, needConfirm и draft/cancel."
         },
@@ -1694,8 +1601,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/date-picker.ssr.test.ts",
-            "e2e/date-picker.spec.ts"
+            "integration:date-picker/keyboard"
           ],
           "note": "Native combobox/grid buttons и существующая popover surface вместо React portal/trigger. RU/EN, RTL/theme/Compact contexts. Native FormData содержит отображаемую строку, callback — Dayjs; Form хранит immutable Dayjs, валидирует null и восстанавливает объект при reset без изменения контракта DatePicker."
         },
@@ -1705,12 +1611,10 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/RangePicker.svelte",
-            "src/lib/components/ant-design/range-picker-interaction.engine.test.ts",
-            "src/lib/components/ant-design/range-picker.engine.test.ts",
-            "src/lib/components/ant-design/range-picker.ssr.test.ts",
-            "e2e/range-picker.spec.ts",
-            "src/lib/presentation/ant-design/RangePickerExample.svelte"
+            "src/lib/RangePicker.svelte",
+            "src/lib/range-picker-interaction.engine.test.ts",
+            "src/lib/range-picker.engine.test.ts",
+            "integration:date-picker/range"
           ],
           "note": "Пара Dayjs|null; calendar/submit/committed состояния, исходная useRangeValueChange, order/allowEmpty/disabled, endpoint-only validation и from, confirm/Tab/Escape, контролируемые value/open, native FormData и Form tuples. При полной очистке onChange получает (null,null), как runtime rc-picker. Нет полной поддержки extended API семейства."
         },
@@ -1762,12 +1666,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "form"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/form.spec.ts"
+        "readme.md",
+        "integration:form"
       ],
       "features": [
         {
@@ -1792,9 +1693,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/form.model.test.ts",
-            "e2e/date-picker.spec.ts",
-            "e2e/range-picker.spec.ts"
+            "src/lib/form.model.test.ts",
+            "integration:form/dayjs-values"
           ],
           "note": "DatePicker и RangePicker хранят объекты напрямую; required/null, submit и reset сохраняют класс/исходные даты, tuple копируется при snapshot. Остальной подробный аудит Form и generic object store ещё не завершён."
         }
@@ -1835,17 +1735,10 @@
       ],
       "priority": "p1",
       "effort": "unknown",
-      "fixtures": [
-        "input",
-        "textarea"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/input-select.spec.ts",
-        "src/lib/components/ant-design/TextArea.svelte",
-        "src/lib/components/ant-design/textarea.ssr.test.ts",
-        "e2e/textarea.spec.ts",
-        "src/lib/presentation/ant-design/TextAreaExample.svelte"
+        "readme.md",
+        "src/lib/TextArea.svelte",
+        "integration:input"
       ],
       "features": [
         {
@@ -1862,8 +1755,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:input/compact-context"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         },
@@ -1873,8 +1765,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/textarea.ssr.test.ts",
-            "e2e/textarea.spec.ts"
+            "integration:input/textarea-native"
           ],
           "note": "Bind:value/defaultValue, native rows/maxlength/required/disabled/readonly/name и события, FormItem, native selection ref, onPressEnter с IME guard, sizes/Compact/RTL. Отдельный экспорт TextArea заменяет React Input.TextArea."
         },
@@ -1911,12 +1802,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "input-number"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/input-number.spec.ts"
+        "readme.md",
+        "integration:input-number"
       ],
       "features": [
         {
@@ -1941,8 +1829,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:input-number/compact-context"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -1994,15 +1881,10 @@
       ],
       "priority": "p1",
       "effort": "L",
-      "fixtures": [
-        "mentions"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Mentions.svelte",
-        "src/lib/components/ant-design/mentions.engine.test.ts",
-        "src/lib/components/ant-design/mentions.ssr.test.ts",
-        "e2e/mentions.spec.ts",
-        "src/lib/presentation/ant-design/MentionsExample.svelte"
+        "src/lib/Mentions.svelte",
+        "src/lib/mentions.engine.test.ts",
+        "integration:mentions"
       ],
       "features": [
         {
@@ -2011,8 +1893,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/mentions.engine.test.ts",
-            "e2e/mentions.spec.ts"
+            "src/lib/mentions.engine.test.ts",
+            "integration:mentions/core-v1"
           ],
           "note": "Исходные lastIndex/validateSearch/replaceWithMeasure: несколько префиксов, literal split, case-insensitive suffix deduplication и сохранение хвоста. OnChange до onSelect, onSearch(text,prefix) по keyup, filter predicate/bypass и rich labels. Helper getMentions соответствует статическому React методу. Native offsets остаются UTF-16."
         },
@@ -2022,8 +1904,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/mentions.engine.test.ts",
-            "e2e/mentions.spec.ts"
+            "src/lib/mentions.engine.test.ts",
+            "integration:mentions/keyboard-measure"
           ],
           "note": "Up/Down пропускают disabled, Enter выбирает, Escape закрывает, IME Enter не выбирает. Popup следует позиции префикса при wrap/scroll, top/bottom/RTL и source gap=4; общий popup gap по умолчанию сохранён. AutoSize/minRows/maxRows по rc-input, ResizeObserver/onResize и cleanup shadow/frames/blur timer. Фокус остаётся в textarea; listbox/option — native Svelte-адаптация исходного DropdownMenu на rc-menu."
         },
@@ -2033,8 +1915,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/mentions.ssr.test.ts",
-            "e2e/mentions.spec.ts"
+            "integration:mentions/contexts-async"
           ],
           "note": "Loading заменяет выдачу disabled spinner и блокирует Enter; options меняет владелец, запроса внутри нет. AllowClear/disabled/custom icon, readonly/disabled, FormItem/status/native FormData/reset, размеры/variants, locale/themes/compact density/RTL. NativeElement/textarea/focus/blur; 102 CSS-правила с воспроизводимым рецептом. SSR не измеряет DOM и не ставит таймеры."
         },
@@ -2076,12 +1957,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "radio"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/radio.spec.ts"
+        "readme.md",
+        "integration:radio"
       ],
       "features": [
         {
@@ -2107,7 +1985,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -2149,20 +2026,9 @@
       ],
       "priority": "p1",
       "effort": "unknown",
-      "fixtures": [
-        "select",
-        "select-numeric",
-        "select-multiple",
-        "select-remote"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/input-select.spec.ts",
-        "e2e/multiple-select.spec.ts",
-        "src/lib/components/ant-design/select-remote.ssr.test.ts",
-        "e2e/remote-select.spec.ts",
-        "src/lib/presentation/ant-design/RemoteSelectExample.svelte",
-        "src/lib/presentation/ant-design/remote-select.model.test.ts"
+        "readme.md",
+        "integration:select"
       ],
       "features": [
         {
@@ -2171,8 +2037,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "e2e/input-select.spec.ts",
-            "e2e/multiple-select.spec.ts"
+            "integration:select/selection"
           ],
           "note": ""
         },
@@ -2182,8 +2047,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "e2e/input-select.spec.ts",
-            "e2e/multiple-select.spec.ts"
+            "integration:select/keyboard"
           ],
           "note": ""
         },
@@ -2193,8 +2057,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "e2e/multiple-select.spec.ts",
-            "e2e/form.spec.ts"
+            "integration:select/forms"
           ],
           "note": ""
         },
@@ -2212,10 +2075,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/select.engine.test.ts",
-            "src/lib/components/ant-design/select-remote.ssr.test.ts",
-            "e2e/remote-select.spec.ts",
-            "src/lib/presentation/ant-design/remote-select.model.test.ts"
+            "src/lib/select.engine.test.ts",
+            "integration:select/remote-search"
           ],
           "note": "SearchValue/onSearch/filterOption и showSearch object subset, loading/notFoundContent/onPopupScroll; cache только selected labels/disabled, включая single и numeric zero. Requests/debounce/stale guards/pagination/retry/dispose принадлежат consumer model; ошибка через status/content. Остальной rc-select API не заявлен."
         },
@@ -2233,8 +2094,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:select/compact-context"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -2262,12 +2122,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "slider"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/slider.spec.ts"
+        "readme.md",
+        "integration:slider"
       ],
       "features": [
         {
@@ -2310,12 +2167,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "switch"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/switch.spec.ts"
+        "readme.md",
+        "integration:switch"
       ],
       "features": [
         {
@@ -2341,7 +2195,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -2367,7 +2220,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -2417,15 +2269,10 @@
       ],
       "priority": "p1",
       "effort": "L",
-      "fixtures": [
-        "tree-select"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/TreeSelect.svelte",
-        "src/lib/components/ant-design/tree-select.engine.test.ts",
-        "src/lib/components/ant-design/tree-select.ssr.test.ts",
-        "e2e/tree-select.spec.ts",
-        "src/lib/presentation/ant-design/TreeSelectExample.svelte"
+        "src/lib/TreeSelect.svelte",
+        "src/lib/tree-select.engine.test.ts",
+        "integration:tree-select"
       ],
       "features": [
         {
@@ -2434,10 +2281,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/TreeSelect.svelte",
-            "src/lib/components/ant-design/tree-select.engine.test.ts",
-            "src/lib/components/ant-design/tree-select.ssr.test.ts",
-            "e2e/tree-select.spec.ts"
+            "src/lib/TreeSelect.svelte",
+            "src/lib/tree-select.engine.test.ts",
+            "integration:tree-select/core-v1"
           ],
           "note": "Raw keys и labeled objects, null/undefined, numeric zero, onChange(value,labels,extra), onSelect/onDeselect и clear. TreeCheckStrictly форсирует multiple и labelInValue; labels=null в labeled mode. Missing values сохраняются; подписи доступны из labeled value либо внутреннего состояния."
         },
@@ -2447,8 +2293,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/tree-select.engine.test.ts",
-            "e2e/tree-select.spec.ts"
+            "src/lib/tree-select.engine.test.ts",
+            "integration:tree-select/checking-search"
           ],
           "note": "SHOW_ALL/PARENT/CHILD как TREE_SELECT_SHOW_*; display отдельно от полных checked keys. Search сохраняет предков и всех потомков совпавшего родителя, default filter prop=value, predicate/bypass и autoClearSearchValue. Проверка фильтрованного родителя использует полное исходное дерево."
         },
@@ -2458,8 +2304,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/tree-select.ssr.test.ts",
-            "e2e/tree-select.spec.ts"
+            "integration:tree-select/async-keyboard"
           ],
           "note": "Панель — существующий Tree с native popover, input сохраняет focus и aria-activedescendant. Во время поиска loadData отключён; закрытый popup не начинает новые загрузки. TreeExpanded/Loaded keys и callbacks, onPopupScroll/listHeight. Form raw values/required/reset, locale, themes/RTL и Compact. 92 CSS-правила; prefix внутренних узлов нормализован к общему Tree."
         },
@@ -2524,18 +2369,13 @@
       ],
       "priority": "p1",
       "effort": "L",
-      "fixtures": [
-        "upload"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Upload.svelte",
-        "src/lib/components/ant-design/UploadDragger.svelte",
-        "src/lib/components/ant-design/upload-controller.engine.test.ts",
-        "src/lib/components/ant-design/upload.engine.test.ts",
-        "src/lib/components/ant-design/upload-request.dom.test.ts",
-        "src/lib/components/ant-design/upload.ssr.test.ts",
-        "e2e/upload.spec.ts",
-        "src/lib/presentation/ant-design/UploadExample.svelte"
+        "src/lib/Upload.svelte",
+        "src/lib/UploadDragger.svelte",
+        "src/lib/upload-controller.engine.test.ts",
+        "src/lib/upload.engine.test.ts",
+        "src/lib/upload-request.dom.test.ts",
+        "integration:upload"
       ],
       "features": [
         {
@@ -2544,11 +2384,10 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/upload-controller.engine.test.ts",
-            "src/lib/components/ant-design/upload.engine.test.ts",
-            "src/lib/components/ant-design/upload-request.dom.test.ts",
-            "src/lib/components/ant-design/upload.ssr.test.ts",
-            "e2e/upload.spec.ts"
+            "src/lib/upload-controller.engine.test.ts",
+            "src/lib/upload.engine.test.ts",
+            "src/lib/upload-request.dom.test.ts",
+            "integration:upload/core-v1"
           ],
           "note": "Stable uid, batch start после async beforeUpload, false/rejection оставляют файл без uploading; UPLOAD_LIST_IGNORE исключает файл. Async onRemove veto, abort и фильтрация callbacks для удалённых владельцем файлов. Native file input сбрасывается для повторного выбора."
         },
@@ -2558,9 +2397,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/upload-controller.engine.test.ts",
-            "src/lib/components/ant-design/upload-request.dom.test.ts",
-            "e2e/upload.spec.ts"
+            "src/lib/upload-controller.engine.test.ts",
+            "src/lib/upload-request.dom.test.ts",
+            "integration:upload/transport"
           ],
           "note": "Async action/data, method/headers/withCredentials, progress/success/error; customRequest(options,{defaultRequest}). beforeUpload=false оставляет ручную отправку потребителю как upstream. MaxCount ограничивает список, не транспорт. Удаление/unmount abort активных запросов; browser/file APIs только в lifecycle."
         },
@@ -2570,8 +2409,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/upload.ssr.test.ts",
-            "e2e/upload.spec.ts"
+            "integration:upload/presentation"
           ],
           "note": "Children snippet, hasControlInside, keyboard chooser, multiple drop/accept, ShowUploadList flags/extra, исходные icons и thumbnail canvas. RU/EN, RTL, темы и disabled из ConfigProvider/Form. 82 CSS-правила из закреплённого архива; неиспользуемые React motion selectors исключены."
         },
@@ -2628,14 +2466,9 @@
       ],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "avatar",
-        "avatar-group"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/avatar.spec.ts",
-        "e2e/avatar-group.spec.ts"
+        "readme.md",
+        "integration:avatar"
       ],
       "features": [
         {
@@ -2644,8 +2477,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "e2e/avatar.spec.ts",
-            "src/lib/components/ant-design/readme.md"
+            "readme.md",
+            "integration:avatar/images"
           ],
           "note": ""
         },
@@ -2655,8 +2488,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/avatar.engine.test.ts",
-            "e2e/avatar.spec.ts"
+            "src/lib/avatar.engine.test.ts",
+            "integration:avatar/geometry"
           ],
           "note": ""
         },
@@ -2666,8 +2499,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/avatar-group.engine.test.ts",
-            "e2e/avatar-group.spec.ts"
+            "src/lib/avatar-group.engine.test.ts",
+            "integration:avatar/group"
           ],
           "note": ""
         },
@@ -2677,8 +2510,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/avatar.ssr.test.ts",
-            "e2e/avatar-group.spec.ts"
+            "src/lib/avatar.ssr.test.ts",
+            "integration:avatar/accessibility"
           ],
           "note": ""
         },
@@ -2722,12 +2555,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "badge"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/badge.spec.ts"
+        "readme.md",
+        "integration:badge"
       ],
       "features": [
         {
@@ -2761,7 +2591,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -2821,16 +2650,12 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "card"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Card.svelte",
-        "src/lib/components/ant-design/CardGrid.svelte",
-        "src/lib/components/ant-design/CardMeta.svelte",
-        "src/lib/components/ant-design/card.test.ts",
-        "e2e/card.spec.ts",
-        "src/lib/presentation/ant-design/CardExample.svelte"
+        "src/lib/Card.svelte",
+        "src/lib/CardGrid.svelte",
+        "src/lib/CardMeta.svelte",
+        "src/lib/card.test.ts",
+        "integration:card"
       ],
       "features": [
         {
@@ -2839,8 +2664,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/card.test.ts",
-            "e2e/card.spec.ts"
+            "src/lib/card.test.ts",
+            "integration:card/structure"
           ],
           "note": "Нативные div/ul/li; Snippet/text/number/boolean slots с upstream presence. Grid: CSS :has до mount, direct-child observer после, containGrid для явного SSR-класса."
         },
@@ -2850,8 +2675,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/card.test.ts",
-            "e2e/card.spec.ts"
+            "src/lib/card.test.ts",
+            "integration:card/appearance"
           ],
           "note": "Skeleton заменяет только body; root style > semantic root, header/body semantic > legacy. Фокус body при загрузке и восстановление при unmount — доступная Svelte-адаптация."
         },
@@ -2861,9 +2686,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/card.test.ts",
-            "e2e/card.spec.ts",
-            "e2e/tabs.spec.ts"
+            "src/lib/card.test.ts",
+            "integration:card/tabs"
           ],
           "note": "Локальные Tabs сохраняют согласованную ручную клавиатурную модель. Размер large/small, defaultActiveTabKey > tabProps.defaultActiveKey, label > legacy tab; левый/правый native extra."
         },
@@ -2890,7 +2714,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -2925,12 +2748,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "collapse"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/collapse.spec.ts"
+        "readme.md",
+        "integration:collapse"
       ],
       "features": [
         {
@@ -2972,14 +2792,10 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "descriptions"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/descriptions.test.ts",
-        "src/lib/components/ant-design/descriptions.ssr.test.ts",
-        "e2e/descriptions.spec.ts",
-        "src/lib/presentation/ant-design/DescriptionsExample.svelte"
+        "src/lib/descriptions.test.ts",
+        "src/lib/descriptions.ssr.test.ts",
+        "integration:descriptions"
       ],
       "features": [
         {
@@ -2988,8 +2804,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/descriptions.ssr.test.ts",
-            "e2e/descriptions.spec.ts"
+            "src/lib/descriptions.ssr.test.ts",
+            "integration:descriptions/layout"
           ],
           "note": "Нативные table/tbody/tr/th/td; label/children/title/extra принимают text/number/Snippet. React Descriptions.Item не исполнялся в upstream: вместо JSX sugar используется items."
         },
@@ -2999,8 +2815,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/descriptions.test.ts",
-            "e2e/descriptions.spec.ts"
+            "src/lib/descriptions.test.ts",
+            "integration:descriptions/responsive"
           ],
           "note": "Порядок xxxl→xs, fallback 3 при SSR, 1/2/3/4 по viewport; clipping span и растяжение последней ячейки как useRow."
         },
@@ -3010,8 +2826,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/descriptions.ssr.test.ts",
-            "e2e/descriptions.spec.ts"
+            "src/lib/descriptions.ssr.test.ts",
+            "integration:descriptions/appearance"
           ],
           "note": "Без явного componentSize размер large; middle остаётся локальным alias medium. Label/content styles на ячейках bordered, item-level приоритет сохранён; вложенные таблицы изолированы."
         },
@@ -3047,12 +2863,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "empty"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/empty.spec.ts"
+        "readme.md",
+        "integration:empty"
       ],
       "features": [
         {
@@ -3100,21 +2913,12 @@
       ],
       "priority": "p1",
       "effort": "L",
-      "fixtures": [
-        "image",
-        "image-preview-group"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Image.svelte",
-        "src/lib/components/ant-design/image-preview.engine.test.ts",
-        "src/lib/components/ant-design/image.ssr.test.ts",
-        "e2e/image.spec.ts",
-        "src/lib/presentation/ant-design/ImageExample.svelte",
-        "src/lib/components/ant-design/ImagePreviewGroup.svelte",
-        "src/lib/components/ant-design/image-preview-group.engine.test.ts",
-        "src/lib/components/ant-design/image-preview-group.ssr.test.ts",
-        "e2e/image-preview-group.spec.ts",
-        "src/lib/presentation/ant-design/ImageGroupExample.svelte"
+        "src/lib/Image.svelte",
+        "src/lib/image-preview.engine.test.ts",
+        "src/lib/ImagePreviewGroup.svelte",
+        "src/lib/image-preview-group.engine.test.ts",
+        "integration:image"
       ],
       "features": [
         {
@@ -3123,8 +2927,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/image.ssr.test.ts",
-            "e2e/image.spec.ts"
+            "integration:image/core-v1"
           ],
           "note": "Width/height/src/alt/native image attrs, class/style и rootClassName/wrapperStyle. Preview=true по умолчанию, отдельный preview.src, open/onOpenChange/afterOpenChange, cover/closeIcon. Boolean/Snippet placeholder, кешированные complete images и source probe; старые invalid/load callbacks не меняют новый src. Fallback сохраняет исходный error status. Native button вместо div role=button; preview DOM ленивый и сохраняется после закрытия."
         },
@@ -3134,8 +2937,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/image-preview.engine.test.ts",
-            "e2e/image.spec.ts"
+            "src/lib/image-preview.engine.test.ts",
+            "integration:image/transforms"
           ],
           "note": "Исходные minScale=1/maxScale=50/scaleStep=0.5, pointer-centered zoom, wheel ratio cap, transform/action callbacks с RAF queue. Mouse rebound сохраняет source AND-проверку двух координат; touch underscale восстанавливается на отпускании. Pointer capture заменяет mouse/touch window listeners. ActionsRender/imageRender — Svelte Snippet с original и info/actions; React node icon wrappers отдельно."
         },
@@ -3145,8 +2948,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/image.ssr.test.ts",
-            "e2e/image.spec.ts"
+            "integration:image/contexts-popup"
           ],
           "note": "Native dialog и focusTrap true/false, возврат фокуса, Escape/mask.closable, совместимость с Modal. Image не наследует control disabled, как Ant wrapper. RU/EN accessible preview name и close label; 48 CSS-правил, official icons и reduced motion. Native visibility callbacks выполняются без ожидания отсутствующей rc-motion fade-анимации; frames/probes/listeners/layers очищаются."
         },
@@ -3156,9 +2958,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/image-preview-group.engine.test.ts",
-            "src/lib/components/ant-design/image-preview-group.ssr.test.ts",
-            "e2e/image-preview-group.spec.ts"
+            "src/lib/image-preview-group.engine.test.ts",
+            "integration:image/preview-group"
           ],
           "note": "Stable registration order, canPreview filtering и отдельные ids для равных src. Явные items (включая []) имеют приоритет и сопоставляются по src. Current/open controlled/uncontrolled, prev/next/physical arrows, one-based countRender и source callbacks. Thumbnail не вызывает onChange; onOpenChange при thumbnail opening получает snapshot прежнего current. Owner current не clamp при удалении items; group preview=false снимает config, но сохраняет source child-triggered opening. Навигация сбрасывает transform без перехода; внешняя смена current сохраняет его."
         },
@@ -3185,7 +2986,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -3211,7 +3011,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -3247,12 +3046,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "popover"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/popover.spec.ts"
+        "readme.md",
+        "integration:popover"
       ],
       "features": [
         {
@@ -3277,8 +3073,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:popover/compact-isolation"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -3297,7 +3092,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -3339,15 +3133,12 @@
       ],
       "priority": "p2",
       "effort": "M",
-      "fixtures": [
-        "segmented"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Segmented.svelte",
-        "src/lib/components/ant-design/segmented.types.ts",
-        "src/lib/components/ant-design/segmented.engine.ts",
-        "src/lib/components/ant-design/readme.md",
-        "src/lib/presentation/ant-design/SegmentedExample.svelte"
+        "src/lib/Segmented.svelte",
+        "src/lib/segmented.types.ts",
+        "src/lib/segmented.engine.ts",
+        "readme.md",
+        "integration:segmented"
       ],
       "features": [
         {
@@ -3356,9 +3147,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/segmented.engine.test.ts",
-            "src/lib/components/ant-design/segmented.ssr.test.ts",
-            "e2e/segmented.spec.ts"
+            "src/lib/segmented.engine.test.ts",
+            "src/lib/segmented.ssr.test.ts",
+            "integration:segmented/selection"
           ],
           "note": "Начальное значение — первый option, включая disabled; удалённый/отсутствующий value не исправляется. Native radio без value сохраняет FormData=on, как rc-segmented 1.4.0. ConfigProvider.componentDisabled не применяется, как в upstream."
         },
@@ -3368,9 +3159,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/segmented.ssr.test.ts",
-            "e2e/segmented.spec.ts",
-            "tools/ant-design-css-recipes.json"
+            "src/lib/segmented.ssr.test.ts",
+            "tools/ant-design-css-recipes.json",
+            "integration:segmented/layout"
           ],
           "note": "Реактивные размеры/темы/RTL; стили слотами root/item/label/icon передаются CSS-строками."
         },
@@ -3380,9 +3171,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/segmented.engine.test.ts",
-            "src/lib/components/ant-design/segmented.ssr.test.ts",
-            "e2e/segmented.spec.ts"
+            "src/lib/segmented.engine.test.ts",
+            "src/lib/segmented.ssr.test.ts",
+            "integration:segmented/keyboard"
           ],
           "note": "Циклические стрелки в порядке options; native reset не меняет модель выбора, DOM синхронизируется с ней без onChange."
         },
@@ -3392,8 +3183,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/segmented.dom.ts",
-            "e2e/segmented.spec.ts"
+            "src/lib/segmented.dom.ts",
+            "integration:segmented/thumb"
           ],
           "note": "Thumb с геометрией текущих labels, Web Animations API и штатными duration/easing. Повторная смена отменяет прошлый запуск; ResizeObserver и reduced motion завершают движение; SSR не создаёт DOM/observer/animation."
         },
@@ -3403,8 +3194,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/segmented.ssr.test.ts",
-            "e2e/segmented.spec.ts"
+            "src/lib/segmented.ssr.test.ts",
+            "integration:segmented/tooltip"
           ],
           "note": "Строка либо локальные TooltipProps; существующий Tooltip использует span с display:contents и native popover. Проверяются block, disabled option, клавиатура и измерения thumb."
         },
@@ -3459,16 +3250,12 @@
       ],
       "priority": "p2",
       "effort": "M",
-      "fixtures": [
-        "statistic",
-        "statistic-timer"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Statistic.svelte",
-        "src/lib/components/ant-design/statistic.types.ts",
-        "src/lib/components/ant-design/statistic.engine.ts",
-        "src/lib/components/ant-design/readme.md",
-        "src/lib/presentation/ant-design/StatisticExample.svelte"
+        "src/lib/Statistic.svelte",
+        "src/lib/statistic.types.ts",
+        "src/lib/statistic.engine.ts",
+        "readme.md",
+        "integration:statistic"
       ],
       "features": [
         {
@@ -3477,9 +3264,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/statistic.engine.test.ts",
-            "src/lib/components/ant-design/statistic.ssr.test.ts",
-            "e2e/statistic.spec.ts"
+            "src/lib/statistic.engine.test.ts",
+            "src/lib/statistic.ssr.test.ts",
+            "integration:statistic/number"
           ],
           "note": "Форматирование строк повторяет Number.tsx эталона; научная нотация и другие неподдержанные строки сохраняются как текст."
         },
@@ -3489,8 +3276,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/statistic.ssr.test.ts",
-            "e2e/statistic.spec.ts"
+            "src/lib/statistic.ssr.test.ts",
+            "integration:statistic/content"
           ],
           "note": "ReactNode заменён string/number/Snippet; valueRender — Snippet<[Snippet]>; styles и valueStyle — CSS-строки. Пустой Snippet считается присутствующим содержимым."
         },
@@ -3500,9 +3287,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/statistic.ssr.test.ts",
-            "e2e/statistic.spec.ts",
-            "tools/ant-design-css-recipes.json"
+            "src/lib/statistic.ssr.test.ts",
+            "tools/ant-design-css-recipes.json",
+            "integration:statistic/loading"
           ],
           "note": "Заголовок сохраняется; значение при loading не монтируется. Используется существующий доступный Svelte Skeleton с его служебными обёртками и локализованным статусом."
         },
@@ -3512,9 +3299,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/statistic-timer.test.ts",
-            "src/lib/components/ant-design/statistic-timer.ssr.test.ts",
-            "e2e/statistic-timer.spec.ts"
+            "src/lib/statistic-timer.test.ts",
+            "src/lib/statistic-timer.ssr.test.ts",
+            "integration:statistic/timer"
           ],
           "note": "Отдельные Svelte-экспорты StatisticTimer/StatisticCountdown. SSR выводит -, время форматируется фиксированными единицами эталона; onChange получает знаковый остаток, onFinish только после deadline. При отсутствующем value отображение использует default=0 из Statistic, callbacks — исходную цель и NaN. React deprecation console warning Countdown не воспроизводится."
         },
@@ -3550,20 +3337,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "table",
-        "table-filters",
-        "table-server",
-        "table-fixed",
-        "table-expandable"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/table.spec.ts",
-        "e2e/table-filter.spec.ts",
-        "e2e/server-table.spec.ts",
-        "e2e/fixed-table.spec.ts",
-        "e2e/expandable-table.spec.ts"
+        "readme.md",
+        "integration:table"
       ],
       "features": [
         {
@@ -3612,12 +3388,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "tag"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/tag.spec.ts"
+        "readme.md",
+        "integration:tag"
       ],
       "features": [
         {
@@ -3669,15 +3442,11 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "timeline"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Timeline.svelte",
-        "src/lib/components/ant-design/timeline.engine.test.ts",
-        "src/lib/components/ant-design/timeline.ssr.test.ts",
-        "e2e/timeline.spec.ts",
-        "src/lib/presentation/ant-design/TimelineExample.svelte"
+        "src/lib/Timeline.svelte",
+        "src/lib/timeline.engine.test.ts",
+        "src/lib/timeline.ssr.test.ts",
+        "integration:timeline"
       ],
       "features": [
         {
@@ -3686,9 +3455,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/timeline.engine.test.ts",
-            "src/lib/components/ant-design/timeline.ssr.test.ts",
-            "e2e/timeline.spec.ts"
+            "src/lib/timeline.engine.test.ts",
+            "src/lib/timeline.ssr.test.ts",
+            "integration:timeline/core-v1"
           ],
           "note": "Nullish legacy aliases, truthy pending, alternate before reverse, railFollowPrevStatus. React Timeline.Item был JSX sugar без собственного runtime; используется items."
         },
@@ -3698,8 +3467,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/timeline.ssr.test.ts",
-            "e2e/timeline.spec.ts"
+            "src/lib/timeline.ssr.test.ts",
+            "integration:timeline/presentation"
           ],
           "note": "Все 43 CSS-правила поверх Steps dot, source priority titleSpan, темы/RTL. Horizontal сохраняет исходное responsive xs=576 поведение."
         },
@@ -3709,8 +3478,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/timeline.ssr.test.ts",
-            "e2e/timeline.spec.ts"
+            "src/lib/timeline.ssr.test.ts",
+            "integration:timeline/ssr-native"
           ],
           "note": "Ol/li без искусственного current/status; блоковые title/content Snippets, фокус поля при reverse и owned-focus recovery при удалении."
         },
@@ -3747,12 +3516,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "tooltip"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/tooltip.spec.ts"
+        "readme.md",
+        "integration:tooltip"
       ],
       "features": [
         {
@@ -3777,8 +3543,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:tooltip/compact-isolation"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         },
@@ -3788,8 +3553,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/steps-expanded.ssr.test.ts",
-            "e2e/steps-variants.spec.ts"
+            "src/lib/steps-expanded.ssr.test.ts",
+            "integration:tooltip/rich-title"
           ],
           "note": "Пассивный rich content; существующие строки/числа/пустые title и Compact isolation сохранены. Основной подробный аудит Tooltip остаётся отдельным."
         }
@@ -3808,7 +3573,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -3855,16 +3619,11 @@
       ],
       "priority": "p1",
       "effort": "L",
-      "fixtures": [
-        "tree"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Tree.svelte",
-        "src/lib/components/ant-design/tree.engine.test.ts",
-        "src/lib/components/ant-design/tree-load.engine.test.ts",
-        "src/lib/components/ant-design/tree.ssr.test.ts",
-        "e2e/tree.spec.ts",
-        "src/lib/presentation/ant-design/TreeExample.svelte"
+        "src/lib/Tree.svelte",
+        "src/lib/tree.engine.test.ts",
+        "src/lib/tree-load.engine.test.ts",
+        "integration:tree"
       ],
       "features": [
         {
@@ -3873,9 +3632,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/tree.engine.test.ts",
-            "src/lib/components/ant-design/tree.ssr.test.ts",
-            "e2e/tree.spec.ts"
+            "src/lib/tree.engine.test.ts",
+            "integration:tree/core-v1"
           ],
           "note": "Stable key, независимые selection/check, multiple, checkStrictly, halfChecked, disabled/disableCheckbox/checkable границы, defaultExpandParent/All и autoExpandParent. Исходный conduct fill/clean и события с исходными узлами/позициями. Дети, добавленные в отмеченного родителя, учитываются повторной conduction."
         },
@@ -3885,9 +3643,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/tree-load.engine.test.ts",
-            "src/lib/components/ant-design/tree.ssr.test.ts",
-            "e2e/tree.spec.ts"
+            "src/lib/tree-load.engine.test.ts",
+            "integration:tree/async"
           ],
           "note": "Загрузка при раскрытии/начальном expanded; дедупликация pending, loadedKeys/onLoad, дети принадлежат потребителю. Rejection снимает loading и сворачивает uncontrolled ветку без отдельного onError; повтор до исходного лимита 10. После unmount результаты игнорируются."
         },
@@ -3897,8 +3654,7 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/tree.ssr.test.ts",
-            "e2e/tree.spec.ts"
+            "integration:tree/keyboard"
           ],
           "note": "Один tree tab stop и aria-activedescendant, логические level/pos/setsize, Up/Down/Home/End, physical Left/Right даже в RTL, Enter/Space. Disabled не исключает строки из навигации и сохраняет pointer expansion switcher. Native buttons вместо React span handlers; showLine/icons/titleRender/filterTreeNode, 98 CSS-правил без TreeSelect/collapse motion."
         },
@@ -3942,12 +3698,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "alert"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/alert.spec.ts"
+        "readme.md",
+        "integration:alert"
       ],
       "features": [
         {
@@ -3983,12 +3736,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "drawer"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/drawer.spec.ts"
+        "readme.md",
+        "integration:drawer"
       ],
       "features": [
         {
@@ -4013,8 +3763,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:drawer/compact-isolation"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -4043,12 +3792,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "message"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/message.spec.ts"
+        "readme.md",
+        "integration:message"
       ],
       "features": [
         {
@@ -4084,12 +3830,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "modal"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/modal.spec.ts"
+        "readme.md",
+        "integration:modal"
       ],
       "features": [
         {
@@ -4106,8 +3849,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/space-compact.ssr.test.ts",
-            "e2e/space-compact.spec.ts"
+            "integration:modal/compact-isolation"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -4136,12 +3878,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "notification"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/notification.spec.ts"
+        "readme.md",
+        "integration:notification"
       ],
       "features": [
         {
@@ -4177,12 +3916,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "popconfirm"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/popconfirm.spec.ts"
+        "readme.md",
+        "integration:popconfirm"
       ],
       "features": [
         {
@@ -4225,12 +3961,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "progress"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/progress.spec.ts"
+        "readme.md",
+        "integration:progress"
       ],
       "features": [
         {
@@ -4273,12 +4006,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "result"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/result.spec.ts"
+        "readme.md",
+        "integration:result"
       ],
       "features": [
         {
@@ -4313,12 +4043,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "skeleton"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/skeleton.spec.ts"
+        "readme.md",
+        "integration:skeleton"
       ],
       "features": [
         {
@@ -4361,12 +4088,9 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "spin"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md",
-        "e2e/spin.spec.ts"
+        "readme.md",
+        "integration:spin"
       ],
       "features": [
         {
@@ -4400,7 +4124,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -4446,16 +4169,12 @@
       ],
       "priority": "p1",
       "effort": "M",
-      "fixtures": [
-        "affix"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/Affix.svelte",
-        "src/lib/components/ant-design/affix.engine.test.ts",
-        "src/lib/components/ant-design/affix.dom.test.ts",
-        "src/lib/components/ant-design/affix.ssr.test.ts",
-        "e2e/affix.spec.ts",
-        "src/lib/presentation/ant-design/AffixExample.svelte"
+        "src/lib/Affix.svelte",
+        "src/lib/affix.engine.test.ts",
+        "src/lib/affix.dom.test.ts",
+        "src/lib/affix.ssr.test.ts",
+        "integration:affix"
       ],
       "features": [
         {
@@ -4464,9 +4183,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/affix.engine.test.ts",
-            "src/lib/components/ant-design/affix.dom.test.ts",
-            "e2e/affix.spec.ts"
+            "src/lib/affix.engine.test.ts",
+            "src/lib/affix.dom.test.ts",
+            "integration:affix/core-v1"
           ],
           "note": "Сохранены rounding, top priority, null/hidden target и отсутствие горизонтальной компенсации upstream; updatePosition.cancel отменяет отдельную force-очередь."
         },
@@ -4476,9 +4195,9 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "src/lib/components/ant-design/affix.ssr.test.ts",
-            "src/lib/components/ant-design/affix.dom.test.ts",
-            "e2e/affix.spec.ts"
+            "src/lib/affix.ssr.test.ts",
+            "src/lib/affix.dom.test.ts",
+            "integration:affix/ssr-native"
           ],
           "note": "SSR без чтения target и закрепления; один контентный узел без клонирования controls, placeholder только в fixed-состоянии."
         },
@@ -4505,7 +4224,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -4531,7 +4249,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {
@@ -4564,11 +4281,8 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [
-        "theme"
-      ],
       "evidence": [
-        "src/lib/components/ant-design/readme.md"
+        "readme.md"
       ],
       "features": [
         {
@@ -4593,8 +4307,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/theme.css",
-            "e2e/theme.spec.ts"
+            "src/lib/theme.css",
+            "integration:config-provider/compact-spacing"
           ],
           "note": "Закреплённые default/compact size maps, локальное разрешение aliases во вложенных provider, explicit compact=false и inline token override. Полный token engine и остальные compact-map tokens ещё требуют аудита."
         },
@@ -4604,8 +4318,7 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "src/lib/components/ant-design/button.ssr.test.ts",
-            "e2e/button.spec.ts"
+            "integration:config-provider/button-config"
           ],
           "note": "Color/variant/shape, loadingIcon, autoInsertSpace и class/style/semantic slots. Omitted наследует, явный объект заменяет целиком как upstream; общий аудит ConfigProvider продолжается."
         }
@@ -4624,7 +4337,6 @@
       "upstreamPackages": [],
       "priority": "unassigned",
       "effort": "unknown",
-      "fixtures": [],
       "evidence": [],
       "features": [
         {

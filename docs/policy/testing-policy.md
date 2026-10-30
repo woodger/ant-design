@@ -15,19 +15,18 @@
 
 ## Текущий test contour
 
-`npm test` запускает Vitest:
+`npm test` запускает Vitest из корня этого репозитория:
 
 - environment: `node`;
-- include: `src/**/*.{test,spec}.{js,ts}` и `tools/**/*.{test,spec}.mjs` для
-  проверок инструментов реестра и извлечения CSS;
+- include: `src/**/*.{test,spec}.{js,ts}` и `tools/**/*.{test,spec}.mjs`;
 - assertions обязательны через `expect.requireAssertions`;
 - реальная сеть и внешняя infrastructure не используются.
 
-`npm run test:e2e` запускает отдельный Playwright Chromium contour из `e2e`.
-Конфигурация принадлежит `playwright.config.ts`; тесты используют свежую
-production-сборку приложения и локальный Vite-стенд компонентов. Внешние
-сервисы не используются. Типы тестов и стенда проверяются через
-`svelte-check --tsconfig ./e2e/tsconfig.json --tsgo`.
+`npm run check` проверяет типы и Svelte-шаблоны без SvelteKit. Браузерные
+интеграционные проверки принадлежат приложениям-потребителям. Ссылки `integration:`
+в реестре являются контрактами этих проверок; локальный check не подтверждает
+их файлы или выполнение тестов. Проверка потребителя использует метаданные
+npm-пакета, а не прямой доступ к этому checkout.
 
 Успешный `npm test` не подтверждает реальный DOM, focus behavior, hydration,
 responsive layout, Canvas browser integration или production deployment.
