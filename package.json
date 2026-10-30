@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Ant Design components for Svelte 5 with TypeScript and API compatibility",
+  "homepage": "https://woodger.org/ant-design",
   "keywords": [
     "antd",
     "ant-design",
