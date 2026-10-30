@@ -62,6 +62,8 @@
         "src/lib/Button.svelte",
         "src/lib/ButtonGroup.svelte",
         "src/lib/button.engine.test.ts",
+        "tests/package/button.ssr.test.ts",
+        "tests/browser/button.spec.ts",
         "integration:button"
       ],
       "features": [
@@ -72,7 +74,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/button.engine.test.ts",
-            "integration:button/core-v1"
+            "tests/package/button.ssr.test.ts",
+            "tests/browser/button.spec.ts"
           ],
           "note": "Сохранён type=link как action без href и native disabled loading v1; href создаёт a с guard и исходными disabled tabIndex/href. Href выводит anchor-тип callback, прежний ButtonProps остаётся native."
         },
@@ -83,7 +86,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/button.engine.test.ts",
-            "integration:button/source-api"
+            "tests/package/button.ssr.test.ts",
+            "tests/browser/button.spec.ts"
           ],
           "note": "Исходный приоритет полных/неполных color+variant, локальных/context semantic слоёв; Group size ниже Compact/explicit. Вложенный явно заданный config заменяет родительский целиком."
         },
@@ -93,7 +97,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:button/compact-context"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Нативная структура и существующая геометрия Compact сохранены."
         },
@@ -104,7 +109,8 @@
           "requiredForV1": false,
           "evidence": [
             "src/lib/button.engine.test.ts",
-            "integration:button/cjk-snippet"
+            "tests/package/button.ssr.test.ts",
+            "tests/browser/button.spec.ts"
           ],
           "note": "Scalar children воспроизводит SSR-пробел. Opaque Snippet использует проверку single rendered node и HOC CSS-spacing после hydration; его textContent не переписывается, SSR не анализирует Snippet."
         },
@@ -179,6 +185,8 @@
         "src/lib/FloatButtonBackTop.svelte",
         "src/lib/float-button.engine.test.ts",
         "src/lib/float-button-back-top.dom.test.ts",
+        "tests/package/float-button.ssr.test.ts",
+        "tests/browser/float-button.spec.ts",
         "integration:float-button"
       ],
       "features": [
@@ -188,7 +196,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:float-button/core-v1"
+            "tests/package/float-button.ssr.test.ts",
+            "tests/browser/float-button.spec.ts"
           ],
           "note": "Сохранены renderable zero, shape/type, native forms/disabled, приоритет стилей. Snippet заменяет ReactNode; используются существующие Svelte Button/Badge/Tooltip контракты."
         },
@@ -199,7 +208,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/FloatButtonGroup.svelte",
-            "integration:float-button/group"
+            "tests/browser/float-button.spec.ts"
           ],
           "note": "Owner rejection сохраняется; disabled блокирует открытие, не children. Structured items дают отдельные Compact slots; opaque children используют CSS siblings для геометрии краёв без точного воспроизведения Compact edge classes."
         },
@@ -210,7 +219,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/float-button-back-top.dom.test.ts",
-            "integration:float-button/back-top"
+            "tests/browser/float-button.spec.ts"
           ],
           "note": "Window/Document/Element, visibilityHeight=400 и duration=450; resize обновляет progress. Reduced motion и отмена собственных RAF при unmount — адаптации проекта."
         },
@@ -221,7 +230,7 @@
           "requiredForV1": true,
           "evidence": [
             "tools/ant-design-css-recipes.json",
-            "integration:float-button/styles-config"
+            "tests/browser/float-button.spec.ts"
           ],
           "note": "42 правила; global fade заменён scoped WAAPI с исходными длительностями. Config floatButton.backTopIcon и floatButtonGroup closeIcon/class/style/slots. Как source FloatButton, глобальные floatButton class/style/slots не потребляются."
         },
@@ -327,7 +336,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/divider.ssr.test.ts",
-            "integration:divider/layout"
+            "tests/browser/divider.spec.ts"
           ],
           "note": "Приоритет orientation → vertical → type; left/right физические, start/end логические."
         },
@@ -338,7 +347,7 @@
           "requiredForV1": true,
           "evidence": [
             "tools/ant-design-css-recipes.json",
-            "integration:divider/appearance"
+            "tests/browser/divider.spec.ts"
           ],
           "note": "Без явного size/componentSize сохраняются стандартные отступы 24px без подписи и 16px с подписью; явно заданный размер наследуется через вложенные ConfigProvider. ClassNames/styles поддерживают объект и callback; CSS-стили передаются строками по соглашению Svelte-библиотеки."
         },
@@ -349,7 +358,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/divider.ssr.test.ts",
-            "integration:divider/rendering"
+            "tests/browser/divider.spec.ts"
           ],
           "note": "0 сохраняется, пустые scalar children не создают подпись; переданный пустой Snippet считается наличием подписи без попытки вызвать его для проверки."
         },
@@ -405,7 +414,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/flex.ssr.test.ts",
-            "integration:flex/layout"
+            "tests/browser/flex.spec.ts"
           ],
           "note": "Orientation имеет приоритет; vertical по умолчанию использует stretch; DOM-порядок и нативный Tab сохраняются."
         },
@@ -417,7 +426,7 @@
           "evidence": [
             "src/lib/flex.ssr.test.ts",
             "tools/ant-design-css-recipes.json",
-            "integration:flex/spacing"
+            "tests/browser/flex.spec.ts"
           ],
           "note": "Small/medium/middle/large; числовые интервалы в px; нулевые значения сохраняются. Числовой/CSS gap и flex имеют приоритет над style; preset gap задаёт класс, который уступает inline style."
         },
@@ -428,7 +437,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/flex.ssr.test.ts",
-            "integration:flex/native-root"
+            "tests/browser/flex.spec.ts"
           ],
           "note": "Нативные HTML-теги, атрибуты и события; :empty скрывается как в upstream; reset типографики не добавляется."
         },
@@ -507,7 +516,7 @@
           "evidence": [
             "src/lib/grid.engine.test.ts",
             "src/lib/grid.ssr.test.ts",
-            "integration:grid/layout"
+            "tests/browser/grid.spec.ts"
           ],
           "note": "Числовой/CSS gutter, логические отступы, wrap=false, flex=0 и span=0; style сохраняет upstream-приоритет."
         },
@@ -519,7 +528,7 @@
           "evidence": [
             "src/lib/grid.engine.test.ts",
             "tools/ant-design-css-recipes.json",
-            "integration:grid/responsive"
+            "tests/browser/grid.spec.ts"
           ],
           "note": "Семь штатных breakpoints, включая xxxl=1920. CSS Col xs действует как default; Row xs-map совпадает только при ширине <576."
         },
@@ -531,7 +540,7 @@
           "evidence": [
             "src/lib/grid-breakpoint.test.ts",
             "src/lib/grid.ssr.test.ts",
-            "integration:grid/breakpoint"
+            "tests/browser/grid.spec.ts"
           ],
           "note": "CreateBreakpoint — Svelte-модель с screens и connect(window), возвращающим cleanup. SSR screens={}; внутренний Row до подключения использует null, как upstream."
         },
@@ -613,7 +622,7 @@
           "evidence": [
             "src/lib/layout.test.ts",
             "src/lib/layout.ssr.test.ts",
-            "integration:layout/structure"
+            "tests/browser/layout.spec.ts"
           ],
           "note": "Нативные div/header/main/footer/aside. Явный hasSider сохраняет SSR-класс; для непрозрачного Snippet автоматический SSR-layout определяется :has, client registration добавляет класс после mount."
         },
@@ -624,7 +633,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/layout.ssr.test.ts",
-            "integration:layout/sider"
+            "tests/browser/layout.spec.ts"
           ],
           "note": "Trigger — нативная кнопка; trigger Snippet содержит пассивное содержимое, trigger=null позволяет собственный внешний control. Нулевая ширина делает children inert с переносом фокуса; DOM и черновики сохраняются."
         },
@@ -635,7 +644,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/layout.test.ts",
-            "integration:layout/responsive"
+            "tests/browser/layout.spec.ts"
           ],
           "note": "Сохранён dimensionMaxMap исходника: xxxl=1839.98px, хотя upstream docs указывают 1920. OnBreakpoint вызывается при подписке; responsive collapse не блокирует ручное раскрытие до следующего media change."
         },
@@ -647,7 +656,7 @@
           "evidence": [
             "src/lib/layout.ssr.test.ts",
             "tools/ant-design-css-recipes.json",
-            "integration:layout/appearance"
+            "tests/browser/layout.spec.ts"
           ],
           "note": "Строковые semantic styles root/body; locale.layout задаёт доступные имена trigger. Default sider theme=dark независим от общего режима."
         },
@@ -736,6 +745,7 @@
         "src/lib/space.test.ts",
         "src/lib/SpaceCompact.svelte",
         "src/lib/SpaceAddon.svelte",
+        "tests/browser/space.spec.ts",
         "integration:space"
       ],
       "features": [
@@ -746,7 +756,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/space.test.ts",
-            "integration:space/layout"
+            "tests/browser/space.spec.ts"
           ],
           "note": "Default small независимо от componentSize; styles/root style перекрывают числовой gap, horizontal align=center. Без typography reset; compact spacing следует общей size map."
         },
@@ -757,7 +767,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/space.test.ts",
-            "integration:space/content"
+            "tests/browser/space.spec.ts"
           ],
           "note": "Items — Svelte-массив text/Snippet либо {key,children}; children Snippet представляет одну группу. React.Children boolean→null сохранён; пустой Snippet имеет скрытый wrapper. Separator=0 falsy, не создаёт span."
         },
@@ -768,7 +778,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/space-compact.engine.test.ts",
-            "integration:space/compact"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Items/Snippet, размеры и крайние элементы, вложенность, block/vertical/RTL. Подключены существующие Button/Input/InputNumber/Select; Popup content изолирован. Внешний container Select сохранён."
         },
@@ -778,7 +789,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:space/addon"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Outlined/filled/borderless/underlined, error/warning, explicit disabled appearance и compact size; disabled не отключает children и не наследуется автоматически."
         },
@@ -871,6 +883,7 @@
         "src/lib/anchor.engine.test.ts",
         "src/lib/anchor.dom.test.ts",
         "src/lib/anchor.ssr.test.ts",
+        "tests/browser/anchor.spec.ts",
         "integration:anchor"
       ],
       "features": [
@@ -882,7 +895,7 @@
           "evidence": [
             "src/lib/anchor.engine.test.ts",
             "src/lib/anchor.dom.test.ts",
-            "integration:anchor/core-v1"
+            "tests/browser/anchor.spec.ts"
           ],
           "note": "Нативные ссылки, raw fragment regexp, 450ms cubic scroll, offset приоритеты, mapped highlight с raw callbacks и отмена анимации. Horizontal скрывает вложенность."
         },
@@ -893,7 +906,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/anchor.ssr.test.ts",
-            "integration:anchor/presentation"
+            "tests/browser/anchor.spec.ts"
           ],
           "note": "Affix включён по умолчанию; стили root уступают style. Indicator использует offset/client geometry и делегированный compute-scroll-into-view 3.0.2 под MIT."
         },
@@ -945,6 +958,7 @@
         "src/lib/Breadcrumb.svelte",
         "src/lib/breadcrumb.test.ts",
         "src/lib/breadcrumb.ssr.test.ts",
+        "tests/browser/breadcrumb.spec.ts",
         "integration:breadcrumb"
       ],
       "features": [
@@ -956,7 +970,7 @@
           "evidence": [
             "src/lib/breadcrumb.test.ts",
             "src/lib/breadcrumb.ssr.test.ts",
-            "integration:breadcrumb/routes"
+            "tests/browser/breadcrumb.spec.ts"
           ],
           "note": "Сохраняет пустые сегменты, отсутствие URL encoding, однократную подстановку каждого path-param и глобальную подстановку title с исходным falsy fallback. Нативные nav/ol/li/a."
         },
@@ -967,7 +981,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/breadcrumb.ssr.test.ts",
-            "integration:breadcrumb/rendering"
+            "tests/browser/breadcrumb.spec.ts"
           ],
           "note": "React children sugar заменён items. ItemRender — Svelte Snippet с route/params/routes/paths; непрозрачный пустой Snippet сохраняет li. Item.style не применяется в исходнике 6.6.8; styles.item используется на li."
         },
@@ -979,7 +993,8 @@
           "evidence": [
             "src/lib/breadcrumb.ssr.test.ts",
             "src/lib/dropdown.ssr.test.ts",
-            "integration:breadcrumb/menu"
+            "tests/browser/breadcrumb.spec.ts",
+            "tests/browser/dropdown.spec.ts"
           ],
           "note": "Dropdown получает нативный href/target/rel вместо вложенного interactive label. Нативные кнопки вместо clickable span без href. Поддержан текущий Svelte Dropdown; произвольный React Menu API остаётся в полном объёме."
         },
@@ -1018,7 +1033,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:dropdown"
+        "tests/browser/dropdown.spec.ts"
       ],
       "features": [
         {
@@ -1044,7 +1059,8 @@
           "requiredForV1": false,
           "evidence": [
             "src/lib/dropdown.ssr.test.ts",
-            "integration:dropdown/native-links"
+            "tests/browser/breadcrumb.spec.ts",
+            "tests/browser/dropdown.spec.ts"
           ],
           "note": "Существующие commands сохраняют button; links используют a role=menuitem с Enter/Space и disabled без href. Основной подробный аудит Dropdown ещё не завершён."
         },
@@ -1054,7 +1070,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:dropdown/compact-isolation"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -1092,6 +1109,8 @@
       "evidence": [
         "src/lib/Menu.svelte",
         "src/lib/menu.engine.test.ts",
+        "tests/package/menu.ssr.test.ts",
+        "tests/browser/menu.spec.ts",
         "integration:menu"
       ],
       "features": [
@@ -1102,7 +1121,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/menu.engine.test.ts",
-            "integration:menu/core-v1"
+            "tests/package/menu.ssr.test.ts",
+            "tests/browser/menu.spec.ts"
           ],
           "note": "Single/multiple/selectable, selectedKeys/defaultSelectedKeys, item/parent/root onClick и onSelect/onDeselect. KeyPath идёт от листа к корню без групп; itemData сохраняет исходный numeric key. Повторный single click сохраняет выбранный key и вызывает onDeselect, как rc-menu 1.5.0. String/number/Snippet labels/extra, icons, danger и disabled. Native link Enter активирует callback один раз через native click; legacy React instance info.item не переносится."
         },
@@ -1113,7 +1133,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/Menu.svelte",
-            "integration:menu/modes-popup"
+            "tests/browser/menu.spec.ts"
           ],
           "note": "Controlled/default openKeys, задержки по runtime rc-menu (open/close 0.1 s), ленивый popup и forceSubMenuRender. Native popover с outside/Escape, RTL и верхним выравниванием боковых подменю. Inline сохраняет descendant keys при закрытии, popup удаляет их. InlineCollapsed/Sider переводит меню в vertical и кэширует uncontrolled inline keys; controlled ключи остаются у владельца. Collapsed labels имеют native title вместо исходного Tooltip."
         },
@@ -1123,7 +1143,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:menu/keyboard-contexts"
+            "tests/package/menu.ssr.test.ts",
+            "tests/browser/menu.spec.ts"
           ],
           "note": "Стрелки по режиму/уровню, Home/End, Enter, возврат Escape к родителю popup; disabled пропускается. Заголовки — native button с role=menuitem, Space не раскрывает их, как upstream. Focus предпочитает a[href]; nativeElement/focus/findItem. Light/dark menu theme независимо от алгоритма страницы, primary/compact/RTL, 201 CSS-правило. Menu не наследует Form.disabled/ConfigProvider.componentDisabled, как Ant wrapper."
         },
@@ -1169,7 +1190,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:pagination"
+        "tests/browser/checkbox-pagination.spec.ts"
       ],
       "features": [
         {
@@ -1236,6 +1257,8 @@
         "src/lib/steps-data.engine.test.ts",
         "src/lib/steps-display.engine.test.ts",
         "src/lib/steps-expanded.ssr.test.ts",
+        "tests/browser/steps.spec.ts",
+        "tests/browser/steps-variants.spec.ts",
         "integration:steps"
       ],
       "features": [
@@ -1247,7 +1270,7 @@
           "evidence": [
             "src/lib/steps.engine.test.ts",
             "src/lib/steps.ssr.test.ts",
-            "integration:steps/core-v1"
+            "tests/browser/steps.spec.ts"
           ],
           "note": "Сохранён существующий ol/li/button v1, first-wins string keys, clamp current, responsive 532px и componentDisabled; это согласованные адаптации к Svelte."
         },
@@ -1259,7 +1282,7 @@
           "evidence": [
             "src/lib/steps-data.engine.test.ts",
             "src/lib/steps-expanded.ssr.test.ts",
-            "integration:steps/variants"
+            "tests/browser/steps-variants.spec.ts"
           ],
           "note": "Native item buttons, rich inline Tooltip, root/item styles, iconRender/progressDot через Snippet и components.Icon. Title/content принимают также число/boolean. Navigation arrow наследует colorTextDisabled активной темы с сохранением inline override."
         },
@@ -1271,7 +1294,7 @@
           "evidence": [
             "src/lib/steps-display.engine.test.ts",
             "src/lib/steps-expanded.ssr.test.ts",
-            "integration:steps/collapsed-progress"
+            "tests/browser/steps-variants.spec.ts"
           ],
           "note": "MaxCount считает реальные шаги, исключая ellipses; номера и callbacks относятся к исходному индексу. Percent подавлен для inline."
         },
@@ -1315,7 +1338,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:tabs"
+        "tests/browser/tabs.spec.ts"
       ],
       "features": [
         {
@@ -1341,7 +1364,8 @@
           "requiredForV1": false,
           "evidence": [
             "src/lib/card.test.ts",
-            "integration:tabs/bar-extra"
+            "tests/browser/card.spec.ts",
+            "tests/browser/tabs.spec.ts"
           ],
           "note": "Слоты остаются вне tablist; truthiness extras соответствует @rc-component/tabs 1.13.0. Основной подробный аудит Tabs ещё не завершён."
         }
@@ -1381,6 +1405,8 @@
       "evidence": [
         "src/lib/AutoComplete.svelte",
         "src/lib/auto-complete.engine.test.ts",
+        "tests/package/auto-complete.ssr.test.ts",
+        "tests/browser/auto-complete.spec.ts",
         "integration:auto-complete"
       ],
       "features": [
@@ -1391,7 +1417,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/auto-complete.engine.test.ts",
-            "integration:auto-complete/core-v1"
+            "tests/browser/auto-complete.spec.ts"
           ],
           "note": "String value/defaultValue, controlled/default open, groups и rich Snippet labels. Filter по умолчанию false, true фильтрует value без trim/accent folding; group match сохраняет всех детей. OnChange(value,option), onSearch только search-путь, onSelect только выбор. Clear сохраняет последовательность rc-select: onClear, change(undefined), затем change('')/search('') для непустого текста."
         },
@@ -1401,7 +1427,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:auto-complete/keyboard-input"
+            "tests/package/auto-complete.ssr.test.ts",
+            "tests/browser/auto-complete.spec.ts"
           ],
           "note": "Combobox с произвольным текстом, disabled/group skip, ArrowUp/Down, Enter/Tab выбор, Escape; IME Enter не выбирает. Backfill меняет preview без change/search. DefaultActiveFirstOption=false по runtime rc-select, prefix match активируется отдельно. Custom input задаётся children(control) Snippet с attributes/register; focus/blur/nativeElement/inputElement. Публичные режимы старого Select сохранены."
         },
@@ -1411,7 +1438,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:auto-complete/contexts-popup"
+            "tests/package/auto-complete.ssr.test.ts",
+            "tests/browser/auto-complete.spec.ts"
           ],
           "note": "Без options и notFoundContent popup скрыт даже при open=true; SSR всегда закрыт как rc-select useOpen. Native popover сохраняет фокус input, popupMatchSelectWidth/listHeight/onPopupScroll, outside/Escape и cleanup. Native FormData, FormItem/required/status/reset и disabled, размеры/variants, themes/RTL/Compact. CSS Select переиспользуется из vendor/antd.css, как upstream AutoComplete."
         },
@@ -1480,7 +1508,8 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:checkbox"
+        "tests/browser/checkbox-pagination.spec.ts",
+        "tests/browser/checkbox-group.spec.ts"
       ],
       "features": [
         {
@@ -1570,6 +1599,10 @@
         "src/lib/RangePicker.svelte",
         "src/lib/range-picker-interaction.engine.test.ts",
         "src/lib/range-picker.engine.test.ts",
+        "tests/package/date-picker.ssr.test.ts",
+        "tests/browser/date-picker.spec.ts",
+        "tests/package/range-picker.ssr.test.ts",
+        "tests/browser/range-picker.spec.ts",
         "integration:date-picker"
       ],
       "features": [
@@ -1580,7 +1613,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/date-picker.engine.test.ts",
-            "integration:date-picker/single"
+            "tests/package/date-picker.ssr.test.ts",
+            "tests/browser/date-picker.spec.ts"
           ],
           "note": "Dayjs|null, строгий формат/массив форматов, defaultValue, open, pickerValue, onChange(value,dateString), date/month/year/decade навигация панели, min/max/disabledDate, native name. Picker выбора только date; дополнительные picker modes отдельно."
         },
@@ -1591,7 +1625,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/date-picker.engine.test.ts",
-            "integration:date-picker/datetime"
+            "tests/browser/date-picker.spec.ts"
           ],
           "note": "Никакой принудительной UTC/ISO сериализации. Адаптер сохраняет режим входного Dayjs; parser локальный как rc-picker. Panel selection выравнивает скрытые units с default millisecondStep=100; явный step=1 и ввод SSS поддержаны. Date/time ограничения, Now, needConfirm и draft/cancel."
         },
@@ -1601,7 +1635,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:date-picker/keyboard"
+            "tests/package/date-picker.ssr.test.ts",
+            "tests/browser/date-picker.spec.ts"
           ],
           "note": "Native combobox/grid buttons и существующая popover surface вместо React portal/trigger. RU/EN, RTL/theme/Compact contexts. Native FormData содержит отображаемую строку, callback — Dayjs; Form хранит immutable Dayjs, валидирует null и восстанавливает объект при reset без изменения контракта DatePicker."
         },
@@ -1614,6 +1649,8 @@
             "src/lib/RangePicker.svelte",
             "src/lib/range-picker-interaction.engine.test.ts",
             "src/lib/range-picker.engine.test.ts",
+            "tests/package/range-picker.ssr.test.ts",
+            "tests/browser/range-picker.spec.ts",
             "integration:date-picker/range"
           ],
           "note": "Пара Dayjs|null; calendar/submit/committed состояния, исходная useRangeValueChange, order/allowEmpty/disabled, endpoint-only validation и from, confirm/Tab/Escape, контролируемые value/open, native FormData и Form tuples. При полной очистке onChange получает (null,null), как runtime rc-picker. Нет полной поддержки extended API семейства."
@@ -1668,7 +1705,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:form"
+        "tests/browser/form.spec.ts"
       ],
       "features": [
         {
@@ -1694,7 +1731,8 @@
           "requiredForV1": false,
           "evidence": [
             "src/lib/form.model.test.ts",
-            "integration:form/dayjs-values"
+            "tests/browser/date-picker.spec.ts",
+            "tests/browser/range-picker.spec.ts"
           ],
           "note": "DatePicker и RangePicker хранят объекты напрямую; required/null, submit и reset сохраняют класс/исходные даты, tuple копируется при snapshot. Остальной подробный аудит Form и generic object store ещё не завершён."
         }
@@ -1738,6 +1776,12 @@
       "evidence": [
         "readme.md",
         "src/lib/TextArea.svelte",
+        "tests/browser/input-select.spec.ts",
+        "tests/package/textarea.ssr.test.ts",
+        "tests/browser/textarea.spec.ts",
+        "tests/package/input-config.ssr.test.ts",
+        "tests/browser/input-features.spec.ts",
+        "tests/browser/textarea-features.spec.ts",
         "integration:input",
         "src/lib/Input.svelte",
         "src/lib/input.ssr.test.ts",
@@ -1762,7 +1806,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:input/compact-context"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         },
@@ -1772,7 +1817,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:input/textarea-native"
+            "tests/package/textarea.ssr.test.ts",
+            "tests/browser/textarea.spec.ts"
           ],
           "note": "Bind:value/defaultValue, native rows/maxlength/required/disabled/readonly/name и события, FormItem, native selection ref, onPressEnter с IME guard, sizes/Compact/RTL. Отдельный экспорт TextArea заменяет React Input.TextArea."
         },
@@ -1784,7 +1830,8 @@
           "evidence": [
             "src/lib/textarea.engine.test.ts",
             "src/lib/textarea.ssr.test.ts",
-            "integration:input/textarea-extended"
+            "tests/package/textarea.ssr.test.ts",
+            "tests/browser/textarea-features.spec.ts"
           ],
           "note": "AutoSize/row limits, счётчик с UTF-16 length по умолчанию и custom strategy, soft count.max и opt-in exceedFormatter с IME/selection; native clear button/callbacks, explicit/component variants, semantic slots и textArea config. Сохранены bind:value/string, onValueChange/oninput и nativeElement=textarea; rootElement представляет wrapper. Общий аудит Input остаётся unreviewed."
         },
@@ -1796,7 +1843,8 @@
           "evidence": [
             "src/lib/input.ssr.test.ts",
             "src/lib/input-count.engine.test.ts",
-            "integration:input/input-extended"
+            "tests/package/input-config.ssr.test.ts",
+            "tests/browser/input-features.spec.ts"
           ],
           "note": "Перенесено из woodger/ant-design@cf3e20c по @rc-component/input 1.3.1: count/clear/event proxy, compositionend/Enter, input/root refs, password attribute cleanup и изоляция FormItem/Compact в addons. Прежний string bind:value/native handlers сохраняются. Полный аудит семейства остаётся unreviewed."
         },
@@ -1851,7 +1899,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:input-number"
+        "tests/browser/input-number.spec.ts"
       ],
       "features": [
         {
@@ -1876,7 +1924,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:input-number/compact-context"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -1931,6 +1980,8 @@
       "evidence": [
         "src/lib/Mentions.svelte",
         "src/lib/mentions.engine.test.ts",
+        "tests/package/mentions.ssr.test.ts",
+        "tests/browser/mentions.spec.ts",
         "integration:mentions"
       ],
       "features": [
@@ -1941,7 +1992,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/mentions.engine.test.ts",
-            "integration:mentions/core-v1"
+            "tests/browser/mentions.spec.ts"
           ],
           "note": "Исходные lastIndex/validateSearch/replaceWithMeasure: несколько префиксов, literal split, case-insensitive suffix deduplication и сохранение хвоста. OnChange до onSelect, onSearch(text,prefix) по keyup, filter predicate/bypass и rich labels. Helper getMentions соответствует статическому React методу. Native offsets остаются UTF-16."
         },
@@ -1952,7 +2003,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/mentions.engine.test.ts",
-            "integration:mentions/keyboard-measure"
+            "tests/browser/mentions.spec.ts"
           ],
           "note": "Up/Down пропускают disabled, Enter выбирает, Escape закрывает, IME Enter не выбирает. Popup следует позиции префикса при wrap/scroll, top/bottom/RTL и source gap=4; общий popup gap по умолчанию сохранён. AutoSize/minRows/maxRows по rc-input, ResizeObserver/onResize и cleanup shadow/frames/blur timer. Фокус остаётся в textarea; listbox/option — native Svelte-адаптация исходного DropdownMenu на rc-menu."
         },
@@ -1962,7 +2013,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:mentions/contexts-async"
+            "tests/package/mentions.ssr.test.ts",
+            "tests/browser/mentions.spec.ts"
           ],
           "note": "Loading заменяет выдачу disabled spinner и блокирует Enter; options меняет владелец, запроса внутри нет. AllowClear/disabled/custom icon, readonly/disabled, FormItem/status/native FormData/reset, размеры/variants, locale/themes/compact density/RTL. NativeElement/textarea/focus/blur; 102 CSS-правила с воспроизводимым рецептом. SSR не измеряет DOM и не ставит таймеры."
         },
@@ -2006,7 +2058,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:radio"
+        "tests/browser/radio.spec.ts"
       ],
       "features": [
         {
@@ -2064,6 +2116,8 @@
         "src/lib/rate.engine.ts",
         "src/lib/rate.engine.test.ts",
         "src/lib/rate.ssr.test.ts",
+        "tests/package/rate.ssr.test.ts",
+        "tests/browser/rate.spec.ts",
         "integration:rate"
       ],
       "features": [
@@ -2075,7 +2129,8 @@
           "evidence": [
             "src/lib/rate.engine.test.ts",
             "src/lib/rate.ssr.test.ts",
-            "integration:rate/value"
+            "tests/package/rate.ssr.test.ts",
+            "tests/browser/rate.spec.ts"
           ],
           "note": "Исходный порядок hover(undefined) перед change и suppression очищенного hover; controlled rejection, внешние fractions/count без clamp. Count сохраняет требование new Array(count): целое неотрицательное значение."
         },
@@ -2087,7 +2142,8 @@
           "evidence": [
             "src/lib/rate.engine.test.ts",
             "src/lib/rate.ssr.test.ts",
-            "integration:rate/keyboard"
+            "tests/package/rate.ssr.test.ts",
+            "tests/browser/rate.spec.ts"
           ],
           "note": "Стрелки изменяют значение без перемещения фокуса, Enter выбирает полный star и работает при keyboard=false. Нативная кнопка добавляет Space; корневая ul получает radiogroup и видимый focus. Как rc-rate, aria-checked кумулятивный. Ручной focus/blur игнорируются при disabled; autoFocus только при mount."
         },
@@ -2099,7 +2155,8 @@
           "evidence": [
             "src/lib/rate.ssr.test.ts",
             "tools/ant-design-css-recipes.json",
-            "integration:rate/appearance"
+            "tests/package/rate.ssr.test.ts",
+            "tests/browser/rate.spec.ts"
           ],
           "note": "Все 21 CSS-правило Rate, >div заменён на >button; outline и reduced motion дополнены. Tooltips string/local TooltipProps используют существующий Tooltip с сохранёнными отступами; characterRender заменяет tooltip composition, как rest override Ant. ConfigProvider.rate class/style и inherited size/disabled; style владельца выше context."
         },
@@ -2144,6 +2201,10 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
+        "tests/browser/input-select.spec.ts",
+        "tests/browser/multiple-select.spec.ts",
+        "tests/package/select-remote.ssr.test.ts",
+        "tests/browser/remote-select.spec.ts",
         "integration:select"
       ],
       "features": [
@@ -2153,7 +2214,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:select/selection"
+            "tests/browser/input-select.spec.ts",
+            "tests/browser/multiple-select.spec.ts"
           ],
           "note": ""
         },
@@ -2163,7 +2225,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:select/keyboard"
+            "tests/browser/input-select.spec.ts",
+            "tests/browser/multiple-select.spec.ts"
           ],
           "note": ""
         },
@@ -2173,7 +2236,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:select/forms"
+            "tests/browser/multiple-select.spec.ts",
+            "tests/browser/form.spec.ts"
           ],
           "note": ""
         },
@@ -2192,6 +2256,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/select.engine.test.ts",
+            "tests/package/select-remote.ssr.test.ts",
+            "tests/browser/remote-select.spec.ts",
             "integration:select/remote-search"
           ],
           "note": "SearchValue/onSearch/filterOption и showSearch object subset, loading/notFoundContent/onPopupScroll; cache только selected labels/disabled, включая single и numeric zero. Requests/debounce/stale guards/pagination/retry/dispose принадлежат consumer model; ошибка через status/content. Остальной rc-select API не заявлен."
@@ -2210,7 +2276,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:select/compact-context"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -2240,7 +2307,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:slider"
+        "tests/browser/slider.spec.ts"
       ],
       "features": [
         {
@@ -2285,6 +2352,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
+        "tests/browser/switch.spec.ts",
         "integration:switch"
       ],
       "features": [
@@ -2388,6 +2456,8 @@
       "evidence": [
         "src/lib/TreeSelect.svelte",
         "src/lib/tree-select.engine.test.ts",
+        "tests/package/tree-select.ssr.test.ts",
+        "tests/browser/tree-select.spec.ts",
         "integration:tree-select"
       ],
       "features": [
@@ -2399,7 +2469,8 @@
           "evidence": [
             "src/lib/TreeSelect.svelte",
             "src/lib/tree-select.engine.test.ts",
-            "integration:tree-select/core-v1"
+            "tests/package/tree-select.ssr.test.ts",
+            "tests/browser/tree-select.spec.ts"
           ],
           "note": "Raw keys и labeled objects, null/undefined, numeric zero, onChange(value,labels,extra), onSelect/onDeselect и clear. TreeCheckStrictly форсирует multiple и labelInValue; labels=null в labeled mode. Missing values сохраняются; подписи доступны из labeled value либо внутреннего состояния."
         },
@@ -2410,7 +2481,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/tree-select.engine.test.ts",
-            "integration:tree-select/checking-search"
+            "tests/browser/tree-select.spec.ts"
           ],
           "note": "SHOW_ALL/PARENT/CHILD как TREE_SELECT_SHOW_*; display отдельно от полных checked keys. Search сохраняет предков и всех потомков совпавшего родителя, default filter prop=value, predicate/bypass и autoClearSearchValue. Проверка фильтрованного родителя использует полное исходное дерево."
         },
@@ -2420,7 +2491,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:tree-select/async-keyboard"
+            "tests/package/tree-select.ssr.test.ts",
+            "tests/browser/tree-select.spec.ts"
           ],
           "note": "Панель — существующий Tree с native popover, input сохраняет focus и aria-activedescendant. Во время поиска loadData отключён; закрытый popup не начинает новые загрузки. TreeExpanded/Loaded keys и callbacks, onPopupScroll/listHeight. Form raw values/required/reset, locale, themes/RTL и Compact. 92 CSS-правила; prefix внутренних узлов нормализован к общему Tree."
         },
@@ -2491,6 +2563,8 @@
         "src/lib/upload-controller.engine.test.ts",
         "src/lib/upload.engine.test.ts",
         "src/lib/upload-request.dom.test.ts",
+        "tests/package/upload.ssr.test.ts",
+        "tests/browser/upload.spec.ts",
         "integration:upload"
       ],
       "features": [
@@ -2503,7 +2577,8 @@
             "src/lib/upload-controller.engine.test.ts",
             "src/lib/upload.engine.test.ts",
             "src/lib/upload-request.dom.test.ts",
-            "integration:upload/core-v1"
+            "tests/package/upload.ssr.test.ts",
+            "tests/browser/upload.spec.ts"
           ],
           "note": "Stable uid, batch start после async beforeUpload, false/rejection оставляют файл без uploading; UPLOAD_LIST_IGNORE исключает файл. Async onRemove veto, abort и фильтрация callbacks для удалённых владельцем файлов. Native file input сбрасывается для повторного выбора."
         },
@@ -2515,7 +2590,7 @@
           "evidence": [
             "src/lib/upload-controller.engine.test.ts",
             "src/lib/upload-request.dom.test.ts",
-            "integration:upload/transport"
+            "tests/browser/upload.spec.ts"
           ],
           "note": "Async action/data, method/headers/withCredentials, progress/success/error; customRequest(options,{defaultRequest}). beforeUpload=false оставляет ручную отправку потребителю как upstream. MaxCount ограничивает список, не транспорт. Удаление/unmount abort активных запросов; browser/file APIs только в lifecycle."
         },
@@ -2525,7 +2600,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:upload/presentation"
+            "tests/package/upload.ssr.test.ts",
+            "tests/browser/upload.spec.ts"
           ],
           "note": "Children snippet, hasControlInside, keyboard chooser, multiple drop/accept, ShowUploadList flags/extra, исходные icons и thumbnail canvas. RU/EN, RTL, темы и disabled из ConfigProvider/Form. 82 CSS-правила из закреплённого архива; неиспользуемые React motion selectors исключены."
         },
@@ -2584,7 +2660,8 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:avatar"
+        "tests/browser/avatar.spec.ts",
+        "tests/browser/avatar-group.spec.ts"
       ],
       "features": [
         {
@@ -2594,7 +2671,7 @@
           "requiredForV1": true,
           "evidence": [
             "readme.md",
-            "integration:avatar/images"
+            "tests/browser/avatar.spec.ts"
           ],
           "note": ""
         },
@@ -2605,7 +2682,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/avatar.engine.test.ts",
-            "integration:avatar/geometry"
+            "tests/browser/avatar.spec.ts"
           ],
           "note": ""
         },
@@ -2616,7 +2693,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/avatar-group.engine.test.ts",
-            "integration:avatar/group"
+            "tests/browser/avatar-group.spec.ts"
           ],
           "note": ""
         },
@@ -2627,7 +2704,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/avatar.ssr.test.ts",
-            "integration:avatar/accessibility"
+            "tests/browser/avatar-group.spec.ts"
           ],
           "note": ""
         },
@@ -2673,7 +2750,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:badge"
+        "tests/browser/badge.spec.ts"
       ],
       "features": [
         {
@@ -2771,6 +2848,7 @@
         "src/lib/CardGrid.svelte",
         "src/lib/CardMeta.svelte",
         "src/lib/card.test.ts",
+        "tests/browser/card.spec.ts",
         "integration:card"
       ],
       "features": [
@@ -2781,7 +2859,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/card.test.ts",
-            "integration:card/structure"
+            "tests/browser/card.spec.ts"
           ],
           "note": "Нативные div/ul/li; Snippet/text/number/boolean slots с upstream presence. Grid: CSS :has до mount, direct-child observer после, containGrid для явного SSR-класса."
         },
@@ -2792,7 +2870,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/card.test.ts",
-            "integration:card/appearance"
+            "tests/browser/card.spec.ts"
           ],
           "note": "Skeleton заменяет только body; root style > semantic root, header/body semantic > legacy. Фокус body при загрузке и восстановление при unmount — доступная Svelte-адаптация."
         },
@@ -2803,7 +2881,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/card.test.ts",
-            "integration:card/tabs"
+            "tests/browser/card.spec.ts",
+            "tests/browser/tabs.spec.ts"
           ],
           "note": "Локальные Tabs сохраняют согласованную ручную клавиатурную модель. Размер large/small, defaultActiveTabKey > tabProps.defaultActiveKey, label > legacy tab; левый/правый native extra."
         },
@@ -2866,7 +2945,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:collapse"
+        "tests/browser/collapse.spec.ts"
       ],
       "features": [
         {
@@ -2911,6 +2990,7 @@
       "evidence": [
         "src/lib/descriptions.test.ts",
         "src/lib/descriptions.ssr.test.ts",
+        "tests/browser/descriptions.spec.ts",
         "integration:descriptions"
       ],
       "features": [
@@ -2921,7 +3001,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/descriptions.ssr.test.ts",
-            "integration:descriptions/layout"
+            "tests/browser/descriptions.spec.ts"
           ],
           "note": "Нативные table/tbody/tr/th/td; label/children/title/extra принимают text/number/Snippet. React Descriptions.Item не исполнялся в upstream: вместо JSX sugar используется items."
         },
@@ -2932,7 +3012,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/descriptions.test.ts",
-            "integration:descriptions/responsive"
+            "tests/browser/descriptions.spec.ts"
           ],
           "note": "Порядок xxxl→xs, fallback 3 при SSR, 1/2/3/4 по viewport; clipping span и растяжение последней ячейки как useRow."
         },
@@ -2943,7 +3023,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/descriptions.ssr.test.ts",
-            "integration:descriptions/appearance"
+            "tests/browser/descriptions.spec.ts"
           ],
           "note": "Без явного componentSize размер large; middle остаётся локальным alias medium. Label/content styles на ячейках bordered, item-level приоритет сохранён; вложенные таблицы изолированы."
         },
@@ -2981,7 +3061,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:empty"
+        "tests/browser/empty.spec.ts"
       ],
       "features": [
         {
@@ -3034,6 +3114,10 @@
         "src/lib/image-preview.engine.test.ts",
         "src/lib/ImagePreviewGroup.svelte",
         "src/lib/image-preview-group.engine.test.ts",
+        "tests/package/image.ssr.test.ts",
+        "tests/browser/image.spec.ts",
+        "tests/package/image-preview-group.ssr.test.ts",
+        "tests/browser/image-preview-group.spec.ts",
         "integration:image"
       ],
       "features": [
@@ -3043,7 +3127,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:image/core-v1"
+            "tests/package/image.ssr.test.ts",
+            "tests/browser/image.spec.ts"
           ],
           "note": "Width/height/src/alt/native image attrs, class/style и rootClassName/wrapperStyle. Preview=true по умолчанию, отдельный preview.src, open/onOpenChange/afterOpenChange, cover/closeIcon. Boolean/Snippet placeholder, кешированные complete images и source probe; старые invalid/load callbacks не меняют новый src. Fallback сохраняет исходный error status. Native button вместо div role=button; preview DOM ленивый и сохраняется после закрытия."
         },
@@ -3054,7 +3139,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/image-preview.engine.test.ts",
-            "integration:image/transforms"
+            "tests/browser/image.spec.ts"
           ],
           "note": "Исходные minScale=1/maxScale=50/scaleStep=0.5, pointer-centered zoom, wheel ratio cap, transform/action callbacks с RAF queue. Mouse rebound сохраняет source AND-проверку двух координат; touch underscale восстанавливается на отпускании. Pointer capture заменяет mouse/touch window listeners. ActionsRender/imageRender — Svelte Snippet с original и info/actions; React node icon wrappers отдельно."
         },
@@ -3064,7 +3149,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:image/contexts-popup"
+            "tests/package/image.ssr.test.ts",
+            "tests/browser/image.spec.ts"
           ],
           "note": "Native dialog и focusTrap true/false, возврат фокуса, Escape/mask.closable, совместимость с Modal. Image не наследует control disabled, как Ant wrapper. RU/EN accessible preview name и close label; 48 CSS-правил, official icons и reduced motion. Native visibility callbacks выполняются без ожидания отсутствующей rc-motion fade-анимации; frames/probes/listeners/layers очищаются."
         },
@@ -3075,7 +3161,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/image-preview-group.engine.test.ts",
-            "integration:image/preview-group"
+            "tests/package/image-preview-group.ssr.test.ts",
+            "tests/browser/image-preview-group.spec.ts"
           ],
           "note": "Stable registration order, canPreview filtering и отдельные ids для равных src. Явные items (включая []) имеют приоритет и сопоставляются по src. Current/open controlled/uncontrolled, prev/next/physical arrows, one-based countRender и source callbacks. Thumbnail не вызывает onChange; onOpenChange при thumbnail opening получает snapshot прежнего current. Owner current не clamp при удалении items; group preview=false снимает config, но сохраняет source child-triggered opening. Навигация сбрасывает transform без перехода; внешняя смена current сохраняет его."
         },
@@ -3164,7 +3251,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:popover"
+        "tests/browser/popover.spec.ts"
       ],
       "features": [
         {
@@ -3189,7 +3276,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:popover/compact-isolation"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -3265,7 +3353,7 @@
           "evidence": [
             "src/lib/segmented.engine.test.ts",
             "src/lib/segmented.ssr.test.ts",
-            "integration:segmented/selection"
+            "tests/browser/segmented.spec.ts"
           ],
           "note": "Начальное значение — первый option, включая disabled; удалённый/отсутствующий value не исправляется. Native radio без value сохраняет FormData=on, как rc-segmented 1.4.0. ConfigProvider.componentDisabled не применяется, как в upstream."
         },
@@ -3277,7 +3365,7 @@
           "evidence": [
             "src/lib/segmented.ssr.test.ts",
             "tools/ant-design-css-recipes.json",
-            "integration:segmented/layout"
+            "tests/browser/segmented.spec.ts"
           ],
           "note": "Реактивные размеры/темы/RTL; стили слотами root/item/label/icon передаются CSS-строками."
         },
@@ -3289,7 +3377,7 @@
           "evidence": [
             "src/lib/segmented.engine.test.ts",
             "src/lib/segmented.ssr.test.ts",
-            "integration:segmented/keyboard"
+            "tests/browser/segmented.spec.ts"
           ],
           "note": "Циклические стрелки в порядке options; native reset не меняет модель выбора, DOM синхронизируется с ней без onChange."
         },
@@ -3300,7 +3388,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/segmented.dom.ts",
-            "integration:segmented/thumb"
+            "tests/browser/segmented.spec.ts"
           ],
           "note": "Thumb с геометрией текущих labels, Web Animations API и штатными duration/easing. Повторная смена отменяет прошлый запуск; ResizeObserver и reduced motion завершают движение; SSR не создаёт DOM/observer/animation."
         },
@@ -3311,7 +3399,7 @@
           "requiredForV1": false,
           "evidence": [
             "src/lib/segmented.ssr.test.ts",
-            "integration:segmented/tooltip"
+            "tests/browser/segmented.spec.ts"
           ],
           "note": "Строка либо локальные TooltipProps; существующий Tooltip использует span с display:contents и native popover. Проверяются block, disabled option, клавиатура и измерения thumb."
         },
@@ -3382,7 +3470,7 @@
           "evidence": [
             "src/lib/statistic.engine.test.ts",
             "src/lib/statistic.ssr.test.ts",
-            "integration:statistic/number"
+            "tests/browser/statistic.spec.ts"
           ],
           "note": "Форматирование строк повторяет Number.tsx эталона; научная нотация и другие неподдержанные строки сохраняются как текст."
         },
@@ -3393,7 +3481,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/statistic.ssr.test.ts",
-            "integration:statistic/content"
+            "tests/browser/statistic.spec.ts"
           ],
           "note": "ReactNode заменён string/number/Snippet; valueRender — Snippet<[Snippet]>; styles и valueStyle — CSS-строки. Пустой Snippet считается присутствующим содержимым."
         },
@@ -3405,7 +3493,7 @@
           "evidence": [
             "src/lib/statistic.ssr.test.ts",
             "tools/ant-design-css-recipes.json",
-            "integration:statistic/loading"
+            "tests/browser/statistic.spec.ts"
           ],
           "note": "Заголовок сохраняется; значение при loading не монтируется. Используется существующий доступный Svelte Skeleton с его служебными обёртками и локализованным статусом."
         },
@@ -3417,7 +3505,7 @@
           "evidence": [
             "src/lib/statistic-timer.test.ts",
             "src/lib/statistic-timer.ssr.test.ts",
-            "integration:statistic/timer"
+            "tests/browser/statistic-timer.spec.ts"
           ],
           "note": "Отдельные Svelte-экспорты StatisticTimer/StatisticCountdown. SSR выводит -, время форматируется фиксированными единицами эталона; onChange получает знаковый остаток, onFinish только после deadline. При отсутствующем value отображение использует default=0 из Statistic, callbacks — исходную цель и NaN. React deprecation console warning Countdown не воспроизводится."
         },
@@ -3455,6 +3543,11 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
+        "tests/browser/table.spec.ts",
+        "tests/browser/table-filter.spec.ts",
+        "tests/browser/server-table.spec.ts",
+        "tests/browser/fixed-table.spec.ts",
+        "tests/browser/expandable-table.spec.ts",
         "integration:table"
       ],
       "features": [
@@ -3506,7 +3599,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:tag"
+        "tests/browser/tag.spec.ts"
       ],
       "features": [
         {
@@ -3562,6 +3655,7 @@
         "src/lib/Timeline.svelte",
         "src/lib/timeline.engine.test.ts",
         "src/lib/timeline.ssr.test.ts",
+        "tests/browser/timeline.spec.ts",
         "integration:timeline"
       ],
       "features": [
@@ -3573,7 +3667,7 @@
           "evidence": [
             "src/lib/timeline.engine.test.ts",
             "src/lib/timeline.ssr.test.ts",
-            "integration:timeline/core-v1"
+            "tests/browser/timeline.spec.ts"
           ],
           "note": "Nullish legacy aliases, truthy pending, alternate before reverse, railFollowPrevStatus. React Timeline.Item был JSX sugar без собственного runtime; используется items."
         },
@@ -3584,7 +3678,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/timeline.ssr.test.ts",
-            "integration:timeline/presentation"
+            "tests/browser/timeline.spec.ts"
           ],
           "note": "Все 43 CSS-правила поверх Steps dot, source priority titleSpan, темы/RTL. Horizontal сохраняет исходное responsive xs=576 поведение."
         },
@@ -3595,7 +3689,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/timeline.ssr.test.ts",
-            "integration:timeline/ssr-native"
+            "tests/browser/timeline.spec.ts"
           ],
           "note": "Ol/li без искусственного current/status; блоковые title/content Snippets, фокус поля при reverse и owned-focus recovery при удалении."
         },
@@ -3634,7 +3728,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:tooltip"
+        "tests/browser/tooltip.spec.ts"
       ],
       "features": [
         {
@@ -3659,7 +3753,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:tooltip/compact-isolation"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         },
@@ -3670,7 +3765,7 @@
           "requiredForV1": false,
           "evidence": [
             "src/lib/steps-expanded.ssr.test.ts",
-            "integration:tooltip/rich-title"
+            "tests/browser/steps-variants.spec.ts"
           ],
           "note": "Пассивный rich content; существующие строки/числа/пустые title и Compact isolation сохранены. Основной подробный аудит Tooltip остаётся отдельным."
         }
@@ -3739,6 +3834,8 @@
         "src/lib/Tree.svelte",
         "src/lib/tree.engine.test.ts",
         "src/lib/tree-load.engine.test.ts",
+        "tests/package/tree.ssr.test.ts",
+        "tests/browser/tree.spec.ts",
         "integration:tree"
       ],
       "features": [
@@ -3749,7 +3846,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/tree.engine.test.ts",
-            "integration:tree/core-v1"
+            "tests/package/tree.ssr.test.ts",
+            "tests/browser/tree.spec.ts"
           ],
           "note": "Stable key, независимые selection/check, multiple, checkStrictly, halfChecked, disabled/disableCheckbox/checkable границы, defaultExpandParent/All и autoExpandParent. Исходный conduct fill/clean и события с исходными узлами/позициями. Дети, добавленные в отмеченного родителя, учитываются повторной conduction."
         },
@@ -3760,7 +3858,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/tree-load.engine.test.ts",
-            "integration:tree/async"
+            "tests/package/tree.ssr.test.ts",
+            "tests/browser/tree.spec.ts"
           ],
           "note": "Загрузка при раскрытии/начальном expanded; дедупликация pending, loadedKeys/onLoad, дети принадлежат потребителю. Rejection снимает loading и сворачивает uncontrolled ветку без отдельного onError; повтор до исходного лимита 10. После unmount результаты игнорируются."
         },
@@ -3770,7 +3869,8 @@
           "state": "supported",
           "requiredForV1": true,
           "evidence": [
-            "integration:tree/keyboard"
+            "tests/package/tree.ssr.test.ts",
+            "tests/browser/tree.spec.ts"
           ],
           "note": "Один tree tab stop и aria-activedescendant, логические level/pos/setsize, Up/Down/Home/End, physical Left/Right даже в RTL, Enter/Space. Disabled не исключает строки из навигации и сохраняет pointer expansion switcher. Native buttons вместо React span handlers; showLine/icons/titleRender/filterTreeNode, 98 CSS-правил без TreeSelect/collapse motion."
         },
@@ -3816,7 +3916,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:alert"
+        "tests/browser/alert.spec.ts"
       ],
       "features": [
         {
@@ -3854,7 +3954,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:drawer"
+        "tests/browser/drawer.spec.ts"
       ],
       "features": [
         {
@@ -3879,7 +3979,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:drawer/compact-isolation"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -3910,7 +4011,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:message"
+        "tests/browser/message.spec.ts"
       ],
       "features": [
         {
@@ -3948,7 +4049,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:modal"
+        "tests/browser/modal.spec.ts"
       ],
       "features": [
         {
@@ -3965,7 +4066,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:modal/compact-isolation"
+            "tests/package/space-compact.ssr.test.ts",
+            "tests/browser/space-compact.spec.ts"
           ],
           "note": "Без Compact сохраняется существующее поведение; общий подробный аудит семейства ещё не завершён."
         }
@@ -3996,7 +4098,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:notification"
+        "tests/browser/notification.spec.ts"
       ],
       "features": [
         {
@@ -4034,7 +4136,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:popconfirm"
+        "tests/browser/popconfirm.spec.ts"
       ],
       "features": [
         {
@@ -4079,7 +4181,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:progress"
+        "tests/browser/progress.spec.ts"
       ],
       "features": [
         {
@@ -4124,6 +4226,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
+        "tests/browser/result.spec.ts",
         "integration:result"
       ],
       "features": [
@@ -4161,7 +4264,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:skeleton"
+        "tests/browser/skeleton.spec.ts"
       ],
       "features": [
         {
@@ -4206,7 +4309,7 @@
       "effort": "unknown",
       "evidence": [
         "readme.md",
-        "integration:spin"
+        "tests/browser/spin.spec.ts"
       ],
       "features": [
         {
@@ -4270,6 +4373,8 @@
         "src/lib/watermark.engine.test.ts",
         "src/lib/watermark.draw.test.ts",
         "src/lib/watermark.ssr.test.ts",
+        "tests/package/watermark.ssr.test.ts",
+        "tests/browser/watermark.spec.ts",
         "integration:watermark"
       ],
       "features": [
@@ -4282,7 +4387,8 @@
             "src/lib/watermark.engine.test.ts",
             "src/lib/watermark.draw.test.ts",
             "src/lib/watermark.ssr.test.ts",
-            "integration:watermark/canvas"
+            "tests/package/watermark.ssr.test.ts",
+            "tests/browser/watermark.spec.ts"
           ],
           "note": "Три Canvas, FontGap=3, fontBoundingBox metrics, source getCanvasFont Number(fontSize), image defaults 120x64 даже для fallback, cache последнего набора. HTMLElement исключён из ключей: смена только image URL при прежних параметрах сохраняет старый PNG, как source."
         },
@@ -4293,7 +4399,7 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/watermark.engine.test.ts",
-            "integration:watermark/dom"
+            "tests/browser/watermark.spec.ts"
           ],
           "note": "Положительный offset сужает слой, отрицательный смещает background; координаты физические в RTL. Observer subtree/childList/style/class, hidden отдельно не наблюдается. Leading RAF throttle без trailing, повторное использование mark node и PNG. OnRemove только при восстановлении удалённого/перемещённого mark; root фиксирует лишь ожидаемые position/overflow."
         },
@@ -4304,7 +4410,8 @@
           "requiredForV1": true,
           "evidence": [
             "src/lib/watermark.ssr.test.ts",
-            "integration:watermark/context"
+            "tests/package/watermark.ssr.test.ts",
+            "tests/browser/watermark.spec.ts"
           ],
           "note": "Modal container и Drawer section регистрируются attachment с cleanup. Inherit=false оставляет родительский контекст; смена inherit пересоздаёт children branch, как Provider в React. SSR без Canvas/observer/Image; callbacks/frames и overlay map очищаются. Незавершённые image requests сохраняют source completion order до unmount; при иной геометрии старый ответ может временно заменить новый PNG, после чего observer может запустить актуальный render. При отсутствии MutationObserver слой рисуется без repair."
         },
@@ -4356,6 +4463,7 @@
         "src/lib/affix.engine.test.ts",
         "src/lib/affix.dom.test.ts",
         "src/lib/affix.ssr.test.ts",
+        "tests/browser/affix.spec.ts",
         "integration:affix"
       ],
       "features": [
@@ -4367,7 +4475,7 @@
           "evidence": [
             "src/lib/affix.engine.test.ts",
             "src/lib/affix.dom.test.ts",
-            "integration:affix/core-v1"
+            "tests/browser/affix.spec.ts"
           ],
           "note": "Сохранены rounding, top priority, null/hidden target и отсутствие горизонтальной компенсации upstream; updatePosition.cancel отменяет отдельную force-очередь."
         },
@@ -4379,7 +4487,7 @@
           "evidence": [
             "src/lib/affix.ssr.test.ts",
             "src/lib/affix.dom.test.ts",
-            "integration:affix/ssr-native"
+            "tests/browser/affix.spec.ts"
           ],
           "note": "SSR без чтения target и закрепления; один контентный узел без клонирования controls, placeholder только в fixed-состоянии."
         },
@@ -4464,7 +4572,8 @@
       "priority": "unassigned",
       "effort": "unknown",
       "evidence": [
-        "readme.md"
+        "readme.md",
+        "tests/browser/config-provider.spec.ts"
       ],
       "features": [
         {
@@ -4490,7 +4599,7 @@
           "requiredForV1": false,
           "evidence": [
             "src/lib/theme.css",
-            "integration:config-provider/compact-spacing"
+            "tests/browser/theme.spec.ts"
           ],
           "note": "Закреплённые default/compact size maps, локальное разрешение aliases во вложенных provider, explicit compact=false и inline token override. Полный token engine и остальные compact-map tokens ещё требуют аудита."
         },
@@ -4500,7 +4609,8 @@
           "state": "supported",
           "requiredForV1": false,
           "evidence": [
-            "integration:config-provider/button-config"
+            "tests/package/button.ssr.test.ts",
+            "tests/browser/button.spec.ts"
           ],
           "note": "Color/variant/shape, loadingIcon, autoInsertSpace и class/style/semantic slots. Omitted наследует, явный объект заменяет целиком как upstream; общий аудит ConfigProvider продолжается."
         }

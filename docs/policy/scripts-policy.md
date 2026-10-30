@@ -11,7 +11,16 @@
 - `npm run dev` — watch-сборка пакета;
 - `npm run lint` — Oxlint для исходников, инструментов и конфигурации;
 - `npm run check` — Svelte/TypeScript check;
-- `npm test` — Vitest для компонентов и инструментов.
+- `npm run check:tests` — Svelte/TypeScript check тестов и фикстур;
+- `npm test` — Vitest для компонентов и инструментов;
+- `npm run test:package` — сборка и SSR-проверки публичного пакета;
+- `npm run test:browser` — Playwright для компонентов на собственном Vite-стенде.
+
+Типизация фикстур, package-тесты и браузерный стенд читают текущий `dist`.
+Их команды собирают пакет
+перед проверкой; это зависимые шаги. Стенд работает на порту `4175`, не требует
+homepage и не входит в npm-архив. Playwright, его lifecycle и browser artifacts
+настраиваются в `playwright.config.ts`.
 
 `npm run cli -- ...` запускает служебный CLI этого репозитория через `icore`:
 `registry check`, `registry report`, `registry show <component>` и `css`.

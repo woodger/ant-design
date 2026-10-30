@@ -1,0 +1,138 @@
+<script lang="ts">
+  import { Menu, Button, type MenuItemType, type MenuMode, type MenuTheme } from 'antd-svelte';
+
+  let mode = $state<MenuMode>('inline');
+  let theme = $state<MenuTheme>('light');
+  let disabled = $state(false);
+  let multiple = $state(false);
+  let selectable = $state(true);
+  let accept = $state(true);
+  let collapsed = $state(false);
+  let clickTrigger = $state(true);
+  let selected = $state<string[]>(['home']);
+  let opened = $state<string[]>(['projects']);
+  let events = $state<string[]>([]);
+  let clicks = $state(0);
+  let visible = $state(true);
+  let menu = $state<Menu>();
+  const items: MenuItemType[] = [
+    { key: 'home', label: 'Home', onClick: () => { events = [...events, 'item:home']; } },
+    {
+      key: 'projects',
+      label: 'Projects',
+      onTitleClick: info => { events = [...events, `title:${info.key}`]; },
+      onClick: info => { events = [...events, `parent:${info.key}`]; },
+      children: [
+        {
+          type: 'group',
+          key: 'group',
+          label: 'Workspace',
+          children: [
+            { key: 'alpha', label: link },
+            { key: 'disabled', label: disabledLink, disabled: true }
+          ]
+        },
+        { type: 'divider', key: 'divider', dashed: true },
+        {
+          key: 'nested',
+          label: 'Nested',
+          children: [{ key: 'leaf', label: 'Leaf' }, { key: 'other-leaf', label: 'Other leaf' }]
+        },
+        { key: 'delete', label: 'Delete', danger: true, extra: 0 }
+      ]
+    },
+    { key: 'settings', label: 'Settings', children: [{ key: 'profile', label: 'Profile' }] },
+    { key: 'last', label: 'Last' }
+  ];
+</script>
+{#snippet link()}<a href="#menu-destination" onclick={() => { clicks++; }}>Alpha link</a>{/snippet}
+{#snippet disabledLink()}<a href="#disabled-destination">Disabled link</a>{/snippet}
+<section id="menu-fixture" aria-label="Menu fixture">
+  <div style="width:320px;max-width:100%">{#if visible}<Menu
+    bind:this={menu}
+    {items}
+    {mode}
+    {theme}
+    {disabled}
+    {multiple}
+    {selectable}
+    inlineCollapsed={collapsed}
+    selectedKeys={selected}
+    openKeys={opened}
+    aria-label="Controlled menu"
+    triggerSubMenuAction={clickTrigger ? 'click' : 'hover'}
+    onClick={info => { events = [...events, `click:${info.key}:${info.keyPath.join('/')}`]; }}
+    onSelect={info => {
+      events = [...events, `select:${info.key}`];
+      if (accept) selected = info.selectedKeys;
+    }}
+    onDeselect={info => {
+      events = [...events, `deselect:${info.key}`];
+      if (accept) selected = info.selectedKeys;
+    }}
+    onOpenChange={keys => {
+      events = [...events, `open:${keys.join(',')}`];
+      if (accept) opened = keys;
+    }}
+  />{/if}</div>
+  <Menu
+    aria-label="Collapsed defaults"
+    mode="inline"
+    inlineCollapsed={collapsed}
+    defaultOpenKeys={['default-sub']}
+    items={[
+      {
+        key: 'default-sub',
+        label: 'Default submenu',
+        children: [{ key: 'default-child', label: 'Default child' }]
+      }
+    ]}
+  />
+  <Menu
+    aria-label="Default menu"
+    items={[{ key: 'default', label: 'Default item' }, { key: 'zero', label: 'Zero' }]}
+    defaultSelectedKeys={['default']}
+  />
+  <label>Mode<select aria-label="Menu mode" bind:value={mode}><option value="inline">inline</option><option
+    value="vertical"
+  >vertical</option><option
+    value="horizontal"
+  >horizontal</option></select></label>
+  <label>Theme<select aria-label="Menu theme" bind:value={theme}><option value="light">light</option><option
+    value="dark"
+  >dark</option></select></label>
+  <label><input type="checkbox" bind:checked={disabled} /> Disable menu</label><label><input
+    type="checkbox"
+    bind:checked={multiple}
+  /> Multiple menu selection</label><label><input
+    type="checkbox"
+    bind:checked={selectable}
+  /> Selectable menu</label><label><input
+    type="checkbox"
+    bind:checked={accept}
+  /> Accept menu changes</label><label><input
+    type="checkbox"
+    bind:checked={collapsed}
+  /> Collapse menu</label><label><input
+    type="checkbox"
+    bind:checked={clickTrigger}
+  /> Click submenu trigger</label>
+  <button type="button" onclick={() => { menu?.focus(); }}>Focus menu</button><button
+    type="button"
+    onclick={() => { selected = ['last']; }}
+  >Replace selected owner</button><button
+    type="button"
+    onclick={() => { opened = ['projects', 'nested']; }}
+  >Open nested owner</button><button
+    type="button"
+    onclick={() => { visible = !visible; }}
+  >Toggle menu mount</button>
+  <output aria-label="Menu selected">{JSON.stringify(selected)}</output><output
+    aria-label="Menu opened"
+  >{JSON.stringify(opened)}</output><output
+    aria-label="Menu events"
+  >{JSON.stringify(events)}</output><output
+    aria-label="Menu link clicks"
+  >{clicks}</output>
+  <div id="menu-destination">Link destination</div><div id="disabled-destination">Disabled destination</div>
+</section>
