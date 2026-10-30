@@ -39,6 +39,7 @@
   import DatePickerExample from './DatePickerExample.svelte';
   import RemoteSelectExample from './RemoteSelectExample.svelte';
   import TextAreaExample from './TextAreaExample.svelte';
+  import InputFeaturesExample from './InputFeaturesExample.svelte';
   import TextAreaFeaturesExample from './TextAreaFeaturesExample.svelte';
   import FloatButtonExample from './FloatButtonExample.svelte';
   import TimelineExample from './TimelineExample.svelte';
@@ -285,6 +286,7 @@
             </div>
             <p class="output">Текущее значение: <strong>{demo.input || '—'}</strong></p>
           </div>
+          <div class="panel"><InputFeaturesExample /></div>
         </section>
 
         <section id="input-number">

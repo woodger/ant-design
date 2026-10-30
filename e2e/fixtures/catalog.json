@@ -359,5 +359,10 @@
     "id": "textarea-features",
     "module": "./TextAreaFeaturesFixtures.svelte",
     "root": "textarea-features-fixture"
+  },
+  {
+    "id": "input-features",
+    "module": "./InputFeaturesFixtures.svelte",
+    "root": "input-features-fixture"
   }
 ]

@@ -1,18 +1,9 @@
-import type { Snippet } from 'svelte';
+import type { InputCountFormatter as TextAreaCountFormatter, InputCountConfig as TextAreaCountConfig, InputAllowClear as TextAreaAllowClear } from './input-count.types';
 import type { HTMLTextareaAttributes } from 'svelte/elements';
 import type { ComponentSize } from './types';
 
 export type TextAreaVariant = 'outlined' | 'filled' | 'borderless' | 'underlined';
-export interface TextAreaCountInfo { value: string; count: number; maxLength?: number; }
-export type TextAreaCountContent = string | number | boolean | null | undefined | Snippet<[TextAreaCountInfo]>;
-export type TextAreaCountFormatter = (info: TextAreaCountInfo) => TextAreaCountContent;
-export interface TextAreaCountConfig {
-  max?: number;
-  strategy?: (value: string) => number;
-  show?: boolean | TextAreaCountFormatter;
-  exceedFormatter?: (value: string, info: { max: number }) => string;
-}
-export interface TextAreaAllowClear { disabled?: boolean; clearIcon?: string | number | false | null | Snippet; }
+export type { InputCountInfo as TextAreaCountInfo, InputCountContent as TextAreaCountContent, InputCountFormatter as TextAreaCountFormatter, InputCountConfig as TextAreaCountConfig, InputAllowClear as TextAreaAllowClear } from './input-count.types';
 export type TextAreaSemanticSlots = Partial<Record<'root' | 'textarea' | 'clear' | 'count', string>>;
 export type TextAreaSemantic = TextAreaSemanticSlots | ((info: { props: TextAreaProps }) => TextAreaSemanticSlots | undefined);
 export type TextAreaChangeEvent = Event & { target: HTMLTextAreaElement; currentTarget: HTMLTextAreaElement; readonly nativeEvent: Event };

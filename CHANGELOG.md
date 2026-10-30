@@ -33,6 +33,10 @@
 
 ### Added
 
+- Input: prefix/suffix/addons, clear/count/IME, variants, semantic slots и
+  ConfigProvider.input, native refs/focus/Enter и password attribute cleanup.
+  Сохранён прежний native API; добавлены SSR/browser, фикстура и галерея.
+
 - TextArea: autoSize/row limits, clear, count/strategy/exceedFormatter с IME и
   selection, variants, semantic slots и ConfigProvider.textArea. Сохранены native
   binding/events/refs; добавлены расширенные unit/SSR/browser, фикстура и галерея.

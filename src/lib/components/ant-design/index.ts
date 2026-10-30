@@ -115,7 +115,7 @@ export { default as FormItem } from './FormItem.svelte';
 export { createForm, type FormInstance, type SubmissionResult } from './form.model.svelte';
 export { FormValidationError } from './FormValidationError';
 export type { ButtonProps } from './Button.svelte';
-export type { InputProps } from './Input.svelte';
+export type { InputProps, InputConfig, InputVariant, InputContent, InputSemanticSlots, InputSemantic, InputChangeEvent, InputAllowClear, InputCountConfig, InputCountInfo, InputCountFormatter, InputCountContent } from './input.types';
 export type { InputNumberProps } from './InputNumber.svelte';
 export type { SliderProps } from './Slider.svelte';
 export type { TooltipProps, TooltipPlacement, TooltipTrigger, SliderTooltipConfig } from './tooltip.types';

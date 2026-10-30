@@ -1838,7 +1838,8 @@
       "fixtures": [
         "input",
         "textarea",
-        "textarea-features"
+        "textarea-features",
+        "input-features"
       ],
       "evidence": [
         "src/lib/components/ant-design/readme.md",
@@ -1850,7 +1851,13 @@
         "src/lib/components/ant-design/textarea.engine.test.ts",
         "src/lib/components/ant-design/textarea.dom.ts",
         "e2e/textarea-features.spec.ts",
-        "src/lib/presentation/ant-design/TextAreaFeaturesExample.svelte"
+        "src/lib/presentation/ant-design/TextAreaFeaturesExample.svelte",
+        "src/lib/components/ant-design/Input.svelte",
+        "src/lib/components/ant-design/input.ssr.test.ts",
+        "src/lib/components/ant-design/input-count.engine.ts",
+        "src/lib/components/ant-design/input-event.dom.ts",
+        "e2e/input-features.spec.ts",
+        "src/lib/presentation/ant-design/InputFeaturesExample.svelte"
       ],
       "features": [
         {
@@ -1902,6 +1909,34 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "Не перенесены prefixCls, общий ConfigProvider.variant/Form.variant и произвольный token engine. Существующий строковый Svelte bind:value имеет приоритет над React controlled rejection; React broad value types и shape resizableTextArea не добавлены, textarea/root доступны через именованные native refs."
+        },
+        {
+          "id": "input-extended",
+          "title": "Input prefix/suffix/addons, clear/count, variants, semantic slots и input config",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/components/ant-design/input.ssr.test.ts",
+            "src/lib/components/ant-design/textarea.engine.test.ts",
+            "e2e/input-features.spec.ts"
+          ],
+          "note": "Базовый Input по @rc-component/input 1.3.1: общие с TextArea count/clear/event proxy, собственные compositionend/Enter rules, input/root refs, password attribute cleanup и изоляция FormItem/Compact в addons. Прежний string bind:value/native handlers сохраняются. Полный аудит семейства остаётся unreviewed."
+        },
+        {
+          "id": "input-subcomponents",
+          "title": "Input.Password/Search/OTP и deprecated Group",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "TextArea перенесён отдельно; остальные подкомпоненты Input ещё не экспортируются."
+        },
+        {
+          "id": "input-remaining",
+          "title": "Input prefixCls, общий variant/token engine и React value/ref conventions",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "ConfigProvider.variant/Form.variant, arbitrary tokens, prefixCls и deprecated internal classes/structure hooks не перенесены. Согласованный string bind:value сохраняется вместо React controlled rejection/broad value types; native refs представлены Svelte bindings. Native hidden остаётся на root; source CSS authored display перекрывает UA hidden, без дополнительного override."
         }
       ]
     },

@@ -31,7 +31,7 @@ export function useForm(): FormContext | undefined {
   return getContext(formKey);
 }
 
-export function provideFormField(field: FormFieldContext) {
+export function provideFormField(field: FormFieldContext | undefined) {
   setContext(fieldKey, field);
 }
 

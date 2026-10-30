@@ -1,22 +1,9 @@
-import type { TextAreaChangeEvent, TextAreaProps } from './textarea.types';
+import type { TextAreaProps } from './textarea.types';
 
 const sizing = ['letter-spacing', 'line-height', 'padding-top', 'padding-bottom', 'font-family', 'font-weight', 'font-size', 'font-variant', 'text-rendering', 'text-transform', 'width', 'text-indent', 'padding-left', 'padding-right', 'border-width', 'box-sizing', 'word-break', 'white-space'];
 const shadows = new WeakMap<Document, { node: HTMLTextAreaElement; users: number }>();
 
-export function textAreaChangeEvent(event: Event, element: HTMLTextAreaElement, value: string): TextAreaChangeEvent {
-  const target = element.cloneNode(true) as HTMLTextAreaElement;
-  target.value = value;
-  target.selectionStart = element.selectionStart; target.selectionEnd = element.selectionEnd;
-  target.setSelectionRange = (start, end, direction) => element.setSelectionRange(start, end, direction);
-  // Native Event getters требуют исходный receiver, в отличие от React SyntheticEvent.
-  return new Proxy(event, { get(original, key) {
-    if (key === 'target' || key === 'currentTarget') return target;
-    if (key === 'type' && original.type === 'input') return 'change';
-    if (key === 'nativeEvent') return original;
-    const result = Reflect.get(original, key, original);
-    return typeof result === 'function' ? result.bind(original) : result;
-  } }) as TextAreaChangeEvent;
-}
+export { inputChangeEvent as textAreaChangeEvent } from './input-event.dom';
 
 export function createTextAreaMeasure(element: HTMLTextAreaElement, notify: (size: { width: number; height: number }) => void) {
   const document = element.ownerDocument; const view = document.defaultView!;

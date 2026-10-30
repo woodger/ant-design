@@ -2,6 +2,7 @@ import type { FloatButtonConfig, FloatButtonGroupConfig } from './float-button.t
 import type { ButtonConfig } from './button.types';
 import type { RateConfig } from './rate.types';
 import type { WatermarkConfig } from './watermark.types';
+import type { InputConfig } from './input.types';
 import type { TextAreaConfig } from './textarea.types';
 import { getContext, setContext } from 'svelte';
 import { ruRU, type ComponentSize, type Locale, type ThemeConfig } from './types';
@@ -11,6 +12,7 @@ export interface ConfigContext {
   readonly rate?: RateConfig;
   readonly watermark?: WatermarkConfig;
   readonly textArea?: TextAreaConfig;
+  readonly input?: InputConfig;
   readonly floatButton?: FloatButtonConfig;
   readonly floatButtonGroup?: FloatButtonGroupConfig;
   readonly componentSize: ComponentSize;
