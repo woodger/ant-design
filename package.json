@@ -2,7 +2,16 @@
   "name": "antd-svelte",
   "version": "0.1.0",
   "private": true,
-  "description": "Community port of Ant Design primitives to Svelte 5 and TypeScript",
+  "description": "Ant Design components for Svelte 5 with TypeScript and API compatibility",
+  "keywords": [
+    "antd",
+    "ant-design",
+    "svelte",
+    "svelte5",
+    "typescript",
+    "components",
+    "ui"
+  ],
   "type": "module",
   "license": "MIT",
   "svelte": "./dist/index.js",
