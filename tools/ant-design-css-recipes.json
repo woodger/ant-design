@@ -602,5 +602,30 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Image/Preview: thumbnail/cover/viewer/actions; progress wrapper/rc-motion исключены.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "rate",
+    "output": "src/lib/vendor/rate.css",
+    "expectedRules": 21,
+    "include": [
+      "^(?:\\.css-var-_R_0_)?\\.ant-rate(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [
+      {
+        "pattern": "\\.css-var-_R_0_\\.ant-rate(?![-\\w])",
+        "replacement": ".ant-rate-css-var"
+      },
+      {
+        "pattern": "\\.ant-rate(?![-\\w])",
+        "replacement": ".ant-rate:where(.ant-rate-css-var)"
+      },
+      {
+        "pattern": ">div",
+        "replacement": ">button"
+      }
+    ],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.\n * Rate: все правила; >div заменён на >button для нативных controls.\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

@@ -1742,7 +1742,10 @@
         "src/lib/Input.svelte",
         "src/lib/input.ssr.test.ts",
         "src/lib/input-count.engine.test.ts",
-        "src/lib/input-event.dom.ts"
+        "src/lib/input-event.dom.ts",
+        "src/lib/textarea.engine.test.ts",
+        "src/lib/textarea.ssr.test.ts",
+        "src/lib/textarea.dom.ts"
       ],
       "features": [
         {
@@ -1776,10 +1779,14 @@
         {
           "id": "textarea-extended",
           "title": "TextArea autoSize, clear/count, variants, semantic slots и textArea config",
-          "state": "missing",
+          "state": "supported",
           "requiredForV1": false,
-          "evidence": [],
-          "note": "Отложено за пределы выбранного минимального native объёма. Общий аудит Input остаётся unreviewed."
+          "evidence": [
+            "src/lib/textarea.engine.test.ts",
+            "src/lib/textarea.ssr.test.ts",
+            "integration:input/textarea-extended"
+          ],
+          "note": "AutoSize/row limits, счётчик с UTF-16 length по умолчанию и custom strategy, soft count.max и opt-in exceedFormatter с IME/selection; native clear button/callbacks, explicit/component variants, semantic slots и textArea config. Сохранены bind:value/string, onValueChange/oninput и nativeElement=textarea; rootElement представляет wrapper. Общий аудит Input остаётся unreviewed."
         },
         {
           "id": "input-extended",
@@ -1808,6 +1815,14 @@
           "requiredForV1": false,
           "evidence": [],
           "note": "ConfigProvider.variant/Form.variant, arbitrary tokens, prefixCls и deprecated internal classes/structure hooks не перенесены. Согласованный string bind:value сохраняется вместо React controlled rejection/broad value types; native refs представлены Svelte bindings. Native hidden остаётся на root; source CSS authored display перекрывает UA hidden, без дополнительного override."
+        },
+        {
+          "id": "textarea-remaining",
+          "title": "TextArea prefixCls, общий variant/token engine и React value/ref conventions",
+          "state": "missing",
+          "requiredForV1": false,
+          "evidence": [],
+          "note": "Не перенесены prefixCls, общий ConfigProvider.variant/Form.variant и произвольный token engine. Существующий строковый Svelte bind:value имеет приоритет над React controlled rejection; React broad value types и shape resizableTextArea не добавлены, textarea/root доступны через именованные native refs."
         }
       ]
     },
@@ -2008,24 +2023,93 @@
       "id": "rate",
       "name": "Rate",
       "category": "data-entry",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный перенос Rate 6.6.8 / rc-rate 1.0.1: value/half/clear, keyboard/RTL, character/render/tooltips, контексты и focus ref; расширение namespace/token engine отмечено отдельно.",
       "upstreamPath": "components/rate",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Rate",
+          "local": [
+            "Rate"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "tooltip"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/rate",
+          "range": "~1.0.1",
+          "referenceVersion": "1.0.1"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.3.0",
+          "referenceVersion": "1.14.0"
+        },
+        {
+          "name": "@ant-design/colors",
+          "range": "^8.0.1",
+          "referenceVersion": "8.0.1"
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "evidence": [
+        "src/lib/Rate.svelte",
+        "src/lib/rate.types.ts",
+        "src/lib/rate.engine.ts",
+        "src/lib/rate.engine.test.ts",
+        "src/lib/rate.ssr.test.ts",
+        "integration:rate"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "value",
+          "title": "Controlled/default value, count, half, clear и hover/change callbacks",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/rate.engine.test.ts",
+            "src/lib/rate.ssr.test.ts",
+            "integration:rate/value"
+          ],
+          "note": "Исходный порядок hover(undefined) перед change и suppression очищенного hover; controlled rejection, внешние fractions/count без clamp. Count сохраняет требование new Array(count): целое неотрицательное значение."
+        },
+        {
+          "id": "keyboard",
+          "title": "Клавиатура, RTL hit areas, focus/blur ref, disabled, SSR и native accessibility",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/rate.engine.test.ts",
+            "src/lib/rate.ssr.test.ts",
+            "integration:rate/keyboard"
+          ],
+          "note": "Стрелки изменяют значение без перемещения фокуса, Enter выбирает полный star и работает при keyboard=false. Нативная кнопка добавляет Space; корневая ul получает radiogroup и видимый focus. Как rc-rate, aria-checked кумулятивный. Ручной focus/blur игнорируются при disabled; autoFocus только при mount."
+        },
+        {
+          "id": "appearance",
+          "title": "Character/characterRender Snippets, tooltips, размеры, config, темы и motion",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/rate.ssr.test.ts",
+            "tools/ant-design-css-recipes.json",
+            "integration:rate/appearance"
+          ],
+          "note": "Все 21 CSS-правило Rate, >div заменён на >button; outline и reduced motion дополнены. Tooltips string/local TooltipProps используют существующий Tooltip с сохранёнными отступами; characterRender заменяет tooltip composition, как rest override Ant. ConfigProvider.rate class/style и inherited size/disabled; style владельца выше context."
+        },
+        {
+          "id": "extended-api",
+          "title": "PrefixCls, произвольный token engine и полный upstream Tooltip API",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Namespace ant-rate закреплён статическим CSS. Component tokens доступны как CSS variables; произвольный React theme/token engine пока отсутствует. Tooltips ограничены поддерживаемым публичным Svelte Tooltip API."
         }
       ]
     },
@@ -4147,24 +4231,90 @@
       "id": "watermark",
       "name": "Watermark",
       "category": "feedback",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный перенос Watermark 6.6.8: все объявленные props, Canvas clips/text/image, восстановление DOM и наследование в Modal/Drawer; ограничения общего token engine отмечены отдельно.",
       "upstreamPath": "components/watermark",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Watermark",
+          "local": [
+            "Watermark"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "modal",
+        "drawer"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/mutate-observer",
+          "range": "^2.0.1",
+          "referenceVersion": "2.0.1"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "evidence": [
+        "src/lib/Watermark.svelte",
+        "src/lib/watermark.dom.ts",
+        "src/lib/watermark.draw.ts",
+        "src/lib/watermark-context.ts",
+        "src/lib/watermark.engine.test.ts",
+        "src/lib/watermark.draw.test.ts",
+        "src/lib/watermark.ssr.test.ts",
+        "integration:watermark"
+      ],
       "features": [
         {
-          "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "id": "canvas",
+          "title": "Text/object/multiline fonts, image/fallback, Canvas rotation/alternate clips и DPR",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/watermark.engine.test.ts",
+            "src/lib/watermark.draw.test.ts",
+            "src/lib/watermark.ssr.test.ts",
+            "integration:watermark/canvas"
+          ],
+          "note": "Три Canvas, FontGap=3, fontBoundingBox metrics, source getCanvasFont Number(fontSize), image defaults 120x64 даже для fallback, cache последнего набора. HTMLElement исключён из ключей: смена только image URL при прежних параметрах сохраняет старый PNG, как source."
+        },
+        {
+          "id": "dom",
+          "title": "Offset/gap/zIndex, root styles/config, mutation repair и onRemove",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/watermark.engine.test.ts",
+            "integration:watermark/dom"
+          ],
+          "note": "Положительный offset сужает слой, отрицательный смещает background; координаты физические в RTL. Observer subtree/childList/style/class, hidden отдельно не наблюдается. Leading RAF throttle без trailing, повторное использование mark node и PNG. OnRemove только при восстановлении удалённого/перемещённого mark; root фиксирует лишь ожидаемые position/overflow."
+        },
+        {
+          "id": "context",
+          "title": "Inherit/context и панели Modal/Drawer, SSR и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/watermark.ssr.test.ts",
+            "integration:watermark/context"
+          ],
+          "note": "Modal container и Drawer section регистрируются attachment с cleanup. Inherit=false оставляет родительский контекст; смена inherit пересоздаёт children branch, как Provider в React. SSR без Canvas/observer/Image; callbacks/frames и overlay map очищаются. Незавершённые image requests сохраняют source completion order до unmount; при иной геометрии старый ответ может временно заменить новый PNG, после чего observer может запустить актуальный render. При отсутствии MutationObserver слой рисуется без repair."
+        },
+        {
+          "id": "theme",
+          "title": "Полный общий theme/token engine",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Default fontSizeLG/colorFill/zIndexPopupBase читаются из поддерживаемых CSS tokens, light/dark/compact реактивны. Произвольный React theme algorithm не перенесён; у Watermark нет собственных component CSS/tokens/prefixCls."
         }
       ]
     },

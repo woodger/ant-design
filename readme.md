@@ -112,6 +112,8 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | ConfigProvider | Светлая и тёмная темы, три основных цвета, компактная плотность, размеры, disabled, направление и локаль |
 | Button / ButtonGroup | Native button/href, color/variant/ghost, loading delay/icon, semantic slots, config, Group и Compact |
 | FloatButton / FloatButtonGroup / FloatButtonBackTop | Плавающие native actions, Badge/Tooltip, меню групп и возврат с прогрессом прокрутки |
+| Watermark | Text/image Canvas tiles, per-line fonts, offsets, mutation repair, наследование Modal/Drawer |
+| Rate | Value/defaultValue, half/clear, hover, keyboard/RTL, character/tooltips, размеры и focus ref |
 | Input | Native text/events/forms, prefix/suffix/addons, clear/count, variants, semantic slots и input config |
 | DatePicker | Single Dayjs date/datetime, input/calendar/time, confirmation, clear, ограничения, locale и native формы |
 | RangePicker | Пара Dayjs, связанные календари, время и подтверждение границ, allowEmpty/disabled, presets и hover |
@@ -2972,7 +2974,7 @@ classes/structures остаются отдельными пробелами. С�
 
 ## TextArea (Input.TextArea)
 
-Отдельный экспорт TextArea соответствует React Input.TextArea. Минимальный объём
+Отдельный экспорт TextArea соответствует React Input.TextArea. Базовый объём
 включает bind:value/string, defaultValue, name, rows, cols, maxlength, minlength,
 required, disabled, readonly, placeholder, autocomplete и остальные native
 атрибуты textarea. Значение не обрезается программно до maxlength: как upstream,
@@ -2991,7 +2993,9 @@ Bind:nativeElement даёт HTMLTextAreaElement для focus/blur/select/setSele
 Size и status=error|warning, Compact, RTL, темы, Form/FormItem disabled, name/id,
 required, aria-invalid и описания ошибок наследуются из существующих контекстов.
 Явные props имеют приоритет. Form.resetFields восстанавливает привязанное поле
-через модель формы. Поле остаётся одним native textarea без wrapper.
+через модель формы. Без allowClear/showCount/count.show поле остаётся одним native
+textarea; autoSize сам по себе wrapper не добавляет. Счётчик и clear используют
+исходные ant-input-affix-wrapper/ant-input-textarea-affix-wrapper.
 
 ```svelte
 <script lang="ts">
@@ -3002,9 +3006,81 @@ required, aria-invalid и описания ошибок наследуются �
 <TextArea id="description" name="description" rows={4} maxlength={2000} required bind:value={description} />
 ```
 
-AutoSize, allowClear, showCount/count, произвольные variants, semantic slots и
-ConfigProvider.textArea пока не перенесены. Стили native textarea уже присутствуют
-в закреплённом vendor/antd.css; новые зависимости и CSS overrides не добавлены.
+Расширенный объём следует Ant Design 6.6.8 / @rc-component/input 1.3.1 (~1.3.1):
+изучены TextArea/BaseInput/ResizableTextArea, calculateNodeHeight, useCount,
+useCountDisplay/useCountExceed, resolveOnChange, Ant wrapper/style/tests и
+@rc-component/resize-observer 1.1.2. Используются существующие CSS Input/TextArea
+из [vendor/antd.css](./src/lib/vendor/antd.css) и [лицензия rc-input](./src/lib/vendor/LICENSE.rc-input).
+Новые npm dependencies не добавляются.
+
+AutoSize=true измеряет значение либо placeholder; {minRows,maxRows} ограничивает
+высоту. Измерение учитывает box-sizing, padding/border, шрифты, ширину и wrap.
+При maxRows появляется vertical scroll; без превышения maxRows overflowY=hidden.
+AutoSize устанавливает resize:none; при отключении возвращаются authored styles.
+Один скрытый textarea на document повторяет исходное измерение; в Svelte он имеет
+native tabIndex=-1 и удаляется после последнего потребителя. ResizeObserver
+дедуплицирует floor/offset размеры, вызывает onResize({width,height}) и переносит
+измерение в RAF. Frames/observer/mouseup listener и ref bindings очищаются.
+Ручной resize:both при mousedown отмечает dirty wrapper; onResize также сохраняет
+исходное правило height:auto для непустого wrapper после задания textarea.height.
+
+ShowCount=true выводит UTF-16 length, включая две units на surrogate pair.
+Native maxLength (либо прежний maxlength) остаётся ограничением браузера. Count.max
+переопределяет отображаемый максимум, но сам по себе не обрезает value;
+превышение добавляет ant-input-out-of-range без подмены Form validation.
+Count.max=0 отключает soft range/clip. Count.strategy меняет подсчёт. Обрезание
+включается только через count.exceedFormatter(value,{max}) и только при заданном
+count.max, после завершения composition. Внешние значения не обрезаются;
+selection сохраняется с native clamping. Count.show перекрывает showCount,
+включая явно переданный show:undefined. ShowCount.formatter и count.show formatter
+получают {value,count,maxLength}, возвращают string/number либо Snippet<[info]>;
+для rich content используйте formatter:()=>snippet. Счётчик не добавляет live region.
+
+AllowClear принимает boolean или {disabled,clearIcon}; icon — scalar/Snippet.
+Непереданные icon/disabled наследуют ConfigProvider.textArea.allowClear. Явный
+false отключает clear, а объект disabled=false перекрывает context disabled.
+Как source, кнопка остаётся смонтированной с hidden class для пустого/disabled/
+readonly значения. Pointerdown сохраняет focus. Очистка фокусирует textarea,
+вызывает onValueChange(''), onChange с type=click, затем onClear; native oninput
+искусственно не отправляется. Falsy explicit clearIcon использует исходный '✖';
+для текстового icon задайте его размеры/line-height, поскольку Source button
+использует line-height:0, рассчитанный на SVG.
+
+Новый onChange получает объект с клонированным textarea target/currentTarget и
+стабильным value, как resolveOnChange. При input его type=change, nativeEvent
+содержит исходный DOM event; compositionend и clear сохраняют соответствующие
+типы событий. Target.setSelectionRange делегирует настоящему textarea. Это native
+Event proxy с делегированными DOM methods, а не React SyntheticEvent runtime.
+Прежний порядок onValueChange → native oninput сохранён; onChange находится между
+ними. Compositionend вызывает onChange, не дублируя legacy input callback, кроме
+изменённого exceedFormatter значения. Camel callbacks onFocus/onBlur/onKeyDown/
+onMouseDown/onCompositionStart/End дополняют прежние native handlers.
+
+Variant поддерживает outlined/filled/borderless/underlined. Explicit variant имеет
+приоритет над bordered=false, затем применяется component config, затем outlined.
+Medium — alias прежнего middle. ClassNames/styles принимают root/textarea/clear/
+count либо callback({props}); props отражает текущий Svelte value. Context и local
+semantic styles объединяются, root style идёт после соответствующих semantic root
+styles. Root resize переносится в textarea; styles.textarea имеет приоритет над
+этим resize. Без wrapper root styles, как source, идут после textarea styles.
+ConfigProvider.textArea поддерживает allowClear/autoComplete/variant/class/style/
+classNames/styles; явно заданный nested config заменяет родительский.
+
+Bind:nativeElement по прежнему возвращает HTMLTextAreaElement. Новый rootElement
+даёт textarea либо span-wrapper; bind:this предоставляет focus({cursor:'start'|
+'end'|'all',preventScroll})/blur(). Native autocomplete/readonly и aliases
+maxLength/readOnly/autoComplete/autoFocus сохранены на реальном control. SSR не
+создаёт ResizeObserver/shadow и не вызывает resize/change callbacks.
+
+Галерея `/ant-design#textarea` сохраняет старый пример и добавляет расширенный.
+Fixture `?fixture=textarea-features` дополняет `?fixture=textarea`. Unit/SSR и browser
+проверяют count/clear/IME, размер и cleanup, native refs/events/Form, темы и RTL.
+
+Сохраняется согласованный строковый bind:value: он не заменяется React controlled
+rejection. React broad value types, исходный ref shape resizableTextArea, prefixCls,
+общий ConfigProvider.variant/Form.variant и полный theme/token engine этим этапом
+не добавлены; refs представлены именованными Svelte bindings. Полный аудит всего
+семейства Input, включая прочие subcomponents, остаётся незавершённым.
 
 ## FloatButton, FloatButtonGroup и FloatButtonBackTop
 
@@ -3535,6 +3611,173 @@ viewer. После закрытия фокус возвращается thumbnai
 Fixture — `?fixture=image-preview-group`, галерея — `/ant-design#image`.
 SSR рендерит children без DOM registration и открытого viewer. Ограничения semantic/
 config/container/icons и исходных motion общие с Image и перечислены выше.
+
+## Watermark
+
+Watermark переносит Ant Design 6.6.8: index/useClips/useWatermark/context/utils,
+useSingletonCache и leading RAF debounce. Изучен также
+@rc-component/mutate-observer 2.0.1 (^2.0.1) и @rc-component/util 1.14.0
+(^1.14.0); [лицензия observer](./src/lib/vendor/LICENSE.rc-mutate-observer) сохранена.
+Используются native Canvas/MutationObserver/Image без React dependencies.
+
+```svelte
+<script lang="ts">
+  import { Watermark } from 'antd-svelte';
+</script>
+<Watermark content={['Ant Design', { text: 'Svelte 5', font: { fontSize: 12 } }]}>
+  <p>Содержимое страницы</p>
+</Watermark>
+```
+
+Content принимает строку, WatermarkText {text,font} либо смешанный readonly массив.
+Отсутствующий content даёт ноль строк; пустая строка остаётся отдельной строкой.
+Font задаёт color (включая CanvasGradient/CanvasPattern), fontSize, fontWeight,
+fontStyle, fontFamily и textAlign; построчный font накладывает только определённые
+значения. FontSize конвертируется через Number, как source: числовые строки
+поддержаны, единицы вроде '18px' не разбираются. Между строками FontGap=3.
+
+Три Canvas повторяют исходные text/image, поворот и alternating clips. Размер
+текста определяется measureText/fontBoundingBoxAscent/Descent; width/height
+переопределяют измерение. Image имеет приоритет, использует crossOrigin=anonymous
+и referrerPolicy=no-referrer. При ошибке рисуется content; image defaults 120x64
+сохраняются и для fallback. DPR читается при отрисовке; отдельной подписки на его
+изменение нет. Пустой рисунок не копирует нулевые Canvas. В DOM Canvas не остаются:
+слой использует PNG data URL, background-repeat=repeat и floor(logical width).
+
+Rotate=-22, gap=[100,100], offset=gap/2. Положительное смещение относительно
+центра gap сдвигает и сужает слой; отрицательное меняет background-position.
+Координаты физические и не переворачиваются в RTL. ZIndex по умолчанию равен
+zIndexPopupBase-1, то есть 999 в стандартной теме. Слой absolute, занимает 100%,
+не перехватывает pointer events и имеет visibility:visible!important.
+Декоративный слой скрыт от accessibility tree, children/focus не подменяются.
+
+Обёртка имеет position:relative/overflow:hidden. ConfigProvider.watermark
+принимает class/style; class и rootClassName добавляются, style владельца идёт
+после default/context. Вложенный явно заданный watermark config заменяет
+родительский. Bind:nativeElement возвращает div. Как исходный WatermarkProps,
+компонент не принимает произвольные HTML attrs/events; они остаются у children.
+Font defaults читают поддерживаемые colorFill/fontSizeLG CSS tokens; light/dark
+и compact реактивны. Общий disabled не отключает рисунок.
+
+MutationObserver следует исходному набору subtree/childList/style/class.
+Изменение style/class слоя восстанавливает стили, снимает class/hidden;
+самостоятельное изменение hidden не наблюдается до следующей наблюдаемой мутации.
+Удалённый/перемещённый слой возвращается тем же DOM node с кэшированным PNG,
+вызывая onRemove. Изменение только стилей не вызывает onRemove. На root
+восстанавливаются лишь ожидаемые position/overflow, включая явные overrides;
+прочие утраченные inline styles не восстанавливаются. При штатном unmount и
+удалении панели onRemove не вызывается.
+
+Сохранены особенности алгоритма кэша и scheduling Ant Design 6.6.8. Кэш хранит
+последний набор параметров, исключая HTMLElement и top-level NaN из ключей.
+Поэтому смена только image URL при неизменных геометрии/параметрах использует
+прежний PNG; смена rotate/size/gap обновляет изображение. Незавершённые image
+requests сохраняют исходный completion order: старый ответ с отличающейся
+геометрией может временно заменить уже показанный новый рисунок; наблюдатель
+может затем запустить актуальную отрисовку. Нативные paint-объекты без enumerable
+полей также следуют исходному глубокому сравнению ключей кэша. Leading RAF throttle
+выполняет первый вызов сразу и подавляет остальные до кадра без trailing-вызова;
+внутрикадровые изменения могут ждать следующего независимого обновления.
+Эти особенности не исправлены скрыто при переносе.
+
+Inherit=true предоставляет контекст дочерним Modal/Drawer. Они регистрируют
+соответственно .ant-modal-container и .ant-drawer-section; каждый получает
+такой же рисунок, включая native dialog top layer. Регистрация следует
+сохранённому lifecycle местных Modal/Drawer. Inherit=false не предоставляет
+свой контекст; в nested Watermark остаётся доступен контекст внешнего Watermark.
+Смена inherit пересоздаёт children branch, как условный Provider исходника.
+Attachment панели снимает регистрацию при уничтожении без её восстановления.
+
+SSR выводит только обёртку/children, без Canvas/Image/observer/callbacks.
+После unmount отключаются observer, RAF и callbacks ожидающих изображений,
+удаляются принадлежащие компоненту слои. Без 2D context остаются children; без
+MutationObserver рисунок создаётся, но не восстанавливается после DOM mutation.
+Watermark не имеет собственного CSS/component token/prefixCls API в upstream;
+нового CSS-рецепта не требуется. Общий произвольный React theme/token engine
+остаётся неперенесённым. Источник алгоритмов покрыт существующей
+[MIT-лицензией Ant Design](./src/lib/vendor/LICENSE.ant-design).
+
+Галерея — `/ant-design#watermark`, fixture — `?fixture=watermark`.
+Unit/SSR проверяют geometry/fonts/draw calls и серверную границу; browser
+проверяет реальные PNG pixels, восстановление DOM, image/cache, DPI и панели.
+
+
+## Rate
+
+Rate следует Ant Design 6.6.8 и @rc-component/rate 1.0.1 (~1.0.1).
+Изучены wrapper, style, demo, tests и делегированные Rate/Star/util.
+[MIT-лицензия rc-rate](./src/lib/vendor/LICENSE.rc-rate) включена в пакет;
+React runtime и новые npm dependencies не добавляются.
+
+```svelte
+<script lang="ts">
+  import { Rate } from 'antd-svelte';
+  let value = $state(2.5);
+</script>
+<Rate aria-label="Оценка" {value} allowHalf
+  tooltips={['Очень плохо', 'Плохо', 'Нормально', 'Хорошо', 'Отлично']}
+  onChange={next => { value = next; }} />
+```
+
+Value управляется владельцем через onChange; без value используется внутреннее
+значение с defaultValue=0. Count=5 принимает целое неотрицательное число, как
+new Array(count) в upstream. Значения и fractions владельца не округляются и
+не ограничиваются count. Уменьшение count не меняет value. Native form reset
+не сбрасывает внутренний выбор; собственное поле FormData не создаётся.
+
+AllowHalf=false по умолчанию. При allowHalf половина определяется координатой
+относительно исходного li, с обратной стороной в RTL; точный midpoint даёт полную
+оценку. Hover показывает временный выбор без onChange. OnHoverChange получает
+также undefined при выходе и перед публикацией клика. AllowClear=true очищает
+повторный выбор до 0; этот же hover подавляется до другой позиции/выхода.
+AllowClear=false повторно публикует то же value. Внешняя смена props не вызывает
+callbacks. Смена controlled value на undefined очищает внутренний fallback,
+как useControlledState зависимости; новое нажатие снова задаёт значение.
+
+ArrowLeft/Right изменяют значение на 1 либо 0.5, направление обратное в RTL.
+Фокус при этом не перемещается. Исходная арифметика сохраняется без clamp:
+например, внешнее 4.8 при count=5 и allowHalf=true увеличивается до 5.3.
+OnKeyDown вызывается после изменения; обработанная стрелка получает preventDefault.
+Keyboard=false отключает стрелки; Enter на символе по-прежнему выбирает полное
+значение и предотвращает дублирующий native click. Focus/blur callbacks следуют
+всплывающему изменению фокуса.
+
+Character — строка, число или Snippet<[RateCharacterInfo]>; snippet получает
+index/count, временное отображаемое value, allowHalf/disabled/focused, prefixCls
+и исходные onHover(event,index)/onClick(event,index). Он рендерится в двух слоях
+звезды, как исходный character. CharacterRender —
+Snippet<[Snippet,RateCharacterInfo]> с исходным star snippet; как rest override
+Ant wrapper, он заменяет автоматическую Tooltip composition. Tooltips принимает
+строки или поддерживаемые локальные TooltipProps без children. Tooltip использует
+существующую обёртку с display:contents; отступы между stars сохранены.
+
+Size принимает small/medium/large и совместимое middle, наследует componentSize.
+Disabled наследует общий disabled-контекст, включая Form; явный false имеет
+приоритет. ConfigProvider.rate принимает class/style, локальные class/rootClassName
+добавляются, style накладывается после контекстного. Вложенный явно заданный rate
+config заменяет родительский. Light/dark, compact, RTL и reduced motion реактивны;
+CSS variables --ant-rate-star-color/size/size-sm/size-lg/bg/hover-scale и
+--ant-rate-line-width-focus допускают явный inline override.
+
+Bind:this предоставляет focus()/blur(), которые игнорируются при disabled;
+bind:nativeElement возвращает ul. AutoFocus применяется только после mount,
+SSR не обращается к DOM и не вызывает callbacks. Нативные button type=button
+заменяют исходные div role=radio: дополнительно доступна активация Space, корневая
+ul получает radiogroup и видимый focus. Исходные cumulative aria-checked,
+aria-posinset/setsize и отдельные tab stops сохранены. Декоративные копии символов
+скрыты от accessibility tree; имя кнопки — её one-based номер.
+
+[vendor/rate.css](./src/lib/vendor/rate.css) содержит все 21 правило из закреплённого
+npm-архива с проверкой SHA-256; рецепт rate адаптирует >div к >button, declarations
+сохранены. Rate.svelte дополняет native reset styles, focus и reduced motion.
+StarFilled SVG взят из Ant Design Icons SVG 4.6.0 с существующей MIT-лицензией.
+Галерея — `/ant-design#rate`, fixture — `?fixture=rate`; unit/SSR и browser
+сценарии проверяют значения, callbacks, геометрию, контексты и cleanup.
+
+PrefixCls и произвольный React theme/token engine пока отсутствуют; namespace
+ant-rate закреплён. Полный upstream Tooltip API ограничен текущим публичным
+Svelte Tooltip. Эти части не считаются покрытыми переносом Rate.
+
 
 ## Mentions
 

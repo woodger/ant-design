@@ -6,9 +6,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **78**.
-Есть публичная реализация у **54** семейств; отсутствует у **19**.
-Проверенный объём v1 покрыт у **26**; требуется аудит у **28**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **80**.
+Есть публичная реализация у **56** семейств; отсутствует у **17**.
+Проверенный объём v1 покрыт у **28**; требуется аудит у **28**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -39,11 +39,11 @@ Candidate означает запись каталога, для которой 
 | [ColorPicker](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/color-picker) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [DatePicker](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/date-picker) | data-entry | target | DatePicker, RangePicker | Согласованный v1 покрыт | Другие picker modes, multiple, single presets/render hooks, mask и semantic API (missing); Глобальный DatePicker component config, prefix/tokens, popup motion/container (missing) |
 | [Form](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/form) | data-entry | target | Form, createForm, FormValidationError, FormItem | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Form.List и вложенные name paths (missing) |
-| [Input](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/input) | data-entry | target | Input, TextArea | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); TextArea autoSize, clear/count, variants, semantic slots и textArea config (missing); Input.Password/Search/OTP и deprecated Group (missing); Input prefixCls, общий variant/token engine и React value/ref conventions (missing) |
+| [Input](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/input) | data-entry | target | Input, TextArea | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Input.Password/Search/OTP и deprecated Group (missing); Input prefixCls, общий variant/token engine и React value/ref conventions (missing); TextArea prefixCls, общий variant/token engine и React value/ref conventions (missing) |
 | [InputNumber](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/input-number) | data-entry | target | InputNumber | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); stringMode, formatter/parser и варианты оформления (missing) |
 | [Mentions](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/mentions) | data-entry | target | Mentions, getMentions | Согласованный v1 покрыт | Полный semantic/config API, popupRender/container, legacy Option и motion (missing) |
 | [Radio](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/radio) | data-entry | target | Radio, RadioGroup | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
-| [Rate](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/rate) | data-entry | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Rate](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/rate) | data-entry | target | Rate | Согласованный v1 покрыт | PrefixCls, произвольный token engine и полный upstream Tooltip API (missing) |
 | [Select](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/select) | data-entry | target | Select | Согласованный v1 покрыт | Свободный ввод tags (missing); Виртуализация options (missing) |
 | [Slider](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/slider) | data-entry | target | Slider | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Range и marks/dots (missing) |
 | [Switch](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/switch) | data-entry | target | Switch | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
@@ -82,7 +82,7 @@ Candidate означает запись каталога, для которой 
 | [Result](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/result) | feedback | target | Result | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed) |
 | [Skeleton](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/skeleton) | feedback | target | Skeleton | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Отдельные Skeleton primitives (missing) |
 | [Spin](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/spin) | feedback | target | Spin | Требуется аудит v1 | Подробный аудит согласованного API v1 (unreviewed); Fullscreen и percent (missing) |
-| [Watermark](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/watermark) | feedback | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Watermark](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/watermark) | feedback | target | Watermark | Согласованный v1 покрыт | Полный общий theme/token engine (missing) |
 | [Affix](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/affix) | other | target | Affix | Согласованный v1 покрыт | PrefixCls и глобальный affix/getTargetContainer config (missing) |
 | [App](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/app) | other | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [BorderBeam](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/border-beam) | other | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |

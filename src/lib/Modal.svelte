@@ -3,6 +3,7 @@
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
   import { useConfig } from './config-context';
+  import { useWatermarkPanel } from './watermark-context';
   import Button from './Button.svelte';
   import Icon from './Icon.svelte';
 
@@ -41,6 +42,7 @@
   }: ModalProps = $props();
 
   const config = useConfig();
+  const watermarkPanel = useWatermarkPanel();
   const generatedId = $props.id();
   const titleId = `ant-modal-${generatedId}`;
   let dialog = $state<HTMLDialogElement>();
@@ -129,7 +131,7 @@
   onpointerup={handlePointerUp}
 >
   <div class="ant-modal">
-    <div class="ant-modal-container">
+    <div class="ant-modal-container" {@attach watermarkPanel}>
       {#if closable}
         <button type="button" class="ant-modal-close" disabled={confirmLoading} aria-label={config.locale.closeText} onclick={cancel}>
           <Icon name="close" />

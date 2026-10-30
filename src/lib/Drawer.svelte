@@ -3,6 +3,7 @@
   import { onDestroy, untrack } from 'svelte';
   import Icon from './Icon.svelte';
   import { useConfig } from './config-context';
+  import { useWatermarkPanel } from './watermark-context';
   import { createDrawerDialog } from './drawer.dom';
   import { getDrawerSize } from './drawer.engine';
   import type { DrawerProps } from './drawer.types';
@@ -10,6 +11,7 @@
   let { open = $bindable(false), title, children, extra, footer, placement = 'right', size = 'default', closable = true, keyboard = true, mask, forceRender = false, destroyOnHidden = false, onClose, id, 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby, 'aria-describedby': ariaDescribedby, class: className = '', style }: DrawerProps = $props();
 
   const config = useConfig();
+  const watermarkPanel = useWatermarkPanel();
   const generatedId = $props.id();
   let dialog = $state<HTMLDialogElement>();
   let mounted = $state(false);
@@ -101,7 +103,7 @@
   <div class={['ant-drawer-mask', mask?.blur && 'ant-drawer-mask-blur']} aria-hidden="true"></div>
   <div class="ant-drawer-content-wrapper">
     {#if renderContent}
-      <div class="ant-drawer-section" {@attach rememberContent}>
+      <div class="ant-drawer-section" {@attach rememberContent} {@attach watermarkPanel}>
         {#if title !== undefined || closable || extra}
           <div class="ant-drawer-header">
             <div class="ant-drawer-header-title">

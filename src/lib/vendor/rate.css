@@ -1,0 +1,25 @@
+/* Ant Design 6.6.8 — MIT; vendor/LICENSE.ant-design.
+ * Rate: все правила; >div заменён на >button для нативных controls.
+ * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-rate:where(.ant-rate-css-var){font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-rate:where(.ant-rate-css-var)::before,.ant-rate:where(.ant-rate-css-var)::after{box-sizing:border-box;}
+.ant-rate:where(.ant-rate-css-var) [class^="ant-rate"],.ant-rate:where(.ant-rate-css-var) [class*=" ant-rate"]{box-sizing:border-box;}
+.ant-rate:where(.ant-rate-css-var) [class^="ant-rate"]::before,.ant-rate:where(.ant-rate-css-var) [class*=" ant-rate"]::before,.ant-rate:where(.ant-rate-css-var) [class^="ant-rate"]::after,.ant-rate:where(.ant-rate-css-var) [class*=" ant-rate"]::after{box-sizing:border-box;}
+.ant-rate:where(.ant-rate-css-var){box-sizing:border-box;margin:0;padding:0;color:var(--ant-rate-star-color);font-size:var(--ant-rate-star-size);line-height:1;list-style:none;font-family:var(--ant-font-family);display:inline-block;outline:none;}
+.ant-rate-small{font-size:var(--ant-rate-star-size-sm);}
+.ant-rate-large{font-size:var(--ant-rate-star-size-lg);}
+.ant-rate-disabled.ant-rate:where(.ant-rate-css-var) .ant-rate-star{cursor:default;}
+.ant-rate-disabled.ant-rate:where(.ant-rate-css-var) .ant-rate-star >button:hover{transform:scale(1);}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star{position:relative;display:inline-block;color:inherit;cursor:pointer;}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star:not(:last-child){margin-inline-end:var(--ant-margin-xs);}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star >button{transition:all var(--ant-motion-duration-mid),outline 0s;}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star >button:hover{transform:var(--ant-rate-star-hover-scale);}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star >button:focus{outline:0;}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star >button:focus-visible{outline:var(--ant-rate-line-width-focus) dashed var(--ant-rate-star-color);transform:var(--ant-rate-star-hover-scale);}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star-first,.ant-rate:where(.ant-rate-css-var) .ant-rate-star-second{color:var(--ant-rate-star-bg);transition:all var(--ant-motion-duration-mid);user-select:none;}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star-first{position:absolute;top:0;inset-inline-start:0;width:50%;height:100%;overflow:hidden;opacity:0;}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star-half .ant-rate-star-first,.ant-rate:where(.ant-rate-css-var) .ant-rate-star-half .ant-rate-star-second{opacity:1;}
+.ant-rate:where(.ant-rate-css-var) .ant-rate-star-half .ant-rate-star-first,.ant-rate:where(.ant-rate-css-var) .ant-rate-star-full .ant-rate-star-second{color:inherit;}
+.ant-rate-rtl.ant-rate:where(.ant-rate-css-var){direction:rtl;}
+.ant-rate-css-var{--ant-rate-line-width-focus:1px;--ant-rate-star-color:#fadb14;--ant-rate-star-size:20px;--ant-rate-star-size-sm:15px;--ant-rate-star-size-lg:25px;--ant-rate-star-hover-scale:scale(1.1);--ant-rate-star-bg:rgba(0,0,0,0.06);}

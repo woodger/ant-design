@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { FloatButtonConfig, FloatButtonGroupConfig } from './float-button.types';
   import type { ButtonConfig } from './button.types';
+  import type { RateConfig } from './rate.types';
+  import type { WatermarkConfig } from './watermark.types';
   import type { InputConfig } from './input.types';
+  import type { TextAreaConfig } from './textarea.types';
   import type { Snippet } from 'svelte';
   import { provideConfig, useConfig, type ConfigContext } from './config-context';
   import type { ComponentSize, Locale, ThemeConfig } from './types';
@@ -11,6 +14,9 @@
     children: Snippet;
     theme?: ThemeConfig;
     button?: ButtonConfig;
+    rate?: RateConfig;
+    watermark?: WatermarkConfig;
+    textArea?: TextAreaConfig;
     input?: InputConfig;
     floatButton?: FloatButtonConfig;
     floatButtonGroup?: FloatButtonGroupConfig;
@@ -26,6 +32,9 @@
     children,
     theme,
     button,
+    rate,
+    watermark,
+    textArea,
     input,
     floatButton,
     floatButtonGroup,
@@ -40,7 +49,10 @@
   const parent = useConfig();
   const config: ConfigContext = {
     get button() { return button ?? parent.button; },
+    get rate() { return rate ?? parent.rate; },
+    get watermark() { return watermark ?? parent.watermark; },
     get input() { return input ?? parent.input; },
+    get textArea() { return textArea ?? parent.textArea; },
     get floatButton() { return floatButton ?? parent.floatButton; },
     get floatButtonGroup() { return floatButtonGroup ?? parent.floatButtonGroup; },
     get componentSize() { return componentSize ?? parent.componentSize; },

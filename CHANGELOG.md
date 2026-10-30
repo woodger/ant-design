@@ -9,6 +9,11 @@
 
 ### Changed
 
+- Объединены локальный и удалённый `develop` с сохранением обеих историй. Rate,
+  Watermark, расширенный TextArea и наследование Watermark в Modal/Drawer перенесены
+  в самостоятельный npm-пакет; примеры и браузерные проверки принадлежат homepage.
+- Уточнён приоритет reduced-motion CSS TextArea при сборке npm-пакета, включая
+  обычное, disabled и mouse-active состояния поля.
 - Input расширен изменениями из `woodger/ant-design@cf3e20c`: prefix/suffix/addons,
   clear/count/IME, variants, semantic slots, ConfigProvider.input, native refs и
   focus/Enter. Сохранены string bind:value, onValueChange и нативные события.

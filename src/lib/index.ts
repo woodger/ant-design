@@ -25,7 +25,7 @@ export type { RangePickerProps, RangePickerValue, RangePickerInputValue, RangePi
 export { default as DatePicker } from './DatePicker.svelte';
 export type { DatePickerProps, DatePickerLocale, DatePickerTimeConfig, DatePickerDisabledTime, DatePickerFormat, DatePickerMode } from './date-picker.types';
 export { default as TextArea } from './TextArea.svelte';
-export type { TextAreaProps } from './textarea.types';
+export type { TextAreaProps, TextAreaConfig, TextAreaVariant, TextAreaCountInfo, TextAreaCountConfig, TextAreaCountContent, TextAreaCountFormatter, TextAreaAllowClear, TextAreaSemanticSlots, TextAreaSemantic, TextAreaChangeEvent } from './textarea.types';
 export { default as FloatButton } from './FloatButton.svelte';
 export { default as FloatButtonGroup } from './FloatButtonGroup.svelte';
 export { default as FloatButtonBackTop } from './FloatButtonBackTop.svelte';
@@ -161,3 +161,7 @@ export type { ConfigProviderProps } from './ConfigProvider.svelte';
 export type { FormItemProps } from './FormItem.svelte';
 export type { ValidationRule, FormRules, FieldErrors, FormValue, FormValues } from './validation.engine';
 export { ruRU, enUS, type Locale, type InputNumberLocale, type PaginationLocale, type TableLocale, type ComponentSize, type ThemeConfig, type SelectOption } from './types';
+export { default as Rate } from './Rate.svelte';
+export type { RateProps, RateConfig, RateCharacterInfo } from './rate.types';
+export { default as Watermark } from './Watermark.svelte';
+export type { WatermarkProps, WatermarkConfig, WatermarkFont, WatermarkText, WatermarkContent } from './watermark.types';
