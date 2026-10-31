@@ -220,6 +220,14 @@ export type {
   ButtonSemanticProps
 } from './button.types';
 export { default as Input } from './Input.svelte';
+export { default as InputPassword } from './InputPassword.svelte';
+export type {
+  InputPasswordProps,
+  InputPasswordConfig,
+  InputPasswordVisibilityToggle,
+  InputPasswordIconRender,
+  InputPasswordSemantic
+} from './input-password.types';
 export { default as InputNumber } from './InputNumber.svelte';
 export { default as Slider } from './Slider.svelte';
 export { default as Tooltip } from './Tooltip.svelte';

@@ -13,6 +13,7 @@ export interface ThemeConfig {
 }
 
 export interface Locale {
+  global?: { show?: string; hide?: string; };
   image?: { preview?: string; };
   tree?: { expand?: string; collapse?: string; };
   upload?: UploadLocale;
@@ -173,6 +174,7 @@ export const ruRU = {
   okText: 'Подтвердить',
   cancelText: 'Отмена',
   closeText: 'Закрыть',
+  global: { show: 'Показать', hide: 'Скрыть' },
   image: { preview: 'Просмотр изображения' },
   clearText: 'Очистить',
   emptyText: 'Ничего не найдено',
@@ -249,6 +251,7 @@ export const enUS = {
   okText: 'OK',
   cancelText: 'Cancel',
   closeText: 'Close',
+  global: { show: 'Show', hide: 'Hide' },
   image: { preview: 'Image preview' },
   clearText: 'Clear',
   emptyText: 'No options',

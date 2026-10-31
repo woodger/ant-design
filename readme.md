@@ -129,6 +129,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | Watermark | Text/image Canvas tiles, per-line fonts, offsets, mutation repair, наследование Modal/Drawer |
 | Rate | Value/defaultValue, half/clear, hover, keyboard/RTL, character/tooltips, размеры и focus ref |
 | Input | Native text/events/forms, prefix/suffix/addons, clear/count, variants, semantic slots и input config |
+| InputPassword | Видимость пароля, click/hover/keyboard, controlled toggle, focus/selection и возможности Input |
 | DatePicker | Single Dayjs date/datetime, input/calendar/time, confirmation, clear, ограничения, locale и native формы |
 | RangePicker | Пара Dayjs, связанные календари, время и подтверждение границ, allowEmpty/disabled, presets и hover |
 | Upload / UploadDragger | Выбор/drop, controlled list, beforeUpload, XHR/customRequest, статусы и удаление |
@@ -2979,12 +2980,65 @@ Fixture `?fixture=input-features` дополняет прежний Input/Select
 Unit/SSR и browser проверяют count/IME, focus/Enter, clear/event order, refs,
 FormData/FormItem/Compact, variants/semantic styles, темы и RTL.
 
-Input.Password/Search/OTP/legacy Group ещё не перенесены. Общие prefixCls,
+Input.Password доступен как отдельный InputPassword; Search/OTP/legacy Group ещё
+не перенесены. Общие prefixCls,
 ConfigProvider.variant/Form.variant, arbitrary token engine и deprecated internal
 classes/structures остаются отдельными пробелами. Согласованный string bind:value
 сохраняется вместо React controlled rejection/broad value types; native DOM events
 и именованные Svelte bindings заменяют SyntheticEvent/ref object. Общий аудит
 семейства Input остаётся unreviewed.
+
+## InputPassword (Input.Password)
+
+Переключатель видимости перенесён из Password.tsx и его тестов Ant Design 6.6.8.
+InputPassword использует существующий Input: bind:value, defaultValue, native
+атрибуты и события, clear/count, affixes/addons, FormItem, Compact и методы refs
+сохраняют его контракт. Точные настройки описаны в
+[исходных типах](./src/lib/input-password.types.ts).
+
+```svelte
+<script lang="ts">
+  import { InputPassword } from 'antd-svelte';
+  let password = $state('');
+  let visible = $state(false);
+</script>
+
+<InputPassword bind:value={password} autoComplete="new-password"
+  visibilityToggle={{ visible, onVisibleChange: next => { visible = next; } }}
+  aria-label="Пароль" />
+```
+
+Без visibilityToggle.visible компонент хранит видимость сам. В controlled-режиме
+callback запрашивает новое состояние, а внешний visible определяет результат;
+обновление prop не вызывает callback. При снятии контроля сохраняется последнее
+состояние. VisibilityToggle=false скрывает кнопку, сохраняя текущую видимость и
+suffix wrapper. Type всегда определяется видимостью.
+
+Как в upstream, action=hover переключает состояние на mouseover; mouseleave
+ничего не меняет. Обрабатываются и всплывающие события от иконки: смена SVG под
+указателем может вызвать дополнительные переключения. Это поведение подтверждено
+в React-версии 6.6.8 и сохранено. Enter и Space переключают один раз, повторные keydown
+игнорируются. Disabled блокирует переключение и исключает его из Tab-порядка;
+readonly оставляет показ доступным. Mousedown/mouseup не уводят фокус и не меняют
+каретку. Вместо React span с role=button используется native button type=button
+с тем же поведением и видимым keyboard focus. Переключатель стоит перед suffix,
+после Input clear/count. Иконки Eye/EyeInvisible взяты из @ant-design/icons-svg
+4.6.0; MIT-лицензия сохранена в vendor. IconRender возвращает scalar либо Snippet;
+пустой результат оставляет доступную кнопку.
+
+ConfigProvider.inputPassword задаёт собственные iconRender, variant и semantic
+оформление поверх ConfigProvider.input. Вложенный inputPassword заменяет объект
+целиком. Подписи переключателя используют locale.global.show/hide; частичный
+global наследует остальные поля. Explicit size добавляет класс ant-input-password
+с суффиксом размера, а унаследованный размер меняет только Input, как в эталоне.
+
+Скрытый пароль удаляет value attribute после mount/input/focus/blur и запроса
+скрытия, не меняя property value. При показе attribute восстанавливается; timers
+очищаются при unmount. Bind:inputElement/nativeElement и bind:this методы
+focus/blur/select/setSelectionRange делегируются Input. SSR не запускает timers
+или callbacks. Фикстура `?fixture=input-password`, source SSR и проверки публичного
+пакета покрывают эти сценарии, темы, RTL, локаль и FormItem. Общие ограничения
+Input для prefixCls, variant/token engine и React value/ref conventions сохраняются.
 
 ## TextArea (Input.TextArea)
 

@@ -7,6 +7,13 @@
 
 ## [Unreleased]
 
+### Added
+
+- InputPassword переносит Input.Password из Ant Design 6.6.8: controlled/local
+  visibility, click/hover/keyboard, сохранение focus/selection, очистку value
+  attribute и ConfigProvider.inputPassword. Добавлены locale.global.show/hide,
+  изолированная браузерная фикстура и проверки публичного пакета.
+
 ### Changed
 
 - Исходники и тесты приведены к правилам длины строк и отдельных инструкций;

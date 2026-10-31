@@ -16,6 +16,7 @@
   import RemoteSelectFixtures from './RemoteSelectFixtures.svelte';
   import TextAreaFixtures from './TextAreaFixtures.svelte';
   import InputFeaturesFixtures from './InputFeaturesFixtures.svelte';
+  import InputPasswordFixtures from './InputPasswordFixtures.svelte';
   import BasicFixtures from './BasicFixtures.svelte';
   import { createControls } from './controls.model.svelte';
   import CheckboxPagination from './CheckboxPagination.svelte';
@@ -106,6 +107,7 @@
     <TextAreaFeaturesFixtures />
     <TextAreaFixtures />
     <InputFeaturesFixtures />
+    <InputPasswordFixtures />
     <BasicFixtures kind="input" {controls} />
 
     <BasicFixtures kind="select" {controls} />

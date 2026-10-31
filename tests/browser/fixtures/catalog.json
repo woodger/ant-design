@@ -351,6 +351,11 @@
     "root": "input-features-fixture"
   },
   {
+    "id": "input-password",
+    "module": "./InputPasswordFixtures.svelte",
+    "root": "input-password-fixture"
+  },
+  {
     "id": "rate",
     "module": "./RateFixtures.svelte",
     "root": "rate-fixture"

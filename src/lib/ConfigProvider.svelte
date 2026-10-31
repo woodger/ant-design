@@ -4,6 +4,7 @@
   import type { RateConfig } from './rate.types';
   import type { WatermarkConfig } from './watermark.types';
   import type { InputConfig } from './input.types';
+  import type { InputPasswordConfig } from './input-password.types';
   import type { TextAreaConfig } from './textarea.types';
   import type { Snippet } from 'svelte';
   import { provideConfig, useConfig, type ConfigContext } from './config-context';
@@ -20,6 +21,7 @@
     watermark?: WatermarkConfig;
     textArea?: TextAreaConfig;
     input?: InputConfig;
+    inputPassword?: InputPasswordConfig;
     floatButton?: FloatButtonConfig;
     floatButtonGroup?: FloatButtonGroupConfig;
     /** Наследуемый размер controls; локальный size и Compact имеют приоритет. */
@@ -41,6 +43,7 @@
     watermark,
     textArea,
     input,
+    inputPassword,
     floatButton,
     floatButtonGroup,
     componentSize,
@@ -64,6 +67,9 @@
     },
     get input() {
       return input ?? parent.input;
+    },
+    get inputPassword() {
+      return inputPassword ?? parent.inputPassword;
     },
     get textArea() {
       return textArea ?? parent.textArea;
@@ -93,6 +99,7 @@
       return {
         ...parent.locale,
         ...locale,
+        global: { ...parent.locale.global, ...locale?.global },
         pagination: { ...parent.locale.pagination, ...locale?.pagination },
         table: { ...parent.locale.table, ...locale?.table },
         inputNumber: { ...parent.locale.inputNumber, ...locale?.inputNumber },
