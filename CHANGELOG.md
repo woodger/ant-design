@@ -9,6 +9,11 @@
 
 ### Added
 
+- Masonry переносит измеряемую раскладку с responsive columns/gutters, fresh,
+  keyed items, snippets, onLayoutChange и semantic/config API. Сохранены пустой
+  SSR root, исходные CSS appear/leave и очистка observers/RAF; перестановка
+  восстанавливает native focus/selection. Добавлены CSS-рецепт и проверки
+  engine/SSR/DOM, публичного пакета и изолированного браузерного стенда.
 - BorderBeam переносит CSS-декорацию рамки: несколько лучей с фазами, градиенты,
   размеры/outset, наследование radius, config и reduced motion. Явный target
   заменяет React child ref без новой обёртки; слои очищаются при смене контейнера.

@@ -658,5 +658,17 @@
       "antBorderBeamMove"
     ],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * BorderBeam: mask/offset-path, анимация и prefers-reduced-motion.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "masonry",
+    "output": "src/lib/vendor/masonry.css",
+    "expectedRules": 12,
+    "include": [
+      "\\.ant-masonry(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [],
+    "keyframes": [],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Masonry: root/item, RTL и CSS appear/leave transitions.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

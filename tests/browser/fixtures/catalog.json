@@ -381,6 +381,11 @@
     "root": "border-beam-fixture"
   },
   {
+    "id": "masonry",
+    "module": "./MasonryFixtures.svelte",
+    "root": "masonry-fixture"
+  },
+  {
     "id": "watermark",
     "module": "./WatermarkFixtures.svelte",
     "root": "watermark-fixture"

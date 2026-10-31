@@ -211,7 +211,7 @@ test(
     await expect(page.getByRole('status', { name: 'Numeric value' })).toHaveText('undefined');
 
     await select.click();
-    await page.getByRole('option', { name: 'Zero', exact: true }).click();
+    await fixture.getByRole('listbox').getByRole('option', { name: 'Zero', exact: true }).click();
     await fixture.getByRole('button', { name: 'Read FormData' }).click();
 
     await expect(page.getByRole('status', { name: 'Numeric value' })).toHaveText('number:0');

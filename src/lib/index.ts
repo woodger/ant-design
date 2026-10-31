@@ -554,3 +554,14 @@ export type {
   BorderBeamColor,
   BorderBeamGradient
 } from './border-beam.types';
+export { default as Masonry } from './Masonry.svelte';
+export type {
+  MasonryProps,
+  MasonryItemType,
+  MasonryRenderInfo,
+  MasonryKey,
+  MasonryContent,
+  MasonryConfig,
+  MasonrySemantic,
+  MasonrySemanticSlots
+} from './masonry.types';

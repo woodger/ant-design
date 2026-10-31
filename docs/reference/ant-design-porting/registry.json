@@ -674,24 +674,106 @@
       "id": "masonry",
       "name": "Masonry",
       "category": "layout",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: измеряемая раскладка, responsive columns/gutters, fresh, CSS appear/leave и semantic config.",
       "upstreamPath": "components/masonry",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "Masonry",
+          "local": [
+            "Masonry"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider",
+        "grid"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@rc-component/motion",
+          "range": "^1.3.3",
+          "referenceVersion": "1.3.3"
+        },
+        {
+          "name": "@rc-component/resize-observer",
+          "range": "^1.1.2",
+          "referenceVersion": "1.1.2"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        }
+      ],
+      "priority": "p2",
+      "effort": "M",
+      "evidence": [
+        "src/lib/Masonry.svelte",
+        "src/lib/masonry.engine.test.ts",
+        "src/lib/masonry.dom.test.ts",
+        "src/lib/masonry.ssr.test.ts",
+        "tests/package/masonry.ssr.test.ts",
+        "tests/browser/masonry.spec.ts",
+        "tools/ant-design-css-recipes.json"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Измеренные высоты, shortest columns, explicit column и responsive gutters",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/masonry.engine.test.ts",
+            "tests/browser/masonry.spec.ts"
+          ],
+          "note": "Порядок и tie-break исходника, верхний clamp column, четыре измерения для resize dedup, RAF batch и native load/error. Height поля item не задаёт CSS-высоту. Числовые gutters работают по обеим осям; CSS-строки, как в source, не нормализуются перед px/JS-сложением. Невалидные нецелые/отрицательные columns сохраняют RangeError."
+        },
+        {
+          "id": "items-notifications",
+          "title": "Generic items, children/itemRender, ключи и onLayoutChange",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/masonry.engine.test.ts",
+            "tests/browser/masonry.spec.ts"
+          ],
+          "note": "Snippets заменяют React render nodes; 0/false/пустая строка children имеют приоритет над renderer. Callback сохраняет все поля item и computed column, сравнение util isEqual предотвращает повтор одинакового результата и feedback loop. CSSMotionList использует строковые ключи, geometry map сохраняет исходный key."
+        },
+        {
+          "id": "lifecycle-motion",
+          "title": "Fresh, appear/leave, SSR, native focus и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/masonry.dom.test.ts",
+            "src/lib/masonry.ssr.test.ts",
+            "tests/package/masonry.ssr.test.ts",
+            "tests/browser/masonry.spec.ts"
+          ],
+          "note": "SSR выводит пустой root; items появляются после mount. Fresh наблюдает дочерние размеры; root наблюдается всегда. Leave сохраняет DOM до собственного transition/animation end, reinsert отменяет удаление. Два RAF до active; key diff перенесён из motion 1.3.3. Ref, listeners, observers и frames очищаются, stale callbacks игнорируются. Перестановка сохраняет native draft/focus/selection без перехвата внешнего фокуса."
+        },
+        {
+          "id": "presentation",
+          "title": "Semantic/config styles, темы, RTL и pinned vendor CSS",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/masonry.ssr.test.ts",
+            "tests/package/masonry.ssr.test.ts",
+            "tests/browser/masonry.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "ConfigProvider.masonry class/style/classNames/styles с заменой nested object; callbacks получают resolved columns. Root style перекрывает height, geometry перекрывает item styles. Извлечены все 12 CSS rules, включая transitions; RTL использует логический inset без смены data order."
+        },
+        {
+          "id": "theme-prefix-motion",
+          "title": "PrefixCls, общий theme/token engine и глобальный motion config",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Доступны текущие CSS variables, light/dark и inherited direction. Произвольные React prefixCls/theme algorithms, component tokens и ConfigProvider motion=false не перенесены. У Masonry нет отдельного reduced-motion override в закреплённом CSS."
         }
       ]
     },

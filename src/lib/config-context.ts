@@ -3,6 +3,7 @@ import type { ButtonConfig } from './button.types';
 import type { RateConfig } from './rate.types';
 import type { WatermarkConfig } from './watermark.types';
 import type { BorderBeamConfig } from './border-beam.types';
+import type { MasonryConfig } from './masonry.types';
 import type { InputConfig } from './input.types';
 import type { InputPasswordConfig } from './input-password.types';
 import type { InputSearchConfig } from './input-search.types';
@@ -16,6 +17,7 @@ export interface ConfigContext {
   readonly rate?: RateConfig;
   readonly watermark?: WatermarkConfig;
   readonly borderBeam?: BorderBeamConfig;
+  readonly masonry?: MasonryConfig;
   readonly textArea?: TextAreaConfig;
   readonly input?: InputConfig;
   readonly inputPassword?: InputPasswordConfig;

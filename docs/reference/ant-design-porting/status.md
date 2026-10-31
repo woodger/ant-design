@@ -6,9 +6,9 @@
 
 Эталон: Ant Design 6.6.8, commit `984592267de88fbf9cdaecc96a56629e721c709d`.
 
-Каталог: **73 семейств**, публичных Svelte-компонентов: **85**.
-Есть публичная реализация у **57** семейств; отсутствует у **16**.
-Проверенный объём v1 покрыт у **29**; требуется аудит у **28**; частично покрыт у **0**.
+Каталог: **73 семейств**, публичных Svelte-компонентов: **86**.
+Есть публичная реализация у **58** семейств; отсутствует у **15**.
+Проверенный объём v1 покрыт у **30**; требуется аудит у **28**; частично покрыт у **0**.
 
 Наличие экспорта, полнота согласованного v1 и результаты тестов учитываются отдельно.
 Candidate означает запись каталога, для которой целевой объём ещё не согласован.
@@ -23,7 +23,7 @@ Candidate означает запись каталога, для которой 
 | [Flex](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/flex) | layout | target | Flex | Согласованный v1 покрыт | Пользовательский Svelte-компонент в component (missing); PrefixCls и глобальные настройки Flex в ConfigProvider (missing) |
 | [Grid](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/grid) | layout | target | Row, Col, createBreakpoint | Согласованный v1 покрыт | Пользовательские breakpoint/theme tokens и prefixCls (missing) |
 | [Layout](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/layout) | layout | target | Layout, LayoutHeader, LayoutContent, LayoutFooter, LayoutSider | Согласованный v1 покрыт | PrefixCls и глобальный component config/tokens (missing) |
-| [Masonry](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/masonry) | layout | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
+| [Masonry](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/masonry) | layout | target | Masonry | Согласованный v1 покрыт | PrefixCls, общий theme/token engine и глобальный motion config (missing) |
 | [Space](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/space) | layout | target | Space, SpaceCompact, SpaceAddon | Согласованный v1 покрыт | PrefixCls и глобальный space component config/tokens (missing); Compact-адаптеры ещё не перенесённых controls (missing) |
 | [Splitter](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/splitter) | layout | candidate | — | Нет публичной реализации | Подробный аудит согласованного API v1 (unreviewed) |
 | [Anchor](https://github.com/ant-design/ant-design/tree/984592267de88fbf9cdaecc96a56629e721c709d/components/anchor) | navigation | target | Anchor, AnchorLink | Согласованный v1 покрыт | PrefixCls и глобальный anchor/getTargetContainer config (missing) |

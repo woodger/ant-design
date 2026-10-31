@@ -2,6 +2,7 @@
   import TextAreaFeaturesFixtures from './TextAreaFeaturesFixtures.svelte';
   import WatermarkFixtures from './WatermarkFixtures.svelte';
   import BorderBeamFixtures from './BorderBeamFixtures.svelte';
+  import MasonryFixtures from './MasonryFixtures.svelte';
   import RateFixtures from './RateFixtures.svelte';
   import ImageGroupFixtures from './ImageGroupFixtures.svelte';
   import ImageFixtures from './ImageFixtures.svelte';
@@ -109,6 +110,7 @@
     <RateFixtures />
     <WatermarkFixtures />
     <BorderBeamFixtures />
+    <MasonryFixtures />
     <TextAreaFeaturesFixtures />
     <TextAreaFixtures />
     <InputFeaturesFixtures />

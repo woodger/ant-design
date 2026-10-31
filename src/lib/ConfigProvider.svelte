@@ -4,6 +4,7 @@
   import type { RateConfig } from './rate.types';
   import type { WatermarkConfig } from './watermark.types';
   import type { BorderBeamConfig } from './border-beam.types';
+  import type { MasonryConfig } from './masonry.types';
   import type { InputConfig } from './input.types';
   import type { InputPasswordConfig } from './input-password.types';
   import type { InputSearchConfig } from './input-search.types';
@@ -23,6 +24,7 @@
     rate?: RateConfig;
     watermark?: WatermarkConfig;
     borderBeam?: BorderBeamConfig;
+    masonry?: MasonryConfig;
     textArea?: TextAreaConfig;
     input?: InputConfig;
     inputPassword?: InputPasswordConfig;
@@ -48,6 +50,7 @@
     rate,
     watermark,
     borderBeam,
+    masonry,
     textArea,
     input,
     inputPassword,
@@ -76,6 +79,9 @@
     },
     get borderBeam() {
       return borderBeam ?? parent.borderBeam;
+    },
+    get masonry() {
+      return masonry ?? parent.masonry;
     },
     get input() {
       return input ?? parent.input;
