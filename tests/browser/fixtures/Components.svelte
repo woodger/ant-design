@@ -19,6 +19,7 @@
   import InputPasswordFixtures from './InputPasswordFixtures.svelte';
   import InputSearchFixtures from './InputSearchFixtures.svelte';
   import InputOTPFixtures from './InputOTPFixtures.svelte';
+  import InputGroupFixtures from './InputGroupFixtures.svelte';
   import BasicFixtures from './BasicFixtures.svelte';
   import { createControls } from './controls.model.svelte';
   import CheckboxPagination from './CheckboxPagination.svelte';
@@ -112,6 +113,7 @@
     <InputPasswordFixtures />
     <InputSearchFixtures />
     <InputOTPFixtures />
+    <InputGroupFixtures />
     <BasicFixtures kind="input" {controls} />
 
     <BasicFixtures kind="select" {controls} />

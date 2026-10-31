@@ -1776,6 +1776,12 @@
           "local": [
             "InputOTP"
           ]
+        },
+        {
+          "upstream": "Input.Group",
+          "local": [
+            "InputGroup"
+          ]
         }
       ],
       "dependencies": [
@@ -1839,7 +1845,12 @@
         "src/lib/input-otp.ssr.test.ts",
         "tests/browser/input-otp.spec.ts",
         "tests/package/input-otp.ssr.test.ts",
-        "src/lib/vendor/otp.css"
+        "src/lib/vendor/otp.css",
+        "src/lib/InputGroup.svelte",
+        "src/lib/input-group.types.ts",
+        "src/lib/input-group.ssr.test.ts",
+        "tests/package/input-group.ssr.test.ts",
+        "tests/browser/input-group.spec.ts"
       ],
       "features": [
         {
@@ -1943,9 +1954,23 @@
           "note": "InputOTP сохраняет UTF-16 cells, sparse onInput перед onChange только полного изменившегося кода, formatter до ограничения length, paste/focus guard, arrows/backspace/undo, mask/type/autocomplete, semantic/otp config и Input fallback. Value синхронизируется при изменении prop после mount; локальный draft не отклоняется неизменённым prop, SSR использует defaultValue как upstream. Bind:value не добавлен; refs дают группу и focus/blur. FormItem association относится к группе, не к отдельным ячейкам; reset учитывает form.resetKey. PrefixCls, общий variant/token engine и React dev diagnostics остаются за пределами этого объёма."
         },
         {
+          "id": "input-group",
+          "title": "Deprecated Input.Group: Compact composition, legacy classes и FormItem status",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/InputGroup.svelte",
+            "src/lib/input-group.types.ts",
+            "src/lib/input-group.ssr.test.ts",
+            "tests/package/input-group.ssr.test.ts",
+            "tests/browser/input-group.spec.ts"
+          ],
+          "note": "InputGroup повторяет Space.Compact wrapper из Group.tsx без дополнительного DOM, legacy size/compact классы и RTL. Keyed items заменяют React children-array, один children snippet соответствует одному item. Size не передаётся в Compact context, compact=false не отключает Compact. Native bubbling focusin/focusout заменяют React focus events; Svelte binding даёт div root. Status-only FormItem context сохраняет status/disabled без native association всем детям. PrefixCls и React dev diagnostics остаются вне объёма."
+        },
+        {
           "id": "input-subcomponents",
           "title": "Input.Password/Search/OTP и deprecated Group",
-          "state": "partial",
+          "state": "supported",
           "requiredForV1": false,
           "evidence": [
             "src/lib/InputPassword.svelte",
@@ -1964,9 +1989,14 @@
             "src/lib/input-otp.ssr.test.ts",
             "tests/browser/input-otp.spec.ts",
             "tests/package/input-otp.ssr.test.ts",
-            "src/lib/vendor/otp.css"
+            "src/lib/vendor/otp.css",
+            "src/lib/InputGroup.svelte",
+            "src/lib/input-group.types.ts",
+            "src/lib/input-group.ssr.test.ts",
+            "tests/package/input-group.ssr.test.ts",
+            "tests/browser/input-group.spec.ts"
           ],
-          "note": "TextArea, Password, Search и OTP перенесены отдельными экспортами; deprecated Group ещё отсутствует."
+          "note": "Все публичные подкомпоненты Input экспортируются отдельно: TextArea, InputPassword, InputSearch, InputOTP и deprecated InputGroup. Покрытие поведения описано отдельными features; общий аудит Input остаётся unreviewed."
         },
         {
           "id": "input-remaining",
@@ -1974,7 +2004,7 @@
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "ConfigProvider.variant/Form.variant, arbitrary tokens, prefixCls и deprecated internal classes/structure hooks не перенесены. Согласованный string bind:value сохраняется вместо React controlled rejection/broad value types; native refs представлены Svelte bindings. Native hidden остаётся на root; source CSS authored display перекрывает UA hidden, без дополнительного override."
+          "note": "ConfigProvider.variant/Form.variant, arbitrary tokens, prefixCls и deprecated internal classes/structure hooks не перенесены. Согласованный string bind:value сохраняется вместо React controlled rejection/broad value types; native refs представлены Svelte bindings. Native hidden остаётся на root; source CSS authored display перекрывает UA hidden, без дополнительного override. React dev diagnostics, включая deprecated Group warning, не перенесены."
         },
         {
           "id": "textarea-remaining",

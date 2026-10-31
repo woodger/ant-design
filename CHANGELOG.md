@@ -9,6 +9,9 @@
 
 ### Added
 
+- InputGroup переносит deprecated Input.Group через SpaceCompact с legacy size/
+  compact классами, keyed items и bubbling events. FormItem status/disabled
+  сохраняются без дублирования id/name/required на всех дочерних controls.
 - InputOTP переносит Input.OTP: UTF-16 ячейки, formatter до ограничения длины,
   native paste/input, маску и разделители, focus/keyboard, otp config и callbacks
   полного кода. Сохранены source value/defaultValue и SSR semantics; CSS извлечён

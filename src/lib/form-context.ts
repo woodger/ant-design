@@ -10,8 +10,9 @@ export interface FormContext {
 }
 
 export interface FormFieldContext {
-  readonly id: string;
-  readonly name: string;
+  // Status-only contexts передают состояние без native association дочерних controls.
+  readonly id?: string;
+  readonly name?: string;
   readonly label?: string;
   readonly disabled: boolean | undefined;
   readonly required: boolean;
