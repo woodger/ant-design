@@ -547,3 +547,10 @@ export type {
   WatermarkText,
   WatermarkContent
 } from './watermark.types';
+export { default as BorderBeam } from './BorderBeam.svelte';
+export type {
+  BorderBeamProps,
+  BorderBeamConfig,
+  BorderBeamColor,
+  BorderBeamGradient
+} from './border-beam.types';

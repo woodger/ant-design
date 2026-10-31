@@ -4672,24 +4672,96 @@
       "id": "border-beam",
       "name": "BorderBeam",
       "category": "other",
-      "scope": "candidate",
-      "scopeReason": "Позиция каталога; объём и приоритет будущего переноса ещё не согласованы.",
+      "scope": "target",
+      "scopeReason": "Автономный полный перенос: CSS-декорация рамки с явным Svelte target вместо React child ref.",
       "upstreamPath": "components/border-beam",
-      "reviewedRevision": null,
-      "exports": [],
-      "dependencies": [],
-      "upstreamPackages": [],
-      "priority": "unassigned",
-      "effort": "unknown",
-      "evidence": [],
+      "reviewedRevision": "984592267de88fbf9cdaecc96a56629e721c709d",
+      "exports": [
+        {
+          "upstream": "BorderBeam",
+          "local": [
+            "BorderBeam"
+          ]
+        }
+      ],
+      "dependencies": [
+        "config-provider"
+      ],
+      "upstreamPackages": [
+        {
+          "name": "@ant-design/cssinjs",
+          "range": "^2.1.2",
+          "referenceVersion": "2.1.2"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
+        }
+      ],
+      "priority": "p2",
+      "effort": "S",
+      "evidence": [
+        "src/lib/BorderBeam.svelte",
+        "src/lib/border-beam.engine.test.ts",
+        "src/lib/border-beam.ssr.test.ts",
+        "tests/package/border-beam.ssr.test.ts",
+        "tests/browser/border-beam.spec.ts",
+        "tools/ant-design-css-recipes.json"
+      ],
       "features": [
         {
           "id": "core-v1",
-          "title": "Подробный аудит согласованного API v1",
-          "state": "unreviewed",
+          "title": "Color/gradient, count/duration, lineWidth/size/outset и CSS motion",
+          "state": "supported",
           "requiredForV1": true,
+          "evidence": [
+            "src/lib/border-beam.engine.test.ts",
+            "tests/browser/border-beam.spec.ts",
+            "tools/ant-design-css-recipes.json"
+          ],
+          "note": "Сохранены шкала 0–70%, порядок stops, дополнение последнего цвета, count floor/fallback, отрицательные фазы и CSS units. Извлечены 10 правил и antBorderBeamMove, включая вложенные supports, media и reduced motion."
+        },
+        {
+          "id": "host-lifecycle",
+          "title": "Контейнер без обёртки, border snapshot, radius, SSR и cleanup",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "src/lib/border-beam.ssr.test.ts",
+            "tests/package/border-beam.ssr.test.ts",
+            "tests/browser/border-beam.spec.ts"
+          ],
+          "note": "Явный target получает native HTMLElement через bind:this/bind:nativeElement. SVG/null не декорируются; SSR выводит только children. Border widths измеряются при смене host; radius наследуется в CSS. Позиционирование host не исправляется, собственные слои удаляются при смене target/unmount."
+        },
+        {
+          "id": "common-config",
+          "title": "Локальные и наследуемые class/style, темы и native interaction",
+          "state": "supported",
+          "requiredForV1": true,
+          "evidence": [
+            "tests/browser/border-beam.spec.ts"
+          ],
+          "note": "ConfigProvider.borderBeam class/style с заменой nested config целиком; локальный style и параметры имеют приоритет. Слои aria-hidden/pointer-events:none не меняют focus и native формы. Primary/light/dark работают через CSS variables."
+        },
+        {
+          "id": "react-ref",
+          "title": "Автоматическое клонирование children с составным React ref",
+          "state": "partial",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/border-beam.types.ts",
+            "tests/browser/border-beam.spec.ts"
+          ],
+          "note": "Framework adaptation: target задаётся явно; snippets и содержимое отображаются без wrapper. React getNodeRef/supportRef/cloneElement не эмулируются."
+        },
+        {
+          "id": "theme-prefix",
+          "title": "PrefixCls и общий theme/components token engine",
+          "state": "missing",
+          "requiredForV1": false,
           "evidence": [],
-          "note": "Объём v1 требует согласования; публичный аналог отсутствует."
+          "note": "Поддерживаются существующие CSS variables и настройки темы библиотеки; произвольные React prefixCls/theme algorithm/components tokens пока не перенесены."
         }
       ]
     },

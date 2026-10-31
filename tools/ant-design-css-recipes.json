@@ -644,5 +644,19 @@
     ],
     "keyframes": [],
     "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * Input.OTP: ячейки, маска, размеры, RTL и переменные компонента.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
+  },
+  {
+    "id": "border-beam",
+    "output": "src/lib/vendor/border-beam.css",
+    "expectedRules": 10,
+    "include": [
+      "\\.ant-border-beam(?![\\w])"
+    ],
+    "exclude": [],
+    "replacements": [],
+    "keyframes": [
+      "antBorderBeamMove"
+    ],
+    "header": "/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.\n * BorderBeam: mask/offset-path, анимация и prefers-reduced-motion.\n * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz\n * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa\n */"
   }
 ]

@@ -376,6 +376,11 @@
     "root": "rate-fixture"
   },
   {
+    "id": "border-beam",
+    "module": "./BorderBeamFixtures.svelte",
+    "root": "border-beam-fixture"
+  },
+  {
     "id": "watermark",
     "module": "./WatermarkFixtures.svelte",
     "root": "watermark-fixture"

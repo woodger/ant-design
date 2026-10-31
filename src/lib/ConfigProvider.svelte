@@ -3,6 +3,7 @@
   import type { ButtonConfig } from './button.types';
   import type { RateConfig } from './rate.types';
   import type { WatermarkConfig } from './watermark.types';
+  import type { BorderBeamConfig } from './border-beam.types';
   import type { InputConfig } from './input.types';
   import type { InputPasswordConfig } from './input-password.types';
   import type { InputSearchConfig } from './input-search.types';
@@ -21,6 +22,7 @@
     button?: ButtonConfig;
     rate?: RateConfig;
     watermark?: WatermarkConfig;
+    borderBeam?: BorderBeamConfig;
     textArea?: TextAreaConfig;
     input?: InputConfig;
     inputPassword?: InputPasswordConfig;
@@ -45,6 +47,7 @@
     button,
     rate,
     watermark,
+    borderBeam,
     textArea,
     input,
     inputPassword,
@@ -70,6 +73,9 @@
     },
     get watermark() {
       return watermark ?? parent.watermark;
+    },
+    get borderBeam() {
+      return borderBeam ?? parent.borderBeam;
     },
     get input() {
       return input ?? parent.input;

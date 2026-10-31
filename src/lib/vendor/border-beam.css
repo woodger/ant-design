@@ -1,0 +1,13 @@
+/* Ant Design 6.6.8 — MIT; см. LICENSE.ant-design.
+ * BorderBeam: mask/offset-path, анимация и prefers-reduced-motion.
+ * https://registry.npmjs.org/antd/-/antd-6.6.8.tgz
+ * SHA-256: 8eb361740b62dc79762f21d036dea685d5e7c1d714315ea3247b9aa5d2269dfa
+ */
+.ant-border-beam{font-family:var(--ant-font-family);font-size:var(--ant-font-size);box-sizing:border-box;}
+.ant-border-beam::before,.ant-border-beam::after{box-sizing:border-box;}
+.ant-border-beam [class^="ant-border-beam"],.ant-border-beam [class*=" ant-border-beam"]{box-sizing:border-box;}
+.ant-border-beam [class^="ant-border-beam"]::before,.ant-border-beam [class*=" ant-border-beam"]::before,.ant-border-beam [class^="ant-border-beam"]::after,.ant-border-beam [class*=" ant-border-beam"]::after{box-sizing:border-box;}
+.ant-border-beam{display:none;position:absolute;inset:var(--ant-border-beam-inset-offset, 0px);border-radius:inherit;z-index:1;overflow:hidden;pointer-events:none;padding:var(--ant-border-beam-line-width, var(--ant-line-width));}
+@supports ((mask-composite: exclude) or (-webkit-mask-composite: xor)){.ant-border-beam{-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;}@supports (offset-path: rect(0 auto auto 0 round 1px)){.ant-border-beam{display:block;}.ant-border-beam::before{content:"";position:absolute;top:0;left:0;width:var(--ant-border-beam-size, 100px);aspect-ratio:1/1;opacity:0.95;background-image:var(--ant-border-beam-beam-gradient, linear-gradient(to left, var(--ant-color-primary) 0%, var(--ant-color-primary-hover) 70%, transparent));offset-anchor:90% 50%;offset-distance:0%;offset-path:rect(0 auto auto 0 round var(--ant-border-beam-size, 100px));offset-rotate:auto;animation-name:antBorderBeamMove;animation-duration:var(--ant-border-beam-duration, 6s);animation-delay:var(--ant-border-beam-delay, 0s);animation-timing-function:linear;animation-iteration-count:infinite;will-change:offset-distance;}@media (prefers-reduced-motion: reduce){.ant-border-beam::before{transition:none;animation:none;}}}}
+@media (prefers-reduced-motion: reduce){.ant-border-beam::before{display:none;}}
+@keyframes antBorderBeamMove{from{offset-distance:0%;}to{offset-distance:100%;}}

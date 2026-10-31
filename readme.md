@@ -127,6 +127,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | Button / ButtonGroup | Native button/href, color/variant/ghost, loading delay/icon, semantic slots, config, Group и Compact |
 | FloatButton / FloatButtonGroup / FloatButtonBackTop | Плавающие native actions, Badge/Tooltip, меню групп и возврат с прогрессом прокрутки |
 | Watermark | Text/image Canvas tiles, per-line fonts, offsets, mutation repair, наследование Modal/Drawer |
+| BorderBeam | CSS-лучи по рамке нативного контейнера, градиенты, фазы, размеры и reduced motion |
 | Rate | Value/defaultValue, half/clear, hover, keyboard/RTL, character/tooltips, размеры и focus ref |
 | Input | Native text/events/forms, prefix/suffix/addons, clear/count, variants, semantic slots и input config |
 | InputPassword | Видимость пароля, click/hover/keyboard, controlled toggle, focus/selection и возможности Input |
@@ -3853,6 +3854,70 @@ viewer. После закрытия фокус возвращается thumbnai
 Fixture — `?fixture=image-preview-group`, галерея — `/ant-design#image`.
 SSR рендерит children без DOM registration и открытого viewer. Ограничения semantic/
 config/container/icons и исходных motion общие с Image и перечислены выше.
+
+## BorderBeam
+
+BorderBeam переносит декоративные слои Ant Design 6.6.8: BorderBeam/BorderBeamEffect,
+useBorderSize, util и style. Изучены @ant-design/cssinjs 2.1.2 (^2.1.2) и
+@rc-component/util 1.14.0 (^1.14.0). Компонент не создаёт обёртку: слои добавляются
+непосредственно в контейнер и скрыты от accessibility tree.
+Точные Props и defaults — в [исходных типах](./src/lib/border-beam.types.ts).
+
+В Svelte target явно связывает контейнер с эффектом. Это заменяет клонирование
+React child с составным ref; существующий ref вызывающего кода сохраняется.
+
+```svelte
+<script lang="ts">
+  import { BorderBeam, Card } from 'antd-svelte';
+
+  let container = $state<HTMLDivElement>();
+</script>
+
+<BorderBeam target={container} count={3} duration={12} color="#36cfc9">
+  <Card bind:nativeElement={container} title="Workspace overview">
+    Состояние задач и последних запусков
+  </Card>
+</BorderBeam>
+```
+
+Для нативного элемента используйте bind:this. Контейнер должен задавать
+position:relative либо другой positioning context; BorderBeam не исправляет его
+style. Отсутствующий target, SVG и обычный текст не получают декорацию. Содержимое
+при этом отображается; собственных DOM nodes на SSR нет. Смена target и unmount
+удаляют принадлежащие эффекту слои, не меняя controls и содержимое контейнера.
+
+Count округляется вниз; неконечное число или число меньше 1 дают один луч.
+Несколько лучей распределяются по циклу отрицательным animation-delay. Первый
+луч сохраняет delay из style; остальные используют duration prop либо исходные
+6 секунд, даже когда duration переопределена через CSS variable в style.
+
+Градиент сохраняет порядок stops и масштабирует входные проценты 0–100 в видимые
+0–70%, оставляя хвост прозрачным. Если последний stop не равен 100%, его цвет
+добавляется в конец видимого участка. Пустой массив возвращает градиент темы.
+Числовые size/lineWidth используют px; строки остаются CSS lengths.
+
+Без outset четыре отступа измеряются по border-width один раз для каждого
+target. Последующие изменения рамки того же узла не вызывают новый замер.
+Radius наследуется через CSS и обновляется сразу, включая разные углы. Явный
+outset задаётся числом в px либо строкой через calc(-1 * outset); числовое
+отрицательное значение сохраняет исходное выражение `--2px` и не нормализуется.
+
+ConfigProvider.borderBeam задаёт class/style слоёв. Вложенный config заменяется
+целиком; локальный style идёт после контекстного, а переменные параметров —
+после style. Theme light/dark и primary работают через CSS variables; disabled,
+locale и направление не меняют декоративное поведение.
+
+CSS-рецепт border-beam сохраняет 10 правил и antBorderBeamMove с проверкой
+SHA-256 архива. Слои видимы при поддержке mask-composite и offset-path:rect;
+иначе применяется исходный CSS fallback display:none. Reduced motion скрывает
+псевдоэлемент и отключает анимацию. Hover/pause настраиваются обычными CSS rules.
+Эффект не заменяет focus ring или validation border.
+
+PrefixCls и общий React theme/components token engine пока отсутствуют.
+Автоматический поиск host через React child/ref заменён описанным target API;
+прикладные обёртки и runtime React dependencies не добавляются. Fixture
+`?fixture=border-beam`, engine/SSR, package SSR и браузерные проверки принадлежат
+библиотеке; пример выше не требует изменения сайта-потребителя.
 
 ## Watermark
 

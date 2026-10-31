@@ -9,6 +9,10 @@
 
 ### Added
 
+- BorderBeam переносит CSS-декорацию рамки: несколько лучей с фазами, градиенты,
+  размеры/outset, наследование radius, config и reduced motion. Явный target
+  заменяет React child ref без новой обёртки; слои очищаются при смене контейнера.
+  Добавлены CSS-рецепт, unit/SSR, package и изолированные browser-проверки.
 - InputGroup переносит deprecated Input.Group через SpaceCompact с legacy size/
   compact классами, keyed items и bubbling events. FormItem status/disabled
   сохраняются без дублирования id/name/required на всех дочерних controls.
