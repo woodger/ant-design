@@ -1770,6 +1770,12 @@
           "local": [
             "InputSearch"
           ]
+        },
+        {
+          "upstream": "Input.OTP",
+          "local": [
+            "InputOTP"
+          ]
         }
       ],
       "dependencies": [
@@ -1826,7 +1832,14 @@
         "src/lib/input-search.types.ts",
         "src/lib/input-search.ssr.test.ts",
         "tests/package/input-search.ssr.test.ts",
-        "tests/browser/input-search.spec.ts"
+        "tests/browser/input-search.spec.ts",
+        "src/lib/InputOTP.svelte",
+        "src/lib/input-otp.types.ts",
+        "src/lib/input-otp.engine.test.ts",
+        "src/lib/input-otp.ssr.test.ts",
+        "tests/browser/input-otp.spec.ts",
+        "tests/package/input-otp.ssr.test.ts",
+        "src/lib/vendor/otp.css"
       ],
       "features": [
         {
@@ -1914,6 +1927,22 @@
           "note": "InputSearch сохраняет Input API, порядок onSearch(clear) перед onChange, Enter/IME/loading, focus, source Compact composition, inputSearch semantic/config и различие Input/button variant fallback. Вместо cloneElement enterButton принимает snippet с getButtonProps/getNativeProps, сохраняющими собственные callbacks/disabled/loading. Default icon button именуется через locale.searchText. Data/class/style/hidden принадлежат Compact; native refs делегируются Input. Общие ограничения Input сохраняются, семейство остаётся unreviewed."
         },
         {
+          "id": "input-otp",
+          "title": "Input.OTP: ячейки, formatter, маска, separator, focus/keyboard и otp config",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/InputOTP.svelte",
+            "src/lib/input-otp.types.ts",
+            "src/lib/input-otp.engine.test.ts",
+            "src/lib/input-otp.ssr.test.ts",
+            "tests/browser/input-otp.spec.ts",
+            "tests/package/input-otp.ssr.test.ts",
+            "src/lib/vendor/otp.css"
+          ],
+          "note": "InputOTP сохраняет UTF-16 cells, sparse onInput перед onChange только полного изменившегося кода, formatter до ограничения length, paste/focus guard, arrows/backspace/undo, mask/type/autocomplete, semantic/otp config и Input fallback. Value синхронизируется при изменении prop после mount; локальный draft не отклоняется неизменённым prop, SSR использует defaultValue как upstream. Bind:value не добавлен; refs дают группу и focus/blur. FormItem association относится к группе, не к отдельным ячейкам; reset учитывает form.resetKey. PrefixCls, общий variant/token engine и React dev diagnostics остаются за пределами этого объёма."
+        },
+        {
           "id": "input-subcomponents",
           "title": "Input.Password/Search/OTP и deprecated Group",
           "state": "partial",
@@ -1928,9 +1957,16 @@
             "src/lib/input-search.types.ts",
             "src/lib/input-search.ssr.test.ts",
             "tests/package/input-search.ssr.test.ts",
-            "tests/browser/input-search.spec.ts"
+            "tests/browser/input-search.spec.ts",
+            "src/lib/InputOTP.svelte",
+            "src/lib/input-otp.types.ts",
+            "src/lib/input-otp.engine.test.ts",
+            "src/lib/input-otp.ssr.test.ts",
+            "tests/browser/input-otp.spec.ts",
+            "tests/package/input-otp.ssr.test.ts",
+            "src/lib/vendor/otp.css"
           ],
-          "note": "TextArea, Password и Search перенесены отдельными экспортами; OTP и deprecated Group ещё отсутствуют."
+          "note": "TextArea, Password, Search и OTP перенесены отдельными экспортами; deprecated Group ещё отсутствует."
         },
         {
           "id": "input-remaining",

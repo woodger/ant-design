@@ -6,6 +6,7 @@
   import type { InputConfig } from './input.types';
   import type { InputPasswordConfig } from './input-password.types';
   import type { InputSearchConfig } from './input-search.types';
+  import type { InputOTPConfig } from './input-otp.types';
   import type { TextAreaConfig } from './textarea.types';
   import type { Snippet } from 'svelte';
   import { provideConfig, useConfig, type ConfigContext } from './config-context';
@@ -24,6 +25,7 @@
     input?: InputConfig;
     inputPassword?: InputPasswordConfig;
     inputSearch?: InputSearchConfig;
+    otp?: InputOTPConfig;
     floatButton?: FloatButtonConfig;
     floatButtonGroup?: FloatButtonGroupConfig;
     /** Наследуемый размер controls; локальный size и Compact имеют приоритет. */
@@ -47,6 +49,7 @@
     input,
     inputPassword,
     inputSearch,
+    otp,
     floatButton,
     floatButtonGroup,
     componentSize,
@@ -76,6 +79,9 @@
     },
     get inputSearch() {
       return inputSearch ?? parent.inputSearch;
+    },
+    get otp() {
+      return otp ?? parent.otp;
     },
     get textArea() {
       return textArea ?? parent.textArea;

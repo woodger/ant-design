@@ -9,6 +9,10 @@
 
 ### Added
 
+- InputOTP переносит Input.OTP: UTF-16 ячейки, formatter до ограничения длины,
+  native paste/input, маску и разделители, focus/keyboard, otp config и callbacks
+  полного кода. Сохранены source value/defaultValue и SSR semantics; CSS извлечён
+  отдельным проверяемым рецептом.
 - InputSearch переносит Input.Search из Ant Design 6.6.8: поиск по кнопке/Enter/
   очистке, loading/IME, semantic/config API и Compact. Пользовательские кнопки
   передаются через Svelte snippet с контекстом вместо React cloneElement.

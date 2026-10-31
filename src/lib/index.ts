@@ -222,6 +222,14 @@ export type {
 export { default as Input } from './Input.svelte';
 export { default as InputPassword } from './InputPassword.svelte';
 export { default as InputSearch } from './InputSearch.svelte';
+export { default as InputOTP } from './InputOTP.svelte';
+export type {
+  InputOTPProps,
+  InputOTPConfig,
+  InputOTPSemantic,
+  InputOTPSemanticSlots,
+  InputOTPSeparatorContent
+} from './input-otp.types';
 export type {
   InputSearchProps,
   InputSearchConfig,

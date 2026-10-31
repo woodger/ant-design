@@ -361,6 +361,11 @@
     "root": "input-search-fixture"
   },
   {
+    "id": "input-otp",
+    "module": "./InputOTPFixtures.svelte",
+    "root": "input-otp-fixture"
+  },
+  {
     "id": "rate",
     "module": "./RateFixtures.svelte",
     "root": "rate-fixture"

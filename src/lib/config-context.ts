@@ -5,6 +5,7 @@ import type { WatermarkConfig } from './watermark.types';
 import type { InputConfig } from './input.types';
 import type { InputPasswordConfig } from './input-password.types';
 import type { InputSearchConfig } from './input-search.types';
+import type { InputOTPConfig } from './input-otp.types';
 import type { TextAreaConfig } from './textarea.types';
 import { getContext, setContext } from 'svelte';
 import { ruRU, type ComponentSize, type Locale, type ThemeConfig } from './types';
@@ -17,6 +18,7 @@ export interface ConfigContext {
   readonly input?: InputConfig;
   readonly inputPassword?: InputPasswordConfig;
   readonly inputSearch?: InputSearchConfig;
+  readonly otp?: InputOTPConfig;
   readonly floatButton?: FloatButtonConfig;
   readonly floatButtonGroup?: FloatButtonGroupConfig;
   readonly componentSize: ComponentSize;

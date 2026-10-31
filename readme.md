@@ -131,6 +131,7 @@ Day.js должен удовлетворять peer-диапазону ^1.11.11;
 | Input | Native text/events/forms, prefix/suffix/addons, clear/count, variants, semantic slots и input config |
 | InputPassword | Видимость пароля, click/hover/keyboard, controlled toggle, focus/selection и возможности Input |
 | InputSearch | Поиск по кнопке/Enter/очистке, loading/IME, custom button snippet и композиция Compact |
+| InputOTP | UTF-16 ячейки, formatter/paste, mask/separator, keyboard/focus и callbacks полного кода |
 | DatePicker | Single Dayjs date/datetime, input/calendar/time, confirmation, clear, ограничения, locale и native формы |
 | RangePicker | Пара Dayjs, связанные календари, время и подтверждение границ, allowEmpty/disabled, presets и hover |
 | Upload / UploadDragger | Выбор/drop, controlled list, beforeUpload, XHR/customRequest, статусы и удаление |
@@ -2982,7 +2983,7 @@ Unit/SSR и browser проверяют count/IME, focus/Enter, clear/event order
 FormData/FormItem/Compact, variants/semantic styles, темы и RTL.
 
 Input.Password и Input.Search доступны как InputPassword и InputSearch;
-OTP/legacy Group ещё не перенесены. Общие prefixCls,
+Input.OTP доступен как InputOTP; legacy Group ещё не перенесён. Общие prefixCls,
 ConfigProvider.variant/Form.variant, arbitrary token engine и deprecated internal
 classes/structures остаются отдельными пробелами. Согласованный string bind:value
 сохраняется вместо React controlled rejection/broad value types; native DOM events
@@ -3108,6 +3109,73 @@ Fixture `?fixture=input-search` проверяет поиск, IME, callbacks, �
 кнопки, semantic/config приоритеты и геометрию. Общие ограничения Input для
 prefixCls, global variant/token engine и React value/ref conventions сохраняются;
 аудит всего семейства остаётся unreviewed.
+
+## InputOTP (Input.OTP)
+
+InputOTP переносит OTP/index.tsx и OTPInput.tsx Ant Design 6.6.8. Каждая ячейка
+использует Input; группа сохраняет role=group, классы ant-otp и исходные labels
+«OTP Input 1», «OTP Input 2» и далее. Точные Props и настройки находятся в
+[исходных типах](./src/lib/input-otp.types.ts).
+
+```svelte
+<script lang="ts">
+  import { InputOTP } from 'antd-svelte';
+  let code = $state('');
+</script>
+
+<InputOTP value={code} onChange={next => { code = next; }}
+  formatter={text => text.replace(/\D/g, '')} autoComplete="one-time-code"
+  aria-label="Код подтверждения" />
+```
+
+По умолчанию есть шесть ячеек, type=text и любое текстовое содержимое. Каждая
+ячейка — одна UTF-16 code unit, как в source split(''); цифры не фильтруются
+без formatter. Native size=1 задаёт ширину, maxlength=1 не устанавливается:
+вставка нескольких символов распределяет их по ячейкам и заменяет оставшийся
+хвост. Formatter получает всю строку с пробелами на пустых позициях до обрезки
+до length. Пустые промежуточные позиции сохраняются, пустой хвост удаляется.
+
+OnInput вызывается для каждого native input с массивом ячеек; onChange следует
+за ним только для полностью заполненного изменившегося кода. Очистка, неполный
+код и повторное событие с прежним полным кодом не вызывают onChange. Как в
+upstream, composing input обрабатывается сразу, без отдельного IME-буфера.
+Изменение props не вызывает onInput/onChange.
+
+Value синхронизируется при изменении prop. Неизменённый value не отклоняет
+локальный draft; снятие контроля сохраняет текущие ячейки. Bind:value не добавлен:
+для полного значения используйте onChange, для частичного — onInput. DefaultValue
+фиксируется при создании и проходит formatter; внешний value formatter не
+проходит. Сохранено SSR-поведение upstream: сервер использует defaultValue,
+а value применяется после mount. Для начального SSR-кода можно задать оба значения.
+
+Фокус не пропускает предыдущие пустые ячейки. ArrowLeft/ArrowRight переходят
+между физическими индексами, в том числе в RTL; Backspace из пустой ячейки
+возвращает к предыдущей. Ctrl/Meta+z блокируется, как в исходнике. Фокус, мышь
+и клавиатура восстанавливают выделение через animation frame; все отложенные
+выделения отменяются при unmount. AutoFocus и focus() выбирают первую ячейку,
+blur() снимает фокус. Bind:nativeElement возвращает div группы.
+
+Mask=true рисует •, строка — собственный символ, включая emoji; реальное value
+остаётся в input. По умолчанию mask выбирает type=password, явный type имеет
+приоритет. Separator принимает scalar или factory(index); factory может вернуть
+Snippet<[number]>, например через () => snippet. Numeric 0 сохраняется,
+false/null/undefined/пустая строка не создают separator; true оставляет пустую
+обёртку, как source isReactRenderable.
+
+ConfigProvider.otp задаёт class/style, semantic root/input/separator и variant.
+Вложенный объект заменяется целиком. Variant наследуется из otp, затем input;
+общий Input config продолжает действовать на ячейки. Clear, унаследованный из
+Input config, не меняет OTP: source слушает native input, а не onChange(click).
+Size группы наследуется из componentSize; Compact продолжает действовать на
+внутренние Input. FormItem id, label и описание ошибки относятся к группе,
+а не дублируются на каждой ячейке. Статус и disabled передаются ячейкам; reset
+учитывает Form.resetKey, в том числе для неполного кода без onChange.
+
+Стили извлекаются рецептом otp в vendor/otp.css: 16 правил, без keyframes,
+с проверкой SHA-256 исходного npm-архива. Fixture `?fixture=input-otp`, engine,
+SSR и проверки публичного пакета покрывают эти сценарии. Общий аудит Input
+остаётся unreviewed; prefixCls, глобальный variant/token engine и React dev
+diagnostics, включая предупреждение о длинной маске, пока не перенесены.
 
 ## TextArea (Input.TextArea)
 
