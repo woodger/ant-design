@@ -9,6 +9,9 @@
 
 ### Added
 
+- InputSearch переносит Input.Search из Ant Design 6.6.8: поиск по кнопке/Enter/
+  очистке, loading/IME, semantic/config API и Compact. Пользовательские кнопки
+  передаются через Svelte snippet с контекстом вместо React cloneElement.
 - InputPassword переносит Input.Password из Ant Design 6.6.8: controlled/local
   visibility, click/hover/keyboard, сохранение focus/selection, очистку value
   attribute и ConfigProvider.inputPassword. Добавлены locale.global.show/hide,

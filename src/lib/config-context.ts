@@ -4,6 +4,7 @@ import type { RateConfig } from './rate.types';
 import type { WatermarkConfig } from './watermark.types';
 import type { InputConfig } from './input.types';
 import type { InputPasswordConfig } from './input-password.types';
+import type { InputSearchConfig } from './input-search.types';
 import type { TextAreaConfig } from './textarea.types';
 import { getContext, setContext } from 'svelte';
 import { ruRU, type ComponentSize, type Locale, type ThemeConfig } from './types';
@@ -15,6 +16,7 @@ export interface ConfigContext {
   readonly textArea?: TextAreaConfig;
   readonly input?: InputConfig;
   readonly inputPassword?: InputPasswordConfig;
+  readonly inputSearch?: InputSearchConfig;
   readonly floatButton?: FloatButtonConfig;
   readonly floatButtonGroup?: FloatButtonGroupConfig;
   readonly componentSize: ComponentSize;

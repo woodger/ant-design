@@ -1764,6 +1764,12 @@
           "local": [
             "InputPassword"
           ]
+        },
+        {
+          "upstream": "Input.Search",
+          "local": [
+            "InputSearch"
+          ]
         }
       ],
       "dependencies": [
@@ -1785,6 +1791,11 @@
           "name": "@ant-design/icons-svg",
           "range": "^4.6.0",
           "referenceVersion": "4.6.0"
+        },
+        {
+          "name": "@rc-component/util",
+          "range": "^1.14.0",
+          "referenceVersion": "1.14.0"
         }
       ],
       "priority": "p1",
@@ -1810,7 +1821,12 @@
         "src/lib/input-password.types.ts",
         "src/lib/input-password.ssr.test.ts",
         "tests/package/input-password.ssr.test.ts",
-        "tests/browser/input-password.spec.ts"
+        "tests/browser/input-password.spec.ts",
+        "src/lib/InputSearch.svelte",
+        "src/lib/input-search.types.ts",
+        "src/lib/input-search.ssr.test.ts",
+        "tests/package/input-search.ssr.test.ts",
+        "tests/browser/input-search.spec.ts"
       ],
       "features": [
         {
@@ -1884,6 +1900,20 @@
           "note": "Отдельный InputPassword сохраняет API Input, controlled/local visibility, click/mouseover и Enter/Space без repeat, disabled/tabIndex, suffix/iconRender, inputPassword config/semantic slots и locale.global.show/hide. Native button заменяет React span role=button, bind:this и именованные DOM bindings заменяют InputRef. Общие ограничения Input для prefixCls, tokens и value conventions сохраняются; семейство в целом unreviewed. В hover сохранён всплывающий mouseover: смена SVG под указателем может вызвать дополнительные переключения, как в React 6.6.8."
         },
         {
+          "id": "input-search",
+          "title": "Input.Search: search/clear/Enter, loading/IME, custom buttons и Compact",
+          "state": "supported",
+          "requiredForV1": false,
+          "evidence": [
+            "src/lib/InputSearch.svelte",
+            "src/lib/input-search.types.ts",
+            "src/lib/input-search.ssr.test.ts",
+            "tests/package/input-search.ssr.test.ts",
+            "tests/browser/input-search.spec.ts"
+          ],
+          "note": "InputSearch сохраняет Input API, порядок onSearch(clear) перед onChange, Enter/IME/loading, focus, source Compact composition, inputSearch semantic/config и различие Input/button variant fallback. Вместо cloneElement enterButton принимает snippet с getButtonProps/getNativeProps, сохраняющими собственные callbacks/disabled/loading. Default icon button именуется через locale.searchText. Data/class/style/hidden принадлежат Compact; native refs делегируются Input. Общие ограничения Input сохраняются, семейство остаётся unreviewed."
+        },
+        {
           "id": "input-subcomponents",
           "title": "Input.Password/Search/OTP и deprecated Group",
           "state": "partial",
@@ -1893,9 +1923,14 @@
             "src/lib/input-password.types.ts",
             "src/lib/input-password.ssr.test.ts",
             "tests/package/input-password.ssr.test.ts",
-            "tests/browser/input-password.spec.ts"
+            "tests/browser/input-password.spec.ts",
+            "src/lib/InputSearch.svelte",
+            "src/lib/input-search.types.ts",
+            "src/lib/input-search.ssr.test.ts",
+            "tests/package/input-search.ssr.test.ts",
+            "tests/browser/input-search.spec.ts"
           ],
-          "note": "TextArea и Password перенесены отдельными экспортами; Search, OTP и deprecated Group ещё отсутствуют."
+          "note": "TextArea, Password и Search перенесены отдельными экспортами; OTP и deprecated Group ещё отсутствуют."
         },
         {
           "id": "input-remaining",

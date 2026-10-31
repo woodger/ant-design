@@ -221,6 +221,14 @@ export type {
 } from './button.types';
 export { default as Input } from './Input.svelte';
 export { default as InputPassword } from './InputPassword.svelte';
+export { default as InputSearch } from './InputSearch.svelte';
+export type {
+  InputSearchProps,
+  InputSearchConfig,
+  InputSearchSemantic,
+  InputSearchSemanticSlots,
+  InputSearchButtonContext
+} from './input-search.types';
 export type {
   InputPasswordProps,
   InputPasswordConfig,

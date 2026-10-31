@@ -356,6 +356,11 @@
     "root": "input-password-fixture"
   },
   {
+    "id": "input-search",
+    "module": "./InputSearchFixtures.svelte",
+    "root": "input-search-fixture"
+  },
+  {
     "id": "rate",
     "module": "./RateFixtures.svelte",
     "root": "rate-fixture"
