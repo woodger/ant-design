@@ -808,7 +808,7 @@
           "state": "missing",
           "requiredForV1": false,
           "evidence": [],
-          "note": "AutoComplete, Cascader, TimePicker и Input.Search отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API. DatePicker, RangePicker и TreeSelect наследуют Compact context."
+          "note": "Cascader и TimePicker отсутствуют в публичной библиотеке; их Compact-контекст подключается при переносе соответствующих API. AutoComplete, InputSearch, DatePicker, RangePicker и TreeSelect уже наследуют Compact context."
         }
       ]
     },
